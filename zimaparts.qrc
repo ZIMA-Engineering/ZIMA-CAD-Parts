@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>folder.png</file>
+        <file>zimaparts.html</file>
+    </qresource>
+</RCC>
