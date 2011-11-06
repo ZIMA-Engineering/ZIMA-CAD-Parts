@@ -2,9 +2,10 @@
 
 #include "filemodel.h"
 #include "item.h"
+#include "basedatasource.h"
 
 FileModel::FileModel(QObject *parent) :
-	QAbstractItemModel(parent), rootItem(0), thumbSize(64)
+	QAbstractItemModel(parent), rootItem(0), thumbWidth(256)
 {
 }
 
@@ -52,16 +53,26 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 	//qDebug() << "Asking about data" << rootItem->files.at( index.row() )->name << role;
 	//qDebug() << "Column" << index.column();
 
+	const int row = index.row();
+
 	switch( index.column() )
 	{
 	case 1:
 		switch( role )
 		{
 		case Qt::DecorationRole:
-			return rootItem->files.at( index.row() )->pixmap.scaledToWidth(thumbSize);
+			if( !rootItem->files.at( row )->pixmap.isNull() )
+			{
+				if( rootItem->files.at( row )->scaledThumb.isNull() )
+					rootItem->files.at( row )->scaledThumb = rootItem->files.at( row )->pixmap.scaledToWidth( thumbWidth );
+				return rootItem->files.at( row )->scaledThumb;
+			}
 		case Qt::SizeHintRole:
-			if( !rootItem->files.at( index.row() )->pixmap.isNull() )
-				return QSize(thumbSize, thumbSize);
+			if( !rootItem->files.at( row )->pixmap.isNull() )
+				return QSize(64, 64);
+		case Qt::ToolTipRole:
+			if( !rootItem->files.at( row )->pixmap.isNull() )
+				return QString("<img src=\"%1\" width=\"%2\">").arg( rootItem->files.at( row )->pixmapPath ).arg( previewWidth );
 		}
 		break;
 	case 0:
@@ -69,9 +80,15 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		{
 		case Qt::DisplayRole:
 			//qDebug() << "returning" << rootItem->files.at( index.row() )->name;
-			return rootItem->files.at( index.row() )->name;
+			return rootItem->files.at( row )->name;
 		case Qt::CheckStateRole:
-			return rootItem->files.at( index.row() )->isChecked ? Qt::Checked : Qt::Unchecked;
+			return rootItem->files.at( row )->isChecked ? Qt::Checked : Qt::Unchecked;
+		case Qt::DecorationRole: {
+			QPixmap tmp = rootItem->files.at( row )->icon();
+
+			if( !tmp.isNull() )
+				return tmp.scaledToWidth(16);
+		}
 		}
 		break;
 	}
@@ -122,24 +139,24 @@ Qt::ItemFlags FileModel::flags(const QModelIndex &index) const
 
 void FileModel::setRootIndex(const QModelIndex &index)
 {
-	//emit layoutAboutToBeChanged();
-	rootItem = static_cast<Item*>(index.internalPointer());
-	qDebug() << rootItem->files.size() << "files in this dir.";
-	emit layoutChanged();
-	//emit dataChanged(QModelIndex(), QModelIndex());
-}
+	if( rootItem )
+		disconnect(rootItem->server, SIGNAL(gotThumbnail(File*)), this, SLOT(thumbnailDownloaded(File*)));
 
-void FileModel::downloadFiles(Item* item, QString dir)
-{
-	QList<File*> filesToDownload;
-
-	foreach(File* f, item->files)
+	if( !index.isValid() )
 	{
-		if( f->isChecked )
-			filesToDownload << f;
+		rootItem = 0;
+		reset();
+		return;
 	}
 
-	item->server->ftpData->downloadFiles(filesToDownload, dir);
+	//emit layoutAboutToBeChanged();
+	rootItem = static_cast<Item*>(index.internalPointer());
+	connect(rootItem->server, SIGNAL(gotThumbnail(File*)), this, SLOT(thumbnailDownloaded(File*)));
+
+	qDebug() << rootItem->files.size() << "files in this dir.";
+
+	reset();
+	emit layoutChanged();
 }
 
 Item* FileModel::getRootItem()
@@ -147,18 +164,22 @@ Item* FileModel::getRootItem()
 	return rootItem;
 }
 
-void FileModel::setThumbnailSize(int size)
+void FileModel::setThumbWidth(int size)
 {
-	thumbSize = size;
+	thumbWidth = size;
 }
 
-void FileModel::uncheckAll()
+void FileModel::setPreviewWidth(int size)
 {
-	foreach(File* f, rootItem->files)
-		f->isChecked = false;
-	emit dataChanged( index(0, 0), index(rootItem->files.size(), 0) );
+	previewWidth = size;
 }
 
+void FileModel::thumbnailDownloaded(File *file)
+{
+	QModelIndex mi = index( file->parentItem->files.indexOf(file), 1 );
+
+	emit dataChanged(mi, mi);
+}
 
 //QModelIndex FileModel::mapToSource(const QModelIndex &proxyIndex) const
 //{

@@ -7,22 +7,34 @@ TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
     settingsdialog.cpp \
-    ftpdata.cpp \
     serversmodel.cpp \
     item.cpp \
-    ftpserver.cpp \
-    filemodel.cpp
+    filemodel.cpp \
+    basedatasource.cpp \
+    baseremotedatasource.cpp \
+    ftpdatasource.cpp \
+    localdatasource.cpp \
+    addeditdatasource.cpp \
+    downloadmodel.cpp
 HEADERS += mainwindow.h \
     settingsdialog.h \
-    ftpdata.h \
-    ftpserver.h \
     serversmodel.h \
     item.h \
-    filemodel.h
+    filemodel.h \
+    basedatasource.h \
+    baseremotedatasource.h \
+    ftpdatasource.h \
+    localdatasource.h \
+    addeditdatasource.h \
+    downloadmodel.h
 FORMS += mainwindow.ui \
-    settingsdialog.ui
+    settingsdialog.ui \
+    addeditdatasource.ui
 RESOURCES += zimaparts.qrc
 
 OTHER_FILES += \
-    zimaparts.html
+    zimaparts.html \
+    data/zimaparts.html \
+    zimaparts.rc
 CONFIG += static
+RC_FILE = zimaparts.rc

@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 
 class Item;
+class File;
 
 class FileModel : public QAbstractItemModel
 {
@@ -26,17 +27,24 @@ public:
 	//---
 
 	Item* getRootItem();
-	void setThumbnailSize(int size);
-protected:
-	Item* rootItem;
-private:
-	int thumbSize;
-signals:
+	void setThumbWidth(int size);
+	void setPreviewWidth(int size);
 
 public slots:
 	void setRootIndex(const QModelIndex &index);
-	void downloadFiles(Item* item, QString dir);
-	void uncheckAll();
+
+protected:
+	Item* rootItem;
+
+private:
+	int thumbWidth;
+	int previewWidth;
+
+private slots:
+	void thumbnailDownloaded(File *file);
+
+signals:
+
 };
 
 #endif // FILEMODEL_H

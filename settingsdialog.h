@@ -3,42 +3,49 @@
 
 #include <QtGui/QDialog>
 #include <QSettings>
+#include <QMultiHash>
 #include <QVector>
-#include "ftpserver.h"
+#include "basedatasource.h"
+#include "ftpdatasource.h"
+#include "localdatasource.h"
 
 class QListWidgetItem;
 
 namespace Ui {
-    class SettingsDialog;
+class SettingsDialog;
 }
 
 class SettingsDialog : public QDialog {
-    Q_OBJECT
-    Q_DISABLE_COPY(SettingsDialog)
+	Q_OBJECT
+	Q_DISABLE_COPY(SettingsDialog)
 public:
-    explicit SettingsDialog(QWidget *parent = 0);
-    virtual ~SettingsDialog();
+	explicit SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QWidget *parent = 0);
+	virtual ~SettingsDialog();
 
-    void loadSettings(QSettings*);
-    void saveSettings(QSettings*);
+	void loadSettings(QSettings*);
+	void saveSettings();
 
-    QVector<FtpServer*> *getData() { return &servers; }
+	QVector<BaseDataSource*> getData();
 
 protected:
-    virtual void changeEvent(QEvent *e);
-    void updateServerList();
+	virtual void changeEvent(QEvent *e);
+	void updateServerList();
 
 private slots:
-    void addFtpServer();
-    void removeFtpServer();
-    void selectFtpServer(QListWidgetItem*, QListWidgetItem*);
-    void changingText();
-    void changingPassive();
+	void addDataSource();
+	void editDataSource();
+	void removeDataSource();
+	void selectDataSource(QListWidgetItem*, QListWidgetItem*);
+//	void changingText();
+//	void changingPassive();
 
 private:
-    Ui::SettingsDialog  *m_ui;
-    QVector<FtpServer*>   servers;
-    FtpServer           *currentServer;
+	Ui::SettingsDialog  *m_ui;
+	QVector<BaseDataSource*> originServers;
+	QVector<BaseDataSource*> servers;
+	//QHash<QListWidgetItem*, BaseDataSource*> lastUsedDataSources;
+	BaseDataSource           *currentServer;
+	QSettings *settings;
 };
 
 #endif // SETTINGSDIALOG_H

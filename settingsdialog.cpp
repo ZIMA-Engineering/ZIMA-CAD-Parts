@@ -1,26 +1,47 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
+#include <QFileDialog>
+#include <QDir>
+#include <QDebug>
+#include <QApplication>
+
+#include "addeditdatasource.h"
+
+SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QWidget *parent) :
 	QDialog(parent),
-	m_ui(new Ui::SettingsDialog)
+	m_ui(new Ui::SettingsDialog),
+	settings(settings),
+	originServers(servers)
 {
 	m_ui->setupUi(this);
 
-	connect(m_ui->btnAdd, SIGNAL(clicked()), this, SLOT(addFtpServer()));
-	connect(m_ui->btnRemove, SIGNAL(clicked()), this, SLOT(removeFtpServer()));
-	connect(m_ui->listFtp, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(selectFtpServer(QListWidgetItem*,QListWidgetItem*)));
-	connect(m_ui->txtHost, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-	connect(m_ui->txtPort, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-	connect(m_ui->txtBaseDir, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-	connect(m_ui->txtLogin, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-	connect(m_ui->txtPass, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-	connect(m_ui->checkPassive, SIGNAL(toggled(bool)), this, SLOT(changingPassive()));
+	connect(m_ui->btnAdd, SIGNAL(clicked()), this, SLOT(addDataSource()));
+	connect(m_ui->editBtn, SIGNAL(clicked()), this, SLOT(editDataSource()));
+	connect(m_ui->btnRemove, SIGNAL(clicked()), this, SLOT(removeDataSource()));
+	connect(m_ui->listFtp, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(selectDataSource(QListWidgetItem*,QListWidgetItem*)));
+//	connect(m_ui->txtHost, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
+//	connect(m_ui->txtPort, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
+//	connect(m_ui->txtBaseDir, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
+//	connect(m_ui->txtLogin, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
+//	connect(m_ui->txtPass, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
+	//connect(m_ui->pathLineEdit, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
+//	connect(m_ui->pathLineEdit, SIGNAL(textChanged(QString)), this, SLOT(changingText()));
+//	connect(m_ui->checkPassive, SIGNAL(toggled(bool)), this, SLOT(changingPassive()));
+
+	//servers = settings->loadDataSources();
+	updateServerList();
+
+	m_ui->spinPicture->setValue( settings->value("GUI/ThumbWidth", 32).toInt() );
+	m_ui->previewWidthSpinBox->setValue( settings->value("GUI/PreviewWidth", 256).toInt() );
+	m_ui->splashGroupBox->setChecked( settings->value("GUI/Splash/Enabled", true).toBool() );
+	m_ui->splashDurationSpinBox->setValue( settings->value("GUI/Splash/Duration", 1500).toInt() );
 }
 
 SettingsDialog::~SettingsDialog()
 {
-	qDeleteAll(servers);
+	servers.clear();
+
 	delete m_ui;
 }
 
@@ -37,119 +58,207 @@ void SettingsDialog::changeEvent(QEvent *e)
 
 void SettingsDialog::loadSettings(QSettings *settings)
 {
-	QString str;
-	settings->beginGroup("ftp");
-	foreach(str, settings->childGroups())
+//	currentSettings = settings;
+
+
+
+//	m_ui->spinPicture->setValue(settings->value("GUI/thumbWidth", 64).toInt());
+
+//	updateServerList();
+}
+
+void SettingsDialog::saveSettings()
+{
+
+	settings->setValue("GUI/ThumbWidth", m_ui->spinPicture->value());
+	settings->setValue("GUI/PreviewWidth", m_ui->previewWidthSpinBox->value());
+	settings->setValue("GUI/Splash/Enabled", m_ui->splashGroupBox->isChecked());
+	settings->setValue("GUI/Splash/Duration", m_ui->splashDurationSpinBox->value());
+}
+
+void SettingsDialog::addDataSource()
+{
+	//	FtpServer *s = new FtpServer();
+
+	//	s->address = "localhost";
+	//	servers.append(s);
+	//	updateServerList();
+
+	BaseDataSource *dataSource = 0;
+
+	if ( m_ui->listFtp->count() )
 	{
-		FtpServer *s = new FtpServer();
-		settings->beginGroup(str);
-		s->address = settings->value("host", "localhost").toString();
-		s->port = settings->value("port", "21").toInt();
-		s->baseDir = settings->value("baseDir", "/").toString();
-		s->login = settings->value("login", "").toString();
-		s->password = settings->value("password", "").toString();
-		s->passiveMode = settings->value("passive", true).toBool();
-		settings->endGroup();
-		servers.append(s);
+		switch( currentServer->dataSource )
+		{
+		case LOCAL: {
+			LocalDataSource *s = new LocalDataSource;
+
+			dataSource = s;
+			break;
+		}
+		case FTP: {
+			FtpDataSource *s = new FtpDataSource;
+
+			dataSource = s;
+			break;
+		}
+		default:
+			break;
+		}
+	} else {
+		LocalDataSource *s = new LocalDataSource;
+
+		dataSource = s;
 	}
-	settings->endGroup();
 
-	m_ui->spinPicture->setValue(settings->value("gui/thumbWidth", 64).toInt());
-	m_ui->checkEmpty->setChecked(settings->value("gui/showEmpty", true).toBool());
-
-	updateServerList();
-}
-
-void SettingsDialog::saveSettings(QSettings *settings)
-{
-	int i = 0;
-	QString str;
-	settings->beginGroup("ftp");
-	foreach(FtpServer *s, servers)
+	if( dataSource != 0 )
 	{
-		settings->beginGroup(QString::number(i++));
-		settings->setValue("host", s->address);
-		settings->setValue("port", s->port);
-		settings->setValue("baseDir", s->baseDir);
-		settings->setValue("login", s->login);
-		settings->setValue("password", s->password);
-		settings->setValue("passive", s->passiveMode);
-		settings->endGroup();
+		AddEditDataSource *addEdit = new AddEditDataSource(dataSource);
+
+		if( addEdit->exec() == QDialog::Accepted )
+		{
+			currentServer = addEdit->dataSource();
+
+			currentServer->lwItem = new QListWidgetItem( currentServer->dataSourceIcon(), currentServer->label );
+
+			servers << currentServer;
+
+			m_ui->listFtp->addItem(currentServer->lwItem);
+			m_ui->listFtp->setCurrentItem(currentServer->lwItem);
+		}
+
+		delete addEdit;
 	}
-	settings->endGroup();
-	settings->setValue("gui/thumbWidth", m_ui->spinPicture->value());
-	settings->setValue("gui/showEmpty", m_ui->checkEmpty->isChecked());
+
 }
 
-void SettingsDialog::addFtpServer()
+void SettingsDialog::editDataSource()
 {
-	FtpServer *s = new FtpServer();
-
-	s->address = "localhost";
-	servers.append(s);
-	updateServerList();
-}
-
-void SettingsDialog::removeFtpServer()
-{
-	if (!m_ui->listFtp->count())
+	if ( !m_ui->listFtp->count() )
 		return;
 
-	servers.remove(m_ui->listFtp->currentRow());
-	delete m_ui->listFtp->currentItem();
-	updateServerList();
+	AddEditDataSource *addEdit = new AddEditDataSource(currentServer);
+
+	if( addEdit->exec() == QDialog::Accepted )
+	{
+		BaseDataSource *edited = addEdit->dataSource();
+
+		if( edited != currentServer )
+		{
+			servers.remove( m_ui->listFtp->currentRow() );
+			servers.insert( m_ui->listFtp->currentRow(), edited );
+
+			// old currentServer is deleted in ~AddEditDataSource
+			currentServer = edited;
+			currentServer->lwItem->setIcon( currentServer->dataSourceIcon() );
+		}
+
+		currentServer->lwItem->setText( currentServer->label );
+	}
+
+	delete addEdit;
 }
 
-void SettingsDialog::selectFtpServer(QListWidgetItem *current, QListWidgetItem *)
+void SettingsDialog::removeDataSource()
+{
+	if ( !m_ui->listFtp->count() )
+		return;
+
+//	servers.remove(m_ui->listFtp->currentRow());
+//	delete m_ui->listFtp->currentItem();
+//	updateServerList();
+
+	QListWidgetItem *it = m_ui->listFtp->currentItem();
+	int row = m_ui->listFtp->currentRow();
+
+	m_ui->listFtp->takeItem(row);
+	servers.remove(row);
+	delete it;
+
+//	if ( m_ui->listFtp->count() > 0 )
+//	{
+//		m_ui->listFtp->setCurrentRow( row > 0 ? --row : row);
+//	}
+}
+
+void SettingsDialog::selectDataSource(QListWidgetItem *current, QListWidgetItem *)
 {
 	if (!current)
 		return;
-	currentServer = servers[m_ui->listFtp->currentRow()];
-	m_ui->txtHost->setText(currentServer->address);
-	m_ui->txtPort->setText(QString::number(currentServer->port));
-	m_ui->txtBaseDir->setText(currentServer->baseDir);
-	m_ui->txtLogin->setText(currentServer->login);
-	m_ui->txtPass->setText(currentServer->password);
-	m_ui->checkPassive->setChecked(currentServer->passiveMode);
+
+	currentServer = servers[ m_ui->listFtp->currentRow() ];
 }
 
 void SettingsDialog::updateServerList()
 {
 	m_ui->listFtp->clear();
-	foreach(FtpServer *s, servers)
+
+	foreach(BaseDataSource *s, originServers)
 	{
-		QListWidgetItem *lwi = new QListWidgetItem(s->address);
+		QListWidgetItem *lwi = new QListWidgetItem(s->dataSourceIcon(), s->label);
 		s->lwItem = lwi;
+
+		servers << s;
+
 		m_ui->listFtp->addItem(lwi);
 	}
-	if (!servers.isEmpty())
-		currentServer = servers[0];
-	else
+
+	if(!servers.isEmpty())
 	{
-		currentServer = new FtpServer();
-		currentServer->address = "localhost";
-		servers.append(currentServer);
+		currentServer = servers.first();
+		m_ui->listFtp->setCurrentItem(currentServer->lwItem);
+	}/* else {
+		currentServer = new LocalDataSource;
+		originServers.append(currentServer);
 		updateServerList();
-	}
+	}*/
+
 	m_ui->listFtp->setFocus();
 }
 
-void SettingsDialog::changingText()
-{
-	if (!currentServer)
-		return;
-	if (currentServer->lwItem)
-		currentServer->lwItem->setText(m_ui->txtHost->text());
-	currentServer->address = m_ui->txtHost->text();
-	currentServer->port = m_ui->txtPort->text().toInt();
-	currentServer->baseDir = m_ui->txtBaseDir->text();
-	currentServer->login = m_ui->txtLogin->text();
-	currentServer->password = m_ui->txtPass->text();
-}
+//void SettingsDialog::changingText()
+//{
+//	if (!currentServer)
+//		return;
 
-void SettingsDialog::changingPassive()
+//	switch( currentServer->dataSource )
+//	{
+//	case LOCAL: {
+//		LocalDataSource *s = static_cast<LocalDataSource*>(currentServer);
+
+//		s->localPath = m_ui->pathLineEdit->text();
+
+//		if (currentServer->lwItem)
+//			currentServer->lwItem->setText(m_ui->pathLineEdit->text());
+//		break;
+//	}
+//	case FTP: {
+//		FtpDataSource *ftpCurrentServer = static_cast<FtpDataSource*>(currentServer);
+
+//		ftpCurrentServer->remoteHost = m_ui->txtHost->text();
+//		ftpCurrentServer->remotePort = m_ui->txtPort->text().toInt();
+//		ftpCurrentServer->remoteBaseDir = m_ui->txtBaseDir->text();
+//		ftpCurrentServer->remoteLogin = m_ui->txtLogin->text();
+//		ftpCurrentServer->remotePassword = m_ui->txtPass->text();
+
+//		if (currentServer->lwItem)
+//			currentServer->lwItem->setText(m_ui->txtHost->text());
+//		break;
+//	}
+//	default:
+//		break;
+//	}
+//}
+
+//void SettingsDialog::changingPassive()
+//{
+//	if (!currentServer)
+//		return;
+////	FtpDataSource *ftpCurrentServer = static_cast<FtpDataSource*>(currentServer);
+////	ftpCurrentServer->ftpPassiveMode = m_ui->checkPassive->isChecked();
+//}
+
+QVector<BaseDataSource*> SettingsDialog::getData()
 {
-	if (!currentServer)
-		return;
-	currentServer->passiveMode = m_ui->checkPassive->isChecked();
+	return servers;
 }

@@ -6,8 +6,7 @@
 #include <QList>
 #include <QVector>
 #include <QKeyEvent>
-#include "ftpdata.h"
-#include "ftpserver.h"
+#include "basedatasource.h"
 #include "item.h"
 
 struct ServerItem
@@ -64,7 +63,7 @@ public:
 	//---
 	void changeSettings(QString ftpHost, int ftpPort, bool ftpPassiveMode, QString ftpLogin, QString ftpPassword, QString ftpBaseDir);
 	void setIcons(QIcon dir, QIcon server);
-	void setServerData(QVector<FtpServer*>);
+	void setServerData(QVector<BaseDataSource*>);
 public slots:
 	//    void updateModel();
 	//    void clear();
@@ -72,21 +71,31 @@ public slots:
 	void refresh(Item* item);
 	void clear();
 	void loadItem(Item *item);
+	void downloadFiles(QString dir);
+	void resumeDownload();
+	void uncheckAll(Item *item = 0);
+	void deleteDownloadQueue();
 	void abort();
 protected:
 	//FtpData *ftpData;
+	QList<File*> getCheckedFiles(Item *item);
 protected slots:
 	void allPartsDownloaded(Item* item);
 private:
 	QIcon dirIcon, serverIcon;
-	QVector<FtpServer*> servers;
+	QVector<BaseDataSource*> servers;
 	Item *rootItem;
+	QList<File*> downloadQueue;
 signals:
 	void itemLoaded(const QModelIndex&);
 	void techSpecAvailable(QUrl);
 	void statusUpdated(QString);
 	void errorOccured(QString);
+	void fileProgress(File*);
+	void fileDownloaded(File*);
 	void filesDownloaded();
+	void newDownloadQueue(QList<File*>*);
+	void queueChanged();
 };
 
 #endif // SERVERSMODEL_H

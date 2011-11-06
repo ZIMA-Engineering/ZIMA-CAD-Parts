@@ -1,5 +1,24 @@
 #include "item.h"
 
+QPixmap File::icon()
+{
+	if( type == File::UNDEFINED )
+	{
+		QRegExp rx(".+\\.prt\\.\\d+");
+
+		if( rx.exactMatch(name) )
+			type = File::PROE;
+	}
+
+	switch( type )
+	{
+	case File::PROE:
+		return QPixmap(":/data/icons/prt.png");
+	default:
+		return QPixmap();
+	}
+}
+
 Item::Item()
 {
 	isChecked = false;
@@ -16,6 +35,8 @@ Item::~Item()
 	delete openFtpFile;
 	qDeleteAll(files);
 	qDeleteAll(children);
+	files.clear();
+	children.clear();
 }
 
 int Item::row() const

@@ -6,23 +6,39 @@
 #include <QFile>
 #include <QList>
 #include <QVariant>
-#include "ftpserver.h"
+#include <QDateTime>
 
-class FtpServer;
+class BaseDataSource;
 class Item;
 
 struct File
 {
-	File():isChecked(false){}
+	enum FileTypes {
+		PROE=0,
+		CATIA,
+		IGES,
+		STEP,
+		STL,
+		TYPES_COUNT,
+		UNDEFINED
+	};
+
+	File():openFtpFile(0),isChecked(false),type(UNDEFINED),bytesDone(0){}
+	QPixmap icon();
 
 	Item* parentItem;
 	QString name;
 	QString path;
+	QString targetPath;
 	QString pixmapPath;
 	QPixmap pixmap;
+	QPixmap scaledThumb;
 	QFile *openFtpFile;
 	bool isChecked;
 	QDateTime lastModified;
+	FileTypes type;
+	qint64 bytesDone;
+	qint64 size;
 };
 
 class Item
@@ -49,7 +65,7 @@ public:
 	bool    isDir;
 	bool    isEmpty;
 	bool isServer;
-	FtpServer* server;
+	BaseDataSource* server;
 
 	Item            *parent;
 	QList<Item*>    children;

@@ -1,5 +1,8 @@
 #include "serversmodel.h"
+#include <QDir>
 #include <QDebug>
+#include "baseremotedatasource.h"
+#include "localdatasource.h"
 
 ServersModel::ServersModel(QObject *parent) : QAbstractItemModel(parent)
 {
@@ -111,10 +114,11 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 		return item->name;
 		break;
 	case Qt::DecorationRole:
-		if( item->isServer )
-			return serverIcon;
-		else if( item->isDir )
-			return dirIcon;
+//		if( item->isServer )
+//			return serverIcon;
+//		else if( item->isDir )
+//			return dirIcon;
+		return item->server->itemIcon(item);
 		break;
 	default:;
 	}
@@ -138,34 +142,49 @@ void ServersModel::setIcons(QIcon dir, QIcon server)
 	serverIcon = server;
 }
 
-void ServersModel::setServerData(QVector<FtpServer*> srv)
+void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 {
 	//qDeleteAll(rootItem->children);
 	rootItem->children.clear();
 	servers = srv;
 
-	foreach(FtpServer *s, servers)
+	foreach(BaseDataSource *s, servers)
 	{
 		Item *i = new Item();
-		i->name = s->address;
+		i->name = s->label;
 		i->isServer = true;
 		i->server = s;
-		i->server->ftpData = new FtpData();
-		i->server->ftpData->rootItem = i;
-		i->server->ftpData->changeSettings(i->server->address,
-					i->server->port,
-					i->server->passiveMode,
-					i->server->login,
-					i->server->password,
-					i->server->baseDir);
-		connect(i->server->ftpData, SIGNAL(allPartsDownloaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
-		connect(i->server->ftpData, SIGNAL(techSpecAvailable(QUrl)), this, SIGNAL(techSpecAvailable(QUrl)));
-		connect(i->server->ftpData, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
-		connect(i->server->ftpData, SIGNAL(filesDownloaded()), this, SIGNAL(filesDownloaded()));
-		connect(i->server->ftpData, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
+		i->server->rootItem = i;
+//		i->server->changeSettings(i->server->remoteHost,
+//					i->server->remotePort,
+//					i->server->passiveMode,
+//					i->server->login,
+//					i->server->password,
+//					i->server->baseDir);
+		connect(i->server, SIGNAL(allPartsDownloaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
+		connect(i->server, SIGNAL(techSpecAvailable(QUrl)), this, SIGNAL(techSpecAvailable(QUrl)));
+		connect(i->server, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
+		connect(i->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
+		connect(i->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
+		connect(i->server, SIGNAL(filesDownloaded()), this, SIGNAL(filesDownloaded()));
+		connect(i->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
 
 		i->parent = rootItem;
-		i->path = i->server->baseDir.endsWith('/') ? i->server->baseDir : i->server->baseDir + "/";
+
+		switch( i->server->dataSource )
+		{
+		case LOCAL: {
+			LocalDataSource *lds = static_cast<LocalDataSource*>(i->server);
+			i->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
+			break;
+		}
+		case UNDEFINED:
+			// FIXME
+			break;
+		default:
+			BaseRemoteDataSource *rds = static_cast<BaseRemoteDataSource*>(i->server);
+			i->path = rds->remoteBaseDir.endsWith('/') ? rds->remoteBaseDir : rds->remoteBaseDir + "/";
+		}
 
 		rootItem->children.append(i);
 	}
@@ -184,8 +203,12 @@ void ServersModel::allPartsDownloaded(Item* item)
 
 void ServersModel::refresh(Item* item)
 {
+	qDeleteAll(item->children);
 	item->children.clear();
+	qDeleteAll(item->files);
 	item->files.clear();
+
+	reset();
 
 	loadItem(item);
 }
@@ -203,33 +226,98 @@ void ServersModel::loadItem(Item* item)
 
 	if( item->children.size() > 0 || item->files.size() > 0 )
 	{
-		item->server->ftpData->sendTechSpecUrl(item);
+		item->server->sendTechSpecUrl(item);
 		allPartsDownloaded(item);
 		return;
 	}
 
-	item->server->ftpData->changeSettings(item->server->address,
-				item->server->port,
-				item->server->passiveMode,
-				item->server->login,
-				item->server->password,
-				item->server->baseDir);
-	item->server->ftpData->loadDirectory(item);
+	// FIXME: may be missing when commented... we'll see
+//	item->server->ftpData->changeSettings(item->server->address,
+//				item->server->port,
+//				item->server->passiveMode,
+//				item->server->login,
+//				item->server->password,
+//				item->server->baseDir);
+	item->server->loadDirectory(item);
+}
+
+QList<File*> ServersModel::getCheckedFiles(Item *item)
+{
+	QList<File*> ret;
+
+	foreach(File *f, item->files)
+		if( f->isChecked )
+			ret << f;
+
+	foreach(Item *i, item->children)
+		ret << getCheckedFiles(i);
+
+	return ret;
+}
+
+void ServersModel::downloadFiles(QString dir)
+{
+	QDir d;
+	d.mkpath(dir);
+
+	foreach(Item *i, rootItem->children)
+	{
+		QList<File*> tmp = getCheckedFiles(i);
+		downloadQueue << tmp;
+
+		qDebug() << "server" << i->server->label;
+		qDebug() << "going to download" << tmp.count() << "files";
+		if( tmp.count() > 0 )
+			i->server->downloadFiles(tmp, dir);
+	}
+
+	emit newDownloadQueue(&downloadQueue);
+}
+
+void ServersModel::resumeDownload()
+{
+	foreach(Item *i, rootItem->children)
+		i->server->resumeDownload();
+}
+
+void ServersModel::uncheckAll(Item *item)
+{
+	if( item == 0 )
+		item = rootItem;
+
+	foreach(File* f, item->files)
+		f->isChecked = false;
+
+	foreach(Item *i, item->children)
+		uncheckAll(i);
+
+	//emit dataChanged( index(0, 0), index(rootItem->files.size(), 0) );
 }
 
 void ServersModel::clear()
 {
-	foreach(FtpServer *s, servers)
-	{
-		s->ftpData->reset();
-	}
+	// FIXME
+//	foreach(BaseDataSource *s, servers)
+//	{
+//		s->reset();
+//	}
 	//reset(); // ???
+}
+
+void ServersModel::deleteDownloadQueue()
+{
+	downloadQueue.clear();
+
+	foreach(Item *i, rootItem->children)
+		i->server->deleteDownloadQueue();
+
+	emit queueChanged();
 }
 
 void ServersModel::abort()
 {
-	foreach(FtpServer *s, servers)
+	foreach(BaseDataSource *s, servers)
 	{
-		s->ftpData->abort();
+		s->abort();
 	}
 }
