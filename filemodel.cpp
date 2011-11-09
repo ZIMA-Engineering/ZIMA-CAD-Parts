@@ -69,7 +69,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 			}
 		case Qt::SizeHintRole:
 			if( !rootItem->files.at( row )->pixmap.isNull() )
-				return QSize(64, 64);
+                                return QSize(thumbWidth, thumbWidth);
 		case Qt::ToolTipRole:
 			if( !rootItem->files.at( row )->pixmap.isNull() )
 				return QString("<img src=\"%1\" width=\"%2\">").arg( rootItem->files.at( row )->pixmapPath ).arg( previewWidth );

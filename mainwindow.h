@@ -9,7 +9,6 @@
 #include <QSortFilterProxyModel>
 #include <QThread>
 #include "settingsdialog.h"
-#include "settings.h"
 #include "filemodel.h"
 
 namespace Ui
@@ -31,7 +30,6 @@ public:
 
 private:
 	Ui::MainWindowClass *ui;
-	Settings      *baseSettings;
 	QSettings           *settings;
 	QVector<BaseDataSource*> servers;
 	QLabel              *statusState, *statusDir;
