@@ -3,6 +3,7 @@
 #include "serversmodel.h"
 #include "downloadmodel.h"
 
+#include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSplashScreen>
@@ -15,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), ui(new Ui::MainWindowClass)
 {
 	downloading = false;
+
+        qApp->setWindowIcon(QIcon(":/data/icon.png"));
 
 	settings = new QSettings(this);
 	bool useSplash = settings->value("GUI/Splash/Enabled", true).toBool();
