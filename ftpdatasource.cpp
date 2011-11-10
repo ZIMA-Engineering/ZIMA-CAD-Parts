@@ -16,8 +16,6 @@ FtpDataSource::FtpDataSource() :
 	remoteBaseDir = "/";
 	ftpPassiveMode = true;
 
-	label = tr("New FTP server");
-
 	ftp = new QFtp(this);
 	dlFtp = new QFtp(this);
 

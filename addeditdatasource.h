@@ -16,7 +16,12 @@ class AddEditDataSource : public QDialog
 	Q_OBJECT
 
 public:
-	explicit AddEditDataSource(BaseDataSource *dataSource, QWidget *parent = 0);
+	enum Actions {
+		ADD=0,
+		EDIT
+	};
+
+	explicit AddEditDataSource(BaseDataSource *dataSource, Actions action, QWidget *parent = 0);
 	~AddEditDataSource();
 
 	BaseDataSource *dataSource();
@@ -30,6 +35,7 @@ private:
 private slots:
 	void openFileDialog();
 	void dataSourceTypeChanged(int index);
+	void labelChangedByUser();
 };
 
 #endif // ADDEDITDATASOURCE_H

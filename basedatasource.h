@@ -43,7 +43,7 @@ public slots:
 	virtual void downloadFile(File* file) = 0;
 	virtual void resumeDownload() = 0;
 	virtual void abort() = 0;
-	virtual void loadSettings(QSettings& settings) = 0;
+	virtual void loadSettings(QSettings& settings);
 	virtual void deleteDownloadQueue();
 	void saveSettings(QSettings& settings);
 protected:

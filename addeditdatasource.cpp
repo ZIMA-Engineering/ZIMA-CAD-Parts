@@ -5,7 +5,7 @@
 #include "addeditdatasource.h"
 #include "ui_addeditdatasource.h"
 
-AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, QWidget *parent) :
+AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, Actions action, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::AddEditDataSource)
 {
@@ -21,6 +21,11 @@ AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, QWidget *parent
 
 	connect(ui->fileDialogButton, SIGNAL(clicked()), this, SLOT(openFileDialog()));
 	connect(ui->dataSourceComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(dataSourceTypeChanged(int)));
+
+	connect(ui->labelLineEdit, SIGNAL(textEdited(QString)), this, SLOT(labelChangedByUser()));
+
+	if( action == EDIT )
+		setWindowTitle(tr("Edit data source"));
 }
 
 AddEditDataSource::~AddEditDataSource()
@@ -34,13 +39,14 @@ AddEditDataSource::~AddEditDataSource()
 
 BaseDataSource* AddEditDataSource::dataSource()
 {
+	lastDataSource->label = ui->labelLineEdit->text();
+
 	switch( lastDataSource->dataSource )
 	{
 	case LOCAL: {
 		LocalDataSource *s = static_cast<LocalDataSource*>(lastDataSource);
 
 		s->localPath = ui->pathLineEdit->text();
-		s->label = s->localPath;
 
 		break;
 	}
@@ -52,7 +58,6 @@ BaseDataSource* AddEditDataSource::dataSource()
 		s->remoteBaseDir = ui->txtBaseDir->text();
 		s->remoteLogin = ui->txtLogin->text();
 		s->remotePassword = ui->txtPass->text();
-		s->label = s->remoteHost;
 
 		break;
 	}
@@ -108,10 +113,15 @@ void AddEditDataSource::dataSourceTypeChanged(int index)
 
 void AddEditDataSource::refill()
 {
+	ui->labelLineEdit->setText(lastDataSource->label);
+
 	switch( lastDataSource->dataSource )
 	{
 	case LOCAL: {
 		LocalDataSource *s = static_cast<LocalDataSource*>(lastDataSource);
+
+		if( s->localPath != s->label )
+			labelChangedByUser();
 
 		ui->pathLineEdit->setText( s->localPath );
 
@@ -119,6 +129,9 @@ void AddEditDataSource::refill()
 	}
 	case FTP: {
 		FtpDataSource *s = static_cast<FtpDataSource*>(lastDataSource);
+
+		if( s->remoteHost != s->label )
+			labelChangedByUser();
 
 		ui->txtHost->setText(s->remoteHost);
 		ui->txtPort->setText(QString::number(s->remotePort));
@@ -130,4 +143,10 @@ void AddEditDataSource::refill()
 	default:
 		break;
 	}
+}
+
+void AddEditDataSource::labelChangedByUser()
+{
+	disconnect(ui->pathLineEdit, SIGNAL(textChanged(QString)), ui->labelLineEdit, SLOT(setText(QString)));
+	disconnect(ui->txtHost, SIGNAL(textChanged(QString)), ui->labelLineEdit, SLOT(setText(QString)));
 }

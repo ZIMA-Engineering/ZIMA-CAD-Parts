@@ -41,12 +41,13 @@ void BaseRemoteDataSource::sendTechSpecUrl(Item* item)
 
 void BaseRemoteDataSource::loadSettings(QSettings& settings)
 {
+	BaseDataSource::loadSettings(settings);
+
 	remoteHost = settings.value("Host", "localhost").toString();
 	remotePort = settings.value("Port", "21").toInt();
 	remoteBaseDir = settings.value("BaseDir", "/").toString();
 	remoteLogin = settings.value("Login", "").toString();
 	remotePassword = settings.value("Password", "").toString();
-	label = remoteHost;
 }
 
 void BaseRemoteDataSource::saveSettings(QSettings& settings)
@@ -58,8 +59,6 @@ void BaseRemoteDataSource::saveSettings(QSettings& settings)
 	settings.setValue("BaseDir", remoteBaseDir);
 	settings.setValue("Login", remoteLogin);
 	settings.setValue("Password", remotePassword);
-
-	label = remoteHost;
 }
 
 QString BaseRemoteDataSource::cacheDirPath()

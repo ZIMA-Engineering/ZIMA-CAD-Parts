@@ -113,7 +113,7 @@ void SettingsDialog::addDataSource()
 
 	if( dataSource != 0 )
 	{
-		AddEditDataSource *addEdit = new AddEditDataSource(dataSource);
+		AddEditDataSource *addEdit = new AddEditDataSource(dataSource, AddEditDataSource::ADD);
 
 		if( addEdit->exec() == QDialog::Accepted )
 		{
@@ -137,7 +137,7 @@ void SettingsDialog::editDataSource()
 	if ( !m_ui->listFtp->count() )
 		return;
 
-	AddEditDataSource *addEdit = new AddEditDataSource(currentServer);
+	AddEditDataSource *addEdit = new AddEditDataSource(currentServer, AddEditDataSource::EDIT);
 
 	if( addEdit->exec() == QDialog::Accepted )
 	{
