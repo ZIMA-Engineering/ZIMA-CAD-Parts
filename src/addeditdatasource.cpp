@@ -80,13 +80,9 @@ void AddEditDataSource::dataSourceTypeChanged(int index)
 		if( bs->dataSource == index )
 		{
 			lastDataSource = bs;
-			//refill();
-			qDebug() << "Found already existing instance";
 			return;
 		}
 	}
-
-	qDebug() << "creating new instance";
 
 	switch( index )
 	{
@@ -120,7 +116,7 @@ void AddEditDataSource::refill()
 	case LOCAL: {
 		LocalDataSource *s = static_cast<LocalDataSource*>(lastDataSource);
 
-		if( s->localPath != s->label )
+		if( !s->label.isEmpty() && s->localPath != s->label )
 			labelChangedByUser();
 
 		ui->pathLineEdit->setText( s->localPath );
@@ -130,7 +126,7 @@ void AddEditDataSource::refill()
 	case FTP: {
 		FtpDataSource *s = static_cast<FtpDataSource*>(lastDataSource);
 
-		if( s->remoteHost != s->label )
+		if( !s->label.isEmpty() && s->remoteHost != s->label )
 			labelChangedByUser();
 
 		ui->txtHost->setText(s->remoteHost);

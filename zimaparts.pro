@@ -4,6 +4,8 @@
 QT += network webkit
 TARGET = zimaparts
 TEMPLATE = app
+win32:INCLUDEPATH += ../
+VPATH += ./src
 SOURCES += main.cpp \
     mainwindow.cpp \
     settingsdialog.cpp \
@@ -33,8 +35,8 @@ FORMS += mainwindow.ui \
 RESOURCES += zimaparts.qrc
 
 OTHER_FILES += \
-    zimaparts.html \
     data/zimaparts.html \
-    zimaparts.rc
+    zimaparts.rc \
+    LICENSE
 CONFIG += static
-RC_FILE = zimaparts.rc
+win32:RC_FILE = src/zimaparts.rc

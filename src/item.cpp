@@ -13,7 +13,7 @@ QPixmap File::icon()
 	switch( type )
 	{
 	case File::PROE:
-		return QPixmap(":/data/icons/prt.png");
+		return QPixmap(":/gfx/icons/prt.png");
 	default:
 		return QPixmap();
 	}

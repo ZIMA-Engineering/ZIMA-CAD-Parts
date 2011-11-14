@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="zimaparts.qrc">
-    <normaloff>:/data/icon.png</normaloff>:/data/icon.png</iconset>
+    <normaloff>:/gfx/icon.png</normaloff>:/gfx/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">

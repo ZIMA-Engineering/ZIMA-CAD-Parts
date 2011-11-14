@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file>data/splash.png</file>
+        <file>gfx/splash.png</file>
         <file>data/zimaparts.html</file>
-        <file>data/icons/prt.png</file>
-        <file>data/logo.png</file>
-        <file>data/icon.png</file>
+        <file>gfx/icons/prt.png</file>
+        <file>gfx/logo.png</file>
+        <file>gfx/icon.png</file>
     </qresource>
 </RCC>

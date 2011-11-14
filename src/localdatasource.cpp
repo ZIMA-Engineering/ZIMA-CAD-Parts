@@ -66,8 +66,6 @@ LocalDataSource::LocalDataSource(QObject *parent) :
 	copier(0)
 {
 	dataSource = LOCAL;
-
-	label = tr("New local folder");
 }
 
 QString LocalDataSource::internalName()
