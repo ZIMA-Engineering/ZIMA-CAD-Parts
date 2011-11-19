@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QApplication>
+#include <QLocale>
 
 #include "addeditdatasource.h"
 
@@ -82,25 +83,22 @@ void SettingsDialog::saveSettings()
 	{
 		qApp->removeTranslator(*translator);
 
-		if( lang != "detect" )
-		{
-			QTranslator *t = new QTranslator(parent());
-			QString filename = qApp->arguments()[0] + "_" + lang;
-			QStringList paths;
+		QTranslator *t = new QTranslator(parent());
+		QString filename = "zima-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
+		QStringList paths;
 
-			paths
-					<< filename
-					<< ("locale/" + filename)
-					<< (":/" + filename);
+		paths
+				<< filename
+				<< ("locale/" + filename)
+				<< (":/" + filename);
 
-			foreach(QString path, paths)
-				if( t->load(path) )
-				{
-					qApp->installTranslator(t);
-					*translator = t;
-					break;
-				}
-		}
+		foreach(QString path, paths)
+			if( t->load(path) )
+			{
+				qApp->installTranslator(t);
+				*translator = t;
+				break;
+			}
 	}
 
 	settings->setValue("Language", lang);

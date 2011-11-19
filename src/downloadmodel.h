@@ -11,7 +11,6 @@ class DownloadDelegate : public QItemDelegate
 {
 public:
 	DownloadDelegate(QObject* parent=0) : QItemDelegate(parent) {}
-	//QSize sizeHint(const QStyleOptionViewItem& /*option*/, const QModelIndex& /*index*/) const { return QSize(60,25); }
 	void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 };
 

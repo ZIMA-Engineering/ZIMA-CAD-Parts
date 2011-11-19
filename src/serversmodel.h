@@ -9,39 +9,6 @@
 #include "basedatasource.h"
 #include "item.h"
 
-struct ServerItem
-{
-	ServerItem()
-	{
-		parent = 0;
-		isServer = false;
-	}
-
-	~ServerItem()
-	{
-		qDeleteAll(children);
-	}
-
-	int row() const
-	{
-		if (parent)
-			return parent->children.indexOf(const_cast<ServerItem*>(this));
-		return 0;
-	}
-
-	ServerItem *child(int r)
-	{
-		return children.value(r);
-	}
-
-	QString name;
-	bool    isServer;
-
-
-	ServerItem          *parent;
-	QList<ServerItem*>  children;
-};
-
 class ServersModel : public QAbstractItemModel
 {
 	Q_OBJECT

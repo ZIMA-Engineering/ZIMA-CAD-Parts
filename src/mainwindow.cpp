@@ -4,6 +4,7 @@
 #include "downloadmodel.h"
 
 #include <QApplication>
+#include <QLocale>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSplashScreen>
@@ -28,6 +29,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	if( useSplash )
 	{
 		QPixmap pixmap(":/gfx/splash.png");
+
 		splash = new QSplashScreen(pixmap);
 		splash->setMask(pixmap.mask());
 		splash->show();
@@ -395,7 +397,8 @@ void MainWindow::rebuildFilters()
 void MainWindow::loadAboutPage()
 {
 	QString url = ":/data/zima-parts%1.html";
-	QString localized = url.arg("_" + settings->value("Language").toString());
+	QString locale = settings->value("Language").toString();
+	QString localized = url.arg("_" + (locale == "detect" ? QLocale::system().name() : locale));
 
 	ui->techSpec->load(QUrl( "qrc" + (QFile::exists(localized) ? localized : url.arg("") ) ));
 }

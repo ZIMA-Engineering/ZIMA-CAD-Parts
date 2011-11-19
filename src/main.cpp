@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 	QSettings *settings = new QSettings();
 	QString lang = settings->value("Language", "detect").toString();
 
-	QString filename = a.arguments()[0] + "_" + (lang == "detect" ? QLocale::system().name() : lang);
+	QString filename = "zima-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
 	QStringList paths;
 
 	paths
