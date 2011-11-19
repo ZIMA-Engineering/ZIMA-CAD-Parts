@@ -75,6 +75,8 @@ public slots:
 	void resumeDownload();
 	void uncheckAll(Item *item = 0);
 	void deleteDownloadQueue();
+	void saveQueue(QSettings *settings);
+	int loadQueue(QSettings *settings);
 	void abort();
 protected:
 	//FtpData *ftpData;
@@ -86,6 +88,9 @@ private:
 	QVector<BaseDataSource*> servers;
 	Item *rootItem;
 	QList<File*> downloadQueue;
+
+private slots:
+	void dataSourceFinishedDownloading();
 signals:
 	void itemLoaded(const QModelIndex&);
 	void techSpecAvailable(QUrl);

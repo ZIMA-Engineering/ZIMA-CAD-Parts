@@ -2,7 +2,7 @@
 # Project created by QtCreator 2009-05-18T21:26:48
 # -------------------------------------------------
 QT += network webkit
-TARGET = zimaparts
+TARGET = zima-parts
 TEMPLATE = app
 win32:INCLUDEPATH += ../
 VPATH += ./src
@@ -32,11 +32,19 @@ HEADERS += mainwindow.h \
 FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui
-RESOURCES += zimaparts.qrc
+RESOURCES += zima-parts.qrc
 
-OTHER_FILES += \
-    data/zimaparts.html \
-    zimaparts.rc \
-    LICENSE
-CONFIG += static
-win32:RC_FILE = src/zimaparts.rc
+OTHER_FILES += data/zima-parts.html \
+    zima-parts.rc \
+    LICENSE \
+    AUTHORS \
+    data/zima-parts_cs_CZ.html
+
+TRANSLATIONS = locale/zima-parts_cs_CZ.ts
+
+win32:CONFIG += static
+win32:RC_FILE = src/zima-parts.rc
+
+
+
+

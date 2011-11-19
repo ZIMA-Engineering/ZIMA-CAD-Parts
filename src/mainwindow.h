@@ -8,6 +8,7 @@
 #include <QUrl>
 #include <QSortFilterProxyModel>
 #include <QThread>
+#include <QTranslator>
 #include "settingsdialog.h"
 #include "filemodel.h"
 
@@ -24,7 +25,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 public:
-	MainWindow(QWidget *parent = 0);
+	MainWindow(QTranslator *translator, QWidget *parent = 0);
 	~MainWindow();
 	void keyPressEvent(QKeyEvent *event);
 
@@ -36,8 +37,10 @@ private:
 	FtpDataSource           *currentServer;
 	FileModel *fm;
 	QSortFilterProxyModel *proxy;
+	QTranslator *translator;
 	bool downloading;
 
+	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
 public slots:
@@ -59,6 +62,7 @@ public slots:
 	void toggleDownload();
 	void resumeDownload();
 	void stopDownload();
+	void loadAboutPage();
 
 private slots:
 	void loadSettings();

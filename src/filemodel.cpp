@@ -153,8 +153,6 @@ void FileModel::setRootIndex(const QModelIndex &index)
 	rootItem = static_cast<Item*>(index.internalPointer());
 	connect(rootItem->server, SIGNAL(gotThumbnail(File*)), this, SLOT(thumbnailDownloaded(File*)));
 
-	qDebug() << rootItem->files.size() << "files in this dir.";
-
 	reset();
 	emit layoutChanged();
 }

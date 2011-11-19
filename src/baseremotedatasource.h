@@ -20,6 +20,7 @@ public:
 public slots:
 	void sendTechSpecUrl(Item* item);
 	virtual void loadDirectory(Item* item) = 0;
+	virtual void addFileToDownload(File *f) = 0;
 	virtual void downloadFiles(QList<File*> files, QString dir) = 0;
 	virtual void downloadFile(File* file) = 0;
 	virtual void abort() = 0;

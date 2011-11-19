@@ -166,7 +166,7 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 		connect(i->server, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
 		connect(i->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
 		connect(i->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
-		connect(i->server, SIGNAL(filesDownloaded()), this, SIGNAL(filesDownloaded()));
+		connect(i->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
 		connect(i->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
 
 		i->parent = rootItem;
@@ -265,8 +265,6 @@ void ServersModel::downloadFiles(QString dir)
 		QList<File*> tmp = getCheckedFiles(i);
 		downloadQueue << tmp;
 
-		qDebug() << "server" << i->server->label;
-		qDebug() << "going to download" << tmp.count() << "files";
 		if( tmp.count() > 0 )
 			i->server->downloadFiles(tmp, dir);
 	}
@@ -312,6 +310,76 @@ void ServersModel::deleteDownloadQueue()
 		i->server->deleteDownloadQueue();
 
 	emit queueChanged();
+}
+
+void ServersModel::saveQueue(QSettings *settings)
+{
+	settings->remove("DownloadQueue");
+	settings->beginGroup("DownloadQueue");
+
+	int cnt = downloadQueue.count();
+
+	for(int i = 0; i < cnt; i++)
+	{
+		settings->beginGroup(QString::number(i));
+		settings->setValue("DataSourceIndex", servers.indexOf(downloadQueue.at(i)->parentItem->server));
+		settings->setValue("Name", downloadQueue.at(i)->name);
+		settings->setValue("RemotePath", downloadQueue.at(i)->path);
+		settings->setValue("TargetPath", downloadQueue.at(i)->targetPath);
+		settings->setValue("Size", downloadQueue.at(i)->size);
+		settings->endGroup();
+	}
+
+	settings->endGroup();
+}
+
+int ServersModel::loadQueue(QSettings *settings)
+{
+	int fileCnt = 0;
+
+	settings->beginGroup("DownloadQueue");
+
+	QStringList groups = settings->childGroups();
+	int cnt = groups.count();
+	int dsCnt = servers.count();
+
+	for(int i = 0; i < cnt; i++)
+	{
+		settings->beginGroup(groups[i]);
+
+		int dsIndex = settings->value("DataSourceIndex").toInt();
+
+		if( dsIndex >= dsCnt )
+			continue;
+
+		File *f = new File;
+		f->parentItem = servers[dsIndex]->getRootItem();
+		f->name = settings->value("Name").toString();
+		f->path = settings->value("RemotePath").toString();
+		f->targetPath = settings->value("TargetPath").toString();
+		f->size = settings->value("Size").toULongLong();
+		f->bytesDone = 0;
+
+		downloadQueue.append(f);
+
+		servers[dsIndex]->addFileToDownload(f);
+
+		settings->endGroup();
+
+		fileCnt++;
+	}
+
+	settings->endGroup();
+
+	emit newDownloadQueue(&downloadQueue);
+
+	return fileCnt;
+}
+
+void ServersModel::dataSourceFinishedDownloading()
+{
+	if( downloadQueue.isEmpty() )
+		emit filesDownloaded();
 }
 
 void ServersModel::abort()

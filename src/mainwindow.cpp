@@ -12,8 +12,10 @@
 #include <QRegExp>
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget *parent)
-	: QMainWindow(parent), ui(new Ui::MainWindowClass)
+MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
+	: QMainWindow(parent),
+	  ui(new Ui::MainWindowClass),
+	  translator(translator)
 {
 	downloading = false;
 
@@ -111,6 +113,7 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(sm, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 
 	DownloadModel *dm = new DownloadModel(this);
+
 	ui->downloadTreeView->setModel(dm);
 	ui->downloadTreeView->setItemDelegate(new DownloadDelegate(this));
 
@@ -119,9 +122,12 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(sm, SIGNAL(fileDownloaded(File*)), dm, SLOT(fileDownloaded(File*)));
 	connect(sm, SIGNAL(queueChanged()), dm, SLOT(queueChanged()));
 
+	if( sm->loadQueue(settings) )
+		ui->startStopDownloadBtn->setText(tr("Resume"));
+
 	currentServer = 0;
 
-	ui->techSpec->load(QUrl("qrc:/data/zimaparts.html"));
+	loadAboutPage();
 
 	if( useSplash )
 	{
@@ -136,6 +142,16 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
+void MainWindow::changeEvent(QEvent *event)
+{
+	if (event->type() == QEvent::LanguageChange) {
+		ui->retranslateUi(this);
+
+		if( ui->techSpec->url().path().startsWith("/data/zima-parts") )
+			loadAboutPage();
+	} else QMainWindow::changeEvent(event);
+}
+
 void MainWindow::closeEvent(QCloseEvent *e)
 {
 	settings->setValue("state", saveState());
@@ -148,14 +164,13 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		settings->setValue( QString::number(i), ui->filtersListWidget->item(i)->checkState() == Qt::Checked );
 	settings->endGroup();
 
+	static_cast<ServersModel*>(ui->treeLeft->model())->saveQueue(settings);
+
 	QMainWindow::closeEvent(e);
 }
 
 void MainWindow::downloadButton()
 {
-	//    PartsModel *pm = static_cast<PartsModel*>(ui->tree->model());
-	//    pm->downloadSelected(ui->editDir->text());
-
 	ServersModel *sm = static_cast<ServersModel*>(ui->treeLeft->model());
 	sm->downloadFiles( ui->editDir->text() );
 
@@ -182,7 +197,7 @@ void MainWindow::setWorkingDirectory()
 
 void MainWindow::showSettings()
 {
-	SettingsDialog *settingsDlg = new SettingsDialog(settings, loadDataSources(), this);
+	SettingsDialog *settingsDlg = new SettingsDialog(settings, loadDataSources(), &translator, this);
 	//settingsDlg->loadSettings(settings);
 	int result = settingsDlg->exec();
 
@@ -350,12 +365,6 @@ void MainWindow::rebuildFilters()
 
 	for(int i = 0; i < File::TYPES_COUNT; i++)
 	{
-		/*
-		  Realizováno by to bylo zaškrtávacími políčky v sekci parts.
-Pro/Engineer(soubory *.prt a nebo *.prt(nejvyžší index)), CATIA(*.CATPart),
-SolidWorks (*.sldprt), Blender (*.blend), *.iges(bude umět jak *.iges tak *.igs),
-*.step(jak *.step tak *.stp), *.dwg, *.dxf.
-		  */
 		if( ui->filtersListWidget->item(i)->checkState() == Qt::Checked )
 		{
 			switch( i )
@@ -381,6 +390,14 @@ SolidWorks (*.sldprt), Blender (*.blend), *.iges(bude umět jak *.iges tak *.igs
 
 	QRegExp rx( "^" + expressions.join("|") + "$" );
 	proxy->setFilterRegExp(rx);
+}
+
+void MainWindow::loadAboutPage()
+{
+	QString url = ":/data/zima-parts%1.html";
+	QString localized = url.arg("_" + settings->value("Language").toString());
+
+	ui->techSpec->load(QUrl( "qrc" + (QFile::exists(localized) ? localized : url.arg("") ) ));
 }
 
 void MainWindow::loadSettings()
@@ -478,8 +495,6 @@ void MainWindow::saveSettings()
 	}
 	settings->endGroup();
 
-	// FIXME
-	//settings->setValue("GUI/thumbWidth", );
 	settings->setValue("WorkingDir", ui->editDir->text());
 	settings->sync();
 }

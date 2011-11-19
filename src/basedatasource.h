@@ -39,6 +39,7 @@ public:
 public slots:
 	virtual void loadDirectory(Item* item) = 0;
 	virtual void sendTechSpecUrl(Item* item) = 0;
+	virtual void addFileToDownload(File *f) = 0;
 	virtual void downloadFiles(QList<File*> files, QString dir) = 0;
 	virtual void downloadFile(File* file) = 0;
 	virtual void resumeDownload() = 0;

@@ -6,21 +6,22 @@
 
 #include "localdatasource.h"
 
-LocalCopier::LocalCopier(QList<File*> files, QString dir) :
-	files(files),
-	target(dir)
+LocalCopier::LocalCopier(QList<File*> files) :
+	files(files)
 {
 
 }
 
-LocalCopier::LocalCopier(File* file, QString dir) :
-	target(dir)
+LocalCopier::LocalCopier(File* file)
 {
 	files << file;
 }
 
 void LocalCopier::run()
 {
+	if( !files.count() )
+		return;
+
 	foreach(File *f, files)
 	{
 		emit aboutToCopy(f);
@@ -56,16 +57,27 @@ void LocalCopier::run()
 	emit done();
 }
 
+void LocalCopier::addFile(File* file)
+{
+	files << file;
+}
+
 void LocalCopier::addFiles(QList<File*> files)
 {
 	this->files << files;
 }
 
 LocalDataSource::LocalDataSource(QObject *parent) :
-	BaseDataSource(parent),
-	copier(0)
+	BaseDataSource(parent)
 {
 	dataSource = LOCAL;
+
+	copier = new LocalCopier();
+
+	connect(copier, SIGNAL(aboutToCopy(File*)), this, SLOT(aboutToCopy(File*)));
+	connect(copier, SIGNAL(progress(File*)), this, SIGNAL(fileProgress(File*)));
+	connect(copier, SIGNAL(fileCopied(File*)), this, SIGNAL(fileDownloaded(File*)));
+	connect(copier, SIGNAL(done()), this, SIGNAL(filesDownloaded()));
 }
 
 QString LocalDataSource::internalName()
@@ -153,22 +165,18 @@ void LocalDataSource::sendTechSpecUrl(Item* item)
 		sendTechSpecUrl(item->parent);
 }
 
+void LocalDataSource::addFileToDownload(File *f)
+{
+	copier->addFile(f);
+}
+
 void LocalDataSource::downloadFiles(QList<File*> files, QString dir)
 {
 	foreach(File *f, files)
 		if( f->targetPath.isEmpty() )
 			f->targetPath = dir + "/" + f->name;
 
-	if( !copier )
-	{
-		copier = new LocalCopier(files, dir);
-
-		connect(copier, SIGNAL(aboutToCopy(File*)), this, SLOT(aboutToCopy(File*)));
-		connect(copier, SIGNAL(progress(File*)), this, SIGNAL(fileProgress(File*)));
-		connect(copier, SIGNAL(fileCopied(File*)), this, SIGNAL(fileDownloaded(File*)));
-		connect(copier, SIGNAL(done()), this, SIGNAL(filesDownloaded()));
-	} else
-		copier->addFiles(files);
+	copier->addFiles(files);
 
 	if( !copier->isRunning() )
 		copier->start();
@@ -181,14 +189,12 @@ void LocalDataSource::downloadFile(File* file)
 
 void LocalDataSource::resumeDownload()
 {
-	if( copier )
-		copier->start();
+	copier->start();
 }
 
 void LocalDataSource::abort()
 {
-	if( copier )
-		copier->terminate();
+	copier->terminate();
 }
 
 void LocalDataSource::loadSettings(QSettings& settings)

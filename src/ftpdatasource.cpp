@@ -24,6 +24,7 @@ FtpDataSource::FtpDataSource() :
 	connect(ftp, SIGNAL(stateChanged(int)), this, SLOT(ftpStateChanged(int)));
 	connect(dlFtp, SIGNAL(dataTransferProgress(qint64,qint64)), this, SLOT(ftpDataTransferProgress(qint64,qint64)));
 	connect(dlFtp, SIGNAL(commandFinished(int,bool)), this, SLOT(ftpFileDownloadFinished(int,bool)));
+	connect(dlFtp, SIGNAL(stateChanged(int)), this, SLOT(ftpStateChanged(int)));
 
 	reset();
 }
@@ -45,7 +46,6 @@ QString FtpDataSource::internalName()
 
 void FtpDataSource::reset()
 {
-	qDebug() << "Resetting data in model";
 //	if (ftp)
 //	{
 //		ftp->abort();
@@ -377,6 +377,7 @@ void FtpDataSource::ftpFileDownloadFinished(int id, bool error)
 	{
 		emit errorOccured(ftp->errorString());
 		qDebug() << "FTP error: " << ftp->errorString();
+		qDebug() << "I am " << label << remoteHost << remoteLogin;
 	} else if( fileTasks.contains(id) ) {
 		qDebug() << "Finished downloading " << fileTasks[id]->name;
 		emit statusUpdated("Finished downloading " + fileTasks[id]->name);
@@ -400,10 +401,15 @@ void FtpDataSource::ftpFileDownloadFinished(int id, bool error)
 	}
 }
 
+void FtpDataSource::addFileToDownload(File *f)
+{
+	filesToDownload << f;
+}
+
 void FtpDataSource::downloadFiles(QList<File*> files, QString dir)
 {
 	targetDir = dir;
-	filesToDownload = files;
+	filesToDownload << files;
 
 	checkConnection(dlFtp);
 
@@ -429,8 +435,9 @@ void FtpDataSource::downloadFile(File* file)
 
 void FtpDataSource::resumeDownload()
 {
+	if( !filesToDownload.count() )
+		return;
 	qDebug() << "Resuming download";
-
 	checkConnection(dlFtp);
 
 	foreach(File *f, filesToDownload)
@@ -446,8 +453,10 @@ void FtpDataSource::deleteDownloadQueue()
 
 void FtpDataSource::abort()
 {
-	ftp->abort();
-	dlFtp->abort();
+	if( ftp->state() != QFtp::Unconnected )
+		ftp->abort();
+	if( dlFtp->state() != QFtp::Unconnected )
+		dlFtp->abort();
 	fileTasks.clear();
 }
 
@@ -467,6 +476,7 @@ void FtpDataSource::saveSettings(QSettings &settings)
 
 void FtpDataSource::checkConnection(QFtp *f)
 {
+	qDebug() << "FTP state is" << f->state();
 	if( f->state() == QFtp::Unconnected )
 	{
 		if( !ftpPassiveMode )

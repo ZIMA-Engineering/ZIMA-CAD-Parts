@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QStyleOptionProgressBarV2>
+#include "basedatasource.h"
 
 void DownloadDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {

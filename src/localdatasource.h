@@ -8,10 +8,11 @@ class LocalCopier : public QThread
 {
 Q_OBJECT
 public:
-	LocalCopier(QList<File*> files, QString dir);
-	LocalCopier(File* file, QString dir);
+	LocalCopier(QList<File*> files = QList<File*>());
+	LocalCopier(File* file);
 	void run();
 	void addFiles(QList<File*> files);
+	void addFile(File* file);
 
 private:
 	QList<File*> files;
@@ -35,6 +36,7 @@ public:
 public slots:
 	void loadDirectory(Item* item);
 	void sendTechSpecUrl(Item* item);
+	void addFileToDownload(File *f);
 	void downloadFiles(QList<File*> files, QString dir);
 	void downloadFile(File* file);
 	void resumeDownload();

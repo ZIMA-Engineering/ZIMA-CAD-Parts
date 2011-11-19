@@ -8,11 +8,12 @@
 
 #include "addeditdatasource.h"
 
-SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QWidget *parent) :
+SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QTranslator **translator, QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SettingsDialog),
 	settings(settings),
-	originServers(servers)
+	originServers(servers),
+	translator(translator)
 {
 	m_ui->setupUi(this);
 
@@ -34,6 +35,7 @@ SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> ser
 
 	m_ui->spinPicture->setValue( settings->value("GUI/ThumbWidth", 32).toInt() );
 	m_ui->previewWidthSpinBox->setValue( settings->value("GUI/PreviewWidth", 256).toInt() );
+	m_ui->languageComboBox->setCurrentIndex( langIndex( settings->value("Language", "detect").toString() ) );
 	m_ui->splashGroupBox->setChecked( settings->value("GUI/Splash/Enabled", true).toBool() );
 	m_ui->splashDurationSpinBox->setValue( settings->value("GUI/Splash/Duration", 1500).toInt() );
 }
@@ -74,6 +76,34 @@ void SettingsDialog::saveSettings()
 	settings->setValue("GUI/PreviewWidth", m_ui->previewWidthSpinBox->value());
 	settings->setValue("GUI/Splash/Enabled", m_ui->splashGroupBox->isChecked());
 	settings->setValue("GUI/Splash/Duration", m_ui->splashDurationSpinBox->value());
+
+	QString lang = langIndexToName( m_ui->languageComboBox->currentIndex() );
+	if( lang != settings->value("Language").toString() )
+	{
+		qApp->removeTranslator(*translator);
+
+		if( lang != "detect" )
+		{
+			QTranslator *t = new QTranslator(parent());
+			QString filename = qApp->arguments()[0] + "_" + lang;
+			QStringList paths;
+
+			paths
+					<< filename
+					<< ("locale/" + filename)
+					<< (":/" + filename);
+
+			foreach(QString path, paths)
+				if( t->load(path) )
+				{
+					qApp->installTranslator(t);
+					*translator = t;
+					break;
+				}
+		}
+	}
+
+	settings->setValue("Language", lang);
 }
 
 void SettingsDialog::addDataSource()
@@ -261,4 +291,27 @@ void SettingsDialog::updateServerList()
 QVector<BaseDataSource*> SettingsDialog::getData()
 {
 	return servers;
+}
+
+int SettingsDialog::langIndex(QString lang)
+{
+	if( lang.startsWith("en_") )
+		return ENGLISH;
+	else if( lang == "cs_CZ" )
+		return CZECH;
+	else
+		return DETECT;
+}
+
+QString SettingsDialog::langIndexToName(int lang)
+{
+	switch(lang)
+	{
+	case ENGLISH:
+		return "en_US";
+	case CZECH:
+		return "cs_CZ";
+	default:
+		return "detect";
+	}
 }

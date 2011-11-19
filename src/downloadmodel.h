@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 #include <QItemDelegate>
 #include <QList>
+#include <QSettings>
 #include "item.h"
 
 class DownloadDelegate : public QItemDelegate

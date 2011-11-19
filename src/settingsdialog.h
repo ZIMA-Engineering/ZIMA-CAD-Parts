@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QMultiHash>
 #include <QVector>
+#include <QTranslator>
 #include "basedatasource.h"
 #include "ftpdatasource.h"
 #include "localdatasource.h"
@@ -19,7 +20,13 @@ class SettingsDialog : public QDialog {
 	Q_OBJECT
 	Q_DISABLE_COPY(SettingsDialog)
 public:
-	explicit SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QWidget *parent = 0);
+	enum Languages {
+		DETECT=0,
+		ENGLISH,
+		CZECH
+	};
+
+	explicit SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QTranslator **translator, QWidget *parent = 0);
 	virtual ~SettingsDialog();
 
 	void loadSettings(QSettings*);
@@ -30,6 +37,8 @@ public:
 protected:
 	virtual void changeEvent(QEvent *e);
 	void updateServerList();
+	int langIndex(QString lang);
+	QString langIndexToName(int lang);
 
 private slots:
 	void addDataSource();
@@ -46,6 +55,7 @@ private:
 	//QHash<QListWidgetItem*, BaseDataSource*> lastUsedDataSources;
 	BaseDataSource           *currentServer;
 	QSettings *settings;
+	QTranslator **translator;
 };
 
 #endif // SETTINGSDIALOG_H

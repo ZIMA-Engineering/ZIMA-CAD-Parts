@@ -14,7 +14,7 @@
    <string>ZIMA-Parts</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="zimaparts.qrc">
+   <iconset resource="../zima-parts.qrc">
     <normaloff>:/gfx/icon.png</normaloff>:/gfx/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -85,7 +85,7 @@
           <item row="1" column="0">
            <widget class="QLineEdit" name="editDir">
             <property name="text">
-             <string/>
+             <string notr="true"/>
             </property>
            </widget>
           </item>
@@ -134,7 +134,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QWebView" name="techSpec">
+             <widget class="QWebView" name="techSpec" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -144,7 +144,7 @@
               <property name="contextMenuPolicy">
                <enum>Qt::NoContextMenu</enum>
               </property>
-              <property name="url">
+              <property name="url" stdset="0">
                <url>
                 <string>about:blank</string>
                </url>
@@ -352,7 +352,7 @@
   <tabstop>btnDownload</tabstop>
  </tabstops>
  <resources>
-  <include location="zimaparts.qrc"/>
+  <include location="../zima-parts.qrc"/>
  </resources>
  <connections/>
 </ui>
