@@ -1,7 +1,22 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "serversmodel.h"
-#include "downloadmodel.h"
+/*
+  ZIMA-Parts
+  http://www.zima-construction.cz/software/ZIMA-Parts
+
+  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <QApplication>
 #include <QLocale>
@@ -11,7 +26,14 @@
 #include <QPixmap>
 #include <QBitmap>
 #include <QRegExp>
+#include <QFile>
+#include <QTextStream>
 #include <QDebug>
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "serversmodel.h"
+#include "downloadmodel.h"
+#include "zima-parts.h"
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
@@ -41,8 +63,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	statusBar()->addWidget(statusDir, 100);
 
-	//settingsDlg = new SettingsDialog(this);
-
 	servers = loadDataSources();
 	loadSettings();
 
@@ -54,11 +74,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectory()));
 	connect(ui->btnUpdate, SIGNAL(clicked()), this, SLOT(updateClicked()));
 	connect(ui->startStopDownloadBtn, SIGNAL(clicked()), this, SLOT(toggleDownload()));
-	//connect(ui->btnSearch, SIGNAL(clicked()), this, SLOT(searchClicked()));
 
-	//connect(ui->tree, SIGNAL(expanded(const QModelIndex&)), this, SLOT(treeExpandedOrCollaped(const QModelIndex&)));
-	//connect(ui->tree, SIGNAL(collapsed(const QModelIndex&)), this, SLOT(treeExpandedOrCollaped(const QModelIndex&)));
-	//connect(ui->treeLeft, SIGNAL(clicked(QModelIndex)), this, SLOT(serverSelected(QModelIndex)));
 	connect(ui->treeLeft, SIGNAL(expanded(QModelIndex)), ui->treeLeft, SIGNAL(clicked(QModelIndex)));
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(serverSelected(const QModelIndex&)));
 	//connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(serverSelected(const QModelIndex&)));
@@ -69,19 +85,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
 
-	//settingsDlg->loadSettings(settings);
-	//servers = settingsDlg->getData();
-
-	//    PartsModel *pm = new PartsModel(this);
-	//    connect(pm, SIGNAL(statusUpdated(QString)), this, SLOT(updateStatus(QString)));
-	//    connect(pm, SIGNAL(serverLoaded()), this, SLOT(serverLoaded()));
-	//    pm->setDirIcon(style()->standardIcon(QStyle::SP_DirLinkIcon), style()->standardIcon(QStyle::SP_DirIcon));
-	//    pm->setShowEmpty(settings->value("gui/showEmpty", true).toBool());
-	//    pm->updateModel();
-	//    ui->tree->setModel(pm);
 
 	ServersModel *sm = new ServersModel(this);
-	sm->setIcons(style()->standardIcon(QStyle::SP_DirIcon), style()->standardIcon(QStyle::SP_DriveNetIcon));
 	sm->setServerData(servers);
 	ui->treeLeft->setModel(sm);
 
@@ -91,8 +96,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->deleteQueueBtn, SIGNAL(clicked()), sm, SLOT(deleteDownloadQueue()));
 
 	fm = new FileModel(this);
-	//fm->setSourceModel(sm);
-	//fm->setDynamicSortFilter(true);
 
 	fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
 	fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
@@ -221,6 +224,8 @@ void MainWindow::showSettings()
 
 		fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
 		fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
+
+		loadAboutPage();
 	}
 
 	delete settingsDlg;
@@ -282,21 +287,6 @@ void MainWindow::itemLoaded(const QModelIndex &index)
 	ui->treeLeft->setEnabled(true);
 	ui->btnUpdate->setEnabled(true);
 	treeExpandedOrCollaped(index);
-}
-
-void MainWindow::convertModelIndex(const QModelIndex &index)
-{
-//	if( !index.isValid() )
-//		return;
-
-//	FileModel* fm = static_cast<FileModel*>( ui->tree->model() );
-//	QModelIndex new_index = fm->mapFromSource( index );
-
-//	qDebug() << new_index << new_index.isValid();
-
-//	Item* i = static_cast<Item*>(index.internalPointer());
-
-//	ui->tree->setRootIndex(new_index);
 }
 
 void MainWindow::loadTechSpec(QUrl url)
@@ -399,36 +389,18 @@ void MainWindow::loadAboutPage()
 	QString url = ":/data/zima-parts%1.html";
 	QString locale = settings->value("Language").toString();
 	QString localized = url.arg("_" + (locale == "detect" ? QLocale::system().name() : locale));
+	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
 
-	ui->techSpec->load(QUrl( "qrc" + (QFile::exists(localized) ? localized : url.arg("") ) ));
+	QFile f(filename);
+	f.open(QIODevice::ReadOnly);
+	QTextStream stream(&f);
+
+	ui->techSpec->setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
 
 void MainWindow::loadSettings()
 {
-//	settings->beginGroup("DataSources");
-//	foreach(QString str, settings->childGroups())
-//	{
-//		settings->beginGroup(str);
-
-//		QString dataSourceType = settings->value("dataSourceType", "ftp").toString();
-
-//		if( dataSourceType == "ftp" )
-//		{
-//			FtpDataSource *s = new FtpDataSource();
-//			s->loadSettings(*settings);
-//			servers.append(s);
-//		} else if ( dataSourceType == "local" ) {
-//			LocalDataSource *s = new LocalDataSource();
-//			s->loadSettings(*settings);
-//			servers.append(s);
-//		}
-
-//		settings->endGroup();
-//	}
-//	settings->endGroup();
-
 	ui->editDir->setText(settings->value("WorkingDir", QDir::homePath() + "/ZIMA-Parts").toString());
-	//static_cast<FileModel*>( ui->tree->model() )->setThumbnailSize(settings->value("GUI/thumbWidth").toInt());
 }
 
 QVector<BaseDataSource*> MainWindow::loadDataSources()
@@ -474,18 +446,11 @@ void MainWindow::saveSettings()
 		case LOCAL: {
 			LocalDataSource *s = static_cast<LocalDataSource*>(bs);
 
-//			s->localPath = m_ui->pathLineEdit->text();
 			s->saveSettings(*settings);
 			break;
 		}
 		case FTP: {
 			FtpDataSource *s = static_cast<FtpDataSource*>(bs);
-//			s->remoteHost = m_ui->txtHost->text();
-//			s->remotePort = m_ui->txtPort->text().toInt();
-//			s->remoteBaseDir = m_ui->txtBaseDir->text();
-//			s->remoteLogin = m_ui->txtLogin->text();
-//			s->remotePassword = m_ui->txtPass->text();
-//			s->ftpPassiveMode = m_ui->checkPassive->isChecked();
 
 			s->saveSettings(*settings);
 			break;

@@ -302,5 +302,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>listFtp</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>editBtn</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>213</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>455</x>
+     <y>87</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

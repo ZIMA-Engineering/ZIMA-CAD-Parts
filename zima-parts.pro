@@ -6,7 +6,7 @@ TARGET = zima-parts
 TEMPLATE = app
 win32:INCLUDEPATH += ../
 VPATH += ./src
-SOURCES += main.cpp \
+SOURCES += zima-parts.cpp \
     mainwindow.cpp \
     settingsdialog.cpp \
     serversmodel.cpp \
@@ -28,7 +28,8 @@ HEADERS += mainwindow.h \
     ftpdatasource.h \
     localdatasource.h \
     addeditdatasource.h \
-    downloadmodel.h
+    downloadmodel.h \
+    src/zima-parts.h
 FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui
@@ -44,6 +45,8 @@ TRANSLATIONS = locale/zima-parts_cs_CZ.ts
 
 win32:CONFIG += static
 win32:RC_FILE = src/zima-parts.rc
+
+
 
 
 

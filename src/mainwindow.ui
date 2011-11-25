@@ -142,7 +142,7 @@
                </sizepolicy>
               </property>
               <property name="contextMenuPolicy">
-               <enum>Qt::NoContextMenu</enum>
+               <enum>Qt::DefaultContextMenu</enum>
               </property>
               <property name="url" stdset="0">
                <url>

@@ -1,3 +1,23 @@
+/*
+  ZIMA-Parts
+  http://www.zima-construction.cz/software/ZIMA-Parts
+
+  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
@@ -22,16 +42,7 @@ SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> ser
 	connect(m_ui->editBtn, SIGNAL(clicked()), this, SLOT(editDataSource()));
 	connect(m_ui->btnRemove, SIGNAL(clicked()), this, SLOT(removeDataSource()));
 	connect(m_ui->listFtp, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(selectDataSource(QListWidgetItem*,QListWidgetItem*)));
-//	connect(m_ui->txtHost, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-//	connect(m_ui->txtPort, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-//	connect(m_ui->txtBaseDir, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-//	connect(m_ui->txtLogin, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-//	connect(m_ui->txtPass, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-	//connect(m_ui->pathLineEdit, SIGNAL(textEdited(QString)), this, SLOT(changingText()));
-//	connect(m_ui->pathLineEdit, SIGNAL(textChanged(QString)), this, SLOT(changingText()));
-//	connect(m_ui->checkPassive, SIGNAL(toggled(bool)), this, SLOT(changingPassive()));
 
-	//servers = settings->loadDataSources();
 	updateServerList();
 
 	m_ui->spinPicture->setValue( settings->value("GUI/ThumbWidth", 32).toInt() );
@@ -61,13 +72,6 @@ void SettingsDialog::changeEvent(QEvent *e)
 
 void SettingsDialog::loadSettings(QSettings *settings)
 {
-//	currentSettings = settings;
-
-
-
-//	m_ui->spinPicture->setValue(settings->value("GUI/thumbWidth", 64).toInt());
-
-//	updateServerList();
 }
 
 void SettingsDialog::saveSettings()
@@ -106,12 +110,6 @@ void SettingsDialog::saveSettings()
 
 void SettingsDialog::addDataSource()
 {
-	//	FtpServer *s = new FtpServer();
-
-	//	s->address = "localhost";
-	//	servers.append(s);
-	//	updateServerList();
-
 	BaseDataSource *dataSource = 0;
 
 	if ( m_ui->listFtp->count() )
@@ -192,21 +190,12 @@ void SettingsDialog::removeDataSource()
 	if ( !m_ui->listFtp->count() )
 		return;
 
-//	servers.remove(m_ui->listFtp->currentRow());
-//	delete m_ui->listFtp->currentItem();
-//	updateServerList();
-
 	QListWidgetItem *it = m_ui->listFtp->currentItem();
 	int row = m_ui->listFtp->currentRow();
 
 	m_ui->listFtp->takeItem(row);
 	servers.remove(row);
 	delete it;
-
-//	if ( m_ui->listFtp->count() > 0 )
-//	{
-//		m_ui->listFtp->setCurrentRow( row > 0 ? --row : row);
-//	}
 }
 
 void SettingsDialog::selectDataSource(QListWidgetItem *current, QListWidgetItem *)
@@ -235,56 +224,10 @@ void SettingsDialog::updateServerList()
 	{
 		currentServer = servers.first();
 		m_ui->listFtp->setCurrentItem(currentServer->lwItem);
-	}/* else {
-		currentServer = new LocalDataSource;
-		originServers.append(currentServer);
-		updateServerList();
-	}*/
+	}
 
 	m_ui->listFtp->setFocus();
 }
-
-//void SettingsDialog::changingText()
-//{
-//	if (!currentServer)
-//		return;
-
-//	switch( currentServer->dataSource )
-//	{
-//	case LOCAL: {
-//		LocalDataSource *s = static_cast<LocalDataSource*>(currentServer);
-
-//		s->localPath = m_ui->pathLineEdit->text();
-
-//		if (currentServer->lwItem)
-//			currentServer->lwItem->setText(m_ui->pathLineEdit->text());
-//		break;
-//	}
-//	case FTP: {
-//		FtpDataSource *ftpCurrentServer = static_cast<FtpDataSource*>(currentServer);
-
-//		ftpCurrentServer->remoteHost = m_ui->txtHost->text();
-//		ftpCurrentServer->remotePort = m_ui->txtPort->text().toInt();
-//		ftpCurrentServer->remoteBaseDir = m_ui->txtBaseDir->text();
-//		ftpCurrentServer->remoteLogin = m_ui->txtLogin->text();
-//		ftpCurrentServer->remotePassword = m_ui->txtPass->text();
-
-//		if (currentServer->lwItem)
-//			currentServer->lwItem->setText(m_ui->txtHost->text());
-//		break;
-//	}
-//	default:
-//		break;
-//	}
-//}
-
-//void SettingsDialog::changingPassive()
-//{
-//	if (!currentServer)
-//		return;
-////	FtpDataSource *ftpCurrentServer = static_cast<FtpDataSource*>(currentServer);
-////	ftpCurrentServer->ftpPassiveMode = m_ui->checkPassive->isChecked();
-//}
 
 QVector<BaseDataSource*> SettingsDialog::getData()
 {

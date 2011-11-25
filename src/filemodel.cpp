@@ -1,3 +1,23 @@
+/*
+  ZIMA-Parts
+  http://www.zima-construction.cz/software/ZIMA-Parts
+
+  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <QDebug>
 
 #include "filemodel.h"
@@ -178,93 +198,3 @@ void FileModel::thumbnailDownloaded(File *file)
 
 	emit dataChanged(mi, mi);
 }
-
-//QModelIndex FileModel::mapToSource(const QModelIndex &proxyIndex) const
-//{
-
-//}
-
-//QModelIndex FileModel::mapFromSource(const QModelIndex &sourceIndex) const
-//{
-//	if( !sourceIndex.isValid() )
-//		return QModelIndex();
-
-//	return index();
-//}
-
-//bool FileModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
-//{
-//	if( !source_parent.isValid() )
-//	{
-//		qDebug() << "Asking with invalid index";
-//		return true;
-//	}
-
-//	Item *i = static_cast<Item*>(source_parent.internalPointer());
-
-//	qDebug() << "Asking about " << i->name;
-
-//	if( !i->isDir && !i->isServer )
-//		return true;
-
-//	//	int childCount = source_parent.model()->rowCount(source_parent);
-
-//	//	if( childCount == 0 )
-//	//		return false;
-
-//	//	for (int i = 0; i < childCount; ++i)
-//	//	{
-//	//		if( filterAcceptsRow(i, source_parent) )
-//	//			return true;
-//	//	}
-
-//	//	return false;
-
-//	//-----------------
-////	if (filterAcceptsRowItself(source_row, source_parent))
-////		return true;
-
-////	//accept if any of the parents is accepted on it's own merits
-////	QModelIndex parent = source_parent;
-////	while (parent.isValid()) {
-////		if (filterAcceptsRowItself(parent.row(), parent.parent()))
-////			return true;
-////		parent = parent.parent();
-////	}
-
-////	//accept if any of the children is accepted on it's own merits
-////	if (hasAcceptedChildren(source_row, source_parent)) {
-////		return true;
-////	}
-
-////	return false;
-//}
-
-//bool FileModel::filterAcceptsRowItself(int source_row, const QModelIndex &source_parent) const
-//{
-//	//return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-//}
-
-//bool FileModel::hasAcceptedChildren(int source_row, const QModelIndex &source_parent) const
-//{
-//	QModelIndex item = sourceModel()->index(source_row,0,source_parent);
-//	if (!item.isValid()) {
-//		//qDebug() << "item invalid" << source_parent << source_row;
-//		return false;
-//	}
-
-//	//check if there are children
-//	int childCount = item.model()->rowCount(item);
-//	if (childCount == 0)
-//		return false;
-
-//	for (int i = 0; i < childCount; ++i) {
-//		if (filterAcceptsRowItself(i, item))
-//			return true;
-//		//recursive call
-//		if (hasAcceptedChildren(i, item))
-//			return true;
-//	}
-
-//	return false;
-//}
