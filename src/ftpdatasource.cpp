@@ -176,14 +176,19 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 		QFileInfo fi(filePath);
 		QDir dir;
 
-		if( !dir.exists(filePath) || info.lastModified() > fi.lastModified() )
+		// IMPORTANT: Here we assume that FTP server returns the date in UTC
+		QDateTime remoteFileTime = info.lastModified();
+		remoteFileTime.setTimeSpec(Qt::UTC);
+
+		if( !dir.exists(filePath) || remoteFileTime > fi.lastModified().toUTC() )
 		{
 			QFile* f = new QFile(filePath);
 			f->open(QFile::WriteOnly);
 
-			//qDebug() << "Downloading techspec file" << QDir::homePath() + "/.zimaparts/cache/" + remoteHost + "/" + ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + n;
+			//qDebug() << "Downloading techspec file" << filePath;
 			techSpecFiles[ ftp->get(ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + n, f) ] = f;
 		}
+
 		return;
 	}
 
@@ -225,6 +230,7 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 		f->name = n;
 		f->size = info.size();
 		f->lastModified = info.lastModified();
+		f->lastModified.setTimeSpec(Qt::UTC);
 
 		if( n.endsWith(".png", Qt::CaseInsensitive) || n.endsWith(".jpg", Qt::CaseInsensitive) )
 		{
@@ -278,7 +284,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 						QString thumbPath = cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path + "/" + thumbnails[i]->name;
 						QFileInfo fi(thumbPath);
 
-						if( !QFile::exists(thumbPath) || file->lastModified > fi.lastModified() )
+						if( !QFile::exists(thumbPath) || file->lastModified > fi.lastModified().toUTC() )
 						{
 							QDir dir;
 							dir.mkpath(cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path);

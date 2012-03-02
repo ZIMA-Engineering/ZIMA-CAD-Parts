@@ -132,6 +132,11 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	currentServer = 0;
 
+	// Make shortcut Ctrl+C or Cmd+C available
+	QAction *copyAction = ui->techSpec->pageAction(QWebPage::Copy);
+	copyAction->setShortcut(QKeySequence::Copy);
+	ui->techSpec->addAction(copyAction);
+
 	loadAboutPage();
 
 	if( useSplash )
