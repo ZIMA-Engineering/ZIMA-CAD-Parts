@@ -23,4 +23,9 @@
 
 #define VERSION "0.3.0-dev"
 
+// Extensions
+//#ifdef Q_OS_WIN32
+#define INCLUDE_PRODUCT_VIEW
+//#endif // Q_OS_WIN32
+
 #endif // ZIMAPARTS_H

@@ -44,11 +44,17 @@ ServersModel::~ServersModel()
 //pocet riadkov spadajucich pod parent
 int ServersModel::rowCount(const QModelIndex &parent) const
 {
+	//qDebug() << "rowCount";
+
 	if (!parent.isValid())
+	{
+		//qDebug() << "Not valid, returning" << rootItem->children.size();
 		return rootItem->children.size();
+	}
 
 	Item* item = static_cast<Item*>(parent.internalPointer());
 
+	//qDebug() << "asking about" << item->name << "returning " << (item->children.size() == 0 ? 1 : item->children.size());
 	return item->children.size() == 0 ? 1 : item->children.size();
 }
 
@@ -65,7 +71,10 @@ QModelIndex ServersModel::parent(const QModelIndex &index) const
 	Item *i = static_cast<Item*>(index.internalPointer());
 	Item *parentItem = i->parent;
 
-	if (parentItem == rootItem)
+	//qDebug() << "parent";
+	//qDebug() << i->name;
+
+	if (parentItem == rootItem || !parentItem || parentItem->isEmpty)
 		return QModelIndex();
 
 	return createIndex(parentItem->row(), 0, parentItem);
@@ -73,8 +82,12 @@ QModelIndex ServersModel::parent(const QModelIndex &index) const
 
 QModelIndex ServersModel::index(int row, int column, const QModelIndex &parent) const
 {
+	//qDebug() << "index";
+
 	if (!hasIndex(row, column, parent))
+	{
 		return QModelIndex();
+	}
 
 	Item *parentItem;
 
@@ -85,7 +98,7 @@ QModelIndex ServersModel::index(int row, int column, const QModelIndex &parent) 
 
 	Item *i;
 	i = parentItem->child(row);
-
+	//qDebug() << "returning index to" << (i?i->name:"parent");
 	if (i)
 		return createIndex(row, column, i);
 	else
@@ -211,18 +224,34 @@ void ServersModel::allPartsDownloaded(Item* item)
 	//reset(); // ???
 	//emit serverLoaded();
 	//emit layoutChanged();
+	if(item->children.count())
+		item->isEmpty = false;
 	emit layoutChanged();
 	emit itemLoaded( createIndex(item->row(), 0, item) );
 }
 
 void ServersModel::refresh(Item* item)
 {
+	//qDebug() << "refresh";
+
+	QModelIndex index = createIndex(item->row(), 0, item);
+	beginRemoveRows(index, 0, item->children.count());
+
 	qDeleteAll(item->children);
 	item->children.clear();
 	qDeleteAll(item->files);
 	item->files.clear();
 
-	reset();
+	//qDebug() << "resetting" << item->name;
+
+	//qDebug() << "layoutChanged";
+
+//	emit dataChanged(index, index);
+
+	//emit rowsRemoved(index, 0, cnt);
+	endRemoveRows();
+
+	//reset();
 
 	loadItem(item);
 }
@@ -276,6 +305,19 @@ void ServersModel::downloadFiles(QString dir)
 			i->server->downloadFiles(tmp, dir);
 	}
 
+	emit newDownloadQueue(&downloadQueue);
+}
+
+void ServersModel::downloadSpecificFile(QString dir, File *f)
+{
+	QDir d;
+	d.mkpath(dir);
+
+	QList<File*> tmp;
+	tmp << f;
+	f->parentItem->server->downloadFiles(tmp, dir);
+
+	downloadQueue << tmp;
 	emit newDownloadQueue(&downloadQueue);
 }
 

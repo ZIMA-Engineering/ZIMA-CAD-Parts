@@ -33,7 +33,6 @@
 #include "ui_mainwindow.h"
 #include "serversmodel.h"
 #include "downloadmodel.h"
-#include "zima-parts.h"
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
@@ -145,11 +144,34 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 		splash->finish(this);
 	}
+
+#ifdef INCLUDE_PRODUCT_VIEW
+	productView = new ProductView(settings, this);
+
+	showOrHideProductView();
+
+	connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(previewInProductView(QModelIndex)));
+	connect(sm, SIGNAL(fileDownloaded(File*)), productView, SLOT(fileDownloaded(File*)));
+#endif // INCLUDE_PRODUCT_VIEW
 }
 
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::loadExtensions()
+{
+//	for(int i = 0; i < EXTENSIONS_COUNT; i++)
+//	{
+//		switch(i)
+//		{
+//		case PTC_PRODUCT_VIEWER:
+//			break;
+//		default:
+//			continue;
+//		}
+//	}
 }
 
 void MainWindow::changeEvent(QEvent *event)
@@ -185,7 +207,7 @@ void MainWindow::downloadButton()
 	sm->downloadFiles( ui->editDir->text() );
 
 	static_cast<ServersModel*>( ui->treeLeft->model() )->uncheckAll();
-	ui->tabWidget->setCurrentIndex(2);
+	ui->tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
 
 	int columnCnt = ui->downloadTreeView->model()->columnCount(QModelIndex());
 
@@ -231,6 +253,10 @@ void MainWindow::showSettings()
 		fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
 
 		loadAboutPage();
+
+#ifdef INCLUDE_PRODUCT_VIEW
+		showOrHideProductView();
+#endif // INCLUDE_PRODUCT_VIEW
 	}
 
 	delete settingsDlg;
@@ -471,3 +497,44 @@ void MainWindow::saveSettings()
 	settings->setValue("WorkingDir", ui->editDir->text());
 	settings->sync();
 }
+
+#ifdef INCLUDE_PRODUCT_VIEW
+void MainWindow::showOrHideProductView()
+{
+	if(productView->isExtensionEnabled())
+	{
+		if(ui->tabWidget->indexOf(productView) == -1)
+			ui->tabWidget->addTab(productView, tr("ProductView"));
+
+		if(productView->isHidden())
+			productView->show();
+	} else {
+		int index;
+		if((index = ui->tabWidget->indexOf(productView)) != -1)
+			ui->tabWidget->removeTab(index);
+
+		productView->hide();
+	}
+}
+
+void MainWindow::previewInProductView(const QModelIndex &index)
+{
+	if(!productView->isExtensionEnabled())
+		return;
+
+	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->tree->model())->mapToSource(index);
+
+	File *f = fm->getRootItem()->files.at(srcIndex.row());
+
+	if(f->type == File::PROE)
+	{
+		productView->expectFile(f);
+
+		static_cast<ServersModel*>(ui->treeLeft->model())->downloadSpecificFile(ui->editDir->text(), f);
+		downloading = true;
+
+		ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
+	}
+}
+
+#endif // INCLUDE_PRODUCT_VIEW

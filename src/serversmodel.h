@@ -54,6 +54,7 @@ public slots:
 	void clear();
 	void loadItem(Item *item);
 	void downloadFiles(QString dir);
+	void downloadSpecificFile(QString dir, File *f);
 	void resumeDownload();
 	void uncheckAll(Item *item = 0);
 	void deleteDownloadQueue();

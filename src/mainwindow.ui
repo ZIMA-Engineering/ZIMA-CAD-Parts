@@ -134,7 +134,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QWebView" name="techSpec" native="true">
+             <widget class="QWebView" name="techSpec">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -144,7 +144,7 @@
               <property name="contextMenuPolicy">
                <enum>Qt::DefaultContextMenu</enum>
               </property>
-              <property name="url" stdset="0">
+              <property name="url">
                <url>
                 <string>about:blank</string>
                </url>
@@ -329,7 +329,7 @@
      <x>0</x>
      <y>0</y>
      <width>735</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

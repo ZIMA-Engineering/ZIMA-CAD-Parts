@@ -139,7 +139,7 @@ void LocalDataSource::loadDirectory(Item* item)
 			}
 
 			File *f = new File;
-			f->name = entries[i].fileName();
+			f->setName(entries[i].fileName());
 			f->size = entries[i].size();
 			f->path = item->path + f->name;
 			f->parentItem = item;

@@ -44,6 +44,8 @@ struct File
 	};
 
 	File():openFtpFile(0),isChecked(false),type(UNDEFINED),bytesDone(0){}
+	void setName(QString name);
+	void detectFileType();
 	QPixmap icon();
 
 	Item* parentItem;

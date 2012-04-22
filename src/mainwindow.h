@@ -31,6 +31,11 @@
 #include <QTranslator>
 #include "settingsdialog.h"
 #include "filemodel.h"
+#include "zima-parts.h"
+
+#ifdef INCLUDE_PRODUCT_VIEW
+#include "extensions/productview/productview.h"
+#endif // INCLUDE_PRODUCT_VIEW
 
 namespace Ui
 {
@@ -50,6 +55,16 @@ public:
 	void keyPressEvent(QKeyEvent *event);
 
 private:
+	enum Tabs {
+		TECH_SPECS,
+		PARTS,
+		DOWNLOADS,
+#ifdef INCLUDE_PRODUCT_VIEW
+		PRODUCT_VIEW,
+#endif // INCLUDE_PRODUCT_VIEW
+		TABS_COUNT
+	};
+
 	Ui::MainWindowClass *ui;
 	QSettings           *settings;
 	QVector<BaseDataSource*> servers;
@@ -59,7 +74,13 @@ private:
 	QSortFilterProxyModel *proxy;
 	QTranslator *translator;
 	bool downloading;
+#ifdef INCLUDE_PRODUCT_VIEW
+	ProductView *productView;
 
+	void showOrHideProductView();
+#endif // INCLUDE_PRODUCT_VIEW
+
+	void loadExtensions();
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
@@ -87,6 +108,10 @@ private slots:
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();
+
+#ifdef INCLUDE_PRODUCT_VIEW
+	void previewInProductView(const QModelIndex &index);
+#endif // INCLUDE_PRODUCT_VIEW
 };
 
 class SleeperThread : public QThread

@@ -227,7 +227,7 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 	else if( info.isFile() ) {
 		File *f = new File;
 		//f->isDir = false;
-		f->name = n;
+		f->setName(n);
 		f->size = info.size();
 		f->lastModified = info.lastModified();
 		f->lastModified.setTimeSpec(Qt::UTC);

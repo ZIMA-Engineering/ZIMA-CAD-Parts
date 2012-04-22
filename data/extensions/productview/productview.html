@@ -1,0 +1,36 @@
+<html>
+<head>
+	<meta name="Generator" content="ZIMA-Parts %VERSION%">
+	<title>%FILE_NAME%</title>
+</head>
+
+<body bgcolor="#305065" background="/%PRODUCTVIEW_PATH%\pvxbg.jpg" link="#89A2B3" alink="#89A2B3" vlink="#89A2B3">
+
+<table width="100" cellpadding="4" cellspacing="0" border="0">
+<tr>
+<td align="center">
+<OBJECT ID="PVactiveX1" WIDTH=800 HEIGHT=600 CLASSID="CLSID:1ED48504-8834-11D5-AC75-0008C73FD642">
+<PARAM NAME="pvcname" VALUE="%FILE_PATH%">
+<PARAM NAME="pvcclrscheme" VALUE="WF"> <PARAM NAME="pvctype" VALUE="pvxprod">
+<COMMENT>
+<EMBED type="application/x-java-applet;version=1.2"
+	java_CODE = "com.ptc.pvx.ProductViewExpress.class"
+	WIDTH = 800
+	HEIGHT = 600
+	codebase="file:/%PRODUCTVIEW_PATH%\"
+	archive="ptcpvx.jar"
+	pvcclrscheme="preWF"
+	pvctype="pvxprod"
+	pvcname = "%FILE_PATH%"
+	pvcdir = "%PRODUCTVIEW_PATH%\"
+	pluginspage="http://java.sun.com/products/plugin/1.2/plugin-install.html">
+<NOEMBED>
+</COMMENT>
+</NOEMBED>
+</EMBED>
+</OBJECT>
+</td>
+</tr>
+</table>
+</body>
+</html>

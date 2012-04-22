@@ -26,9 +26,14 @@
 #include <QMultiHash>
 #include <QVector>
 #include <QTranslator>
+#include "zima-parts.h"
 #include "basedatasource.h"
 #include "ftpdatasource.h"
 #include "localdatasource.h"
+
+#ifdef INCLUDE_PRODUCT_VIEW
+#include "extensions/productview/productviewsettings.h"
+#endif // INCLUDE_PRODUCT_VIEW
 
 class QListWidgetItem;
 
@@ -65,6 +70,7 @@ private slots:
 	void editDataSource();
 	void removeDataSource();
 	void selectDataSource(QListWidgetItem*, QListWidgetItem*);
+	void pruneCache(QString path = QString());
 //	void changingText();
 //	void changingPassive();
 
@@ -76,6 +82,9 @@ private:
 	BaseDataSource           *currentServer;
 	QSettings *settings;
 	QTranslator **translator;
+#ifdef INCLUDE_PRODUCT_VIEW
+	ProductViewSettings *productViewSettings;
+#endif // INCLUDE_PRODUCT_VIEW
 };
 
 #endif // SETTINGSDIALOG_H

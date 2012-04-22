@@ -6,5 +6,6 @@
         <file>gfx/icon.png</file>
         <file>data/zima-parts.html</file>
         <file>data/zima-parts_cs_CZ.html</file>
+        <file>data/extensions/productview/productview.html</file>
     </qresource>
 </RCC>

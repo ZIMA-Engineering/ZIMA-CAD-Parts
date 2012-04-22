@@ -17,7 +17,9 @@ SOURCES += zima-parts.cpp \
     ftpdatasource.cpp \
     localdatasource.cpp \
     addeditdatasource.cpp \
-    downloadmodel.cpp
+    downloadmodel.cpp \
+    src/extensions/productview/productviewsettings.cpp \
+    src/extensions/productview/productview.cpp
 HEADERS += mainwindow.h \
     settingsdialog.h \
     serversmodel.h \
@@ -29,17 +31,22 @@ HEADERS += mainwindow.h \
     localdatasource.h \
     addeditdatasource.h \
     downloadmodel.h \
-    src/zima-parts.h
+    src/zima-parts.h \
+    src/extensions/productview/productviewsettings.h \
+    src/extensions/productview/productview.h
 FORMS += mainwindow.ui \
     settingsdialog.ui \
-    addeditdatasource.ui
+    addeditdatasource.ui \
+    src/extensions/productview/productviewsettings.ui \
+    src/extensions/productview/productview.ui
 RESOURCES += zima-parts.qrc
 
 OTHER_FILES += data/zima-parts.html \
     zima-parts.rc \
     LICENSE \
     AUTHORS \
-    data/zima-parts_cs_CZ.html
+    data/zima-parts_cs_CZ.html \
+    data/extensions/productview/productview.html
 
 TRANSLATIONS = locale/zima-parts_cs_CZ.ts
 

@@ -33,6 +33,7 @@ public:
 	virtual QString internalName() = 0;
 	virtual QIcon itemIcon(Item *item);
 	virtual QIcon dataSourceIcon();
+	static QString cacheDirPath();
 
 	// FIXME: make protected
 	QString remoteHost, remoteLogin, remotePassword, remoteBaseDir;
@@ -46,8 +47,7 @@ public slots:
 	virtual void abort() = 0;
 	virtual void loadSettings(QSettings& settings);
 	void saveSettings(QSettings& settings);
-protected:
-	QString cacheDirPath();
+
 };
 
 #endif // BASEREMOTEDATASOURCE_H

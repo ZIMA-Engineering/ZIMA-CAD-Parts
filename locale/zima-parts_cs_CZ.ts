@@ -104,12 +104,12 @@
         <translation type="unfinished">&lt;strong&gt;UPOZORNĚNÍ: Heslo je uloženo v nešifrované podobě (prozatím)&lt;/strong&gt;</translation>
     </message>
     <message>
-        <location filename="../src/addeditdatasource.cpp" line="28"/>
+        <location filename="../src/addeditdatasource.cpp" line="48"/>
         <source>Edit data source</source>
         <translation type="unfinished">Upravit zdroj dat</translation>
     </message>
     <message>
-        <location filename="../src/addeditdatasource.cpp" line="73"/>
+        <location filename="../src/addeditdatasource.cpp" line="93"/>
         <source>Select directory</source>
         <translation type="unfinished">Vyberte složku</translation>
     </message>
@@ -117,17 +117,17 @@
 <context>
     <name>DownloadModel</name>
     <message>
-        <location filename="../src/downloadmodel.cpp" line="95"/>
+        <location filename="../src/downloadmodel.cpp" line="115"/>
         <source>Part</source>
         <translation type="unfinished">Díl</translation>
     </message>
     <message>
-        <location filename="../src/downloadmodel.cpp" line="97"/>
+        <location filename="../src/downloadmodel.cpp" line="117"/>
         <source>Destination</source>
         <translation type="unfinished">Cílové umístění</translation>
     </message>
     <message>
-        <location filename="../src/downloadmodel.cpp" line="99"/>
+        <location filename="../src/downloadmodel.cpp" line="119"/>
         <source>Progress</source>
         <translation type="unfinished">Postup</translation>
     </message>
@@ -135,13 +135,13 @@
 <context>
     <name>FileModel</name>
     <message>
-        <location filename="../src/filemodel.cpp" line="120"/>
+        <location filename="../src/filemodel.cpp" line="140"/>
         <source>Thumbnail</source>
         <translatorcomment>Název dílu</translatorcomment>
         <translation type="unfinished">Náhled</translation>
     </message>
     <message>
-        <location filename="../src/filemodel.cpp" line="122"/>
+        <location filename="../src/filemodel.cpp" line="142"/>
         <source>Part name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -149,42 +149,42 @@
 <context>
     <name>FtpDataSource</name>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="84"/>
+        <location filename="../src/ftpdatasource.cpp" line="104"/>
         <source>Entering </source>
         <translation type="unfinished">Vstupuji do </translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="107"/>
+        <location filename="../src/ftpdatasource.cpp" line="127"/>
         <source>Resolving %1...</source>
         <translation type="unfinished">Překládám %1...</translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="110"/>
+        <location filename="../src/ftpdatasource.cpp" line="130"/>
         <source>Connecting...</source>
         <translation type="unfinished">Připojuji se...</translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="113"/>
+        <location filename="../src/ftpdatasource.cpp" line="133"/>
         <source>Connected.</source>
         <translation type="unfinished">Připojen.</translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="116"/>
+        <location filename="../src/ftpdatasource.cpp" line="136"/>
         <source>Logging in...</source>
         <translation type="unfinished">Přihlašuji se...</translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="119"/>
+        <location filename="../src/ftpdatasource.cpp" line="139"/>
         <source>Disconnecting...</source>
         <translation type="unfinished">Odpojuji se...</translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="424"/>
+        <location filename="../src/ftpdatasource.cpp" line="450"/>
         <source>Downloading </source>
         <translation type="unfinished">Stahuji </translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="485"/>
+        <location filename="../src/ftpdatasource.cpp" line="510"/>
         <source>Connecting to </source>
         <translation type="unfinished">Připojuji se k </translation>
     </message>
@@ -192,7 +192,7 @@
 <context>
     <name>LocalDataSource</name>
     <message>
-        <location filename="../src/localdatasource.cpp" line="216"/>
+        <location filename="../src/localdatasource.cpp" line="236"/>
         <source>Copying </source>
         <translation type="unfinished">Kopíruji </translation>
     </message>
@@ -200,43 +200,43 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="39"/>
+        <location filename="../src/mainwindow.cpp" line="62"/>
         <source>Ready</source>
         <translation type="unfinished">Připraven</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="191"/>
+        <location filename="../src/mainwindow.cpp" line="200"/>
         <source>ZIMA-Parts - set working directory</source>
         <translation type="unfinished">ZIMA-Parts - nastavení pracovní složky</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="316"/>
+        <location filename="../src/mainwindow.cpp" line="312"/>
         <source>Aborted.</source>
         <translation type="unfinished">Přerušeno.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="331"/>
+        <location filename="../src/mainwindow.cpp" line="327"/>
         <source>FTP error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="332"/>
+        <location filename="../src/mainwindow.cpp" line="328"/>
         <source>FTP error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="337"/>
+        <location filename="../src/mainwindow.cpp" line="333"/>
         <source>Parts downloaded.</source>
         <translation type="unfinished">Díly staženy.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="344"/>
+        <location filename="../src/mainwindow.cpp" line="340"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="127"/>
-        <location filename="../src/mainwindow.cpp" line="351"/>
+        <location filename="../src/mainwindow.cpp" line="131"/>
+        <location filename="../src/mainwindow.cpp" line="347"/>
         <source>Resume</source>
         <translation type="unfinished">Pokračovat</translation>
     </message>
@@ -332,12 +332,12 @@
 <context>
     <name>ServersModel</name>
     <message>
-        <location filename="../src/serversmodel.cpp" line="82"/>
+        <location filename="../src/serversmodel.cpp" line="102"/>
         <source>Server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/serversmodel.cpp" line="196"/>
+        <location filename="../src/serversmodel.cpp" line="210"/>
         <source>All done.</source>
         <translation type="unfinished">Hotovo.</translation>
     </message>

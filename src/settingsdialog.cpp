@@ -28,6 +28,7 @@
 #include <QLocale>
 
 #include "addeditdatasource.h"
+#include "baseremotedatasource.h"
 
 SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QTranslator **translator, QWidget *parent) :
 	QDialog(parent),
@@ -42,6 +43,7 @@ SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> ser
 	connect(m_ui->editBtn, SIGNAL(clicked()), this, SLOT(editDataSource()));
 	connect(m_ui->btnRemove, SIGNAL(clicked()), this, SLOT(removeDataSource()));
 	connect(m_ui->listFtp, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(selectDataSource(QListWidgetItem*,QListWidgetItem*)));
+	connect(m_ui->pruneCacheButton, SIGNAL(clicked()), this, SLOT(pruneCache()));
 
 	updateServerList();
 
@@ -50,6 +52,11 @@ SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> ser
 	m_ui->languageComboBox->setCurrentIndex( langIndex( settings->value("Language", "detect").toString() ) );
 	m_ui->splashGroupBox->setChecked( settings->value("GUI/Splash/Enabled", true).toBool() );
 	m_ui->splashDurationSpinBox->setValue( settings->value("GUI/Splash/Duration", 1500).toInt() );
+
+#ifdef INCLUDE_PRODUCT_VIEW
+	productViewSettings = new ProductViewSettings(settings, this);
+	m_ui->tabWidget->addTab(productViewSettings, tr("ProductView Settings"));
+#endif // INCLUDE_PRODUCT_VIEW
 }
 
 SettingsDialog::~SettingsDialog()
@@ -106,6 +113,10 @@ void SettingsDialog::saveSettings()
 	}
 
 	settings->setValue("Language", lang);
+
+#ifdef INCLUDE_PRODUCT_VIEW
+	productViewSettings->saveSettings();
+#endif // INCLUDE_PRODUCT_VIEW
 }
 
 void SettingsDialog::addDataSource()
@@ -255,4 +266,24 @@ QString SettingsDialog::langIndexToName(int lang)
 	default:
 		return "detect";
 	}
+}
+
+void SettingsDialog::pruneCache(QString path)
+{
+	if(path.isEmpty())
+		path = BaseRemoteDataSource::cacheDirPath();
+
+	QDir dir(path);
+
+	QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+
+	foreach(QFileInfo f, files)
+	{
+		if(f.isDir())
+			pruneCache(f.filePath());
+		else
+			QFile::remove(f.filePath());
+	}
+
+	dir.rmdir(path);
 }

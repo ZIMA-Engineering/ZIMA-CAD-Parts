@@ -19,16 +19,29 @@
 */
 
 #include "item.h"
+#include <QDebug>
+
+void File::setName(QString name)
+{
+	this->name = name;
+
+	detectFileType();
+}
+
+void File::detectFileType()
+{
+	type = File::UNDEFINED;
+
+	QRegExp rx(".+\\.prt\\.\\d+");
+
+	if( rx.exactMatch(name) )
+		type = File::PROE;
+}
 
 QPixmap File::icon()
 {
 	if( type == File::UNDEFINED )
-	{
-		QRegExp rx(".+\\.prt\\.\\d+");
-
-		if( rx.exactMatch(name) )
-			type = File::PROE;
-	}
+		detectFileType();
 
 	switch( type )
 	{
