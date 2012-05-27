@@ -54,6 +54,26 @@ public:
 	~MainWindow();
 	void keyPressEvent(QKeyEvent *event);
 
+	struct Filter
+	{
+		Filter(File::FileTypes type) : type(type){}
+
+		File::FileTypes type;
+		bool enabled;
+	};
+
+	struct FilterGroup
+	{
+		FilterGroup(QString internalName, QString label) : internalName(internalName), label(label), enabled(0){}
+
+		QString label;
+		QString internalName;
+		QList<Filter> filters;
+		bool enabled;
+	};
+
+	static QList<FilterGroup> filterGroups;
+
 private:
 	enum Tabs {
 		TECH_SPECS,
@@ -98,6 +118,7 @@ public slots:
 	void loadTechSpec(QUrl url);
 	void errorOccured(QString error);
 	void filesDownloaded();
+	void setFiltersDialog();
 	void rebuildFilters();
 	void toggleDownload();
 	void resumeDownload();
@@ -108,6 +129,8 @@ private slots:
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();
+	void loadFilters();
+	void saveFilters();
 
 #ifdef INCLUDE_PRODUCT_VIEW
 	void previewInProductView(const QModelIndex &index);

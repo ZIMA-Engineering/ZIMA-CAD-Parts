@@ -19,7 +19,8 @@ SOURCES += zima-parts.cpp \
     addeditdatasource.cpp \
     downloadmodel.cpp \
     src/extensions/productview/productviewsettings.cpp \
-    src/extensions/productview/productview.cpp
+    src/extensions/productview/productview.cpp \
+    src/filtersdialog.cpp
 HEADERS += mainwindow.h \
     settingsdialog.h \
     serversmodel.h \
@@ -33,12 +34,14 @@ HEADERS += mainwindow.h \
     downloadmodel.h \
     src/zima-parts.h \
     src/extensions/productview/productviewsettings.h \
-    src/extensions/productview/productview.h
+    src/extensions/productview/productview.h \
+    src/filtersdialog.h
 FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui \
     src/extensions/productview/productviewsettings.ui \
-    src/extensions/productview/productview.ui
+    src/extensions/productview/productview.ui \
+    src/filtersdialog.ui
 RESOURCES += zima-parts.qrc
 
 OTHER_FILES += data/zima-parts.html \

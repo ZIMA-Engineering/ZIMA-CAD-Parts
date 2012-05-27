@@ -32,10 +32,16 @@ void File::detectFileType()
 {
 	type = File::UNDEFINED;
 
-	QRegExp rx(".+\\.prt\\.\\d+");
+	for(int i = 0; i < TYPES_COUNT; i++)
+	{
+		QRegExp rx(getRxForFileType((File::FileTypes)i));
 
-	if( rx.exactMatch(name) )
-		type = File::PROE;
+		if(rx.exactMatch(name))
+		{
+			type = (File::FileTypes)i;
+			break;
+		}
+	}
 }
 
 QPixmap File::icon()
@@ -45,10 +51,164 @@ QPixmap File::icon()
 
 	switch( type )
 	{
-	case File::PROE:
+	case File::PRT_PROE:
+	case File::PRT_NX:
 		return QPixmap(":/gfx/icons/prt.png");
 	default:
 		return QPixmap();
+	}
+}
+
+QString File::getInternalNameForFileType(File::FileTypes type)
+{
+	switch(type)
+	{
+	case File::PRT_PROE:
+		return "prt_proe";
+	case File::ASM:
+		return "asm";
+	case File::DRW:
+		return "drw";
+	case File::CATPART:
+		return "catpart";
+	case File::CATPRODUCT:
+		return "catproduct";
+	case File::CATDRAWING:
+		return "catdrawing";
+	case File::PRT_NX:
+		return "prt_nx";
+	case File::SLDPRT:
+		return "sldprt";
+	case File::SLDASM:
+		return "sldasm";
+	case File::SLDDRW:
+		return "slddrw";
+	case File::PAR:
+		return "par";
+	case File::PSM:
+		return "psm";
+	case File::DFT:
+		return "dft";
+	case File::IPT:
+		return "ipt";
+	case File::IAM:
+		return "iam";
+	case File::DWG:
+		return "dwg";
+	case File::STEP:
+		return "step";
+	case File::IGES:
+		return "iges";
+	case File::DXF:
+		return "dxf";
+	case File::STL:
+		return "stl";
+	case File::BLEND:
+		return "blend";
+	default:
+		return "undefined";
+	}
+}
+
+QString File::getLabelForFileType(File::FileTypes type)
+{
+	switch(type)
+	{
+	case File::PRT_PROE:
+		return "*.prt";
+	case File::ASM:
+		return "*.asm";
+	case File::DRW:
+		return "*.drw";
+	case File::CATPART:
+		return "*.catpart";
+	case File::CATPRODUCT:
+		return "*.catproduct";
+	case File::CATDRAWING:
+		return "*.catdrawing";
+	case File::PRT_NX:
+		return "*.prt";
+	case File::SLDPRT:
+		return "*.sldprt";
+	case File::SLDASM:
+		return "*.sldasm";
+	case File::SLDDRW:
+		return "*.slddrw";
+	case File::PAR:
+		return "*.par";
+	case File::PSM:
+		return "*.psm";
+	case File::DFT:
+		return "*.dft";
+	case File::IPT:
+		return "*.ipt";
+	case File::IAM:
+		return "*.iam";
+	case File::DWG:
+		return "*.dwg";
+	case File::STEP:
+		return "*.step";
+	case File::IGES:
+		return "*.iges";
+	case File::DXF:
+		return "*.dxf";
+	case File::STL:
+		return "*.stl";
+	case File::BLEND:
+		return "*.blend";
+	default:
+		return "undefined";
+	}
+}
+
+QString File::getRxForFileType(File::FileTypes type)
+{
+	switch(type)
+	{
+	case File::PRT_PROE:
+		return "(^.+\\.prt\\.\\d+$)";
+	case File::ASM:
+		return "(^.+\\.asm\\.\\d+$)";
+	case File::DRW:
+		return "(^.+\\.drw\\.\\d+$)";
+	case File::CATPART:
+		return "(^.+\\.catpart$)";
+	case File::CATPRODUCT:
+		return "(^.+\\.catproduct$)";
+	case File::CATDRAWING:
+		return "(^.+\\.catdrawing$)";
+	case File::PRT_NX:
+		return "(^.+\\.prt$)";
+	case File::SLDPRT:
+		return "(^.+\\.sldprt$)";
+	case File::SLDASM:
+		return "(^.+\\.sldasm$)";
+	case File::SLDDRW:
+		return "(^.+\\.slddrw$)";
+	case File::PAR:
+		return "(^.+\\.par$)";
+	case File::PSM:
+		return "(^.+\\.psm$)";
+	case File::DFT:
+		return "(^.+\\.dft$)";
+	case File::IPT:
+		return "(^.+\\.ipt$)";
+	case File::IAM:
+		return "(^.+\\.iam$)";
+	case File::DWG:
+		return "(^.+\\.dwg$)";
+	case File::STEP:
+		return "(^.+\\.step|.+\\.stp$)";
+	case File::IGES:
+		return "(^.+\\.iges|.+\\.igs$)";
+	case File::DXF:
+		return "(^.+\\.dxf$)";
+	case File::STL:
+		return "(^.+\\.stl$)";
+	case File::BLEND:
+		return "(^.+\\.blend$)";
+	default:
+		return "";
 	}
 }
 

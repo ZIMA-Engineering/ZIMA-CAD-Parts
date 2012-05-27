@@ -33,6 +33,9 @@
 #include "ui_mainwindow.h"
 #include "serversmodel.h"
 #include "downloadmodel.h"
+#include "filtersdialog.h"
+
+QList<MainWindow::FilterGroup> MainWindow::filterGroups;
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
@@ -78,7 +81,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(serverSelected(const QModelIndex&)));
 	//connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(serverSelected(const QModelIndex&)));
 
-	connect(ui->filtersListWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(rebuildFilters()));
+	//connect(ui->filtersListWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(rebuildFilters()));
+	connect(ui->filtersButton, SIGNAL(clicked()), this, SLOT(setFiltersDialog()));
 
 	QList<int> list;
 	list << (int)(width()*0.25) << (int)(width()*0.75);
@@ -102,12 +106,54 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	proxy = new QSortFilterProxyModel(this);
 	proxy->setSourceModel(fm);
 
-	settings->beginGroup("PartFilters");
-	int cnt = ui->filtersListWidget->count();
-	for(int i = 0; i < cnt; i++)
-		ui->filtersListWidget->item(i)->setCheckState( settings->value( QString::number(i), true ).toBool() ? Qt::Checked : Qt::Unchecked );
-	settings->endGroup();
+	filterGroups << FilterGroup("ProE", "Pro/Engineer");
+	filterGroups.last().filters
+			<< Filter(File::PRT_PROE)
+			<< Filter(File::ASM)
+			<< Filter(File::DRW);
 
+	filterGroups << FilterGroup("CATIA", "CATIA");
+	filterGroups.last().filters
+			<< Filter(File::CATPART)
+			<< Filter(File::CATPRODUCT)
+			<< Filter(File::CATDRAWING);
+
+	filterGroups << FilterGroup("NX", "NX (UGS)");
+	filterGroups.last().filters
+			<< Filter(File::PRT_NX);
+
+	filterGroups << FilterGroup("SolidWorks", "SolidWorks");
+	filterGroups.last().filters
+			<< Filter(File::SLDPRT)
+			<< Filter(File::SLDPRT)
+			<< Filter(File::SLDDRW);
+
+	filterGroups << FilterGroup("SolidEdge", "Solid Edge");
+	filterGroups.last().filters
+			<< Filter(File::PAR)
+			<< Filter(File::PSM)
+			<< Filter(File::ASM)
+			<< Filter(File::DFT);
+
+	filterGroups << FilterGroup("Invertor", "INVERTOR");
+	filterGroups.last().filters
+			<< Filter(File::IPT)
+			<< Filter(File::IAM)
+			<< Filter(File::DWG);
+
+	filterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
+	filterGroups.last().filters
+			<< Filter(File::STEP)
+			<< Filter(File::IGES)
+			<< Filter(File::DWG)
+			<< Filter(File::DXF);
+
+	filterGroups << FilterGroup("NonCAD", "NonCAD");
+	filterGroups.last().filters
+			<< Filter(File::STL)
+			<< Filter(File::BLEND);
+
+	loadFilters();
 	rebuildFilters();
 
 	ui->tree->setModel(proxy);
@@ -189,12 +235,12 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	settings->setValue("state", saveState());
 	settings->setValue("geometry", saveGeometry());
 
-	int cnt = ui->filtersListWidget->count();
+	//	int cnt = ui->filtersListWidget->count();
 
-	settings->beginGroup("PartFilters");
-	for(int i = 0; i < cnt; i++)
-		settings->setValue( QString::number(i), ui->filtersListWidget->item(i)->checkState() == Qt::Checked );
-	settings->endGroup();
+	//	settings->beginGroup("PartFilters");
+	//	for(int i = 0; i < cnt; i++)
+	//		settings->setValue( QString::number(i), ui->filtersListWidget->item(i)->checkState() == Qt::Checked );
+	//	settings->endGroup();
 
 	static_cast<ServersModel*>(ui->treeLeft->model())->saveQueue(settings);
 
@@ -382,34 +428,38 @@ void MainWindow::toggleDownload()
 		resumeDownload();
 }
 
+void MainWindow::setFiltersDialog()
+{
+	FiltersDialog *dlg = new FiltersDialog(this);
+
+	if(dlg->exec() == QDialog::Accepted)
+	{
+		saveFilters();
+		rebuildFilters();
+	}
+}
+
 void MainWindow::rebuildFilters()
 {
 	QStringList expressions;
 
-	for(int i = 0; i < File::TYPES_COUNT; i++)
+	int cnt = filterGroups.count();
+
+	for(int i = 0; i < cnt; i++)
 	{
-		if( ui->filtersListWidget->item(i)->checkState() == Qt::Checked )
+		if(!filterGroups[i].enabled)
+			continue;
+
+		int filterCnt = filterGroups[i].filters.count();
+
+		for(int j = 0; j < filterCnt; j++)
 		{
-			switch( i )
-			{
-			case File::PROE:
-				expressions << ".+\\.prt\\.\\d+";
-				break;
-			case File::CATIA:
-				expressions << ".+\\.CATPart";
-				break;
-			case File::IGES:
-				expressions << ".+\\.iges|.+\\.igs";
-				break;
-			case File::STEP:
-				expressions << ".+\\.step|.+\\.stp";
-				break;
-			case File::STL:
-				expressions << ".+\\.stl";
-				break;
-			}
+			if(filterGroups[i].filters[j].enabled)
+				expressions << File::getRxForFileType(filterGroups[i].filters[j].type);
 		}
 	}
+
+	expressions.removeDuplicates();
 
 	QRegExp rx( "^" + expressions.join("|") + "$" );
 	proxy->setFilterRegExp(rx);
@@ -498,6 +548,54 @@ void MainWindow::saveSettings()
 	settings->sync();
 }
 
+void MainWindow::loadFilters()
+{
+	settings->beginGroup("PartFilters");
+
+	int cnt = filterGroups.count();
+
+	for(int i = 0; i < cnt; i++)
+	{
+		settings->beginGroup(filterGroups[i].internalName);
+		filterGroups[i].enabled = settings->value("Enabled", true).toBool();
+
+		int filterCnt = filterGroups[i].filters.count();
+
+		for(int j = 0; j < filterCnt; j++)
+		{
+			filterGroups[i].filters[j].enabled = settings->value(File::getInternalNameForFileType(filterGroups[i].filters[j].type), true).toBool();
+		}
+
+		settings->endGroup();
+	}
+
+	settings->endGroup();
+}
+
+void MainWindow::saveFilters()
+{
+	settings->beginGroup("PartFilters");
+
+	int cnt = filterGroups.count();
+
+	for(int i = 0; i < cnt; i++)
+	{
+		settings->beginGroup(filterGroups[i].internalName);
+		settings->setValue("Enabled", filterGroups[i].enabled);
+
+		int filterCnt = filterGroups[i].filters.count();
+
+		for(int j = 0; j < filterCnt; j++)
+		{
+			settings->setValue(File::getInternalNameForFileType(filterGroups[i].filters[j].type), filterGroups[i].filters[j].enabled);
+		}
+
+		settings->endGroup();
+	}
+
+	settings->endGroup();
+}
+
 #ifdef INCLUDE_PRODUCT_VIEW
 void MainWindow::showOrHideProductView()
 {
@@ -526,7 +624,7 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
-	if(f->type == File::PROE)
+	if(f->type == File::PRT_PROE || f->type == File::PRT_NX)
 	{
 		productView->expectFile(f);
 

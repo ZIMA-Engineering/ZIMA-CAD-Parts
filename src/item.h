@@ -34,11 +34,37 @@ class Item;
 struct File
 {
 	enum FileTypes {
-		PROE=0,
-		CATIA,
-		IGES,
+		// Pro/e
+		PRT_PROE=0,
+		ASM,
+		DRW,
+		// CATIA
+		CATPART,
+		CATPRODUCT,
+		CATDRAWING,
+		// NX
+		PRT_NX,
+		// SolidWorks
+		SLDPRT,
+		SLDASM,
+		SLDDRW,
+		// Solid Edge
+		PAR,
+		PSM,
+//		ASM,
+		DFT,
+		// Inventor
+		IPT,
+		IAM,
+		DWG,
+		// CAD NEUTRAL
 		STEP,
+		IGES,
+//		DWG,
+		DXF,
+		// NonCAD
 		STL,
+		BLEND,
 		TYPES_COUNT,
 		UNDEFINED
 	};
@@ -47,6 +73,9 @@ struct File
 	void setName(QString name);
 	void detectFileType();
 	QPixmap icon();
+	static QString getInternalNameForFileType(FileTypes type);
+	static QString getLabelForFileType(FileTypes type);
+	static QString getRxForFileType(FileTypes type);
 
 	Item* parentItem;
 	QString name;
