@@ -38,6 +38,7 @@ struct File
 		PRT_PROE=0,
 		ASM,
 		DRW,
+		FRM,
 		// CATIA
 		CATPART,
 		CATPRODUCT,

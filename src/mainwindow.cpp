@@ -110,7 +110,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	filterGroups.last().filters
 			<< Filter(File::PRT_PROE)
 			<< Filter(File::ASM)
-			<< Filter(File::DRW);
+			<< Filter(File::DRW)
+			<< Filter(File::FRM);
 
 	filterGroups << FilterGroup("CATIA", "CATIA");
 	filterGroups.last().filters

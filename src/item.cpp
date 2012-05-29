@@ -69,6 +69,8 @@ QString File::getInternalNameForFileType(File::FileTypes type)
 		return "asm";
 	case File::DRW:
 		return "drw";
+	case File::FRM:
+		return "frm";
 	case File::CATPART:
 		return "catpart";
 	case File::CATPRODUCT:
@@ -120,6 +122,8 @@ QString File::getLabelForFileType(File::FileTypes type)
 		return "*.asm";
 	case File::DRW:
 		return "*.drw";
+	case File::FRM:
+		return "*.frm";
 	case File::CATPART:
 		return "*.catpart";
 	case File::CATPRODUCT:
@@ -171,6 +175,8 @@ QString File::getRxForFileType(File::FileTypes type)
 		return "(^.+\\.asm\\.\\d+$)";
 	case File::DRW:
 		return "(^.+\\.drw\\.\\d+$)";
+	case File::FRM:
+		return "(^.+\\.frm\\.\\d+$)";
 	case File::CATPART:
 		return "(^.+\\.catpart$)";
 	case File::CATPRODUCT:
