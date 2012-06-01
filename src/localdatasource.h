@@ -54,6 +54,7 @@ public:
 	QString localPath;
 
 public slots:
+	void loadRootItem(Item *item);
 	void loadDirectory(Item* item);
 	void sendTechSpecUrl(Item* item);
 	void addFileToDownload(File *f);

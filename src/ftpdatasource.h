@@ -43,6 +43,7 @@ public:
 	// FIXME: make private
 	bool    ftpPassiveMode;
 public slots:
+	void loadRootItem(Item *item);
 	void loadDirectory(Item* item);
 	void changeSettings(QString remoteHost, int remotePort, bool ftpPassiveMode, QString remoteLogin, QString remotePassword, QString remoteBaseDir);
 	void reset();
@@ -63,6 +64,7 @@ private slots:
 private:
 	void checkConnection(QFtp *f);
 	void ftpListItemInQueue();
+	void checkLoadedItem();
 
 //	QList<QString>  paramList;
 	QList<Item*> loadItemQueue;
@@ -76,6 +78,8 @@ private:
 	bool hasTechSpecDir;
 	int techSpecListId;
 	bool hasMetadata;
+	bool hasLogo;
+	bool hasLogoText;
 	QList<File*> thumbnails;
 
 	QMap<int, QFile*> techSpecFiles;

@@ -31,6 +31,8 @@
 
 #define TECHSPEC_DIR "0000-index"
 #define METADATA_FILE "metadata.ini"
+#define LOGO_FILE "logo.png"
+#define LOGO_TEXT_FILE "logo-text.png"
 
 class QListWidgetItem;
 class Item;
@@ -57,6 +59,7 @@ public:
 	QString label;
 	DataSources dataSource;
 public slots:
+	virtual void loadRootItem(Item *item) = 0;
 	virtual void loadDirectory(Item* item) = 0;
 	virtual void sendTechSpecUrl(Item* item) = 0;
 	virtual void addFileToDownload(File *f) = 0;
@@ -71,6 +74,7 @@ protected:
 	QStringList techSpecIndexes;
 signals:
 	//void partDownloaded(Item*);
+	void itemInserted(Item*);
 	void updateAvailable(Item*);
 	void loadingItem(Item*);
 	void itemLoaded(Item*);

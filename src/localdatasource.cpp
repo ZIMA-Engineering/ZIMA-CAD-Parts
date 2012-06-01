@@ -106,6 +106,20 @@ QString LocalDataSource::internalName()
 	return "local";
 }
 
+void LocalDataSource::loadRootItem(Item *item)
+{
+	QString logoPath = item->path + "/" + TECHSPEC_DIR + "/";
+
+	if(QFile::exists(logoPath + LOGO_FILE)) {
+		item->logo = QPixmap(logoPath + LOGO_FILE);
+		item->showText = false;
+	} else if(QFile::exists(logoPath + LOGO_TEXT_FILE)) {
+		item->logo = QPixmap(logoPath + LOGO_TEXT_FILE);
+		item->showText = true;
+	}
+}
+
+
 void LocalDataSource::loadDirectory(Item* item)
 {
 	if(!item->children.isEmpty() || !item->files.isEmpty())

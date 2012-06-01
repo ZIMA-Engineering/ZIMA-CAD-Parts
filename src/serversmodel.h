@@ -78,6 +78,7 @@ private slots:
 	void dataSourceFinishedDownloading();
 	void metadataReady(Item *item);
 	void newItem(Item *item);
+	void itemUpdated(Item *item);
 signals:
 	void loadingItem(Item*);
 	void itemLoaded(const QModelIndex&);

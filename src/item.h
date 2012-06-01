@@ -111,6 +111,8 @@ public:
 	QString part;
 	QPixmap pixmap;
 	QString pixmapFile;
+	QPixmap logo;
+	bool showText;
 	QString path;
 	QMap<QString, QVariant> params;
 	QFile   *openFtpFile;

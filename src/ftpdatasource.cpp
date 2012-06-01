@@ -95,6 +95,19 @@ void FtpDataSource::reset()
 	hasMetadata = false;
 }
 
+void FtpDataSource::loadRootItem(Item *item)
+{
+	QString logoPath = cacheDirPath() + "/" + remoteHost + "/" + item->path + "/" + TECHSPEC_DIR + "/";
+
+	if(QFile::exists(logoPath + LOGO_FILE)) {
+		item->logo = QPixmap(logoPath + LOGO_FILE);
+		item->showText = false;
+	} else if(QFile::exists(logoPath + LOGO_TEXT_FILE)) {
+		item->logo = QPixmap(logoPath + LOGO_TEXT_FILE);
+		item->showText = true;
+	}
+}
+
 void FtpDataSource::loadDirectory(Item* item)
 {
 	if(loadItemQueue.contains(item))
@@ -220,6 +233,8 @@ void FtpDataSource::ftpListItemInQueue()
 
 		browseDepth = 2;
 		hasMetadata = false;
+		hasLogo = false;
+		hasLogoText = false;
 
 		ftpListId = ftp->list();
 	} else {
@@ -236,6 +251,8 @@ void FtpDataSource::ftpListItemInQueue()
 		ftpCurrentItem = item;
 
 		hasMetadata = false;
+		hasLogo = false;
+		hasLogoText = false;
 
 		ftpListId = ftp->list(item->path);
 	}
@@ -269,6 +286,10 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 
 		if( n == METADATA_FILE )
 			hasMetadata = true;
+		else if(n == LOGO_FILE)
+			hasLogo = true;
+		else if(n == LOGO_TEXT_FILE)
+			hasLogoText = true;
 
 		return;
 	}
@@ -293,7 +314,7 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 			if(!loadItemQueue.isEmpty() && ftpCurrentItem == loadItemQueue.first())
 				dirsToList << i;
 
-			emit updateAvailable(i);
+			emit itemInserted(i);
 		}
 
 		//qDebug() << "reading directory" << n;
@@ -401,7 +422,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 		if(!loadItemQueue.isEmpty() && ftpCurrentItem == loadItemQueue.first())
 		{
 			loadItemQueue.first()->hasLoadedChildren = true;
-			qDebug() << "removing" << loadItemQueue.first()->name << "from loadItemqueue";
+			//qDebug() << "removing" << loadItemQueue.first()->name << "from loadItemqueue";
 			loadItemQueue.removeFirst();
 
 			emit itemLoaded(currentDir ? currentDir : ftpCurrentItem);
@@ -423,25 +444,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 
 		if( techSpecFiles.isEmpty() )
 		{
-			if( hasMetadata )
-			{
-				//qDebug() << "Metadata loaded (tech spec list id)";
-
-				if(ftpCurrentItem->metadata)
-					ftpCurrentItem->metadata->refresh();
-				else {
-					ftpCurrentItem->metadata = new Metadata(cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE);
-				}
-
-				emit metadataReady(ftpCurrentItem);
-			} else if( ftpCurrentItem->metadata )
-			{
-				delete ftpCurrentItem->metadata;
-				ftpCurrentItem->metadata = 0;
-			}
-
-			if(!loadItemQueue.isEmpty() && ftpCurrentItem == loadItemQueue.first())
-				sendTechSpecUrl(ftpCurrentItem);
+			checkLoadedItem();
 
 			// Start browsing next folder in dirsToList
 			ftpListItemInQueue();
@@ -460,25 +463,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 
 		if( techSpecFiles.isEmpty() )
 		{
-			if( hasMetadata )
-			{
-				//qDebug() << "Metadata loaded (tech spec files)";
-
-				if(ftpCurrentItem->metadata)
-					ftpCurrentItem->metadata->refresh();
-				else {
-					ftpCurrentItem->metadata = new Metadata(cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE);
-				}
-
-				emit metadataReady(ftpCurrentItem);
-			} else if( ftpCurrentItem->metadata )
-			{
-				delete ftpCurrentItem->metadata;
-				ftpCurrentItem->metadata = 0;
-			}
-
-			if(!loadItemQueue.isEmpty() && ftpCurrentItem == loadItemQueue.first())
-				sendTechSpecUrl(ftpCurrentItem);
+			checkLoadedItem();
 
 			// Start browsing next folder in dirsToList
 			ftpListItemInQueue();
@@ -543,6 +528,38 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 		//else
 		//	downloadFile(filesToDownload.first());
 	}
+}
+
+void FtpDataSource::checkLoadedItem()
+{
+	if( hasMetadata )
+	{
+		//qDebug() << "Metadata loaded (tech spec files)";
+
+		if(ftpCurrentItem->metadata)
+			ftpCurrentItem->metadata->refresh();
+		else {
+			ftpCurrentItem->metadata = new Metadata(cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE);
+			qDebug() << "Metadata loaded - techspecfiles" << ftpCurrentItem->metadata->getLabel();
+		}
+
+		emit metadataReady(ftpCurrentItem);
+	} else if( ftpCurrentItem->metadata )
+	{
+		delete ftpCurrentItem->metadata;
+		ftpCurrentItem->metadata = 0;
+	}
+
+	if(hasLogo || hasLogoText)
+	{
+		ftpCurrentItem->logo = QPixmap(cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + (hasLogo ? LOGO_FILE : LOGO_TEXT_FILE));
+		ftpCurrentItem->showText = hasLogoText;
+
+		emit updateAvailable(ftpCurrentItem);
+	}
+
+	if(!loadItemQueue.isEmpty() && ftpCurrentItem == loadItemQueue.first())
+		sendTechSpecUrl(ftpCurrentItem);
 }
 
 void FtpDataSource::ftpFileDownloadFinished(int id, bool error)

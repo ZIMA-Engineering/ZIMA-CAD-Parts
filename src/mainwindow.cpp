@@ -372,8 +372,6 @@ void MainWindow::loadingItem(Item *item)
 	setCursor(QCursor(Qt::WaitCursor));
 
 	statusDir->setText(tr("Loading %1...").arg(item->getLabel()));
-
-	qDebug() << "Yeah";
 }
 
 void MainWindow::itemLoaded(const QModelIndex &index)

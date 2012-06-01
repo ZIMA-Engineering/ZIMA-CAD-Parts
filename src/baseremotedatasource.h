@@ -40,6 +40,7 @@ public:
 	int     remotePort;
 public slots:
 	void sendTechSpecUrl(Item* item);
+	virtual void loadRootItem(Item *item) = 0;
 	virtual void loadDirectory(Item* item) = 0;
 	virtual void addFileToDownload(File *f) = 0;
 	virtual void downloadFiles(QList<File*> files, QString dir) = 0;

@@ -180,14 +180,21 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 	switch(role)
 	{
 	case Qt::DisplayRole:
-		return item->isServer ? item->name : item->getLabel();
+		if(item->showText)
+			return item->isServer ? item->name : item->getLabel();
 		break;
 	case Qt::DecorationRole:
 //		if( item->isServer )
 //			return serverIcon;
 //		else if( item->isDir )
 //			return dirIcon;
+		if(!item->logo.isNull())
+			return item->logo;
 		return item->server->itemIcon(item);
+		break;
+	case Qt::SizeHintRole:
+		if(!item->logo.isNull())
+			return QSize(item->logo.width(), item->logo.height());
 		break;
 	default:;
 	}
@@ -233,7 +240,8 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 		connect(i->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
 		connect(i->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
 		connect(i->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
-		connect(i->server, SIGNAL(updateAvailable(Item*)), this, SLOT(newItem(Item*)));
+		connect(i->server, SIGNAL(itemInserted(Item*)), this, SLOT(newItem(Item*)));
+		connect(i->server, SIGNAL(updateAvailable(Item*)), this, SLOT(itemUpdated(Item*)));
 		connect(i->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
 
 		i->parent = rootItem;
@@ -252,6 +260,8 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 			BaseRemoteDataSource *rds = static_cast<BaseRemoteDataSource*>(i->server);
 			i->path = rds->remoteBaseDir.endsWith('/') ? rds->remoteBaseDir : rds->remoteBaseDir + "/";
 		}
+
+		s->loadRootItem(i);
 
 		rootItem->children.append(i);
 	}
@@ -497,6 +507,13 @@ void ServersModel::newItem(Item *item)
 	//qDebug() << "insert" << item->name;
 	endInsertRows();
 	//emit dataChanged(index, index);
+}
+
+void ServersModel::itemUpdated(Item *item)
+{
+	QModelIndex index = createIndex(item->row(), 0, item);
+
+	emit dataChanged(index, index);
 }
 
 void ServersModel::abort()
