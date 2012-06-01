@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #ifndef BASEDATASOURCE_H
 #define BASEDATASOURCE_H
 
@@ -31,6 +30,7 @@
 #include "item.h"
 
 #define TECHSPEC_DIR "0000-index"
+#define METADATA_FILE "metadata.ini"
 
 class QListWidgetItem;
 class Item;
@@ -70,15 +70,18 @@ public slots:
 protected:
 	QStringList techSpecIndexes;
 signals:
-	void partDownloaded(Item*);
-	void updateAvailable();
-	void allPartsDownloaded(Item*);
+	//void partDownloaded(Item*);
+	void updateAvailable(Item*);
+	void loadingItem(Item*);
+	void itemLoaded(Item*);
+	void allItemsLoaded();
 	void fileProgress(File*);
 	void fileDownloaded(File*);
 	void filesDownloaded(); //TODO: identify this somehow
 	void gotThumbnail(File*);
 	void statusUpdated(QString);
 	void techSpecAvailable(QUrl);
+	void metadataReady(Item*);
 	void errorOccured(QString);
 };
 

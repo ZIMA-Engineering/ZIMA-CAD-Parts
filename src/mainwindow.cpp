@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@
 #include "filtersdialog.h"
 
 QList<MainWindow::FilterGroup> MainWindow::filterGroups;
+QSettings * MainWindow::settings;
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
@@ -77,8 +78,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->btnUpdate, SIGNAL(clicked()), this, SLOT(updateClicked()));
 	connect(ui->startStopDownloadBtn, SIGNAL(clicked()), this, SLOT(toggleDownload()));
 
-	connect(ui->treeLeft, SIGNAL(expanded(QModelIndex)), ui->treeLeft, SIGNAL(clicked(QModelIndex)));
-	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(serverSelected(const QModelIndex&)));
+	//connect(ui->treeLeft, SIGNAL(expanded(QModelIndex)), ui->treeLeft, SIGNAL(clicked(QModelIndex)));
+	//connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(serverSelected(const QModelIndex&)));
 	//connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(serverSelected(const QModelIndex&)));
 
 	//connect(ui->filtersListWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(rebuildFilters()));
@@ -93,7 +94,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	sm->setServerData(servers);
 	ui->treeLeft->setModel(sm);
 
+	connect(sm, SIGNAL(loadingItem(Item*)), this, SLOT(loadingItem(Item*)));
 	connect(sm, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(itemLoaded(const QModelIndex&)));
+	connect(sm, SIGNAL(allItemsLoaded()), this, SLOT(allItemsLoaded()));
 	connect(sm, SIGNAL(techSpecAvailable(QUrl)), this, SLOT(loadTechSpec(QUrl)));
 	connect(sm, SIGNAL(statusUpdated(QString)), this, SLOT(updateStatus(QString)));
 	connect(ui->deleteQueueBtn, SIGNAL(clicked()), sm, SLOT(deleteDownloadQueue()));
@@ -159,7 +162,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->tree->setModel(proxy);
 
-	connect(sm, SIGNAL(itemLoaded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
+	//connect(sm, SIGNAL(itemLoaded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
 	connect(sm, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(sm, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 
@@ -182,6 +187,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	QAction *copyAction = ui->techSpec->pageAction(QWebPage::Copy);
 	copyAction->setShortcut(QKeySequence::Copy);
 	ui->techSpec->addAction(copyAction);
+
+
+	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
 	loadAboutPage();
 
@@ -346,8 +354,8 @@ void MainWindow::serverSelected(const QModelIndex &i)
 	{
 		Item* item = static_cast<Item*>(i.internalPointer());
 
-		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		ui->treeLeft->setEnabled(false);
+//		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+//		ui->treeLeft->setEnabled(false);
 
 		static_cast<ServersModel*>(ui->treeLeft->model())->loadItem(item);
 	}
@@ -358,13 +366,38 @@ void MainWindow::updateStatus(QString str)
 	statusDir->setText(str);
 }
 
+void MainWindow::loadingItem(Item *item)
+{
+	//QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	setCursor(QCursor(Qt::WaitCursor));
+
+	statusDir->setText(tr("Loading %1...").arg(item->getLabel()));
+
+	qDebug() << "Yeah";
+}
+
 void MainWindow::itemLoaded(const QModelIndex &index)
 {
-	ui->treeLeft->expand(index);
-	QApplication::restoreOverrideCursor();
-	ui->treeLeft->setEnabled(true);
+	//ui->treeLeft->expand(index);
+//	QApplication::restoreOverrideCursor();
+//	ui->treeLeft->setEnabled(true);
 	ui->btnUpdate->setEnabled(true);
 	treeExpandedOrCollaped(index);
+
+	Item *i = static_cast<Item*>(index.internalPointer());
+
+	if(i == fm->getRootItem())
+		fm->setRootIndex(index);
+
+	//qDebug() << "Loaded" << i->name;
+}
+
+void MainWindow::allItemsLoaded()
+{
+	//QApplication::restoreOverrideCursor();
+	setCursor(QCursor(Qt::ArrowCursor));
+
+	statusDir->setText(tr("All items loaded."));
 }
 
 void MainWindow::loadTechSpec(QUrl url)
@@ -595,6 +628,12 @@ void MainWindow::saveFilters()
 	}
 
 	settings->endGroup();
+}
+
+QString MainWindow::getCurrentLanguageCode()
+{
+	QString lang = settings->value("Language").toString();
+	return lang == "detect" ? QLocale::system().name() : lang;
 }
 
 #ifdef INCLUDE_PRODUCT_VIEW

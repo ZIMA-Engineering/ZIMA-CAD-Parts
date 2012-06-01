@@ -18,41 +18,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PRODUCTVIEW_H
-#define PRODUCTVIEW_H
+#ifndef TECHSPECSWEBVIEW_H
+#define TECHSPECSWEBVIEW_H
 
-#include "../../zima-parts.h"
+#include <QWebView>
 
-#ifdef INCLUDE_PRODUCT_VIEW
-
-#include <QWidget>
-#include <QSettings>
-
-#include "../../item.h"
-
-namespace Ui {
-class ProductView;
-}
-
-class ProductView : public QWidget
+class TechSpecsWebView : public QWebView
 {
 	Q_OBJECT
-	
 public:
-	explicit ProductView(QSettings *settings, QWidget *parent = 0);
-	~ProductView();
-	bool isExtensionEnabled() const;
-
-public slots:
-	void expectFile(File* f);
-	void fileDownloaded(File* f);
+	explicit TechSpecsWebView(QWidget *parent = 0);
 	
-private:
-	Ui::ProductView *ui;
-	QSettings *settings;
-	File *expectedFile;
+signals:
+	
+public slots:
+
+protected:
+    TechSpecsWebView *createWindow(QWebPage::WebWindowType type);
+	
 };
 
-#endif // INCLUDE_PRODUCT_VIEW
-
-#endif // PRODUCTVIEW_H
+#endif // TECHSPECSWEBVIEW_H

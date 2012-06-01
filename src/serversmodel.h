@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,6 +37,9 @@ public:
 	ServersModel(QObject *parent = 0);
 	~ServersModel();
 
+	bool canFetchMore(const QModelIndex &parent) const;
+	void fetchMore(const QModelIndex &parent);
+//	bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
@@ -73,8 +76,12 @@ private:
 
 private slots:
 	void dataSourceFinishedDownloading();
+	void metadataReady(Item *item);
+	void newItem(Item *item);
 signals:
+	void loadingItem(Item*);
 	void itemLoaded(const QModelIndex&);
+	void allItemsLoaded();
 	void techSpecAvailable(QUrl);
 	void statusUpdated(QString);
 	void errorOccured(QString);

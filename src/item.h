@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,6 +27,9 @@
 #include <QList>
 #include <QVariant>
 #include <QDateTime>
+#include <QSettings>
+
+#include "metadata.h"
 
 class BaseDataSource;
 class Item;
@@ -101,6 +104,7 @@ public:
 	void setNotEmpty();
 	Item *child(int r);
 	~Item();
+	QString getLabel();
 
 	int     id;
 	QString name;
@@ -114,11 +118,14 @@ public:
 	bool    isDir;
 	bool    isEmpty;
 	bool isServer;
+	bool hasLoadedChildren;
 	BaseDataSource* server;
 
 	Item            *parent;
 	QList<Item*>    children;
 	QList<File*> files;
+
+	Metadata *metadata;
 };
 
 #endif // ITEM_H

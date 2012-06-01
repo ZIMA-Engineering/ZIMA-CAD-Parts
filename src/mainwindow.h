@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ public:
 	MainWindow(QTranslator *translator, QWidget *parent = 0);
 	~MainWindow();
 	void keyPressEvent(QKeyEvent *event);
+	static QString getCurrentLanguageCode();
 
 	struct Filter
 	{
@@ -86,7 +87,7 @@ private:
 	};
 
 	Ui::MainWindowClass *ui;
-	QSettings           *settings;
+	static QSettings           *settings;
 	QVector<BaseDataSource*> servers;
 	QLabel              *statusState, *statusDir;
 	FtpDataSource           *currentServer;
@@ -114,7 +115,9 @@ public slots:
 	void updateStatus(QString);
 	void treeExpandedOrCollaped(const QModelIndex&);
 	void serverLoaded();
+	void loadingItem(Item *item);
 	void itemLoaded(const QModelIndex&);
+	void allItemsLoaded();
 	void loadTechSpec(QUrl url);
 	void errorOccured(QString error);
 	void filesDownloaded();

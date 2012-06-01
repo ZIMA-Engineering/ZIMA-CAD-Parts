@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #define FILEMODEL_H
 
 #include <QAbstractItemModel>
+#include <QStringList>
 
 class Item;
 class File;
@@ -52,6 +53,7 @@ public:
 
 public slots:
 	void setRootIndex(const QModelIndex &index);
+	void initMetadata(Item *i);
 
 protected:
 	Item* rootItem;
@@ -59,6 +61,7 @@ protected:
 private:
 	int thumbWidth;
 	int previewWidth;
+	QStringList colLabels;
 
 private slots:
 	void thumbnailDownloaded(File *file);

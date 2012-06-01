@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,6 +41,41 @@ ServersModel::~ServersModel()
 	delete rootItem;
 }
 
+bool ServersModel::canFetchMore(const QModelIndex &parent) const
+{
+	if(!parent.isValid())
+		return false;
+
+	Item* item = static_cast<Item*>(parent.internalPointer());
+
+//	if(!item->children.isEmpty() || !item->files.isEmpty())
+//		return false;
+
+//	if(item->hasLoadedChildren)
+//		return false;
+
+	return true;
+}
+
+void ServersModel::fetchMore(const QModelIndex &parent)
+{
+	if(!parent.isValid())
+		return;
+
+	Item* item = static_cast<Item*>(parent.internalPointer());
+
+	loadItem(item);
+}
+
+//bool ServersModel::hasChildren(const QModelIndex &parent) const
+//{
+//	qDebug() << "Do I have children? :)";
+
+
+
+//	return true;
+//}
+
 //pocet riadkov spadajucich pod parent
 int ServersModel::rowCount(const QModelIndex &parent) const
 {
@@ -53,6 +88,8 @@ int ServersModel::rowCount(const QModelIndex &parent) const
 	}
 
 	Item* item = static_cast<Item*>(parent.internalPointer());
+
+	//loadItem(item);
 
 	//qDebug() << "asking about" << item->name << "returning " << (item->children.size() == 0 ? 1 : item->children.size());
 	return item->children.size() == 0 ? 1 : item->children.size();
@@ -74,7 +111,7 @@ QModelIndex ServersModel::parent(const QModelIndex &index) const
 	//qDebug() << "parent";
 	//qDebug() << i->name;
 
-	if (parentItem == rootItem || !parentItem || parentItem->isEmpty)
+	if (parentItem == rootItem || !parentItem)
 		return QModelIndex();
 
 	return createIndex(parentItem->row(), 0, parentItem);
@@ -96,8 +133,7 @@ QModelIndex ServersModel::index(int row, int column, const QModelIndex &parent) 
 	else
 		parentItem = static_cast<Item*>(parent.internalPointer());
 
-	Item *i;
-	i = parentItem->child(row);
+	Item *i = parentItem->child(row);
 	//qDebug() << "returning index to" << (i?i->name:"parent");
 	if (i)
 		return createIndex(row, column, i);
@@ -144,7 +180,7 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 	switch(role)
 	{
 	case Qt::DisplayRole:
-		return item->name;
+		return item->isServer ? item->name : item->getLabel();
 		break;
 	case Qt::DecorationRole:
 //		if( item->isServer )
@@ -188,12 +224,16 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 //					i->server->login,
 //					i->server->password,
 //					i->server->baseDir);
-		connect(i->server, SIGNAL(allPartsDownloaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
+		connect(i->server, SIGNAL(loadingItem(Item*)), this, SIGNAL(loadingItem(Item*)));
+		connect(i->server, SIGNAL(itemLoaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
+		connect(i->server, SIGNAL(allItemsLoaded()), this, SIGNAL(allItemsLoaded()));
 		connect(i->server, SIGNAL(techSpecAvailable(QUrl)), this, SIGNAL(techSpecAvailable(QUrl)));
 		connect(i->server, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
 		connect(i->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
 		connect(i->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
 		connect(i->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
+		connect(i->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
+		connect(i->server, SIGNAL(updateAvailable(Item*)), this, SLOT(newItem(Item*)));
 		connect(i->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
 
 		i->parent = rootItem;
@@ -220,7 +260,7 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 
 void ServersModel::allPartsDownloaded(Item* item)
 {
-	emit statusUpdated(tr("All done."));
+	//emit statusUpdated(tr("All done."));
 	//reset(); // ???
 	//emit serverLoaded();
 	//emit layoutChanged();
@@ -260,12 +300,23 @@ void ServersModel::loadItem(Item* item)
 {
 	//clear();
 
-	if( item->children.size() > 0 || item->files.size() > 0 )
+	if(item->hasLoadedChildren)
 	{
+		//qDebug() << "Item" << item->name << "has already loaded children - stop";
+
 		item->server->sendTechSpecUrl(item);
 		allPartsDownloaded(item);
 		return;
+	} else {
+		//qDebug() << "Item" << item->name << "has not yet loaded children - go on";
 	}
+
+//	if( item->children.size() > 0 || item->files.size() > 0 )
+//	{
+//		item->server->sendTechSpecUrl(item);
+//		allPartsDownloaded(item);
+//		return;
+//	}
 
 	// FIXME: may be missing when commented... we'll see
 //	item->server->ftpData->changeSettings(item->server->address,
@@ -429,6 +480,23 @@ void ServersModel::dataSourceFinishedDownloading()
 {
 	if( downloadQueue.isEmpty() )
 		emit filesDownloaded();
+}
+
+void ServersModel::metadataReady(Item *item)
+{
+	QModelIndex index = createIndex(item->row(), 0, item);
+
+	emit dataChanged(index, index);
+}
+
+void ServersModel::newItem(Item *item)
+{
+	QModelIndex index = createIndex(item->parent->row(), 0, item->parent);
+
+	beginInsertRows(index, item->children.count(), item->children.count()+1);
+	//qDebug() << "insert" << item->name;
+	endInsertRows();
+	//emit dataChanged(index, index);
 }
 
 void ServersModel::abort()

@@ -53,7 +53,7 @@
            </size>
           </property>
           <property name="expandsOnDoubleClick">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -134,7 +134,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QWebView" name="techSpec">
+             <widget class="TechSpecsWebView" name="techSpec">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -268,6 +268,11 @@
    <class>QWebView</class>
    <extends>QWidget</extends>
    <header>QtWebKit/QWebView</header>
+  </customwidget>
+  <customwidget>
+   <class>TechSpecsWebView</class>
+   <extends>QWebView</extends>
+   <header>src/techspecswebview.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

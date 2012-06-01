@@ -18,41 +18,30 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PRODUCTVIEW_H
-#define PRODUCTVIEW_H
+#include "techspecswebview.h"
 
-#include "../../zima-parts.h"
+#include <QDialog>
+#include <QVBoxLayout>
 
-#ifdef INCLUDE_PRODUCT_VIEW
-
-#include <QWidget>
-#include <QSettings>
-
-#include "../../item.h"
-
-namespace Ui {
-class ProductView;
+TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
+        QWebView(parent)
+{
 }
 
-class ProductView : public QWidget
+TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
 {
-	Q_OBJECT
-	
-public:
-	explicit ProductView(QSettings *settings, QWidget *parent = 0);
-	~ProductView();
-	bool isExtensionEnabled() const;
+	QDialog *popup = new QDialog(this);
+	QVBoxLayout *layout = new QVBoxLayout;
 
-public slots:
-	void expectFile(File* f);
-	void fileDownloaded(File* f);
-	
-private:
-	Ui::ProductView *ui;
-	QSettings *settings;
-	File *expectedFile;
-};
+	TechSpecsWebView *webview = new TechSpecsWebView(this);
+	layout->addWidget(webview);
 
-#endif // INCLUDE_PRODUCT_VIEW
+	popup->setLayout(layout);
+	popup->setWindowTitle(tr("ZIMA-Parts Technical Specifications"));
 
-#endif // PRODUCTVIEW_H
+	if(type == QWebPage::WebModalDialog)
+		popup->setModal(true);
+
+	popup->show();
+	return webview;
+}

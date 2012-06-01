@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <QDebug>
 
 #include "localdatasource.h"
+#include "metadata.h"
 
 LocalCopier::LocalCopier(QList<File*> files) :
 	files(files)
@@ -107,6 +108,9 @@ QString LocalDataSource::internalName()
 
 void LocalDataSource::loadDirectory(Item* item)
 {
+	if(!item->children.isEmpty() || !item->files.isEmpty())
+		return;
+
 	QDir dir(item->path);
 	QFileInfoList entries = dir.entryInfoList( QDir::AllEntries | QDir::NoDotAndDotDot );
 	QStringList thumbnails;
@@ -131,6 +135,13 @@ void LocalDataSource::loadDirectory(Item* item)
 			it->server = item->server;
 
 			item->children.append(it);
+
+			if(QFile::exists(it->path + TECHSPEC_DIR + "/" + METADATA_FILE))
+			{
+				it->metadata = new Metadata(it->path + TECHSPEC_DIR + "/" + METADATA_FILE);
+
+				emit metadataReady(it);
+			}
 		} else {
 			if( entries[i].fileName().endsWith(".png", Qt::CaseInsensitive) || entries[i].fileName().endsWith(".jpg", Qt::CaseInsensitive) )
 			{
@@ -154,14 +165,14 @@ void LocalDataSource::loadDirectory(Item* item)
 		{
 			if( f->name.section('.', 0, 0) == thumbnails[i].section('.', -2, -2) )
 			{
-				qDebug() << "Found pixmap for" << f->name << item->path + thumbnails[i];
+				//qDebug() << "Found pixmap for" << f->name << item->path + thumbnails[i];
 				f->pixmapPath = item->path + thumbnails[i];
 				f->pixmap = QPixmap(f->pixmapPath).scaledToWidth(100);
 			}
 		}
 	}
 
-	emit allPartsDownloaded(item);
+	emit itemLoaded(item);
 }
 
 void LocalDataSource::sendTechSpecUrl(Item* item)

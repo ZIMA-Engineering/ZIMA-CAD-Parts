@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,15 +61,21 @@ private slots:
 	void ftpDataTransferProgress(qint64 done, qint64 total);
 	void ftpFileDownloadFinished(int, bool);
 private:
-	QList<QString>  paramList;
+	void checkConnection(QFtp *f);
+	void ftpListItemInQueue();
+
+//	QList<QString>  paramList;
+	QList<Item*> loadItemQueue;
 
 	Item            *ftpCurrentItem; //the 'directory part' of the current (while listing) directory
 	QString         ftpCurrentDir;
 	QList<Item*>    dirsToList; //list of subdirectories that need to be searched and listed
 	int             ftpListId; //the command id used to identify the listing command in ftpCommandDone
-	int             dbFilesQueued; //number of .db files for which active ftp tasks exist
+//	int             dbFilesQueued; //number of .db files for which active ftp tasks exist
+	int browseDepth;
 	bool hasTechSpecDir;
 	int techSpecListId;
+	bool hasMetadata;
 	QList<File*> thumbnails;
 
 	QMap<int, QFile*> techSpecFiles;
@@ -82,8 +88,6 @@ private:
 
 	QFtp    *ftp;
 	QFtp *dlFtp;
-
-	void checkConnection(QFtp *f);
 };
 
 #endif // FTPDATASOURCE_H

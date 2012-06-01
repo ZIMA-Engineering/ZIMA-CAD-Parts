@@ -2,7 +2,7 @@
   ZIMA-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
-  Copyright (C) 2011 Jakub Skokan <aither@havefun.cz>
+  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 */
 
 #include <QDebug>
+#include <QRegExp>
 
 #include "filemodel.h"
 #include "item.h"
@@ -31,7 +32,8 @@ FileModel::FileModel(QObject *parent) :
 
 int FileModel::columnCount(const QModelIndex &parent) const
 {
-	return 2;
+	//qDebug() << "col count = " << 2 + colLabels.count();
+	return 2 + colLabels.count();
 }
 
 int FileModel::rowCount(const QModelIndex &parent) const
@@ -74,8 +76,9 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 	//qDebug() << "Column" << index.column();
 
 	const int row = index.row();
+	const int col = index.column();
 
-	switch( index.column() )
+	switch(col)
 	{
 	case 1:
 		switch( role )
@@ -113,6 +116,13 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		break;
 	}
 
+	if(col > 1 && role == Qt::DisplayRole && col-2 < colLabels.count())
+	{
+		//qDebug() << "Probing section" << rootItem->files.at( row )->name.section('.', 0, 0);
+		//return rootItem->metadata->value(QString("%1/%2").arg(rootItem->files.at( row )->name.section('.', 0, 0)).arg(col-1), QString()).toString();
+		return rootItem->metadata->getPartParam(rootItem->files.at(row)->name, col-1);
+	}
+
 	return QVariant();
 }
 
@@ -142,6 +152,11 @@ QVariant FileModel::headerData (int section, Qt::Orientation orientation, int ro
 		return tr("Part name");
 	}
 
+	if(section > 1 && section-2 < colLabels.count())
+	{
+		return colLabels[section - 2];
+	}
+
         return QVariant();
 }
 
@@ -160,7 +175,10 @@ Qt::ItemFlags FileModel::flags(const QModelIndex &index) const
 void FileModel::setRootIndex(const QModelIndex &index)
 {
 	if( rootItem )
+	{
 		disconnect(rootItem->server, SIGNAL(gotThumbnail(File*)), this, SLOT(thumbnailDownloaded(File*)));
+		disconnect(rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(initMetadata(Item*)));
+	}
 
 	if( !index.isValid() )
 	{
@@ -172,9 +190,33 @@ void FileModel::setRootIndex(const QModelIndex &index)
 	//emit layoutAboutToBeChanged();
 	rootItem = static_cast<Item*>(index.internalPointer());
 	connect(rootItem->server, SIGNAL(gotThumbnail(File*)), this, SLOT(thumbnailDownloaded(File*)));
+	connect(rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(initMetadata(Item*)));
+
+	if(rootItem->metadata)
+		initMetadata(rootItem);
+	else if( colLabels.count() )
+	{
+		beginRemoveColumns(QModelIndex(), 2, 2 + colLabels.count());
+		endRemoveColumns();
+		colLabels.clear();
+	}
 
 	reset();
 	emit layoutChanged();
+}
+
+void FileModel::initMetadata(Item *i)
+{
+	if(i != rootItem)
+		return;
+
+	colLabels = rootItem->metadata->getColumnLabels();
+
+	//qDebug() << colLabels;
+
+	beginInsertColumns(QModelIndex(), 2, 2 + colLabels.count());
+	endInsertColumns();
+	//emit headerDataChanged(Qt::Horizontal, 2, 2 + colLabels.count());
 }
 
 Item* FileModel::getRootItem()
