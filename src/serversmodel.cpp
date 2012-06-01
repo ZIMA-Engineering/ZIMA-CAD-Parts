@@ -303,6 +303,8 @@ void ServersModel::refresh(Item* item)
 
 	//reset();
 
+	item->hasLoadedChildren = false;
+
 	loadItem(item);
 }
 
