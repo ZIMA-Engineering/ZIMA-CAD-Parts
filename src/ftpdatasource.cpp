@@ -97,15 +97,15 @@ void FtpDataSource::reset()
 
 void FtpDataSource::loadRootItem(Item *item)
 {
-	QString logoPath = cacheDirPath() + "/" + remoteHost + "/" + item->path + "/" + TECHSPEC_DIR + "/";
+	loadItemLogo(item);
+}
 
-	if(QFile::exists(logoPath + LOGO_FILE)) {
-		item->logo = QPixmap(logoPath + LOGO_FILE);
-		item->showText = false;
-	} else if(QFile::exists(logoPath + LOGO_TEXT_FILE)) {
-		item->logo = QPixmap(logoPath + LOGO_TEXT_FILE);
-		item->showText = true;
-	}
+void FtpDataSource::checkAndSendTechSpecUrl(Item *item)
+{
+	if((techSpecItem == item && loadItemQueue.contains(item)) || techSpecItem != item)
+			return;
+
+	BaseRemoteDataSource::checkAndSendTechSpecUrl(item);
 }
 
 void FtpDataSource::loadDirectory(Item* item)
@@ -168,8 +168,23 @@ void FtpDataSource::changeSettings(QString remoteHost, int remotePort, bool ftpP
 
 void FtpDataSource::ftpListItemInQueue()
 {
+	if(ftpListId != -1 && !dirsToList.isEmpty() && ftpCurrentItem == dirsToList.first())
+	{
+		//qDebug() << "removing" << dirsToList.first()->path << "from dirstolist";
+		dirsToList.removeFirst();
+	}
+
 	if(dirsToList.isEmpty())
 	{
+		if(ftpListId != -1 && !loadItemQueue.isEmpty())
+		{
+			loadItemQueue.first()->hasLoadedChildren = true;
+			//qDebug() << "removing" << loadItemQueue.first()->name << "from loadItemqueue";
+			loadItemQueue.removeFirst();
+
+			emit itemLoaded(ftpCurrentItem);
+		}
+
 		if(loadItemQueue.isEmpty())
 		{
 			ftpListId = -1;
@@ -186,11 +201,14 @@ void FtpDataSource::ftpListItemInQueue()
 		if(!item->hasLoadedChildren && !item->children.isEmpty())
 		{
 			dirsToList << item->children;
-			dirsToList.removeFirst();
+			//dirsToList.removeFirst();
 
 			remoteBaseDir = item->children.first()->path;
-			ftpCurrentItem = item;
+			ftpCurrentItem = item->children.first();
 			hasMetadata = false;
+			techSpecFilesUpdated = false;
+			hasLogo = false;
+			hasLogoText = false;
 
 			qDebug() << "Loading children of" << item->path << "dirsToList size=" << dirsToList.count();
 			//emit statusUpdated(tr("Loading %1...").arg(item->getLabel()));
@@ -206,14 +224,14 @@ void FtpDataSource::ftpListItemInQueue()
 
 		if(!item->files.isEmpty())
 		{
-			qDebug() << "Stop, this item has files ;)";
-			sendTechSpecUrl(item);
+			qDebug() << "Stop, this item has files ;)" << item->name;
+			//sendTechSpecUrl(item);
+			checkAndSendTechSpecUrl(item);
 			emit itemLoaded(item);
 
 			loadItemQueue.removeFirst();
 
-			if(loadItemQueue.isEmpty())
-				emit allItemsLoaded();
+			ftpListItemInQueue();
 
 			return;
 		}
@@ -233,6 +251,7 @@ void FtpDataSource::ftpListItemInQueue()
 
 		browseDepth = 2;
 		hasMetadata = false;
+		techSpecFilesUpdated = false;
 		hasLogo = false;
 		hasLogoText = false;
 
@@ -240,7 +259,7 @@ void FtpDataSource::ftpListItemInQueue()
 	} else {
 		// Start browsing another directory in item
 		Item *item = dirsToList.first();
-		dirsToList.removeFirst();
+		//dirsToList.removeFirst();
 
 		remoteBaseDir = item->path;
 
@@ -282,6 +301,9 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 
 			techSpecFiles[ ftp->get(remoteBaseDir + "/" + TECHSPEC_DIR + "/" + n, f) ] = f;
 			//qDebug() << "Queue techspec file" << ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + n;
+
+			if(ftpCurrentItem == techSpecItem)
+				techSpecFilesUpdated = true;
 		}
 
 		if( n == METADATA_FILE )
@@ -307,13 +329,19 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 			i->parent = ftpCurrentItem;
 			i->path = remoteBaseDir + n + "/";
 			i->server = rootItem->server;
+
+			loadItemLogo(i);
+
 			ftpCurrentItem->children.append(i);
 
 			// We will list only one level from the parent, since the only thing we want is 0000-index with it's metadata
 			// FIXME: We should be able to set depth, or list whole subtree
 			if(!loadItemQueue.isEmpty() && ftpCurrentItem == loadItemQueue.first())
+			{
 				dirsToList << i;
-
+				//qDebug() << "new directory" << i->path << "IN QUEUE";
+			} else
+				;//qDebug() << "new directory" << i->path << "NOT IN QUEUE";
 			emit itemInserted(i);
 		}
 
@@ -419,14 +447,14 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 			}
 		}
 
-		if(!loadItemQueue.isEmpty() && ftpCurrentItem == loadItemQueue.first())
-		{
-			loadItemQueue.first()->hasLoadedChildren = true;
-			//qDebug() << "removing" << loadItemQueue.first()->name << "from loadItemqueue";
-			loadItemQueue.removeFirst();
+//		if(!loadItemQueue.isEmpty() && ftpCurrentItem == loadItemQueue.first())
+//		{
+//			loadItemQueue.first()->hasLoadedChildren = true;
+//			//qDebug() << "removing" << loadItemQueue.first()->name << "from loadItemqueue";
+//			loadItemQueue.removeFirst();
 
-			emit itemLoaded(currentDir ? currentDir : ftpCurrentItem);
-		}
+//			emit itemLoaded(currentDir ? currentDir : ftpCurrentItem);
+//		}
 
 		//start listing another one
 //		Item *p = dirsToList.front();
@@ -559,7 +587,8 @@ void FtpDataSource::checkLoadedItem()
 	}
 
 	if(!loadItemQueue.isEmpty() && ftpCurrentItem == loadItemQueue.first())
-		sendTechSpecUrl(ftpCurrentItem);
+		//sendTechSpecUrl(ftpCurrentItem);
+		checkAndSendTechSpecUrl(ftpCurrentItem);
 }
 
 void FtpDataSource::ftpFileDownloadFinished(int id, bool error)
@@ -649,6 +678,10 @@ void FtpDataSource::abort()
 	if( dlFtp->state() != QFtp::Unconnected )
 		dlFtp->abort();
 	fileTasks.clear();
+	loadItemQueue.clear();
+	dirsToList.clear();
+	techSpecFiles.clear();
+	partPicTasks.clear();
 }
 
 void FtpDataSource::loadSettings(QSettings &settings)

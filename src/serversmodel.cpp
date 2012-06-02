@@ -308,6 +308,15 @@ void ServersModel::refresh(Item* item)
 	loadItem(item);
 }
 
+void ServersModel::requestTechSpecs(const QModelIndex &index)
+{
+	if(!index.isValid())
+		return;
+	Item *i = static_cast<Item*>(index.internalPointer());
+
+	i->server->sendTechSpecUrl(i);
+}
+
 void ServersModel::loadItem(Item* item)
 {
 	//clear();
@@ -316,7 +325,7 @@ void ServersModel::loadItem(Item* item)
 	{
 		//qDebug() << "Item" << item->name << "has already loaded children - stop";
 
-		item->server->sendTechSpecUrl(item);
+		//item->server->sendTechSpecUrl(item);
 		allPartsDownloaded(item);
 		return;
 	} else {

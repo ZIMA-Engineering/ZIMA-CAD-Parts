@@ -40,6 +40,17 @@ QIcon BaseRemoteDataSource::dataSourceIcon()
 
 void BaseRemoteDataSource::sendTechSpecUrl(Item* item)
 {
+	techSpecItem = item;
+	techSpecUrlSent = false;
+
+	checkAndSendTechSpecUrl(techSpecItem);
+}
+
+void BaseRemoteDataSource::checkAndSendTechSpecUrl(Item *item)
+{
+	if(techSpecUrlSent && !techSpecFilesUpdated)
+		return;
+
 	int s = techSpecIndexes.size();
 
 	for(int i = 0; i < s; i++)
@@ -48,15 +59,31 @@ void BaseRemoteDataSource::sendTechSpecUrl(Item* item)
 
 		if( QFile::exists(indexPath) )
 		{
+			techSpecUrlSent = true;
 			emit techSpecAvailable( QUrl::fromLocalFile(indexPath) );
 			return;
 		}
 	}
 
 	if( item == rootItem )
+	{
+		techSpecUrlSent = true;
 		emit techSpecAvailable( QUrl("about:blank") );
-	else
+	} else
 		sendTechSpecUrl(item->parent);
+}
+
+void BaseRemoteDataSource::loadItemLogo(Item *item)
+{
+	QString logoPath = cacheDirPath() + "/" + remoteHost + "/" + item->path + "/" + TECHSPEC_DIR + "/";
+
+	if(QFile::exists(logoPath + LOGO_FILE)) {
+		item->logo = QPixmap(logoPath + LOGO_FILE);
+		item->showText = false;
+	} else if(QFile::exists(logoPath + LOGO_TEXT_FILE)) {
+		item->logo = QPixmap(logoPath + LOGO_TEXT_FILE);
+		item->showText = true;
+	}
 }
 
 void BaseRemoteDataSource::loadSettings(QSettings& settings)

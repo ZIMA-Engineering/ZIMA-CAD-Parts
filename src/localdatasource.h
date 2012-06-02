@@ -66,9 +66,13 @@ public slots:
 	void saveSettings(QSettings& settings);
 
 protected:
+	void loadItemLogo(Item *item);
+
 	LocalCopier *copier;
+
 protected slots:
 	void aboutToCopy(File *file);
+
 };
 
 #endif // LOCALDATASOURCE_H

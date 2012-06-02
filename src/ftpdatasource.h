@@ -42,6 +42,7 @@ public:
 
 	// FIXME: make private
 	bool    ftpPassiveMode;
+
 public slots:
 	void loadRootItem(Item *item);
 	void loadDirectory(Item* item);
@@ -55,12 +56,17 @@ public slots:
 	void deleteDownloadQueue();
 	void loadSettings(QSettings& settings);
 	void saveSettings(QSettings& settings);
+
+protected:
+	void checkAndSendTechSpecUrl(Item *item);
+
 private slots:
 	void ftpListInfo(const QUrlInfo&);
 	void ftpCommandFinished(int, bool);
 	void ftpStateChanged(int);
 	void ftpDataTransferProgress(qint64 done, qint64 total);
 	void ftpFileDownloadFinished(int, bool);
+
 private:
 	void checkConnection(QFtp *f);
 	void ftpListItemInQueue();

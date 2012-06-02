@@ -71,6 +71,8 @@ public slots:
 	virtual void deleteDownloadQueue();
 	void saveSettings(QSettings& settings);
 protected:
+	virtual void loadItemLogo(Item *item) = 0;
+
 	QStringList techSpecIndexes;
 signals:
 	//void partDownloaded(Item*);

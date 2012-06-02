@@ -38,6 +38,7 @@ public:
 	// FIXME: make protected
 	QString remoteHost, remoteLogin, remotePassword, remoteBaseDir;
 	int     remotePort;
+
 public slots:
 	void sendTechSpecUrl(Item* item);
 	virtual void loadRootItem(Item *item) = 0;
@@ -48,6 +49,13 @@ public slots:
 	virtual void abort() = 0;
 	virtual void loadSettings(QSettings& settings);
 	void saveSettings(QSettings& settings);
+protected:
+	void loadItemLogo(Item *item);
+	void checkAndSendTechSpecUrl(Item *item);
+
+	Item *techSpecItem;
+	bool techSpecUrlSent;
+	bool techSpecFilesUpdated;
 
 };
 

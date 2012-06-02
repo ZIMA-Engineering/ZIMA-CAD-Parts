@@ -108,6 +108,11 @@ QString LocalDataSource::internalName()
 
 void LocalDataSource::loadRootItem(Item *item)
 {
+	loadItemLogo(item);
+}
+
+void LocalDataSource::loadItemLogo(Item *item)
+{
 	QString logoPath = item->path + "/" + TECHSPEC_DIR + "/";
 
 	if(QFile::exists(logoPath + LOGO_FILE)) {
@@ -118,7 +123,6 @@ void LocalDataSource::loadRootItem(Item *item)
 		item->showText = true;
 	}
 }
-
 
 void LocalDataSource::loadDirectory(Item* item)
 {
@@ -147,6 +151,8 @@ void LocalDataSource::loadDirectory(Item* item)
 			it->parent = item;
 			it->path = item->path + it->name + "/";
 			it->server = item->server;
+
+			loadItemLogo(it);
 
 			item->children.append(it);
 

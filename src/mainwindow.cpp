@@ -79,8 +79,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->startStopDownloadBtn, SIGNAL(clicked()), this, SLOT(toggleDownload()));
 
 	//connect(ui->treeLeft, SIGNAL(expanded(QModelIndex)), ui->treeLeft, SIGNAL(clicked(QModelIndex)));
-	//connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(serverSelected(const QModelIndex&)));
-	//connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(serverSelected(const QModelIndex&)));
 
 	//connect(ui->filtersListWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(rebuildFilters()));
 	connect(ui->filtersButton, SIGNAL(clicked()), this, SLOT(setFiltersDialog()));
@@ -100,6 +98,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(sm, SIGNAL(techSpecAvailable(QUrl)), this, SLOT(loadTechSpec(QUrl)));
 	connect(sm, SIGNAL(statusUpdated(QString)), this, SLOT(updateStatus(QString)));
 	connect(ui->deleteQueueBtn, SIGNAL(clicked()), sm, SLOT(deleteDownloadQueue()));
+
+	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 
 	fm = new FileModel(this);
 
