@@ -35,6 +35,7 @@ public:
 
 public slots:
 	void refresh();
+	void retranslate();
 
 private:
 	void probeMetadata();

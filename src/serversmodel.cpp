@@ -497,6 +497,23 @@ int ServersModel::loadQueue(QSettings *settings)
 	return fileCnt;
 }
 
+void ServersModel::retranslateMetadata(Item *item)
+{
+	if(!item)
+		item = rootItem;
+
+	foreach(Item *i, item->children)
+	{
+		if(i->metadata)
+		{
+			i->metadata->retranslate();
+			itemUpdated(i); // Maybe we should send only one signal for all items
+		}
+
+		retranslateMetadata(i);
+	}
+}
+
 void ServersModel::dataSourceFinishedDownloading()
 {
 	if( downloadQueue.isEmpty() )
@@ -512,7 +529,7 @@ void ServersModel::metadataReady(Item *item)
 
 void ServersModel::newItem(Item *item)
 {
-	QModelIndex index = createIndex(item->parent->row(), 0, item->parent);
+	QModelIndex index = createIndex(item->parent->row(), 0, item);
 
 	beginInsertRows(index, item->children.count(), item->children.count()+1);
 	//qDebug() << "insert" << item->name;

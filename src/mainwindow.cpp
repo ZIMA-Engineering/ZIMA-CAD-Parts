@@ -37,6 +37,7 @@
 
 QList<MainWindow::FilterGroup> MainWindow::filterGroups;
 QSettings * MainWindow::settings;
+QString MainWindow::currentMetadataLang;
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
@@ -100,6 +101,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->deleteQueueBtn, SIGNAL(clicked()), sm, SLOT(deleteDownloadQueue()));
 
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 
 	fm = new FileModel(this);
@@ -184,22 +186,41 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	currentServer = 0;
 
+	langs << "en_US" << "cs_CZ";
+
+	int cnt = langs.count();
+	QString currentLang = getCurrentLanguageCode().left(2);
+
+	langButtonGroup = new QButtonGroup(this);
+	langButtonGroup->setExclusive(true);
+
+	for(int i = 0; i < cnt; i++)
+	{
+		QString lang = langs[i].left(2);
+
+		QPushButton *flag = new QPushButton(QIcon(QString(":/gfx/flags/%1.png").arg(lang)), "", this);
+		flag->setFlat(true);
+		flag->setCheckable(true);
+		flag->setStyleSheet("width: 16px; height: 16px; margin: 0; padding: 1px;");
+
+		if(currentLang == lang)
+			flag->setChecked(true);
+
+		langButtonGroup->addButton(flag, i);
+
+		ui->langsHorizontalLayout->addWidget(flag);
+	}
+
+	connect(langButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(changeLanguage(int)));
+
 	// Make shortcut Ctrl+C or Cmd+C available
 	QAction *copyAction = ui->techSpec->pageAction(QWebPage::Copy);
 	copyAction->setShortcut(QKeySequence::Copy);
 	ui->techSpec->addAction(copyAction);
 
-
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
 	loadAboutPage();
-
-	if( useSplash )
-	{
-		SleeperThread::msleep( settings->value("GUI/Splash/Duration", 1500).toInt() );
-
-		splash->finish(this);
-	}
 
 #ifdef INCLUDE_PRODUCT_VIEW
 	productView = new ProductView(settings, this);
@@ -209,6 +230,13 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(previewInProductView(QModelIndex)));
 	connect(sm, SIGNAL(fileDownloaded(File*)), productView, SLOT(fileDownloaded(File*)));
 #endif // INCLUDE_PRODUCT_VIEW
+
+	if( useSplash )
+	{
+		SleeperThread::msleep( settings->value("GUI/Splash/Duration", 1500).toInt() );
+
+		splash->finish(this);
+	}
 }
 
 MainWindow::~MainWindow()
@@ -416,8 +444,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		stopDownload();
 		updateStatus(tr("Aborted."));
 
-		QApplication::restoreOverrideCursor();
-		ui->treeLeft->setEnabled(true);
+		setCursor(QCursor(Qt::ArrowCursor));
 		ui->btnUpdate->setEnabled(true);
 		break;
 	}
@@ -510,6 +537,16 @@ void MainWindow::loadAboutPage()
 	QTextStream stream(&f);
 
 	ui->techSpec->setHtml( stream.readAll().replace("%VERSION%", VERSION) );
+}
+
+void MainWindow::changeLanguage(int lang)
+{
+	if(getCurrentMetadataLanguageCode() == langs[lang])
+		return;
+
+	currentMetadataLang = langs[lang];
+
+	static_cast<ServersModel*>(ui->treeLeft->model())->retranslateMetadata();
 }
 
 void MainWindow::loadSettings()
@@ -633,6 +670,13 @@ QString MainWindow::getCurrentLanguageCode()
 {
 	QString lang = settings->value("Language").toString();
 	return lang == "detect" ? QLocale::system().name() : lang;
+}
+
+QString MainWindow::getCurrentMetadataLanguageCode()
+{
+	if(currentMetadataLang.isEmpty())
+		return getCurrentLanguageCode();
+	return currentMetadataLang;
 }
 
 #ifdef INCLUDE_PRODUCT_VIEW

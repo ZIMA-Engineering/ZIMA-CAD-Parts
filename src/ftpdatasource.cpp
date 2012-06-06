@@ -682,6 +682,9 @@ void FtpDataSource::abort()
 	dirsToList.clear();
 	techSpecFiles.clear();
 	partPicTasks.clear();
+
+	ftpListId = -1;
+	techSpecListId = -1;
 }
 
 void FtpDataSource::loadSettings(QSettings &settings)

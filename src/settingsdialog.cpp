@@ -83,7 +83,6 @@ void SettingsDialog::loadSettings(QSettings *settings)
 
 void SettingsDialog::saveSettings()
 {
-
 	settings->setValue("GUI/ThumbWidth", m_ui->spinPicture->value());
 	settings->setValue("GUI/PreviewWidth", m_ui->previewWidthSpinBox->value());
 	settings->setValue("GUI/Splash/Enabled", m_ui->splashGroupBox->isChecked());

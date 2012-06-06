@@ -29,6 +29,7 @@
 #include <QSortFilterProxyModel>
 #include <QThread>
 #include <QTranslator>
+#include <QButtonGroup>
 #include "settingsdialog.h"
 #include "filemodel.h"
 #include "zima-parts.h"
@@ -54,6 +55,7 @@ public:
 	~MainWindow();
 	void keyPressEvent(QKeyEvent *event);
 	static QString getCurrentLanguageCode();
+	static QString getCurrentMetadataLanguageCode();
 
 	struct Filter
 	{
@@ -95,6 +97,10 @@ private:
 	QSortFilterProxyModel *proxy;
 	QTranslator *translator;
 	bool downloading;
+	QButtonGroup *langButtonGroup;
+	static QString currentMetadataLang;
+	QStringList langs;
+	QList<QPushButton*> langFlags;
 #ifdef INCLUDE_PRODUCT_VIEW
 	ProductView *productView;
 
@@ -129,6 +135,7 @@ public slots:
 	void loadAboutPage();
 
 private slots:
+	void changeLanguage(int lang);
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();

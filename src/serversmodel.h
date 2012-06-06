@@ -64,6 +64,7 @@ public slots:
 	void deleteDownloadQueue();
 	void saveQueue(QSettings *settings);
 	int loadQueue(QSettings *settings);
+	void retranslateMetadata(Item *item = 0);
 	void abort();
 protected:
 	QList<File*> getCheckedFiles(Item *item);

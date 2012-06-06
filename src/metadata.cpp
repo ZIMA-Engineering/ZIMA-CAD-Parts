@@ -86,9 +86,14 @@ void Metadata::refresh()
 	probeMetadata();
 }
 
+void Metadata::retranslate()
+{
+	refresh();
+}
+
 void Metadata::probeMetadata()
 {
-	QString currentlang = MainWindow::getCurrentLanguageCode().left(2);
+	QString currentlang = MainWindow::getCurrentMetadataLanguageCode().left(2);
 
 	metadata->beginGroup("params");
 	{

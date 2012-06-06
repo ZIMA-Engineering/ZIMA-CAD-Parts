@@ -7,5 +7,7 @@
         <file>data/zima-parts.html</file>
         <file>data/zima-parts_cs_CZ.html</file>
         <file>data/extensions/productview/productview.html</file>
+        <file>gfx/flags/cs.png</file>
+        <file>gfx/flags/en.png</file>
     </qresource>
 </RCC>
