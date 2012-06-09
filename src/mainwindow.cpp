@@ -213,6 +213,16 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(langButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(changeLanguage(int)));
 
+#ifdef Q_OS_MAC
+	QMenu *menu = new QMenu(this);
+	QAction *settingsAction = new QAction(tr("Preferences"), this);
+	settingsAction->setMenuRole(QAction::PreferencesRole);
+	connect(settingsAction, SIGNAL(triggered()), this, SLOT(showSettings()));
+
+	menu->addAction(settingsAction);
+	menuBar()->addMenu(menu);
+#endif
+
 	// Make shortcut Ctrl+C or Cmd+C available
 	QAction *copyAction = ui->techSpec->pageAction(QWebPage::Copy);
 	copyAction->setShortcut(QKeySequence::Copy);
