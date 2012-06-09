@@ -20,6 +20,7 @@
 
 #include <QStyle>
 #include "basedatasource.h"
+#include "mainwindow.h"
 
 BaseDataSource::BaseDataSource(QObject *parent) :
     QObject(parent)
@@ -27,7 +28,7 @@ BaseDataSource::BaseDataSource(QObject *parent) :
 	rootItem = 0;
 	dataSource = UNDEFINED;
 
-	techSpecIndexes << "index.html" << "index.htm";
+	retranslate();
 }
 
 Item* BaseDataSource::getRootItem()
@@ -50,6 +51,15 @@ QIcon BaseDataSource::dataSourceIcon()
 void BaseDataSource::deleteDownloadQueue()
 {
 
+}
+
+void BaseDataSource::retranslate(QString lang)
+{
+	if(lang.isEmpty())
+		lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+
+	techSpecIndexes.clear();
+	techSpecIndexes << QString("index_%1.html").arg(lang) << QString("index_%1.htm").arg(lang) << "index.html" << "index.htm";
 }
 
 void BaseDataSource::loadSettings(QSettings& settings)

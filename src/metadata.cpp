@@ -86,20 +86,23 @@ void Metadata::refresh()
 	probeMetadata();
 }
 
-void Metadata::retranslate()
+void Metadata::retranslate(QString lang)
 {
+	if(lang.isEmpty())
+		currentAppLang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+	else
+		currentAppLang = lang;
+
 	refresh();
 }
 
 void Metadata::probeMetadata()
 {
-	QString currentlang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-
 	metadata->beginGroup("params");
 	{
 		foreach(QString group, metadata->childGroups())
 		{
-			if(group == currentlang)
+			if(group == currentAppLang)
 			{
 				lang = group;
 				break;

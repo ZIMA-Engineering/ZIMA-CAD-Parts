@@ -23,10 +23,12 @@
 #include <QDebug>
 #include "baseremotedatasource.h"
 #include "localdatasource.h"
+#include "mainwindow.h"
 
 ServersModel::ServersModel(QObject *parent) : QAbstractItemModel(parent)
 {
 	rootItem = new Item();
+	lastTechSpecRequest = 0;
 
 //	ftpData = new FtpData(this);
 
@@ -315,6 +317,8 @@ void ServersModel::requestTechSpecs(const QModelIndex &index)
 	Item *i = static_cast<Item*>(index.internalPointer());
 
 	i->server->sendTechSpecUrl(i);
+
+	lastTechSpecRequest = i;
 }
 
 void ServersModel::loadItem(Item* item)
@@ -502,16 +506,23 @@ void ServersModel::retranslateMetadata(Item *item)
 	if(!item)
 		item = rootItem;
 
+	QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+
 	foreach(Item *i, item->children)
 	{
 		if(i->metadata)
 		{
-			i->metadata->retranslate();
+			i->metadata->retranslate(lang);
 			itemUpdated(i); // Maybe we should send only one signal for all items
 		}
 
 		retranslateMetadata(i);
 	}
+
+	foreach(BaseDataSource *ds, servers)
+		ds->retranslate(lang);
+
+	lastTechSpecRequest->server->sendTechSpecUrl(lastTechSpecRequest);
 }
 
 void ServersModel::dataSourceFinishedDownloading()

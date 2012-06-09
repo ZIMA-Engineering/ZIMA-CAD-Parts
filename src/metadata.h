@@ -35,12 +35,13 @@ public:
 
 public slots:
 	void refresh();
-	void retranslate();
+	void retranslate(QString lang = QString());
 
 private:
 	void probeMetadata();
 
 	QSettings *metadata;
+	QString currentAppLang;
 	QString lang;
 	QStringList columnLabels;
 	QString label;

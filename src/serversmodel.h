@@ -74,6 +74,7 @@ private:
 	QIcon dirIcon, serverIcon;
 	QVector<BaseDataSource*> servers;
 	Item *rootItem;
+	Item *lastTechSpecRequest;
 	QList<File*> downloadQueue;
 
 private slots:

@@ -69,6 +69,7 @@ public slots:
 	virtual void abort() = 0;
 	virtual void loadSettings(QSettings& settings);
 	virtual void deleteDownloadQueue();
+	void retranslate(QString lang = QString());
 	void saveSettings(QSettings& settings);
 protected:
 	virtual void loadItemLogo(Item *item) = 0;
