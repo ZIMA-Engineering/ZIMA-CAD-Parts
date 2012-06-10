@@ -74,7 +74,7 @@ public slots:
 protected:
 	virtual void loadItemLogo(Item *item) = 0;
 
-	QStringList techSpecIndexes;
+	QString currentMetadataLang;
 signals:
 	//void partDownloaded(Item*);
 	void itemInserted(Item*);

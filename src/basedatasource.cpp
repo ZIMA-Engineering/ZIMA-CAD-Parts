@@ -56,10 +56,9 @@ void BaseDataSource::deleteDownloadQueue()
 void BaseDataSource::retranslate(QString lang)
 {
 	if(lang.isEmpty())
-		lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-
-	techSpecIndexes.clear();
-	techSpecIndexes << QString("index_%1.html").arg(lang) << QString("index_%1.htm").arg(lang) << "index.html" << "index.htm";
+		currentMetadataLang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+	else
+		currentMetadataLang = lang;
 }
 
 void BaseDataSource::loadSettings(QSettings& settings)

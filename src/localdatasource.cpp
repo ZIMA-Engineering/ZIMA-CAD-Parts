@@ -26,6 +26,7 @@
 
 #include "localdatasource.h"
 #include "metadata.h"
+#include "mainwindow.h"
 
 LocalCopier::LocalCopier(QList<File*> files) :
 	files(files)
@@ -197,23 +198,34 @@ void LocalDataSource::loadDirectory(Item* item)
 
 void LocalDataSource::sendTechSpecUrl(Item* item)
 {
-	int s = techSpecIndexes.size();
+	QStringList filters;
+	filters << "index_??.html" << "index_??.htm" << "index.html" << "index.htm";
 
-	for(int i = 0; i < s; i++)
+	QDir dir(item->path + TECHSPEC_DIR);
+	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
+
+	if(indexes.isEmpty())
 	{
-		QString indexPath = item->path + TECHSPEC_DIR + "/" + techSpecIndexes[i];
+		if( item == rootItem )
+			emit techSpecAvailable(QUrl("about:blank"));
+		else
+			sendTechSpecUrl(item->parent);
 
-		if( QFile::exists(indexPath) )
-		{
-			emit techSpecAvailable( QUrl::fromLocalFile(indexPath) );
-			return;
-		}
+		return;
 	}
 
-	if( item == rootItem )
-		emit techSpecAvailable( QUrl("about:blank") );
-	else
-		sendTechSpecUrl(item->parent);
+	QString selectedIndex = indexes.first();
+	indexes.removeFirst();
+
+	foreach(QString index, indexes)
+	{
+		QString prefix = index.section('.', 0, 0);
+
+		if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == currentMetadataLang)
+			selectedIndex = index;
+	}
+
+	emit techSpecAvailable(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
 }
 
 void LocalDataSource::addFileToDownload(File *f)
