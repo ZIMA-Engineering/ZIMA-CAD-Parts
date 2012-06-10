@@ -55,7 +55,7 @@ void BaseRemoteDataSource::checkAndSendTechSpecUrl(Item *item)
 	QStringList filters;
 	filters << "index_??.html" << "index_??.htm" << "index.html" << "index.htm";
 
-	QDir dir(cacheDirPath() + "/" + remoteHost + "/" + item->path + "/" + TECHSPEC_DIR);
+	QDir dir(getTechSpecPathForItem(item));
 	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
 
 	if(indexes.isEmpty())
@@ -93,6 +93,16 @@ void BaseRemoteDataSource::loadItemLogo(Item *item)
 		item->logo = QPixmap(logoPath + LOGO_TEXT_FILE);
 		item->showText = true;
 	}
+}
+
+QString BaseRemoteDataSource::getTechSpecPathForItem(Item *item)
+{
+	return getPathForItem(item) + "/" + TECHSPEC_DIR;
+}
+
+QString BaseRemoteDataSource::getPathForItem(Item *item)
+{
+	return cacheDirPath() + "/" + remoteHost + "/" + item->path;
 }
 
 void BaseRemoteDataSource::loadSettings(QSettings& settings)

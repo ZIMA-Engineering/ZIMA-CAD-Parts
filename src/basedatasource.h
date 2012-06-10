@@ -69,10 +69,14 @@ public slots:
 	virtual void abort() = 0;
 	virtual void loadSettings(QSettings& settings);
 	virtual void deleteDownloadQueue();
+	void assignThumbnailsToFiles(Item *item, QStringList thumbnails = QStringList());
 	void retranslate(QString lang = QString());
 	void saveSettings(QSettings& settings);
 protected:
 	virtual void loadItemLogo(Item *item) = 0;
+	virtual QString getTechSpecPathForItem(Item *item) = 0;
+	virtual QString getPathForItem(Item *item) = 0;
+
 
 	QString currentMetadataLang;
 signals:
@@ -85,7 +89,7 @@ signals:
 	void fileProgress(File*);
 	void fileDownloaded(File*);
 	void filesDownloaded(); //TODO: identify this somehow
-	void gotThumbnail(File*);
+	void thumbnailLoaded(File*);
 	void statusUpdated(QString);
 	void techSpecAvailable(QUrl);
 	void metadataReady(Item*);

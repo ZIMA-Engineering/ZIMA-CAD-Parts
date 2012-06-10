@@ -414,7 +414,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 
 		// Check & download thumbnails
 		// Make sure this is done before calling ftpListItemInQueue(), since all thumbnails MUST be in download queue before another dir listing
-		foreach(File* file, ftpCurrentItem->files)
+		/*foreach(File* file, ftpCurrentItem->files)
 		{
 			for(int i = 0; i < thumbnails.size(); i++)
 			{
@@ -452,7 +452,36 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 				}
 
 			}
+		}*/
+
+		QStringList thumbnailNames;
+
+		foreach(File *thumb, thumbnails)
+		{
+			thumbnailNames << thumb->name;
+
+			QString thumbPath = cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path + "/" + thumb->name;
+			QFileInfo fi(thumbPath);
+
+			if( !QFile::exists(thumbPath) || thumb->lastModified > fi.lastModified().toUTC() )
+			{
+				if(thumb->openFtpFile)
+					break;
+
+				QDir dir;
+				dir.mkpath(cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path);
+
+				QFile *f = new QFile(thumbPath);
+				f->open(QFile::WriteOnly);
+
+				thumb->openFtpFile = f;
+				thumb->pixmapPath = thumbPath;
+
+				partPicTasks[ ftp->get(remoteBaseDir + "/" + thumb->name, f) ] = thumb;
+			}
 		}
+
+		assignThumbnailsToFiles(ftpCurrentItem, thumbnailNames);
 
 		// Start browsing next folder in dirsToList
 		if(!hasTechSpecDir && partPicTasks.isEmpty())
@@ -525,7 +554,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 				if( f->pixmapPath == thumb->pixmapPath )
 				{
 					f->pixmap = QPixmap(thumb->pixmapPath);
-					emit gotThumbnail(f);
+					emit thumbnailLoaded(f);
 				}
 			}
 		}

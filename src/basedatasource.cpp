@@ -19,6 +19,8 @@
 */
 
 #include <QStyle>
+#include <QDir>
+#include <QDebug>
 #include "basedatasource.h"
 #include "mainwindow.h"
 
@@ -27,8 +29,6 @@ BaseDataSource::BaseDataSource(QObject *parent) :
 {
 	rootItem = 0;
 	dataSource = UNDEFINED;
-
-	retranslate();
 }
 
 Item* BaseDataSource::getRootItem()
@@ -51,6 +51,65 @@ QIcon BaseDataSource::dataSourceIcon()
 void BaseDataSource::deleteDownloadQueue()
 {
 
+}
+
+void BaseDataSource::assignThumbnailsToFiles(Item *item, QStringList thumbnails)
+{
+	QString itemPath = getPathForItem(item);
+
+	if(thumbnails.isEmpty())
+	{
+		QStringList filters;
+		filters << "*.jpg" << "*.png";
+
+		QDir dir(itemPath);
+		thumbnails = dir.entryList(filters, QDir::Files | QDir::Readable);
+	}
+
+	if(!item->files.isEmpty() && !thumbnails.isEmpty())
+	{
+		foreach(File *f, item->files)
+		{
+			f->pixmapPath = "";
+
+			QString fileNamePrefix = f->name.section('.', 0, 0);
+
+			foreach(QString thumb, thumbnails)
+			{
+				QString thumbPrefix = thumb.section('.', -2, -2);
+				QString thumbName;
+				bool isLocalized = false;
+
+				if(thumbPrefix.lastIndexOf('_') == thumbPrefix.count()-3)
+				{
+					thumbName = thumbPrefix.left(thumbPrefix.count()-3);
+					isLocalized = true;
+				} else thumbName = thumbPrefix;
+
+				if(fileNamePrefix == thumbName)
+				{
+					// When there's no thumbnail set yet, pick first available
+					if(f->pixmapPath.isEmpty())
+						f->pixmapPath = itemPath + "/" + thumb;
+
+					// Localized thumbnail has precedence
+					if(isLocalized && thumbPrefix.right(2) == currentMetadataLang)
+					{
+						f->pixmapPath = itemPath + "/" + thumb;
+						break;
+					}
+				}
+			}
+
+			if(!f->pixmapPath.isEmpty())
+			{
+				f->pixmap = QPixmap(f->pixmapPath).scaledToWidth(100);
+
+				if(!f->pixmap.isNull())
+					emit thumbnailLoaded(f);
+			}
+		}
+	}
 }
 
 void BaseDataSource::retranslate(QString lang)

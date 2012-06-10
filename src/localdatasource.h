@@ -67,6 +67,8 @@ public slots:
 
 protected:
 	void loadItemLogo(Item *item);
+	QString getTechSpecPathForItem(Item *item);
+	QString getPathForItem(Item *item);
 
 	LocalCopier *copier;
 

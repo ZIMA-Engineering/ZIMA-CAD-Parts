@@ -161,7 +161,7 @@ void SettingsDialog::addDataSource()
 
 			m_ui->listFtp->addItem(currentServer->lwItem);
 			m_ui->listFtp->setCurrentItem(currentServer->lwItem);
-		}
+		} else delete dataSource;
 
 		delete addEdit;
 	}

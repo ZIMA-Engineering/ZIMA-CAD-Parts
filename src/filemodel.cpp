@@ -176,7 +176,7 @@ void FileModel::setRootIndex(const QModelIndex &index)
 {
 	if( rootItem )
 	{
-		disconnect(rootItem->server, SIGNAL(gotThumbnail(File*)), this, SLOT(thumbnailDownloaded(File*)));
+		disconnect(rootItem->server, SIGNAL(thumbnailLoaded(File*)), this, SLOT(thumbnailDownloaded(File*)));
 		disconnect(rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(initMetadata(Item*)));
 	}
 
@@ -189,7 +189,7 @@ void FileModel::setRootIndex(const QModelIndex &index)
 
 	//emit layoutAboutToBeChanged();
 	rootItem = static_cast<Item*>(index.internalPointer());
-	connect(rootItem->server, SIGNAL(gotThumbnail(File*)), this, SLOT(thumbnailDownloaded(File*)));
+	connect(rootItem->server, SIGNAL(thumbnailLoaded(File*)), this, SLOT(thumbnailDownloaded(File*)));
 	connect(rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(initMetadata(Item*)));
 
 	if(rootItem->metadata)
@@ -236,6 +236,8 @@ void FileModel::setPreviewWidth(int size)
 
 void FileModel::thumbnailDownloaded(File *file)
 {
+	file->scaledThumb = QPixmap();
+
 	QModelIndex mi = index( file->parentItem->files.indexOf(file), 1 );
 
 	emit dataChanged(mi, mi);

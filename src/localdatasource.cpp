@@ -125,6 +125,16 @@ void LocalDataSource::loadItemLogo(Item *item)
 	}
 }
 
+QString LocalDataSource::getTechSpecPathForItem(Item *item)
+{
+	return getPathForItem(item) + TECHSPEC_DIR;
+}
+
+QString LocalDataSource::getPathForItem(Item *item)
+{
+	return item->path;
+}
+
 void LocalDataSource::loadDirectory(Item* item)
 {
 	if(!item->children.isEmpty() || !item->files.isEmpty())
@@ -180,18 +190,47 @@ void LocalDataSource::loadDirectory(Item* item)
 	}
 
 	// Check for thumbnails
-	foreach(File *f, item->files)
-	{
-		for(int i = 0; i < thumbnails.count(); i++)
-		{
-			if( f->name.section('.', 0, 0) == thumbnails[i].section('.', -2, -2) )
-			{
-				//qDebug() << "Found pixmap for" << f->name << item->path + thumbnails[i];
-				f->pixmapPath = item->path + thumbnails[i];
-				f->pixmap = QPixmap(f->pixmapPath).scaledToWidth(100);
-			}
-		}
-	}
+//	if(!item->files.isEmpty() && !thumbnails.isEmpty())
+//	{
+//		foreach(File *f, item->files)
+//		{
+//			f->pixmapPath = "";
+
+//			QString fileNamePrefix = f->name.section('.', 0, 0);
+
+//			for(int i = 0; i < thumbnails.count(); i++)
+//			{
+//				QString thumbPrefix = thumbnails[i].section('.', -2, -2);
+//				QString thumbName;
+//				bool isLocalized = false;
+
+//				if(thumbPrefix.lastIndexOf('_') == thumbPrefix.count()-3)
+//				{
+//					thumbName = thumbPrefix.left(thumbPrefix.count()-3);
+//					isLocalized = true;
+//				} else thumbName = thumbPrefix;
+
+//				if(fileNamePrefix == thumbName)
+//				{
+//					// When there's no thumbnail set yet, pick first available
+//					if(f->pixmapPath.isEmpty())
+//						f->pixmapPath = item->path + thumbnails[i];
+
+//					// Localized thumbnail has precedence/
+//					if(isLocalized && thumbPrefix.right(2) == currentMetadataLang)
+//					{
+//						f->pixmapPath = item->path + thumbnails[i];
+//						break;
+//					}
+//				}
+//			}
+
+//			if(!f->pixmapPath.isEmpty())
+//				f->pixmap = QPixmap(f->pixmapPath).scaledToWidth(100);
+//		}
+//	}
+
+	assignThumbnailsToFiles(item, thumbnails);
 
 	emit itemLoaded(item);
 }
@@ -201,7 +240,7 @@ void LocalDataSource::sendTechSpecUrl(Item* item)
 	QStringList filters;
 	filters << "index_??.html" << "index_??.htm" << "index.html" << "index.htm";
 
-	QDir dir(item->path + TECHSPEC_DIR);
+	QDir dir(getTechSpecPathForItem(item));
 	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
 
 	if(indexes.isEmpty())

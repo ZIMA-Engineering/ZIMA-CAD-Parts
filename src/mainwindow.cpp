@@ -292,6 +292,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
 
 	static_cast<ServersModel*>(ui->treeLeft->model())->saveQueue(settings);
 
+	qDeleteAll(servers);
+
 	QMainWindow::closeEvent(e);
 }
 
@@ -346,7 +348,13 @@ void MainWindow::showSettings()
 		fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
 		fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
 
+		QString currentLang = getCurrentMetadataLanguageCode();
+		foreach(BaseDataSource *ds, servers)
+			ds->retranslate(currentLang);
+
 		loadAboutPage();
+
+		allItemsLoaded();
 
 #ifdef INCLUDE_PRODUCT_VIEW
 		showOrHideProductView();
@@ -566,6 +574,7 @@ void MainWindow::loadSettings()
 
 QVector<BaseDataSource*> MainWindow::loadDataSources()
 {
+	QString currentLang = getCurrentMetadataLanguageCode().left(2);
 	QVector<BaseDataSource*> servers;
 
 	settings->beginGroup("DataSources");
@@ -585,6 +594,8 @@ QVector<BaseDataSource*> MainWindow::loadDataSources()
 			s->loadSettings(*settings);
 			servers.append(s);
 		}
+
+		servers.last()->retranslate(currentLang);
 
 		settings->endGroup();
 	}

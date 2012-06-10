@@ -51,6 +51,8 @@ public slots:
 	void saveSettings(QSettings& settings);
 protected:
 	void loadItemLogo(Item *item);
+	QString getTechSpecPathForItem(Item *item);
+	QString getPathForItem(Item *item);
 	void checkAndSendTechSpecUrl(Item *item);
 
 	Item *techSpecItem;

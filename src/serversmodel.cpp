@@ -503,10 +503,18 @@ int ServersModel::loadQueue(QSettings *settings)
 
 void ServersModel::retranslateMetadata(Item *item)
 {
+	QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+
 	if(!item)
+	{
 		item = rootItem;
 
-	QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+		foreach(BaseDataSource *ds, servers)
+			ds->retranslate(lang);
+
+		lastTechSpecRequest->server->sendTechSpecUrl(lastTechSpecRequest);
+		lastTechSpecRequest->server->assignThumbnailsToFiles(lastTechSpecRequest);
+	}
 
 	foreach(Item *i, item->children)
 	{
@@ -518,11 +526,6 @@ void ServersModel::retranslateMetadata(Item *item)
 
 		retranslateMetadata(i);
 	}
-
-	foreach(BaseDataSource *ds, servers)
-		ds->retranslate(lang);
-
-	lastTechSpecRequest->server->sendTechSpecUrl(lastTechSpecRequest);
 }
 
 void ServersModel::dataSourceFinishedDownloading()
