@@ -103,7 +103,7 @@ void BaseDataSource::assignThumbnailsToFiles(Item *item, QStringList thumbnails)
 
 			if(!f->pixmapPath.isEmpty())
 			{
-				f->pixmap = QPixmap(f->pixmapPath).scaledToWidth(100);
+				f->pixmap = QPixmap(f->pixmapPath);
 
 				if(!f->pixmap.isNull())
 					emit thumbnailLoaded(f);

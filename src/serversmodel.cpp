@@ -512,8 +512,11 @@ void ServersModel::retranslateMetadata(Item *item)
 		foreach(BaseDataSource *ds, servers)
 			ds->retranslate(lang);
 
-		lastTechSpecRequest->server->sendTechSpecUrl(lastTechSpecRequest);
-		lastTechSpecRequest->server->assignThumbnailsToFiles(lastTechSpecRequest);
+		if(lastTechSpecRequest)
+		{
+			lastTechSpecRequest->server->sendTechSpecUrl(lastTechSpecRequest);
+			lastTechSpecRequest->server->assignThumbnailsToFiles(lastTechSpecRequest);
+		}
 	}
 
 	foreach(Item *i, item->children)

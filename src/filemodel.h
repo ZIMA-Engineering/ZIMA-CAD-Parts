@@ -65,6 +65,8 @@ private:
 
 private slots:
 	void thumbnailDownloaded(File *file);
+	void itemLoaded(Item *item);
+	void metadataRetranslated();
 
 signals:
 

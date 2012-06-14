@@ -58,12 +58,12 @@ public:
 	void saveSettings();
 
 	QVector<BaseDataSource*> getData();
+	static QString langIndexToName(int lang);
+	static int langIndex(QString lang);
 
 protected:
 	virtual void changeEvent(QEvent *e);
 	void updateServerList();
-	int langIndex(QString lang);
-	QString langIndexToName(int lang);
 
 private slots:
 	void addDataSource();

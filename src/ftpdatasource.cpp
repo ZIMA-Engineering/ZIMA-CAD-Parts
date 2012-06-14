@@ -171,6 +171,8 @@ void FtpDataSource::ftpListItemInQueue()
 	if(ftpListId != -1 && !dirsToList.isEmpty() && ftpCurrentItem == dirsToList.first())
 	{
 		//qDebug() << "removing" << dirsToList.first()->path << "from dirstolist";
+		emit itemLoaded(dirsToList.first());
+
 		dirsToList.removeFirst();
 	}
 

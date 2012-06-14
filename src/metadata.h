@@ -21,13 +21,15 @@
 #ifndef METADATA_H
 #define METADATA_H
 
+#include <QObject>
 #include <QSettings>
 #include <QStringList>
 
-class Metadata
+class Metadata : public QObject
 {
+	Q_OBJECT
 public:
-	Metadata(QString metadataPath);
+	explicit Metadata(QString metadataPath, QObject *parent = 0);
 	~Metadata();
 	QString getLabel();
 	QStringList getColumnLabels();
@@ -45,6 +47,9 @@ private:
 	QString lang;
 	QStringList columnLabels;
 	QString label;
+
+signals:
+	void retranslated();
 };
 
 #endif // METADATA_H

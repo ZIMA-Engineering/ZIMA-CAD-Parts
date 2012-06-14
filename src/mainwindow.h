@@ -119,7 +119,7 @@ public slots:
 	void searchClicked();
 	void serverSelected(const QModelIndex&);
 	void updateStatus(QString);
-	void treeExpandedOrCollaped(const QModelIndex&);
+	void treeExpandedOrCollaped();
 	void serverLoaded();
 	void loadingItem(Item *item);
 	void itemLoaded(const QModelIndex&);

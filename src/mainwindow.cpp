@@ -91,6 +91,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ServersModel *sm = new ServersModel(this);
 	sm->setServerData(servers);
+	sm->retranslateMetadata();
 	ui->treeLeft->setModel(sm);
 
 	connect(sm, SIGNAL(loadingItem(Item*)), this, SLOT(loadingItem(Item*)));
@@ -348,9 +349,10 @@ void MainWindow::showSettings()
 		fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
 		fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
 
-		QString currentLang = getCurrentMetadataLanguageCode();
-		foreach(BaseDataSource *ds, servers)
-			ds->retranslate(currentLang);
+		int langIndex = SettingsDialog::langIndex(getCurrentLanguageCode()) - 1;
+
+		langButtonGroup->button(langIndex)->setChecked(true);
+		changeLanguage(langIndex);
 
 		loadAboutPage();
 
@@ -382,7 +384,7 @@ void MainWindow::searchClicked()
 	QMessageBox::information(this, "ZimaParts", "Not yet implemented");
 }
 
-void MainWindow::treeExpandedOrCollaped(const QModelIndex &i)
+void MainWindow::treeExpandedOrCollaped()
 {
 	int columnCnt = ui->tree->model()->columnCount(QModelIndex());
 	for (int i = 0; i < columnCnt; i++)
@@ -427,14 +429,22 @@ void MainWindow::itemLoaded(const QModelIndex &index)
 //	QApplication::restoreOverrideCursor();
 //	ui->treeLeft->setEnabled(true);
 	ui->btnUpdate->setEnabled(true);
-	treeExpandedOrCollaped(index);
 
+	// I think we don't need to do anything here
 	Item *i = static_cast<Item*>(index.internalPointer());
 
 	if(i == fm->getRootItem())
-		fm->setRootIndex(index);
+	{
+		treeExpandedOrCollaped();
 
-	//qDebug() << "Loaded" << i->name;
+		if(ui->tree->columnWidth(0) < 100)
+			ui->tree->setColumnWidth(0, 200);
+	}
+
+//	if(i == fm->getRootItem())
+//		fm->setRootIndex(index);
+
+//	qDebug() << "Loaded" << i->name;
 }
 
 void MainWindow::allItemsLoaded()
@@ -565,6 +575,8 @@ void MainWindow::changeLanguage(int lang)
 	currentMetadataLang = langs[lang];
 
 	static_cast<ServersModel*>(ui->treeLeft->model())->retranslateMetadata();
+
+	treeExpandedOrCollaped();
 }
 
 void MainWindow::loadSettings()
@@ -594,8 +606,6 @@ QVector<BaseDataSource*> MainWindow::loadDataSources()
 			s->loadSettings(*settings);
 			servers.append(s);
 		}
-
-		servers.last()->retranslate(currentLang);
 
 		settings->endGroup();
 	}

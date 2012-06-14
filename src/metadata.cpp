@@ -24,10 +24,12 @@
 #include "metadata.h"
 #include "mainwindow.h"
 
-Metadata::Metadata(QString metadataPath)
+Metadata::Metadata(QString metadataPath, QObject *parent) : QObject(parent)
 {
 	metadata = new QSettings(metadataPath, QSettings::IniFormat);
 	metadata->setIniCodec("utf-8");
+
+	currentAppLang = MainWindow::getCurrentMetadataLanguageCode().left(2);
 
 	probeMetadata();
 }
@@ -94,6 +96,8 @@ void Metadata::retranslate(QString lang)
 		currentAppLang = lang;
 
 	refresh();
+
+	emit retranslated();
 }
 
 void Metadata::probeMetadata()

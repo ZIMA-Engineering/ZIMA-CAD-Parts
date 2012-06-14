@@ -93,6 +93,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		case Qt::SizeHintRole:
 			if( !rootItem->files.at( row )->pixmap.isNull() )
                                 return QSize(thumbWidth, thumbWidth);
+			else return QSize(thumbWidth, 0);
 		case Qt::ToolTipRole:
 			if( !rootItem->files.at( row )->pixmap.isNull() )
 				return QString("<img src=\"%1\" width=\"%2\">").arg( rootItem->files.at( row )->pixmapPath ).arg( previewWidth );
@@ -178,6 +179,10 @@ void FileModel::setRootIndex(const QModelIndex &index)
 	{
 		disconnect(rootItem->server, SIGNAL(thumbnailLoaded(File*)), this, SLOT(thumbnailDownloaded(File*)));
 		disconnect(rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(initMetadata(Item*)));
+		disconnect(rootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(itemLoaded(Item*)));
+
+		if(rootItem->metadata)
+			disconnect(rootItem->metadata, SIGNAL(retranslated()), this, SLOT(metadataRetranslated()));
 	}
 
 	if( !index.isValid() )
@@ -191,6 +196,7 @@ void FileModel::setRootIndex(const QModelIndex &index)
 	rootItem = static_cast<Item*>(index.internalPointer());
 	connect(rootItem->server, SIGNAL(thumbnailLoaded(File*)), this, SLOT(thumbnailDownloaded(File*)));
 	connect(rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(initMetadata(Item*)));
+	connect(rootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(itemLoaded(Item*)));
 
 	if(rootItem->metadata)
 		initMetadata(rootItem);
@@ -209,6 +215,8 @@ void FileModel::initMetadata(Item *i)
 {
 	if(i != rootItem)
 		return;
+
+	connect(rootItem->metadata, SIGNAL(retranslated()), this, SLOT(metadataRetranslated()));
 
 	colLabels = rootItem->metadata->getColumnLabels();
 
@@ -241,4 +249,19 @@ void FileModel::thumbnailDownloaded(File *file)
 	QModelIndex mi = index( file->parentItem->files.indexOf(file), 1 );
 
 	emit dataChanged(mi, mi);
+}
+
+void FileModel::itemLoaded(Item *item)
+{
+	if(item == rootItem)
+	{
+		reset();
+	}
+}
+
+void FileModel::metadataRetranslated()
+{
+	colLabels = rootItem->metadata->getColumnLabels();
+
+	emit headerDataChanged(Qt::Horizontal, 2, colLabels.count()-1);
 }
