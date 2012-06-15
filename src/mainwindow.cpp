@@ -110,6 +110,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
 	fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
 
+	connect(fm, SIGNAL(requestColumnResize()), this, SLOT(treeExpandedOrCollaped()));
+
 	proxy = new QSortFilterProxyModel(this);
 	proxy->setSourceModel(fm);
 
@@ -391,20 +393,11 @@ void MainWindow::treeExpandedOrCollaped()
 		ui->tree->resizeColumnToContents(i);
 }
 
-void MainWindow::serverLoaded()
-{
-//	for (int i=0; i<ui->tree->model()->columnCount(QModelIndex()); i++)
-//		ui->tree->resizeColumnToContents(i);
-}
-
 void MainWindow::serverSelected(const QModelIndex &i)
 {
 	if (i.internalPointer())
 	{
 		Item* item = static_cast<Item*>(i.internalPointer());
-
-//		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-//		ui->treeLeft->setEnabled(false);
 
 		static_cast<ServersModel*>(ui->treeLeft->model())->loadItem(item);
 	}
@@ -417,7 +410,6 @@ void MainWindow::updateStatus(QString str)
 
 void MainWindow::loadingItem(Item *item)
 {
-	//QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	setCursor(QCursor(Qt::WaitCursor));
 
 	statusDir->setText(tr("Loading %1...").arg(item->getLabel()));
@@ -425,26 +417,7 @@ void MainWindow::loadingItem(Item *item)
 
 void MainWindow::itemLoaded(const QModelIndex &index)
 {
-	//ui->treeLeft->expand(index);
-//	QApplication::restoreOverrideCursor();
-//	ui->treeLeft->setEnabled(true);
 	ui->btnUpdate->setEnabled(true);
-
-	// I think we don't need to do anything here
-	Item *i = static_cast<Item*>(index.internalPointer());
-
-	if(i == fm->getRootItem())
-	{
-		treeExpandedOrCollaped();
-
-		if(ui->tree->columnWidth(0) < 100)
-			ui->tree->setColumnWidth(0, 200);
-	}
-
-//	if(i == fm->getRootItem())
-//		fm->setRootIndex(index);
-
-//	qDebug() << "Loaded" << i->name;
 }
 
 void MainWindow::allItemsLoaded()
@@ -575,8 +548,6 @@ void MainWindow::changeLanguage(int lang)
 	currentMetadataLang = langs[lang];
 
 	static_cast<ServersModel*>(ui->treeLeft->model())->retranslateMetadata();
-
-	treeExpandedOrCollaped();
 }
 
 void MainWindow::loadSettings()

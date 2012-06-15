@@ -225,6 +225,8 @@ void FileModel::initMetadata(Item *i)
 	beginInsertColumns(QModelIndex(), 2, 2 + colLabels.count());
 	endInsertColumns();
 	//emit headerDataChanged(Qt::Horizontal, 2, 2 + colLabels.count());
+
+	emit requestColumnResize();
 }
 
 Item* FileModel::getRootItem()
@@ -256,6 +258,7 @@ void FileModel::itemLoaded(Item *item)
 	if(item == rootItem)
 	{
 		reset();
+		emit requestColumnResize();
 	}
 }
 
@@ -264,4 +267,5 @@ void FileModel::metadataRetranslated()
 	colLabels = rootItem->metadata->getColumnLabels();
 
 	emit headerDataChanged(Qt::Horizontal, 2, colLabels.count()-1);
+	emit requestColumnResize();
 }

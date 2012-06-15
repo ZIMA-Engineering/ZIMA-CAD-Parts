@@ -69,7 +69,7 @@ private slots:
 	void metadataRetranslated();
 
 signals:
-
+	void requestColumnResize();
 };
 
 #endif // FILEMODEL_H

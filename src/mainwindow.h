@@ -120,7 +120,6 @@ public slots:
 	void serverSelected(const QModelIndex&);
 	void updateStatus(QString);
 	void treeExpandedOrCollaped();
-	void serverLoaded();
 	void loadingItem(Item *item);
 	void itemLoaded(const QModelIndex&);
 	void allItemsLoaded();
