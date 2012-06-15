@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -21,7 +21,7 @@
 #ifndef PRODUCTVIEW_H
 #define PRODUCTVIEW_H
 
-#include "../../zima-parts.h"
+#include "../../zima-cad-parts.h"
 
 #ifdef INCLUDE_PRODUCT_VIEW
 

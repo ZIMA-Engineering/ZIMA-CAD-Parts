@@ -14,7 +14,7 @@
    <string>Add new data source</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../zima-parts.qrc">
+   <iconset resource="../zima-cad-parts.qrc">
     <normaloff>:/gfx/icon.png</normaloff>:/gfx/icon.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -256,7 +256,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../zima-parts.qrc"/>
+  <include location="../zima-cad-parts.qrc"/>
  </resources>
  <connections>
   <connection>

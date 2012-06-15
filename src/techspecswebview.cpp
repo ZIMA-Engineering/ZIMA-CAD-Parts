@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -37,7 +37,7 @@ TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
 	layout->addWidget(webview);
 
 	popup->setLayout(layout);
-	popup->setWindowTitle(tr("ZIMA-Parts Technical Specifications"));
+	popup->setWindowTitle(tr("ZIMA-CAD-Parts Technical Specifications"));
 
 	if(type == QWebPage::WebModalDialog)
 		popup->setModal(true);

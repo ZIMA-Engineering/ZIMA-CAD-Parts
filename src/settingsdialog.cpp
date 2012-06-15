@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -94,7 +94,7 @@ void SettingsDialog::saveSettings()
 		qApp->removeTranslator(*translator);
 
 		QTranslator *t = new QTranslator(parent());
-		QString filename = "zima-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
+		QString filename = "zima-cad-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
 		QStringList paths;
 
 		paths

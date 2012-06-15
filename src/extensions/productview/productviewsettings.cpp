@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -46,7 +46,7 @@ ProductViewSettings::~ProductViewSettings()
 
 void ProductViewSettings::setPathDialog()
 {
-	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-Parts - set ProductView path"), ui->pathLineEdit->text());
+	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set ProductView path"), ui->pathLineEdit->text());
 	if (!str.isEmpty())
 		ui->pathLineEdit->setText(str);
 }

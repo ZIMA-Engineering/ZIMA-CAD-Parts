@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -17,6 +17,7 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 #ifndef BASEDATASOURCE_H
 #define BASEDATASOURCE_H
 

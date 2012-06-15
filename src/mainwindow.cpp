@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -276,7 +276,7 @@ void MainWindow::changeEvent(QEvent *event)
 	if (event->type() == QEvent::LanguageChange) {
 		ui->retranslateUi(this);
 
-		if( ui->techSpec->url().path().startsWith("/data/zima-parts") )
+		if( ui->techSpec->url().path().startsWith("/data/zima-cad-parts") )
 			loadAboutPage();
 	} else QMainWindow::changeEvent(event);
 }
@@ -318,7 +318,7 @@ void MainWindow::downloadButton()
 
 void MainWindow::setWorkingDirectory()
 {
-	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-Parts - set working directory"), ui->editDir->text());
+	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set working directory"), ui->editDir->text());
 	if (!str.isEmpty())
 	{
 		settings->setValue("WorkingDir", str);
@@ -528,7 +528,7 @@ void MainWindow::rebuildFilters()
 
 void MainWindow::loadAboutPage()
 {
-	QString url = ":/data/zima-parts%1.html";
+	QString url = ":/data/zima-cad-parts%1.html";
 	QString locale = settings->value("Language").toString();
 	QString localized = url.arg("_" + (locale == "detect" ? QLocale::system().name() : locale));
 	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
@@ -552,7 +552,7 @@ void MainWindow::changeLanguage(int lang)
 
 void MainWindow::loadSettings()
 {
-	ui->editDir->setText(settings->value("WorkingDir", QDir::homePath() + "/ZIMA-Parts").toString());
+	ui->editDir->setText(settings->value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
 }
 
 QVector<BaseDataSource*> MainWindow::loadDataSources()

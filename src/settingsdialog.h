@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -26,7 +26,7 @@
 #include <QMultiHash>
 #include <QVector>
 #include <QTranslator>
-#include "zima-parts.h"
+#include "zima-cad-parts.h"
 #include "basedatasource.h"
 #include "ftpdatasource.h"
 #include "localdatasource.h"

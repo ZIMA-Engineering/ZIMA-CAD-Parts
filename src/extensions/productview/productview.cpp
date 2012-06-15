@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -76,7 +76,7 @@ void ProductView::fileDownloaded(File *f)
 		html.replace("%FILE_PATH%", f->targetPath);
 		html.replace("%PRODUCTVIEW_PATH%", settings->value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
 
-		QTemporaryFile tmp(QDir::tempPath() + "/zima-parts_XXXXXX_" + f->name + ".html");
+		QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->name + ".html");
 
 		if(tmp.open())
 		{

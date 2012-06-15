@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -29,11 +29,11 @@
 
 int main(int argc, char *argv[])
 {
-	Q_INIT_RESOURCE(zima_parts);
+	Q_INIT_RESOURCE(zima_cad_parts);
 
 	QCoreApplication::setOrganizationName("ZIMA-Construction");
 	QCoreApplication::setOrganizationDomain("zima-contruction.cz");
-	QCoreApplication::setApplicationName("ZIMA-Parts");
+	QCoreApplication::setApplicationName("ZIMA-CAD-Parts");
 
 	QApplication a(argc, argv);
 
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 	QSettings *settings = new QSettings();
 	QString lang = settings->value("Language", "detect").toString();
 
-	QString filename = "zima-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
+	QString filename = "zima-cad-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
 	QStringList paths;
 
 	paths

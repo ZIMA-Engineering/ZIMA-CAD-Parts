@@ -1,5 +1,5 @@
 /*
-  ZIMA-Parts
+  ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
 
   Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
@@ -32,7 +32,7 @@
 #include <QButtonGroup>
 #include "settingsdialog.h"
 #include "filemodel.h"
-#include "zima-parts.h"
+#include "zima-cad-parts.h"
 
 #ifdef INCLUDE_PRODUCT_VIEW
 #include "extensions/productview/productview.h"
