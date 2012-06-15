@@ -6,112 +6,112 @@
     <message>
         <location filename="../src/addeditdatasource.ui" line="14"/>
         <source>Add new data source</source>
-        <translation type="unfinished">Přidat nový zdroj dat</translation>
+        <translation>Přidat nový zdroj dat</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="27"/>
         <source>Local folder</source>
-        <translation type="unfinished">Lokální složka</translation>
+        <translation>Lokální složka</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="32"/>
         <source>FTP - File Transfer Protocol</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="46"/>
         <source>General settings</source>
-        <translation type="unfinished">Obecné nastavení</translation>
+        <translation>Obecné nastavení</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="52"/>
         <source>Label</source>
-        <translation type="unfinished">Popisek</translation>
+        <translation>Popisek</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="72"/>
         <source>Local folder settings</source>
-        <translation type="unfinished">Nastavení lokální složky</translation>
+        <translation>Nastavení lokální složky</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="78"/>
         <source>Path</source>
-        <translation type="unfinished">Cesta</translation>
+        <translation>Cesta</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="88"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="115"/>
         <source>FTP server settings</source>
-        <translation type="unfinished">Nastavení FTP serveru</translation>
+        <translation>Nastavení FTP serveru</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="121"/>
         <source>Server address</source>
-        <translation type="unfinished">Adresa serveru</translation>
+        <translation>Adresa serveru</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="128"/>
         <source>localhost</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="135"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="142"/>
         <source>21</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="149"/>
         <source>/</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="156"/>
         <source>Base directory</source>
-        <translation type="unfinished">Složka</translation>
+        <translation>Složka</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="163"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="177"/>
         <source>Password</source>
-        <translation type="unfinished">Heslo</translation>
+        <translation>Heslo</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="194"/>
         <source>Passive mode</source>
-        <translation type="unfinished">Pasivní mód</translation>
+        <translation>Pasivní mód</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="204"/>
         <source>(Leave both fields blank for anonymous login)</source>
-        <translation type="unfinished">(Pro anonymní login nechte obě políčka prázdné)</translation>
+        <translation>(Pro anonymní login nechte obě políčka prázdné)</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.ui" line="217"/>
         <source>&lt;strong&gt;WARNING: Password will be saved to settings  file as plain text (for now)&lt;/strong&gt;</source>
-        <translation type="unfinished">&lt;strong&gt;UPOZORNĚNÍ: Heslo je uloženo v nešifrované podobě (prozatím)&lt;/strong&gt;</translation>
+        <translation>&lt;strong&gt;UPOZORNĚNÍ: Heslo je uloženo v nešifrované podobě (prozatím)&lt;/strong&gt;</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.cpp" line="48"/>
         <source>Edit data source</source>
-        <translation type="unfinished">Upravit zdroj dat</translation>
+        <translation>Upravit zdroj dat</translation>
     </message>
     <message>
         <location filename="../src/addeditdatasource.cpp" line="93"/>
         <source>Select directory</source>
-        <translation type="unfinished">Vyberte složku</translation>
+        <translation>Vyberte složku</translation>
     </message>
 </context>
 <context>
@@ -119,316 +119,404 @@
     <message>
         <location filename="../src/downloadmodel.cpp" line="115"/>
         <source>Part</source>
-        <translation type="unfinished">Díl</translation>
+        <translation>Díl</translation>
     </message>
     <message>
         <location filename="../src/downloadmodel.cpp" line="117"/>
         <source>Destination</source>
-        <translation type="unfinished">Cílové umístění</translation>
+        <translation>Cílové umístění</translation>
     </message>
     <message>
         <location filename="../src/downloadmodel.cpp" line="119"/>
         <source>Progress</source>
-        <translation type="unfinished">Postup</translation>
+        <translation>Postup</translation>
     </message>
 </context>
 <context>
     <name>FileModel</name>
     <message>
-        <location filename="../src/filemodel.cpp" line="140"/>
+        <location filename="../src/filemodel.cpp" line="151"/>
         <source>Thumbnail</source>
         <translatorcomment>Název dílu</translatorcomment>
-        <translation type="unfinished">Náhled</translation>
+        <translation>Náhled</translation>
     </message>
     <message>
-        <location filename="../src/filemodel.cpp" line="142"/>
+        <location filename="../src/filemodel.cpp" line="153"/>
         <source>Part name</source>
-        <translation type="unfinished"></translation>
+        <translation>Díl</translation>
+    </message>
+</context>
+<context>
+    <name>FiltersDialog</name>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="14"/>
+        <source>Filters</source>
+        <translation>Filtry</translation>
     </message>
 </context>
 <context>
     <name>FtpDataSource</name>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="104"/>
         <source>Entering </source>
-        <translation type="unfinished">Vstupuji do </translation>
-    </message>
-    <message>
-        <location filename="../src/ftpdatasource.cpp" line="127"/>
-        <source>Resolving %1...</source>
-        <translation type="unfinished">Překládám %1...</translation>
+        <translation type="obsolete">Vstupuji do </translation>
     </message>
     <message>
         <location filename="../src/ftpdatasource.cpp" line="130"/>
-        <source>Connecting...</source>
-        <translation type="unfinished">Připojuji se...</translation>
+        <source>Resolving %1...</source>
+        <translation>Překládám %1...</translation>
     </message>
     <message>
         <location filename="../src/ftpdatasource.cpp" line="133"/>
-        <source>Connected.</source>
-        <translation type="unfinished">Připojen.</translation>
+        <source>Connecting...</source>
+        <translation>Připojuji se...</translation>
     </message>
     <message>
         <location filename="../src/ftpdatasource.cpp" line="136"/>
-        <source>Logging in...</source>
-        <translation type="unfinished">Přihlašuji se...</translation>
+        <source>Connected.</source>
+        <translation>Připojen.</translation>
     </message>
     <message>
         <location filename="../src/ftpdatasource.cpp" line="139"/>
+        <source>Logging in...</source>
+        <translation>Přihlašuji se...</translation>
+    </message>
+    <message>
+        <location filename="../src/ftpdatasource.cpp" line="142"/>
         <source>Disconnecting...</source>
-        <translation type="unfinished">Odpojuji se...</translation>
+        <translation>Odpojuji se...</translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="450"/>
+        <location filename="../src/ftpdatasource.cpp" line="689"/>
         <source>Downloading </source>
-        <translation type="unfinished">Stahuji </translation>
+        <translation>Stahuji </translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="510"/>
+        <location filename="../src/ftpdatasource.cpp" line="756"/>
         <source>Connecting to </source>
-        <translation type="unfinished">Připojuji se k </translation>
+        <translation>Připojuji se k </translation>
     </message>
 </context>
 <context>
     <name>LocalDataSource</name>
     <message>
-        <location filename="../src/localdatasource.cpp" line="236"/>
+        <location filename="../src/localdatasource.cpp" line="318"/>
         <source>Copying </source>
-        <translation type="unfinished">Kopíruji </translation>
+        <translation>Kopíruji </translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="62"/>
+        <location filename="../src/mainwindow.cpp" line="66"/>
         <source>Ready</source>
-        <translation type="unfinished">Připraven</translation>
+        <translation>Připraven</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="200"/>
         <source>ZIMA-Parts - set working directory</source>
-        <translation type="unfinished">ZIMA-Parts - nastavení pracovní složky</translation>
+        <translation type="obsolete">ZIMA-Parts - nastavení pracovní složky</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="312"/>
+        <location filename="../src/mainwindow.cpp" line="221"/>
+        <source>Preferences</source>
+        <translation>Nastavení</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="321"/>
+        <source>ZIMA-CAD-Parts - set working directory</source>
+        <translation>ZIMA-CAD-Parts - nastavení pracovní složky</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="415"/>
+        <source>Loading %1...</source>
+        <translation>Načítám %1...</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="428"/>
+        <source>All items loaded.</source>
+        <translation>Všechny položky načteny.</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="446"/>
         <source>Aborted.</source>
-        <translation type="unfinished">Přerušeno.</translation>
+        <translation>Přerušeno.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="327"/>
+        <location filename="../src/mainwindow.cpp" line="460"/>
         <source>FTP error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="328"/>
+        <location filename="../src/mainwindow.cpp" line="461"/>
         <source>FTP error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="333"/>
+        <location filename="../src/mainwindow.cpp" line="466"/>
         <source>Parts downloaded.</source>
-        <translation type="unfinished">Díly staženy.</translation>
+        <translation>Díly staženy.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="340"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="131"/>
-        <location filename="../src/mainwindow.cpp" line="347"/>
+        <location filename="../src/mainwindow.cpp" line="690"/>
+        <source>ProductView</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="188"/>
+        <location filename="../src/mainwindow.cpp" line="480"/>
         <source>Resume</source>
-        <translation type="unfinished">Pokračovat</translation>
+        <translation>Pokračovat</translation>
     </message>
 </context>
 <context>
     <name>MainWindowClass</name>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
-        <source>ZIMA-Parts</source>
+        <source>ZIMA-CAD-Parts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="75"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished">&amp;Nastavení</translation>
+        <translation>&amp;Nastavení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="95"/>
+        <location filename="../src/mainwindow.ui" line="91"/>
         <source>Working directory</source>
-        <translation type="unfinished">Pracovní složka</translation>
+        <translation>Pracovní složka</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="102"/>
+        <location filename="../src/mainwindow.ui" line="105"/>
         <source>&amp;Browse</source>
-        <translation type="unfinished">&amp;Procházet</translation>
+        <translation>&amp;Procházet</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="133"/>
+        <location filename="../src/mainwindow.ui" line="152"/>
         <source>&amp;Technical specifications</source>
-        <translation type="unfinished">&amp;Technické specifikace</translation>
+        <translation>&amp;Technické specifikace</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="149"/>
+        <location filename="../src/mainwindow.ui" line="168"/>
+        <source>about:blank</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="177"/>
+        <source>&amp;Parts</source>
+        <translation>&amp;Díly</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="188"/>
+        <source>&amp;Filters</source>
+        <translation>&amp;Filtry</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="208"/>
+        <source>Update</source>
+        <translation>Aktualizovat</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="215"/>
+        <source>Download</source>
+        <translation>Stáhnout</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="225"/>
+        <source>&amp;Download queue</source>
+        <translation>&amp;Fronta stahování</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="249"/>
+        <source>Delete queue</source>
+        <translation>Smazat frontu</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="256"/>
+        <source>Stop</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>ProductView</name>
+    <message>
+        <location filename="../src/extensions/productview/productview.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/productview.ui" line="30"/>
         <source>about:blank</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="158"/>
-        <source>&amp;Parts</source>
-        <translation type="unfinished">&amp;Díly</translation>
+        <location filename="../src/extensions/productview/productview.cpp" line="45"/>
+        <source>Double click any PRO/E part.</source>
+        <translation>2x klikněte na jakýkoliv PRO/E díl.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="204"/>
-        <source>Pro/E</source>
+        <location filename="../src/extensions/productview/productview.cpp" line="62"/>
+        <source>Waiting for part to download...</source>
+        <translation>Čekám na stažení dílu...</translation>
+    </message>
+</context>
+<context>
+    <name>ProductViewSettings</name>
+    <message>
+        <location filename="../src/extensions/productview/productviewsettings.ui" line="14"/>
+        <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="212"/>
-        <source>CATIA</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/extensions/productview/productviewsettings.ui" line="20"/>
+        <source>Enabled</source>
+        <translation>Povolit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="220"/>
-        <source>*.iges</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/extensions/productview/productviewsettings.ui" line="27"/>
+        <source>ProductView path</source>
+        <translation>Cesta k ProductView</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="228"/>
-        <source>*.step</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/extensions/productview/productviewsettings.ui" line="37"/>
+        <source>...</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="236"/>
-        <source>STL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="262"/>
-        <source>Update</source>
-        <translation type="unfinished">Aktualizovat</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="269"/>
-        <source>Download</source>
-        <translation type="unfinished">Stáhnout</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="279"/>
-        <source>&amp;Download queue</source>
-        <translation type="unfinished">&amp;Fronta stahování</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="303"/>
-        <source>Delete queue</source>
-        <translation type="unfinished">Smazat frontu</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="310"/>
-        <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/extensions/productview/productviewsettings.cpp" line="49"/>
+        <source>ZIMA-CAD-Parts - set ProductView path</source>
+        <translation>ZIMA-CAD-Parts - nastavit cestu k ProductView</translation>
     </message>
 </context>
 <context>
     <name>ServersModel</name>
     <message>
-        <location filename="../src/serversmodel.cpp" line="102"/>
+        <location filename="../src/serversmodel.cpp" line="153"/>
         <source>Server</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/serversmodel.cpp" line="210"/>
         <source>All done.</source>
-        <translation type="unfinished">Hotovo.</translation>
+        <translation type="obsolete">Hotovo.</translation>
     </message>
 </context>
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="../src/settingsdialog.ui" line="14"/>
         <source>ZIMA-Parts Settings</source>
-        <translation type="unfinished">ZIMA-Parts Nastavení</translation>
+        <translation type="obsolete">ZIMA-Parts Nastavení</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="24"/>
         <source>&amp;General</source>
-        <translation type="unfinished">&amp;Obecné</translation>
+        <translation>&amp;Obecné</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="33"/>
         <source>General</source>
-        <translation type="unfinished">Obecné</translation>
+        <translation>Obecné</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="45"/>
         <source>Thumbnail width</source>
-        <translation type="unfinished">Šířka miniatury</translation>
+        <translation>Šířka miniatury</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="52"/>
         <location filename="../src/settingsdialog.ui" line="78"/>
         <source> pixels</source>
-        <translation type="unfinished"> pixelů</translation>
+        <translation> pixelů</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="71"/>
         <source>Preview width</source>
-        <translation type="unfinished">Šířka náhledu</translation>
+        <translation>Šířka náhledu</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="94"/>
+        <location filename="../src/settingsdialog.ui" line="113"/>
         <source>Language</source>
-        <translation type="unfinished">Jazyk</translation>
+        <translation>Jazyk</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="102"/>
+        <location filename="../src/settingsdialog.ui" line="95"/>
         <source>Detect automatically</source>
-        <translation type="unfinished">Nastavit automaticky</translation>
+        <translation>Nastavit automaticky</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="107"/>
+        <location filename="../src/settingsdialog.ui" line="14"/>
+        <source>ZIMA-CAD-Parts Settings</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="100"/>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message utf8="true">
-        <location filename="../src/settingsdialog.ui" line="112"/>
+        <location filename="../src/settingsdialog.ui" line="105"/>
         <source>Česky</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="123"/>
         <source>Splash screen</source>
-        <translation type="unfinished">Úvodní obrazovka</translation>
+        <translation>Úvodní obrazovka</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="135"/>
         <source>Duration</source>
-        <translation type="unfinished">Doba trvání</translation>
+        <translation>Doba trvání</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="142"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="175"/>
+        <location filename="../src/settingsdialog.ui" line="174"/>
+        <source>Cache</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="186"/>
+        <source>Prune cache</source>
+        <translation>Vymazat cache</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="197"/>
         <source>&amp;Data sources</source>
-        <translation type="unfinished">&amp;Zdroje dat</translation>
+        <translation>&amp;Zdroje dat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="201"/>
+        <location filename="../src/settingsdialog.ui" line="223"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Přidat</translation>
+        <translation>&amp;Přidat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="208"/>
+        <location filename="../src/settingsdialog.ui" line="230"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Upravit</translation>
+        <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="215"/>
+        <location filename="../src/settingsdialog.ui" line="237"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">&amp;Odstranit</translation>
+        <translation>&amp;Odstranit</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="58"/>
+        <source>ProductView Settings</source>
+        <translation>Nastavení ProductView</translation>
+    </message>
+</context>
+<context>
+    <name>TechSpecsWebView</name>
+    <message>
+        <location filename="../src/techspecswebview.cpp" line="40"/>
+        <source>ZIMA-CAD-Parts Technical Specifications</source>
+        <translation type="unfinished">ZIMA-CAD-Parts Technická Specifikace</translation>
     </message>
 </context>
 </TS>
