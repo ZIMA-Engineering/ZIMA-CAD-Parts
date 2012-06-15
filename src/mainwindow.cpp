@@ -530,7 +530,7 @@ void MainWindow::loadAboutPage()
 {
 	QString url = ":/data/zima-cad-parts%1.html";
 	QString locale = settings->value("Language").toString();
-	QString localized = url.arg("_" + (locale == "detect" ? QLocale::system().name() : locale));
+	QString localized = url.arg("_" + (locale.isEmpty() || locale == "detect" ? QLocale::system().name() : locale));
 	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
 
 	QFile f(filename);
@@ -671,7 +671,7 @@ void MainWindow::saveFilters()
 QString MainWindow::getCurrentLanguageCode()
 {
 	QString lang = settings->value("Language").toString();
-	return lang == "detect" ? QLocale::system().name() : lang;
+	return (lang.isEmpty() || lang == "detect") ? QLocale::system().name() : lang;
 }
 
 QString MainWindow::getCurrentMetadataLanguageCode()
