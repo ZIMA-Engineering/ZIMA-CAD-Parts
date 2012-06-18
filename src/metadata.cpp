@@ -53,6 +53,7 @@ QStringList Metadata::getColumnLabels()
 		return columnLabels;
 
 	QRegExp colRx("^\\d+$");
+	int colIndex = 1;
 
 	metadata->beginGroup("params");
 	{
@@ -62,7 +63,9 @@ QStringList Metadata::getColumnLabels()
 			{
 				if(colRx.exactMatch(col))
 				{
-					columnLabels << metadata->value(col).toString();
+					//columnLabels << metadata->value(col).toString();
+
+					columnLabels << metadata->value( QString("%1").arg(colIndex++) ).toString();
 				}
 			}
 		}

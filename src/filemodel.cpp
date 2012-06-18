@@ -117,7 +117,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		break;
 	}
 
-	if(col > 1 && role == Qt::DisplayRole && col-2 < colLabels.count())
+	if(col > 1 && role == Qt::DisplayRole && col-1 <= colLabels.count())
 	{
 		//qDebug() << "Probing section" << rootItem->files.at( row )->name.section('.', 0, 0);
 		//return rootItem->metadata->value(QString("%1/%2").arg(rootItem->files.at( row )->name.section('.', 0, 0)).arg(col-1), QString()).toString();
