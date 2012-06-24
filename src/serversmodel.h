@@ -57,6 +57,7 @@ public slots:
 	void clear();
 	void loadItem(Item *item);
 	void requestTechSpecs(const QModelIndex &index);
+	void requestTechSpecs(Item *item);
 	void downloadFiles(QString dir);
 	void downloadSpecificFile(QString dir, File *f);
 	void resumeDownload();

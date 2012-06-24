@@ -314,11 +314,15 @@ void ServersModel::requestTechSpecs(const QModelIndex &index)
 {
 	if(!index.isValid())
 		return;
-	Item *i = static_cast<Item*>(index.internalPointer());
 
-	i->server->sendTechSpecUrl(i);
+	requestTechSpecs(static_cast<Item*>(index.internalPointer()));
+}
 
-	lastTechSpecRequest = i;
+void ServersModel::requestTechSpecs(Item *item)
+{
+	item->server->sendTechSpecUrl(item);
+
+	lastTechSpecRequest = item;
 }
 
 void ServersModel::loadItem(Item* item)

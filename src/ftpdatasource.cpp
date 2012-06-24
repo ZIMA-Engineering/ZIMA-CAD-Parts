@@ -102,7 +102,7 @@ void FtpDataSource::loadRootItem(Item *item)
 
 void FtpDataSource::checkAndSendTechSpecUrl(Item *item)
 {
-	if((techSpecItem == item && loadItemQueue.contains(item)) || techSpecItem != item)
+	if(techSpecItem != item)
 			return;
 
 	BaseRemoteDataSource::checkAndSendTechSpecUrl(item);
@@ -209,6 +209,7 @@ void FtpDataSource::ftpListItemInQueue()
 			ftpCurrentItem = item->children.first();
 			hasTechSpecDir = false;
 			hasMetadata = false;
+			metadataChanged = false;
 			techSpecFilesUpdated = false;
 			hasLogo = false;
 			hasLogoText = false;
@@ -256,6 +257,7 @@ void FtpDataSource::ftpListItemInQueue()
 		browseDepth = 2;
 		hasTechSpecDir = false;
 		hasMetadata = false;
+		metadataChanged = false;
 		techSpecFilesUpdated = false;
 		hasLogo = false;
 		hasLogoText = false;
@@ -278,6 +280,7 @@ void FtpDataSource::ftpListItemInQueue()
 
 		hasTechSpecDir = false;
 		hasMetadata = false;
+		metadataChanged = false;
 		hasLogo = false;
 		hasLogoText = false;
 		qDeleteAll(thumbnails);
@@ -312,6 +315,9 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 			techSpecFiles[ ftp->get(remoteBaseDir + "/" + TECHSPEC_DIR + "/" + n, f) ] = f;
 			//qDebug() << "Queue techspec file" << ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + n;
 
+			if(n == METADATA_FILE)
+				metadataChanged = true;
+
 			if(ftpCurrentItem == techSpecItem)
 				techSpecFilesUpdated = true;
 		}
@@ -341,6 +347,11 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 			i->server = rootItem->server;
 
 			loadItemLogo(i);
+
+			QString metadata = cacheDirPath() + "/" + remoteHost + "/" + i->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE;
+
+			if(QFile::exists(metadata))
+				i->metadata = new Metadata(metadata);
 
 			ftpCurrentItem->children.append(i);
 
@@ -610,8 +621,10 @@ void FtpDataSource::checkLoadedItem()
 		//qDebug() << "Metadata loaded (tech spec files)";
 
 		if(ftpCurrentItem->metadata)
-			ftpCurrentItem->metadata->refresh();
-		else {
+		{
+			if(metadataChanged)
+				ftpCurrentItem->metadata->refresh();
+		} else {
 			ftpCurrentItem->metadata = new Metadata(cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE);
 			qDebug() << "Metadata loaded - techspecfiles" << ftpCurrentItem->metadata->getLabel();
 		}

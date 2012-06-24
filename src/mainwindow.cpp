@@ -377,7 +377,9 @@ void MainWindow::updateClicked()
 
 	fm->setRootIndex(QModelIndex());
 
-	static_cast<ServersModel*>( ui->treeLeft->model() )->refresh(i);
+	ServersModel *sm = static_cast<ServersModel*>( ui->treeLeft->model() );
+	sm->refresh(i);
+	sm->requestTechSpecs(i);
 	ui->btnUpdate->setEnabled(false);
 }
 

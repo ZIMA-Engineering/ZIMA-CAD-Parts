@@ -40,8 +40,10 @@ public slots:
 	void retranslate(QString lang = QString());
 
 private:
+	void openMetadata();
 	void probeMetadata();
 
+	QString metadataFile;
 	QSettings *metadata;
 	QString currentAppLang;
 	QString lang;

@@ -84,6 +84,7 @@ private:
 	bool hasTechSpecDir;
 	int techSpecListId;
 	bool hasMetadata;
+	bool metadataChanged;
 	bool hasLogo;
 	bool hasLogoText;
 	QList<File*> thumbnails;

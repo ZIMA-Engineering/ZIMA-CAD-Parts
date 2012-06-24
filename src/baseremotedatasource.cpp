@@ -61,9 +61,11 @@ void BaseRemoteDataSource::checkAndSendTechSpecUrl(Item *item)
 	if(indexes.isEmpty())
 	{
 		if( item == rootItem )
+		{
+			techSpecUrlSent = true;
 			emit techSpecAvailable(QUrl("about:blank"));
-		else
-			sendTechSpecUrl(item->parent);
+		} else
+			checkAndSendTechSpecUrl(item->parent);
 
 		return;
 	}
@@ -79,6 +81,7 @@ void BaseRemoteDataSource::checkAndSendTechSpecUrl(Item *item)
 			selectedIndex = index;
 	}
 
+	techSpecUrlSent = true;
 	emit techSpecAvailable(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
 }
 

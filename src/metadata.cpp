@@ -26,8 +26,9 @@
 
 Metadata::Metadata(QString metadataPath, QObject *parent) : QObject(parent)
 {
-	metadata = new QSettings(metadataPath, QSettings::IniFormat);
-	metadata->setIniCodec("utf-8");
+	metadataFile = metadataPath;
+
+	openMetadata();
 
 	currentAppLang = MainWindow::getCurrentMetadataLanguageCode().left(2);
 
@@ -83,11 +84,13 @@ QString Metadata::getPartParam(QString part, int col)
 
 void Metadata::refresh()
 {
-	metadata->sync();
 	columnLabels.clear();
 	label.clear();
 	lang.clear();
 
+	delete metadata;
+
+	openMetadata();
 	probeMetadata();
 }
 
@@ -101,6 +104,12 @@ void Metadata::retranslate(QString lang)
 	refresh();
 
 	emit retranslated();
+}
+
+void Metadata::openMetadata()
+{
+	metadata = new QSettings(metadataFile, QSettings::IniFormat);
+	metadata->setIniCodec("utf-8");
 }
 
 void Metadata::probeMetadata()
