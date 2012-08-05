@@ -71,6 +71,8 @@ QString File::getInternalNameForFileType(File::FileTypes type)
 		return "drw";
 	case File::FRM:
 		return "frm";
+	case File::NEU_PROE:
+		return "neu_proe";
 	case File::CATPART:
 		return "catpart";
 	case File::CATPRODUCT:
@@ -124,6 +126,8 @@ QString File::getLabelForFileType(File::FileTypes type)
 		return "*.drw";
 	case File::FRM:
 		return "*.frm";
+	case File::NEU_PROE:
+		return "*.neu";
 	case File::CATPART:
 		return "*.catpart";
 	case File::CATPRODUCT:
@@ -177,6 +181,8 @@ QString File::getRxForFileType(File::FileTypes type)
 		return "(^.+\\.drw\\.\\d+$)";
 	case File::FRM:
 		return "(^.+\\.frm\\.\\d+$)";
+	case File::NEU_PROE:
+		return "(^.+\\.neu\\.\\d+$)";
 	case File::CATPART:
 		return "(^.+\\.catpart$)";
 	case File::CATPRODUCT:

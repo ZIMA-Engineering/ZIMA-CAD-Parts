@@ -42,6 +42,7 @@ struct File
 		ASM,
 		DRW,
 		FRM,
+		NEU_PROE,
 		// CATIA
 		CATPART,
 		CATPRODUCT,
