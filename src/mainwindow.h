@@ -137,6 +137,7 @@ public slots:
 	void loadAboutPage();
 
 private slots:
+	void openWorkingDirectory();
 	void changeLanguage(int lang);
 	void goToUrl();
 	void updateUrlBar(QUrl url);

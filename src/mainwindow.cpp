@@ -30,6 +30,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QToolBar>
+#include <QDesktopServices>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -97,6 +98,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->btnDownload, SIGNAL(clicked()), this, SLOT(downloadButton()));
 	connect(ui->btnSettings, SIGNAL(clicked()), this, SLOT(showSettings()));
 	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectory()));
+	connect(ui->openWorkDirButton, SIGNAL(clicked()), this, SLOT(openWorkingDirectory()));
 	connect(ui->btnUpdate, SIGNAL(clicked()), this, SLOT(updateClicked()));
 	connect(ui->startStopDownloadBtn, SIGNAL(clicked()), this, SLOT(toggleDownload()));
 
@@ -563,6 +565,24 @@ void MainWindow::loadAboutPage()
 
 	urlBar->setText("ZIMA-CAD-Parts:about");
 	ui->techSpec->setHtml( stream.readAll().replace("%VERSION%", VERSION) );
+}
+
+void MainWindow::openWorkingDirectory()
+{
+	QString workingDir = ui->editDir->text();
+
+	if(!QFile::exists(workingDir))
+	{
+		QDir dir;
+
+		if(!dir.mkpath(workingDir))
+		{
+			QMessageBox::warning(this, tr("Unable to create working directory"), tr("Unable to create working directory: %1").arg(workingDir));
+			return;
+		}
+	}
+
+	QDesktopServices::openUrl(QUrl(workingDir));
 }
 
 void MainWindow::changeLanguage(int lang)

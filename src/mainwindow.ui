@@ -100,9 +100,16 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnBrowse">
+           <widget class="QToolButton" name="btnBrowse">
             <property name="text">
-             <string>&amp;Browse</string>
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="openWorkDirButton">
+            <property name="text">
+             <string>&amp;Open</string>
             </property>
            </widget>
           </item>
