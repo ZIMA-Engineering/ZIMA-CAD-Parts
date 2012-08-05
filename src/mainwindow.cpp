@@ -376,7 +376,7 @@ void MainWindow::updateClicked()
 	if( i == 0)
 		return;
 
-	fm->setRootIndex(QModelIndex());
+	fm->prepareForUpdate();
 
 	ServersModel *sm = static_cast<ServersModel*>( ui->treeLeft->model() );
 	sm->refresh(i);

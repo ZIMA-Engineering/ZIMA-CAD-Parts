@@ -182,9 +182,10 @@ void FtpDataSource::ftpListItemInQueue()
 		{
 			loadItemQueue.first()->hasLoadedChildren = true;
 			//qDebug() << "removing" << loadItemQueue.first()->name << "from loadItemqueue";
-			loadItemQueue.removeFirst();
 
-			emit itemLoaded(ftpCurrentItem);
+			emit itemLoaded(loadItemQueue.first());
+
+			loadItemQueue.removeFirst();
 		}
 
 		if(loadItemQueue.isEmpty())

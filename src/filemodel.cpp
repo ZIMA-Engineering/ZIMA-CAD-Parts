@@ -26,7 +26,7 @@
 #include "basedatasource.h"
 
 FileModel::FileModel(QObject *parent) :
-	QAbstractItemModel(parent), rootItem(0), thumbWidth(256)
+	QAbstractItemModel(parent), rootItem(0), formalRootItem(0), thumbWidth(256)
 {
 }
 
@@ -188,6 +188,7 @@ void FileModel::setRootIndex(const QModelIndex &index)
 	if( !index.isValid() )
 	{
 		rootItem = 0;
+		formalRootItem = 0;
 		reset();
 		return;
 	}
@@ -255,8 +256,11 @@ void FileModel::thumbnailDownloaded(File *file)
 
 void FileModel::itemLoaded(Item *item)
 {
-	if(item == rootItem)
+	if(item == rootItem || (!rootItem && formalRootItem))
 	{
+		if(!rootItem && formalRootItem)
+			rootItem = formalRootItem;
+
 		reset();
 		emit requestColumnResize();
 	}
@@ -268,4 +272,10 @@ void FileModel::metadataRetranslated()
 
 	emit headerDataChanged(Qt::Horizontal, 2, colLabels.count()-1);
 	emit requestColumnResize();
+}
+
+void FileModel::prepareForUpdate()
+{
+	formalRootItem = rootItem;
+	rootItem = 0;
 }
