@@ -190,7 +190,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	currentServer = 0;
 
-	langs << "en_US" << "cs_CZ";
+	langs << "en_US" << "cs_CZ" << "de_DE" << "ru_RU";
 
 	int cnt = langs.count();
 	QString currentLang = getCurrentLanguageCode().left(2);
