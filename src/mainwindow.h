@@ -30,6 +30,8 @@
 #include <QThread>
 #include <QTranslator>
 #include <QButtonGroup>
+#include <QLineEdit>
+
 #include "settingsdialog.h"
 #include "filemodel.h"
 #include "zima-cad-parts.h"
@@ -101,6 +103,7 @@ private:
 	static QString currentMetadataLang;
 	QStringList langs;
 	QList<QPushButton*> langFlags;
+	QLineEdit *urlBar;
 #ifdef INCLUDE_PRODUCT_VIEW
 	ProductView *productView;
 
@@ -135,6 +138,8 @@ public slots:
 
 private slots:
 	void changeLanguage(int lang);
+	void goToUrl();
+	void updateUrlBar(QUrl url);
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();

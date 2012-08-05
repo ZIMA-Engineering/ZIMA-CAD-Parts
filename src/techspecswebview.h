@@ -34,7 +34,7 @@ signals:
 public slots:
 
 protected:
-    TechSpecsWebView *createWindow(QWebPage::WebWindowType type);
+	TechSpecsWebView *createWindow(QWebPage::WebWindowType type);
 	
 };
 

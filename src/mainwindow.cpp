@@ -29,6 +29,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QToolBar>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "serversmodel.h"
@@ -67,6 +69,25 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	statusBar()->addWidget(statusDir, 100);
 
+	QToolBar *tb = new QToolBar(this);
+
+	tb->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->techSpec, SLOT(back()));
+	tb->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->techSpec, SLOT(forward()));
+	tb->addAction(style()->standardIcon(QStyle::SP_BrowserReload), tr("Reload"), ui->techSpec, SLOT(reload()));
+
+	urlBar = new QLineEdit(this);
+
+	connect(urlBar, SIGNAL(returnPressed()), this, SLOT(goToUrl()));
+
+	tb->addWidget(urlBar);
+	tb->addAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Go"), this, SLOT(goToUrl()));
+
+	connect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
+
+	tb->setIconSize(QSize(20, 20));
+
+	static_cast<QVBoxLayout*>(ui->tabWidget->widget(TECH_SPECS)->layout())->insertWidget(0, tb);
+
 	servers = loadDataSources();
 	loadSettings();
 
@@ -87,7 +108,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	QList<int> list;
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
-
 
 	ServersModel *sm = new ServersModel(this);
 	sm->setServerData(servers);
@@ -433,6 +453,7 @@ void MainWindow::allItemsLoaded()
 
 void MainWindow::loadTechSpec(QUrl url)
 {
+	urlBar->setText(url.toString());
 	ui->techSpec->load(url);
 }
 
@@ -540,6 +561,7 @@ void MainWindow::loadAboutPage()
 	f.open(QIODevice::ReadOnly);
 	QTextStream stream(&f);
 
+	urlBar->setText("ZIMA-CAD-Parts:about");
 	ui->techSpec->setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
 
@@ -551,6 +573,29 @@ void MainWindow::changeLanguage(int lang)
 	currentMetadataLang = langs[lang];
 
 	static_cast<ServersModel*>(ui->treeLeft->model())->retranslateMetadata();
+}
+
+void MainWindow::goToUrl()
+{
+	QString str = urlBar->text();
+
+	if(urlBar->text() == "ZIMA-CAD-Parts:about")
+	{
+		loadAboutPage();
+		return;
+	}
+
+	ui->techSpec->setUrl(QUrl(str));
+}
+
+void MainWindow::updateUrlBar(QUrl url)
+{
+	QString str = url.toString();
+
+	if(str == "about:blank")
+		return;
+
+	urlBar->setText(str);
 }
 
 void MainWindow::loadSettings()
