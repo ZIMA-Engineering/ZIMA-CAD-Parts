@@ -34,6 +34,9 @@ public:
 	virtual QIcon itemIcon(Item *item);
 	virtual QIcon dataSourceIcon();
 	static QString cacheDirPath();
+	QString pathToDataRoot();
+	QString getTechSpecPathForItem(Item *item);
+	QString getPathForItem(Item *item);
 
 	// FIXME: make protected
 	QString remoteHost, remoteLogin, remotePassword, remoteBaseDir;
@@ -51,8 +54,6 @@ public slots:
 	void saveSettings(QSettings& settings);
 protected:
 	void loadItemLogo(Item *item);
-	QString getTechSpecPathForItem(Item *item);
-	QString getPathForItem(Item *item);
 	void checkAndSendTechSpecUrl(Item *item);
 
 	Item *techSpecItem;

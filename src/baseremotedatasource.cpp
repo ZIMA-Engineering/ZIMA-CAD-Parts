@@ -134,3 +134,8 @@ QString BaseRemoteDataSource::cacheDirPath()
 {
 	return QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
 }
+
+QString BaseRemoteDataSource::pathToDataRoot()
+{
+	return cacheDirPath() + "/" + remoteHost;
+}

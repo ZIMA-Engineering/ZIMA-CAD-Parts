@@ -51,12 +51,15 @@ class LocalDataSource : public BaseDataSource
 public:
 	explicit LocalDataSource(QObject *parent = 0);
 	QString internalName();
+	QString pathToDataRoot();
+	QString getTechSpecPathForItem(Item *item);
+	QString getPathForItem(Item *item);
+
 	QString localPath;
 
 public slots:
 	void loadRootItem(Item *item);
 	void loadDirectory(Item* item);
-	void sendTechSpecUrl(Item* item);
 	void addFileToDownload(File *f);
 	void downloadFiles(QList<File*> files, QString dir);
 	void downloadFile(File* file);
@@ -67,8 +70,6 @@ public slots:
 
 protected:
 	void loadItemLogo(Item *item);
-	QString getTechSpecPathForItem(Item *item);
-	QString getPathForItem(Item *item);
 
 	LocalCopier *copier;
 

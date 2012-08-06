@@ -54,6 +54,9 @@ public:
 	virtual QString internalName() = 0;
 	virtual QIcon itemIcon(Item *item);
 	virtual QIcon dataSourceIcon();
+	virtual QString pathToDataRoot() = 0;
+	virtual QString getTechSpecPathForItem(Item *item) = 0;
+	virtual QString getPathForItem(Item *item) = 0;
 
 	Item    *rootItem;
 	QListWidgetItem *lwItem;
@@ -62,7 +65,7 @@ public:
 public slots:
 	virtual void loadRootItem(Item *item) = 0;
 	virtual void loadDirectory(Item* item) = 0;
-	virtual void sendTechSpecUrl(Item* item) = 0;
+	virtual void sendTechSpecUrl(Item* item);
 	virtual void addFileToDownload(File *f) = 0;
 	virtual void downloadFiles(QList<File*> files, QString dir) = 0;
 	virtual void downloadFile(File* file) = 0;
@@ -75,8 +78,6 @@ public slots:
 	void saveSettings(QSettings& settings);
 protected:
 	virtual void loadItemLogo(Item *item) = 0;
-	virtual QString getTechSpecPathForItem(Item *item) = 0;
-	virtual QString getPathForItem(Item *item) = 0;
 
 
 	QString currentMetadataLang;

@@ -235,38 +235,6 @@ void LocalDataSource::loadDirectory(Item* item)
 	emit itemLoaded(item);
 }
 
-void LocalDataSource::sendTechSpecUrl(Item* item)
-{
-	QStringList filters;
-	filters << "index_??.html" << "index_??.htm" << "index.html" << "index.htm";
-
-	QDir dir(getTechSpecPathForItem(item));
-	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
-
-	if(indexes.isEmpty())
-	{
-		if( item == rootItem )
-			emit techSpecAvailable(QUrl("about:blank"));
-		else
-			sendTechSpecUrl(item->parent);
-
-		return;
-	}
-
-	QString selectedIndex = indexes.first();
-	indexes.removeFirst();
-
-	foreach(QString index, indexes)
-	{
-		QString prefix = index.section('.', 0, 0);
-
-		if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == currentMetadataLang)
-			selectedIndex = index;
-	}
-
-	emit techSpecAvailable(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
-}
-
 void LocalDataSource::addFileToDownload(File *f)
 {
 	copier->addFile(f);
@@ -316,4 +284,9 @@ void LocalDataSource::saveSettings(QSettings& settings)
 void LocalDataSource::aboutToCopy(File *file)
 {
 	emit statusUpdated(tr("Copying ") + file->name);
+}
+
+QString LocalDataSource::pathToDataRoot()
+{
+	return localPath;
 }

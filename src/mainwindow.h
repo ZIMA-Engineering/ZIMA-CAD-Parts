@@ -103,7 +103,11 @@ private:
 	static QString currentMetadataLang;
 	QStringList langs;
 	QList<QPushButton*> langFlags;
+	QAction *techSpecBackAction;
+	QAction *techSpecForwardAction;
 	QLineEdit *urlBar;
+	QUrl lastPartsIndex;
+	QDateTime lastPartsIndexModTime;
 #ifdef INCLUDE_PRODUCT_VIEW
 	ProductView *productView;
 
@@ -141,6 +145,8 @@ private slots:
 	void changeLanguage(int lang);
 	void goToUrl();
 	void updateUrlBar(QUrl url);
+	void setPartsIndex(const QModelIndex &index);
+	void partsIndexLoaded(const QModelIndex &index);
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();

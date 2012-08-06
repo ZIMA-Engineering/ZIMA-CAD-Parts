@@ -232,7 +232,7 @@ void FileModel::initMetadata(Item *i)
 
 Item* FileModel::getRootItem()
 {
-	return rootItem;
+	return !rootItem && formalRootItem ? formalRootItem : rootItem;
 }
 
 void FileModel::setThumbWidth(int size)

@@ -31,6 +31,7 @@
 #include <QDebug>
 #include <QToolBar>
 #include <QDesktopServices>
+#include <QWebHistory>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -72,8 +73,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	QToolBar *tb = new QToolBar(this);
 
-	tb->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->techSpec, SLOT(back()));
-	tb->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->techSpec, SLOT(forward()));
+	techSpecBackAction = tb->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->techSpec, SLOT(back()));
+	techSpecForwardAction = tb->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->techSpec, SLOT(forward()));
 	tb->addAction(style()->standardIcon(QStyle::SP_BrowserReload), tr("Reload"), ui->techSpec, SLOT(reload()));
 
 	urlBar = new QLineEdit(this);
@@ -118,6 +119,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(sm, SIGNAL(loadingItem(Item*)), this, SLOT(loadingItem(Item*)));
 	connect(sm, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(itemLoaded(const QModelIndex&)));
+	connect(sm, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(partsIndexLoaded(const QModelIndex&)));
 	connect(sm, SIGNAL(allItemsLoaded()), this, SLOT(allItemsLoaded()));
 	connect(sm, SIGNAL(techSpecAvailable(QUrl)), this, SLOT(loadTechSpec(QUrl)));
 	connect(sm, SIGNAL(statusUpdated(QString)), this, SLOT(updateStatus(QString)));
@@ -189,11 +191,17 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	loadFilters();
 	rebuildFilters();
 
+	QList<int> partsSize;
+	partsSize << (int)(ui->tab->height()*0.25) << (int)(ui->tab->height()*0.75);
+	ui->partsSplitter->setSizes(partsSize);
+
 	ui->tree->setModel(proxy);
 
 	//connect(sm, SIGNAL(itemLoaded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
+//	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
+//	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
 	connect(sm, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(sm, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 
@@ -443,6 +451,8 @@ void MainWindow::loadingItem(Item *item)
 void MainWindow::itemLoaded(const QModelIndex &index)
 {
 	ui->btnUpdate->setEnabled(true);
+
+//	setPartsIndex(index);
 }
 
 void MainWindow::allItemsLoaded()
@@ -455,7 +465,6 @@ void MainWindow::allItemsLoaded()
 
 void MainWindow::loadTechSpec(QUrl url)
 {
-	urlBar->setText(url.toString());
 	ui->techSpec->load(url);
 }
 
@@ -610,12 +619,75 @@ void MainWindow::goToUrl()
 
 void MainWindow::updateUrlBar(QUrl url)
 {
+	techSpecBackAction->setEnabled(ui->techSpec->history()->canGoBack());
+	techSpecForwardAction->setEnabled(ui->techSpec->history()->canGoForward());
+
 	QString str = url.toString();
 
 	if(str == "about:blank")
 		return;
 
 	urlBar->setText(str);
+}
+
+void MainWindow::setPartsIndex(const QModelIndex &index)
+{
+	fm->setRootIndex(index);
+	partsIndexLoaded(index);
+}
+
+void MainWindow::partsIndexLoaded(const QModelIndex &index)
+{
+	Item *it = static_cast<Item*>(index.internalPointer());
+
+	if(it == fm->getRootItem())
+	{
+		QStringList filters;
+		filters << "index-parts_??.html" << "index-parts_??.htm" << "index-parts.html" << "index-parts.htm";
+
+		QDir dir(it->server->getTechSpecPathForItem(it));
+		QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
+
+		if(indexes.isEmpty())
+		{
+			ui->partsTextBrowser->clear();
+			ui->partsTextBrowser->hide();
+			lastPartsIndex = QUrl();
+			return;
+		}
+
+		QString selectedIndex = indexes.first();
+		indexes.removeFirst();
+
+		foreach(QString index, indexes)
+		{
+			QString prefix = index.section('.', 0, 0);
+
+			if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == getCurrentMetadataLanguageCode().left(2))
+				selectedIndex = index;
+		}
+
+		QUrl partsIndex = QUrl::fromLocalFile(dir.path() + "/" + selectedIndex);
+		QDateTime modTime = QFileInfo(dir.path() + "/" + selectedIndex).lastModified();
+
+		if(partsIndex == lastPartsIndex)
+		{
+			if(modTime > lastPartsIndexModTime)
+				lastPartsIndexModTime = modTime;
+			else if(ui->partsTextBrowser->isHidden()) {
+				ui->partsTextBrowser->show();
+				return;
+			}
+		} else {
+			lastPartsIndex = partsIndex;
+			lastPartsIndexModTime = modTime;
+		}
+
+		if(ui->partsTextBrowser->isHidden())
+			ui->partsTextBrowser->show();
+
+		ui->partsTextBrowser->setSource(partsIndex);
+	}
 }
 
 void MainWindow::loadSettings()

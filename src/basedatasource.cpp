@@ -112,6 +112,38 @@ void BaseDataSource::assignThumbnailsToFiles(Item *item, QStringList thumbnails)
 	}
 }
 
+void BaseDataSource::sendTechSpecUrl(Item* item)
+{
+	QStringList filters;
+	filters << "index_??.html" << "index_??.htm" << "index.html" << "index.htm";
+
+	QDir dir(getTechSpecPathForItem(item));
+	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
+
+	if(indexes.isEmpty())
+	{
+		if( item == rootItem )
+			emit techSpecAvailable(QUrl("about:blank"));
+		else
+			sendTechSpecUrl(item->parent);
+
+		return;
+	}
+
+	QString selectedIndex = indexes.first();
+	indexes.removeFirst();
+
+	foreach(QString index, indexes)
+	{
+		QString prefix = index.section('.', 0, 0);
+
+		if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == currentMetadataLang)
+			selectedIndex = index;
+	}
+
+	emit techSpecAvailable(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
+}
+
 void BaseDataSource::retranslate(QString lang)
 {
 	if(lang.isEmpty())
