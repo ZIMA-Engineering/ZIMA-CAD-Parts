@@ -31,6 +31,7 @@
 #include <QTranslator>
 #include <QButtonGroup>
 #include <QLineEdit>
+#include <QToolBar>
 
 #include "settingsdialog.h"
 #include "filemodel.h"
@@ -103,6 +104,7 @@ private:
 	static QString currentMetadataLang;
 	QStringList langs;
 	QList<QPushButton*> langFlags;
+	QToolBar *techSpecToolBar;
 	QAction *techSpecBackAction;
 	QAction *techSpecForwardAction;
 	QLineEdit *urlBar;
@@ -114,7 +116,11 @@ private:
 	void showOrHideProductView();
 #endif // INCLUDE_PRODUCT_VIEW
 
+	bool s_developerMode;
+
 	void loadExtensions();
+	void devCreateTechSpecToolBar();
+	void devRemoveTechSpecToolBar();
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 

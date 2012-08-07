@@ -29,7 +29,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include <QToolBar>
 #include <QDesktopServices>
 #include <QWebHistory>
 
@@ -46,7 +45,8 @@ QString MainWindow::currentMetadataLang;
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
 	  ui(new Ui::MainWindowClass),
-	  translator(translator)
+	  translator(translator),
+	  techSpecToolBar(0)
 {
 	downloading = false;
 
@@ -71,24 +71,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	statusBar()->addWidget(statusDir, 100);
 
-	QToolBar *tb = new QToolBar(this);
-
-	techSpecBackAction = tb->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->techSpec, SLOT(back()));
-	techSpecForwardAction = tb->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->techSpec, SLOT(forward()));
-	tb->addAction(style()->standardIcon(QStyle::SP_BrowserReload), tr("Reload"), ui->techSpec, SLOT(reload()));
-
-	urlBar = new QLineEdit(this);
-
-	connect(urlBar, SIGNAL(returnPressed()), this, SLOT(goToUrl()));
-
-	tb->addWidget(urlBar);
-	tb->addAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Go"), this, SLOT(goToUrl()));
-
-	connect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
-
-	tb->setIconSize(QSize(20, 20));
-
-	static_cast<QVBoxLayout*>(ui->tabWidget->widget(TECH_SPECS)->layout())->insertWidget(0, tb);
+	if(settings->value("Developer/Enabled", false).toBool() && settings->value("Developer/TechSpecToolBar", true).toBool())
+		devCreateTechSpecToolBar();
 
 	servers = loadDataSources();
 	loadSettings();
@@ -302,6 +286,38 @@ void MainWindow::loadExtensions()
 //	}
 }
 
+void MainWindow::devCreateTechSpecToolBar()
+{
+	techSpecToolBar = new QToolBar(this);
+
+	techSpecBackAction = techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->techSpec, SLOT(back()));
+	techSpecForwardAction = techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->techSpec, SLOT(forward()));
+	techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_BrowserReload), tr("Reload"), ui->techSpec, SLOT(reload()));
+
+	urlBar = new QLineEdit(this);
+
+	connect(urlBar, SIGNAL(returnPressed()), this, SLOT(goToUrl()));
+
+	techSpecToolBar->addWidget(urlBar);
+	techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Go"), this, SLOT(goToUrl()));
+
+	connect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
+
+	techSpecToolBar->setIconSize(QSize(20, 20));
+
+	static_cast<QVBoxLayout*>(ui->tabWidget->widget(TECH_SPECS)->layout())->insertWidget(0, techSpecToolBar);
+}
+
+void MainWindow::devRemoveTechSpecToolBar()
+{
+	techSpecToolBar->deleteLater();
+	urlBar->deleteLater();
+
+	techSpecToolBar = 0;
+
+	disconnect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
+}
+
 void MainWindow::changeEvent(QEvent *event)
 {
 	if (event->type() == QEvent::LanguageChange) {
@@ -381,6 +397,17 @@ void MainWindow::showSettings()
 
 		fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
 		fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
+
+		if(settings->value("Developer/Enabled", false).toBool())
+		{
+			if(settings->value("Developer/TechSpecToolBar", true).toBool() && !techSpecToolBar)
+				devCreateTechSpecToolBar();
+			else if(!settings->value("Developer/TechSpecToolBar", true).toBool() && techSpecToolBar)
+				devRemoveTechSpecToolBar();
+		} else {
+			if(techSpecToolBar)
+				devRemoveTechSpecToolBar();
+		}
 
 		int langIndex = SettingsDialog::langIndex(getCurrentLanguageCode()) - 1;
 
@@ -572,7 +599,9 @@ void MainWindow::loadAboutPage()
 	f.open(QIODevice::ReadOnly);
 	QTextStream stream(&f);
 
-	urlBar->setText("ZIMA-CAD-Parts:about");
+	if(techSpecToolBar)
+		urlBar->setText("ZIMA-CAD-Parts:about");
+
 	ui->techSpec->setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
 
