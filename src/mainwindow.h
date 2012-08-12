@@ -108,6 +108,7 @@ private:
 	QAction *techSpecBackAction;
 	QAction *techSpecForwardAction;
 	QLineEdit *urlBar;
+	Item *lastPartsIndexItem;
 	QUrl lastPartsIndex;
 	QDateTime lastPartsIndexModTime;
 #ifdef INCLUDE_PRODUCT_VIEW
@@ -153,6 +154,7 @@ private slots:
 	void updateUrlBar(QUrl url);
 	void setPartsIndex(const QModelIndex &index);
 	void partsIndexLoaded(const QModelIndex &index);
+	void viewHidePartsIndex(Item *item = 0);
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();

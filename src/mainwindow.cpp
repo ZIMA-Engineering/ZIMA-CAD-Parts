@@ -46,7 +46,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
-	  techSpecToolBar(0)
+	  techSpecToolBar(0),
+	  lastPartsIndexItem(0)
 {
 	downloading = false;
 
@@ -620,7 +621,7 @@ void MainWindow::openWorkingDirectory()
 		}
 	}
 
-	QDesktopServices::openUrl(QUrl(workingDir));
+	QDesktopServices::openUrl(QUrl::fromLocalFile(workingDir));
 }
 
 void MainWindow::changeLanguage(int lang)
@@ -631,6 +632,8 @@ void MainWindow::changeLanguage(int lang)
 	currentMetadataLang = langs[lang];
 
 	static_cast<ServersModel*>(ui->treeLeft->model())->retranslateMetadata();
+
+	viewHidePartsIndex();
 }
 
 void MainWindow::goToUrl()
@@ -670,53 +673,63 @@ void MainWindow::partsIndexLoaded(const QModelIndex &index)
 	Item *it = static_cast<Item*>(index.internalPointer());
 
 	if(it == fm->getRootItem())
+		viewHidePartsIndex(it);
+}
+
+void MainWindow::viewHidePartsIndex(Item *item)
+{
+	if(!item && !lastPartsIndexItem)
+		return;
+	else if(!item)
+		item = lastPartsIndexItem;
+
+	QStringList filters;
+	filters << "index-parts_??.html" << "index-parts_??.htm" << "index-parts.html" << "index-parts.htm";
+
+	QDir dir(item->server->getTechSpecPathForItem(item));
+	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
+
+	if(indexes.isEmpty())
 	{
-		QStringList filters;
-		filters << "index-parts_??.html" << "index-parts_??.htm" << "index-parts.html" << "index-parts.htm";
+		ui->partsTextBrowser->clear();
+		ui->partsTextBrowser->hide();
+		lastPartsIndex = QUrl();
+		lastPartsIndexItem = 0;
+		return;
+	}
 
-		QDir dir(it->server->getTechSpecPathForItem(it));
-		QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
+	QString selectedIndex = indexes.first();
+	indexes.removeFirst();
 
-		if(indexes.isEmpty())
-		{
-			ui->partsTextBrowser->clear();
-			ui->partsTextBrowser->hide();
-			lastPartsIndex = QUrl();
+	foreach(QString index, indexes)
+	{
+		QString prefix = index.section('.', 0, 0);
+
+		if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == getCurrentMetadataLanguageCode().left(2))
+			selectedIndex = index;
+	}
+
+	QUrl partsIndex = QUrl::fromLocalFile(dir.path() + "/" + selectedIndex);
+	QDateTime modTime = QFileInfo(dir.path() + "/" + selectedIndex).lastModified();
+
+	if(partsIndex == lastPartsIndex)
+	{
+		if(modTime > lastPartsIndexModTime)
+			lastPartsIndexModTime = modTime;
+		else if(ui->partsTextBrowser->isHidden()) {
+			ui->partsTextBrowser->show();
 			return;
 		}
-
-		QString selectedIndex = indexes.first();
-		indexes.removeFirst();
-
-		foreach(QString index, indexes)
-		{
-			QString prefix = index.section('.', 0, 0);
-
-			if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == getCurrentMetadataLanguageCode().left(2))
-				selectedIndex = index;
-		}
-
-		QUrl partsIndex = QUrl::fromLocalFile(dir.path() + "/" + selectedIndex);
-		QDateTime modTime = QFileInfo(dir.path() + "/" + selectedIndex).lastModified();
-
-		if(partsIndex == lastPartsIndex)
-		{
-			if(modTime > lastPartsIndexModTime)
-				lastPartsIndexModTime = modTime;
-			else if(ui->partsTextBrowser->isHidden()) {
-				ui->partsTextBrowser->show();
-				return;
-			}
-		} else {
-			lastPartsIndex = partsIndex;
-			lastPartsIndexModTime = modTime;
-		}
-
-		if(ui->partsTextBrowser->isHidden())
-			ui->partsTextBrowser->show();
-
-		ui->partsTextBrowser->setSource(partsIndex);
+	} else {
+		lastPartsIndex = partsIndex;
+		lastPartsIndexModTime = modTime;
+		lastPartsIndexItem = item;
 	}
+
+	if(ui->partsTextBrowser->isHidden())
+		ui->partsTextBrowser->show();
+
+	ui->partsTextBrowser->setSource(partsIndex);
 }
 
 void MainWindow::loadSettings()
@@ -857,15 +870,10 @@ void MainWindow::showOrHideProductView()
 	{
 		if(ui->tabWidget->indexOf(productView) == -1)
 			ui->tabWidget->addTab(productView, tr("ProductView"));
-
-		if(productView->isHidden())
-			productView->show();
 	} else {
 		int index;
 		if((index = ui->tabWidget->indexOf(productView)) != -1)
 			ui->tabWidget->removeTab(index);
-
-		productView->hide();
 	}
 }
 
