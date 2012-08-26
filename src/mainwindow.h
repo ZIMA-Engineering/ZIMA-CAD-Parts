@@ -32,6 +32,8 @@
 #include <QButtonGroup>
 #include <QLineEdit>
 #include <QToolBar>
+#include <QToolButton>
+#include <QHBoxLayout>
 
 #include "settingsdialog.h"
 #include "filemodel.h"
@@ -108,9 +110,15 @@ private:
 	QAction *techSpecBackAction;
 	QAction *techSpecForwardAction;
 	QLineEdit *urlBar;
+	QHBoxLayout *dirTreePathLayout;
+	QLabel *dirTreePathLabel;
+	QLineEdit *dirTreePath;
+	QToolButton *dirTreeGoBtn;
+	QString autoDescentPath;
 	Item *lastPartsIndexItem;
 	QUrl lastPartsIndex;
 	QDateTime lastPartsIndexModTime;
+	QModelIndex lastFoundIndex;
 #ifdef INCLUDE_PRODUCT_VIEW
 	ProductView *productView;
 
@@ -120,8 +128,7 @@ private:
 	bool s_developerMode;
 
 	void loadExtensions();
-	void devCreateTechSpecToolBar();
-	void devRemoveTechSpecToolBar();
+	void setupDeveloperMode();
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
@@ -155,6 +162,10 @@ private slots:
 	void setPartsIndex(const QModelIndex &index);
 	void partsIndexLoaded(const QModelIndex &index);
 	void viewHidePartsIndex(Item *item = 0);
+	void descentTo();
+	void autoDescentProgress(const QModelIndex &index);
+	void autoDescendComplete(const QModelIndex &index);
+	void autoDescentNotFound();
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();

@@ -86,7 +86,7 @@ void BaseDataSource::assignThumbnailsToFiles(Item *item, QStringList thumbnails)
 					isLocalized = true;
 				} else thumbName = thumbPrefix;
 
-				if(fileNamePrefix == thumbName)
+				if(fileNamePrefix == thumbName || (isLocalized && fileNamePrefix == thumbPrefix))
 				{
 					// When there's no thumbnail set yet, pick first available
 					if(f->pixmapPath.isEmpty())

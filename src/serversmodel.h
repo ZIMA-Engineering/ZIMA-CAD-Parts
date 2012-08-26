@@ -67,16 +67,22 @@ public slots:
 	int loadQueue(QSettings *settings);
 	void retranslateMetadata(Item *item = 0);
 	void abort();
+	void descentTo(QString path);
 protected:
 	QList<File*> getCheckedFiles(Item *item);
 protected slots:
 	void allPartsDownloaded(Item* item);
 private:
+	void descentDeeper(bool loaded = false);
+
 	QIcon dirIcon, serverIcon;
 	QVector<BaseDataSource*> servers;
 	Item *rootItem;
 	Item *lastTechSpecRequest;
 	QList<File*> downloadQueue;
+	bool autoDescent;
+	QStringList autoDescentPath;
+	Item *autoDescentCurrentItem;
 
 private slots:
 	void dataSourceFinishedDownloading();
@@ -95,6 +101,9 @@ signals:
 	void filesDownloaded();
 	void newDownloadQueue(QList<File*>*);
 	void queueChanged();
+	void autoDescentProgress(const QModelIndex&);
+	void autoDescentCompleted(const QModelIndex&);
+	void autoDescentNotFound();
 };
 
 #endif // SERVERSMODEL_H

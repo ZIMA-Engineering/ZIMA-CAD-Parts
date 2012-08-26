@@ -108,6 +108,16 @@ QString BaseRemoteDataSource::getPathForItem(Item *item)
 	return cacheDirPath() + "/" + remoteHost + "/" + item->path;
 }
 
+QString BaseRemoteDataSource::getRelativePathForItem(Item *item)
+{
+	return item->path;
+}
+
+QString BaseRemoteDataSource::name()
+{
+	return remoteHost;
+}
+
 void BaseRemoteDataSource::loadSettings(QSettings& settings)
 {
 	BaseDataSource::loadSettings(settings);

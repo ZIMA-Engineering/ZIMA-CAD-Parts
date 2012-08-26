@@ -29,6 +29,7 @@
 #include <QDateTime>
 #include <QSettings>
 
+#include "basedatasource.h"
 #include "metadata.h"
 
 class BaseDataSource;
@@ -106,6 +107,7 @@ public:
 	Item *child(int r);
 	~Item();
 	QString getLabel();
+	QString pathRelativeToDataSource();
 
 	int     id;
 	QString name;

@@ -135,6 +135,18 @@ QString LocalDataSource::getPathForItem(Item *item)
 	return item->path;
 }
 
+QString LocalDataSource::getRelativePathForItem(Item *item)
+{
+	QString path = item->path;
+	path.remove(0, localPath.length());
+	return path;
+}
+
+QString LocalDataSource::name()
+{
+	return label;
+}
+
 void LocalDataSource::loadDirectory(Item* item)
 {
 	if(!item->children.isEmpty() || !item->files.isEmpty())

@@ -25,7 +25,9 @@
 #include "localdatasource.h"
 #include "mainwindow.h"
 
-ServersModel::ServersModel(QObject *parent) : QAbstractItemModel(parent)
+ServersModel::ServersModel(QObject *parent)
+	: QAbstractItemModel(parent),
+	  autoDescent(0)
 {
 	rootItem = new Item();
 	lastTechSpecRequest = 0;
@@ -280,6 +282,12 @@ void ServersModel::allPartsDownloaded(Item* item)
 		item->isEmpty = false;
 	emit layoutChanged();
 	emit itemLoaded( createIndex(item->row(), 0, item) );
+
+	if(autoDescent && item == autoDescentCurrentItem)
+	{
+		qDebug() << "calling descentDeeper loaded = true";
+		descentDeeper(true);
+	}
 }
 
 void ServersModel::refresh(Item* item)
@@ -570,5 +578,133 @@ void ServersModel::abort()
 	foreach(BaseDataSource *s, servers)
 	{
 		s->abort();
+	}
+
+	autoDescent = false;
+}
+
+void ServersModel::descentTo(QString path)
+{
+	if(path.isEmpty())
+		return;
+
+	qDebug() << "Descending to" << path;
+
+	autoDescent = true;
+	autoDescentPath = path.split("/");
+
+	if(autoDescentPath.last().isEmpty())
+		autoDescentPath.removeLast();
+
+	if(autoDescentPath.isEmpty())
+		return;
+
+	qDebug() << "Descent path" << autoDescentPath;
+
+	QString dsName = autoDescentPath.takeFirst();
+	bool found = false;
+
+	for(int i = 0; i < servers.count(); i++)
+	{
+		if(dsName == servers[i]->name())
+		{
+			found = true;
+
+			Item *it = rootItem->child(i);
+
+			qDebug() << "DataSource" << servers[i]->label << "matches." << autoDescentPath;
+
+			if(autoDescentPath.isEmpty())
+			{
+				emit autoDescentCompleted(createIndex(it->row(), 0, it));
+				autoDescent = false;
+				return;
+			}
+
+			autoDescentCurrentItem = it;
+			emit autoDescentProgress(createIndex(it->row(), 0, it));
+
+			descentDeeper();
+		}
+	}
+
+	if(!found)
+	{
+		emit autoDescentNotFound();
+		autoDescent = false;
+	}
+}
+
+void ServersModel::descentDeeper(bool loaded)
+{
+	qDebug() << "Descending deeper" << autoDescentCurrentItem->name;
+
+	if(!loaded)
+	{
+		qDebug() << "schedule load immediately" << autoDescentCurrentItem->name;
+		loadItem(autoDescentCurrentItem);
+		return;
+	} else if(autoDescentCurrentItem->children.isEmpty()) {
+		emit autoDescentProgress(createIndex(autoDescentCurrentItem->row(), 0, autoDescentCurrentItem));
+		emit autoDescentNotFound();
+		autoDescent = false;
+		return;
+	} else if(autoDescentPath.isEmpty()) {
+		qDebug() << "NOT FOUND!!!";
+		emit autoDescentNotFound();
+		autoDescent = false;
+	} else if(autoDescentPath.first().isEmpty()) {
+		do {
+			if(autoDescentPath.first().isEmpty())
+				autoDescentPath.removeFirst();
+			else break;
+		} while(!autoDescentPath.isEmpty());
+
+		if(autoDescentPath.isEmpty())
+		{
+			qDebug() << "NOT FOUND!!!";
+			emit autoDescentNotFound();
+			autoDescent = false;
+		}
+	} else {
+		bool found = false;
+
+		foreach(Item *child, autoDescentCurrentItem->children)
+		{
+			if(child->name == autoDescentPath.first())
+			{
+				found = true;
+				autoDescentPath.removeFirst();
+
+				emit autoDescentProgress(createIndex(child->row(), 0, child));
+
+				qDebug() << "child" << child->name << "found" << autoDescentPath;
+
+				if(autoDescentPath.isEmpty())
+				{
+					qDebug() << "Yeah completed here";
+					emit autoDescentCompleted(createIndex(child->row(), 0, child));
+					autoDescent = false;
+//					autoDescentCurrentItem = 0;
+					return;
+				} else {
+					autoDescentCurrentItem = child;
+
+					qDebug() << "schedule load" << child->name;
+					loadItem(child);
+					return;
+				}
+			}
+		}
+
+		if(!found)
+		{
+			qDebug() << autoDescentPath.first() << "not found, exiting search";
+
+			autoDescent = false;
+
+			emit autoDescentProgress(createIndex(autoDescentCurrentItem->row(), 0, autoDescentCurrentItem));
+			emit autoDescentNotFound();
+		}
 	}
 }

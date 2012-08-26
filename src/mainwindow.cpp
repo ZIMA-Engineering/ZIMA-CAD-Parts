@@ -37,6 +37,7 @@
 #include "serversmodel.h"
 #include "downloadmodel.h"
 #include "filtersdialog.h"
+#include "item.h"
 
 QList<MainWindow::FilterGroup> MainWindow::filterGroups;
 QSettings * MainWindow::settings;
@@ -47,6 +48,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
 	  techSpecToolBar(0),
+	  dirTreePath(0),
 	  lastPartsIndexItem(0)
 {
 	downloading = false;
@@ -72,8 +74,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	statusBar()->addWidget(statusDir, 100);
 
-	if(settings->value("Developer/Enabled", false).toBool() && settings->value("Developer/TechSpecToolBar", true).toBool())
-		devCreateTechSpecToolBar();
+	setupDeveloperMode();
 
 	servers = loadDataSources();
 	loadSettings();
@@ -108,11 +109,14 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(sm, SIGNAL(allItemsLoaded()), this, SLOT(allItemsLoaded()));
 	connect(sm, SIGNAL(techSpecAvailable(QUrl)), this, SLOT(loadTechSpec(QUrl)));
 	connect(sm, SIGNAL(statusUpdated(QString)), this, SLOT(updateStatus(QString)));
+	connect(sm, SIGNAL(autoDescentProgress(QModelIndex)), this, SLOT(autoDescentProgress(QModelIndex)));
+	connect(sm, SIGNAL(autoDescentCompleted(QModelIndex)), this, SLOT(autoDescendComplete(QModelIndex)));
+	connect(sm, SIGNAL(autoDescentNotFound()), this, SLOT(autoDescentNotFound()));
 	connect(ui->deleteQueueBtn, SIGNAL(clicked()), sm, SLOT(deleteDownloadQueue()));
 
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
+//	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 
 	fm = new FileModel(this);
 
@@ -177,7 +181,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	rebuildFilters();
 
 	QList<int> partsSize;
-	partsSize << (int)(ui->tab->height()*0.25) << (int)(ui->tab->height()*0.75);
+	partsSize << (int)(ui->tab->height()*0.40) << (int)(ui->tab->height()*0.60);
 	ui->partsSplitter->setSizes(partsSize);
 
 	ui->tree->setModel(proxy);
@@ -186,7 +190,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 //	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
 //	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
+//	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
 	connect(sm, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(sm, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 
@@ -287,36 +291,70 @@ void MainWindow::loadExtensions()
 //	}
 }
 
-void MainWindow::devCreateTechSpecToolBar()
+void MainWindow::setupDeveloperMode()
 {
-	techSpecToolBar = new QToolBar(this);
+	bool developer = settings->value("Developer/Enabled", false).toBool();
+	bool techSpecToolBarEnabled = developer && settings->value("Developer/TechSpecToolBar", true).toBool();
+	bool dirTreePathEnabled = developer && settings->value("Developer/DirTreePath", true).toBool();
 
-	techSpecBackAction = techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->techSpec, SLOT(back()));
-	techSpecForwardAction = techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->techSpec, SLOT(forward()));
-	techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_BrowserReload), tr("Reload"), ui->techSpec, SLOT(reload()));
+	// Tech spec toolbar
+	if(techSpecToolBarEnabled && !techSpecToolBar)
+	{
+		techSpecToolBar = new QToolBar(this);
 
-	urlBar = new QLineEdit(this);
+		techSpecBackAction = techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->techSpec, SLOT(back()));
+		techSpecForwardAction = techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->techSpec, SLOT(forward()));
+		techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_BrowserReload), tr("Reload"), ui->techSpec, SLOT(reload()));
 
-	connect(urlBar, SIGNAL(returnPressed()), this, SLOT(goToUrl()));
+		urlBar = new QLineEdit(this);
 
-	techSpecToolBar->addWidget(urlBar);
-	techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Go"), this, SLOT(goToUrl()));
+		connect(urlBar, SIGNAL(returnPressed()), this, SLOT(goToUrl()));
 
-	connect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
+		techSpecToolBar->addWidget(urlBar);
+		techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Go"), this, SLOT(goToUrl()));
 
-	techSpecToolBar->setIconSize(QSize(20, 20));
+		connect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
 
-	static_cast<QVBoxLayout*>(ui->tabWidget->widget(TECH_SPECS)->layout())->insertWidget(0, techSpecToolBar);
-}
+		techSpecToolBar->setIconSize(QSize(20, 20));
 
-void MainWindow::devRemoveTechSpecToolBar()
-{
-	techSpecToolBar->deleteLater();
-	urlBar->deleteLater();
+		static_cast<QVBoxLayout*>(ui->tabWidget->widget(TECH_SPECS)->layout())->insertWidget(0, techSpecToolBar);
+	} else if(!techSpecToolBarEnabled && techSpecToolBar) {
+		techSpecToolBar->deleteLater();
+		urlBar->deleteLater();
 
-	techSpecToolBar = 0;
+		techSpecToolBar = 0;
 
-	disconnect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
+		disconnect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
+	}
+
+	// Dir tree path
+	if(dirTreePathEnabled && !dirTreePath)
+	{
+		dirTreePath = new QLineEdit(this);
+		dirTreeGoBtn = new QToolButton(this);
+		dirTreeGoBtn->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+		dirTreeGoBtn->setText(tr("Go"));
+		dirTreeGoBtn->setAutoRaise(true);
+
+		connect(dirTreePath, SIGNAL(returnPressed()), this, SLOT(descentTo()));
+		connect(dirTreeGoBtn, SIGNAL(clicked()), this, SLOT(descentTo()));
+
+		dirTreePathLabel = new QLabel(tr("Path"), this);
+
+		dirTreePathLayout = new QHBoxLayout(this);
+		dirTreePathLayout->addWidget(dirTreePathLabel);
+		dirTreePathLayout->addWidget(dirTreePath);
+		dirTreePathLayout->addWidget(dirTreeGoBtn);
+
+		ui->dirTreeVLayout->insertLayout(0, dirTreePathLayout);
+	} else if(!dirTreePathEnabled && dirTreePath) {
+		dirTreePathLabel->deleteLater();
+		dirTreePath->deleteLater();
+		dirTreeGoBtn->deleteLater();
+		delete dirTreePathLayout;
+
+		dirTreePath = 0;
+	}
 }
 
 void MainWindow::changeEvent(QEvent *event)
@@ -399,16 +437,7 @@ void MainWindow::showSettings()
 		fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
 		fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
 
-		if(settings->value("Developer/Enabled", false).toBool())
-		{
-			if(settings->value("Developer/TechSpecToolBar", true).toBool() && !techSpecToolBar)
-				devCreateTechSpecToolBar();
-			else if(!settings->value("Developer/TechSpecToolBar", true).toBool() && techSpecToolBar)
-				devRemoveTechSpecToolBar();
-		} else {
-			if(techSpecToolBar)
-				devRemoveTechSpecToolBar();
-		}
+		setupDeveloperMode();
 
 		int langIndex = SettingsDialog::langIndex(getCurrentLanguageCode()) - 1;
 
@@ -664,6 +693,8 @@ void MainWindow::updateUrlBar(QUrl url)
 
 void MainWindow::setPartsIndex(const QModelIndex &index)
 {
+	qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
+
 	fm->setRootIndex(index);
 	partsIndexLoaded(index);
 }
@@ -673,7 +704,10 @@ void MainWindow::partsIndexLoaded(const QModelIndex &index)
 	Item *it = static_cast<Item*>(index.internalPointer());
 
 	if(it == fm->getRootItem())
+	{
 		viewHidePartsIndex(it);
+		dirTreePath->setText(it->server->name() + it->pathRelativeToDataSource());
+	}
 }
 
 void MainWindow::viewHidePartsIndex(Item *item)
@@ -730,6 +764,36 @@ void MainWindow::viewHidePartsIndex(Item *item)
 		ui->partsTextBrowser->show();
 
 	ui->partsTextBrowser->setSource(partsIndex);
+}
+
+void MainWindow::descentTo()
+{
+	autoDescentPath = QDir::cleanPath(dirTreePath->text()).trimmed();
+	static_cast<ServersModel*>(ui->treeLeft->model())->descentTo( autoDescentPath );
+}
+
+void MainWindow::autoDescentProgress(const QModelIndex &index)
+{
+	lastFoundIndex = index;
+	ui->treeLeft->expand(index);
+}
+
+void MainWindow::autoDescendComplete(const QModelIndex &index)
+{
+	ui->treeLeft->expand(index);
+	setPartsIndex(index);
+	static_cast<ServersModel*>(ui->treeLeft->model())->requestTechSpecs(index);
+}
+
+void MainWindow::autoDescentNotFound()
+{
+	if(lastFoundIndex.isValid())
+	{
+		setPartsIndex(lastFoundIndex);
+		static_cast<ServersModel*>(ui->treeLeft->model())->requestTechSpecs(lastFoundIndex);
+	}
+
+	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(autoDescentPath));
 }
 
 void MainWindow::loadSettings()

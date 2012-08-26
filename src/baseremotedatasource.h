@@ -37,6 +37,8 @@ public:
 	QString pathToDataRoot();
 	QString getTechSpecPathForItem(Item *item);
 	QString getPathForItem(Item *item);
+	QString getRelativePathForItem(Item *item);
+	QString name();
 
 	// FIXME: make protected
 	QString remoteHost, remoteLogin, remotePassword, remoteBaseDir;

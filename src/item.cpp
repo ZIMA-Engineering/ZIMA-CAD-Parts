@@ -276,3 +276,8 @@ QString Item::getLabel()
 		return metadata->getLabel();
 	return name;
 }
+
+QString Item::pathRelativeToDataSource()
+{
+	return server->getRelativePathForItem(this);
+}

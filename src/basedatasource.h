@@ -57,6 +57,8 @@ public:
 	virtual QString pathToDataRoot() = 0;
 	virtual QString getTechSpecPathForItem(Item *item) = 0;
 	virtual QString getPathForItem(Item *item) = 0;
+	virtual QString getRelativePathForItem(Item *item) = 0;
+	virtual QString name() = 0;
 
 	Item    *rootItem;
 	QListWidgetItem *lwItem;
