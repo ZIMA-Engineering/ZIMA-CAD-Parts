@@ -49,6 +49,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  translator(translator),
 	  techSpecToolBar(0),
 	  dirTreePath(0),
+#ifdef INCLUDE_PRODUCT_VIEW
+	  productView(0),
+#endif
 	  lastPartsIndexItem(0)
 {
 	downloading = false;
@@ -256,12 +259,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	loadAboutPage();
 
 #ifdef INCLUDE_PRODUCT_VIEW
-	productView = new ProductView(settings, this);
-
 	showOrHideProductView();
-
-	connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(previewInProductView(QModelIndex)));
-	connect(sm, SIGNAL(fileDownloaded(File*)), productView, SLOT(fileDownloaded(File*)));
 #endif // INCLUDE_PRODUCT_VIEW
 
 	if( useSplash )
@@ -922,20 +920,28 @@ QString MainWindow::getCurrentMetadataLanguageCode()
 #ifdef INCLUDE_PRODUCT_VIEW
 void MainWindow::showOrHideProductView()
 {
-	if(productView->isExtensionEnabled())
+	if(settings->value("Extensions/ProductView/Enabled", false).toBool())
 	{
-		if(ui->tabWidget->indexOf(productView) == -1)
+		if(!productView)
+		{
+			productView = new ProductView(settings, ui->tabWidget);
 			ui->tabWidget->addTab(productView, tr("ProductView"));
+
+			connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(previewInProductView(QModelIndex)));
+			connect(static_cast<ServersModel*>(ui->treeLeft->model()), SIGNAL(fileDownloaded(File*)), productView, SLOT(fileDownloaded(File*)));
+		}
 	} else {
-		int index;
-		if((index = ui->tabWidget->indexOf(productView)) != -1)
-			ui->tabWidget->removeTab(index);
+		if(productView)
+		{
+			productView->deleteLater();
+			productView = 0;
+		}
 	}
 }
 
 void MainWindow::previewInProductView(const QModelIndex &index)
 {
-	if(!productView->isExtensionEnabled())
+	if(!productView)
 		return;
 
 	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->tree->model())->mapToSource(index);

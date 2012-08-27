@@ -41,7 +41,6 @@ class ProductView : public QWidget
 public:
 	explicit ProductView(QSettings *settings, QWidget *parent = 0);
 	~ProductView();
-	bool isExtensionEnabled() const;
 
 public slots:
 	void expectFile(File* f);

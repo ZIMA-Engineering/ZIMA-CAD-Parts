@@ -50,11 +50,6 @@ ProductView::~ProductView()
 	delete ui;
 }
 
-bool ProductView::isExtensionEnabled() const
-{
-	return settings->value("Extensions/ProductView/Enabled", false).toBool();
-}
-
 void ProductView::expectFile(File *f)
 {
 	expectedFile = f;
