@@ -500,8 +500,6 @@ void MainWindow::updateStatus(QString str)
 
 void MainWindow::loadingItem(Item *item)
 {
-	setCursor(QCursor(Qt::WaitCursor));
-
 	statusDir->setText(tr("Loading %1...").arg(item->getLabel()));
 }
 
@@ -514,9 +512,6 @@ void MainWindow::itemLoaded(const QModelIndex &index)
 
 void MainWindow::allItemsLoaded()
 {
-	//QApplication::restoreOverrideCursor();
-	setCursor(QCursor(Qt::ArrowCursor));
-
 	statusDir->setText(tr("All items loaded."));
 }
 
@@ -537,15 +532,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		stopDownload();
 		updateStatus(tr("Aborted."));
 
-		setCursor(QCursor(Qt::ArrowCursor));
-		ui->btnUpdate->setEnabled(true);
 		break;
 	}
 }
 
 void MainWindow::errorOccured(QString error)
 {
-	QApplication::restoreOverrideCursor();
 	ui->treeLeft->setEnabled(true);
 	ui->btnUpdate->setEnabled(true);
 
