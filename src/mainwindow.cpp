@@ -344,7 +344,7 @@ void MainWindow::setupDeveloperMode()
 		dirTreePathLayout->addWidget(dirTreePath);
 		dirTreePathLayout->addWidget(dirTreeGoBtn);
 
-		ui->dirTreeVLayout->insertLayout(0, dirTreePathLayout);
+		ui->mainVerticalLayout->insertLayout(0, dirTreePathLayout);
 	} else if(!dirTreePathEnabled && dirTreePath) {
 		dirTreePathLabel->deleteLater();
 		dirTreePath->deleteLater();
@@ -696,7 +696,9 @@ void MainWindow::partsIndexLoaded(const QModelIndex &index)
 	if(it == fm->getRootItem())
 	{
 		viewHidePartsIndex(it);
-		dirTreePath->setText(it->server->name() + it->pathRelativeToDataSource());
+
+		if(dirTreePath)
+			dirTreePath->setText(it->server->name() + it->pathRelativeToDataSource());
 	}
 }
 
