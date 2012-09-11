@@ -92,6 +92,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->btnUpdate, SIGNAL(clicked()), this, SLOT(updateClicked()));
 	connect(ui->startStopDownloadBtn, SIGNAL(clicked()), this, SLOT(toggleDownload()));
 
+	ui->thumbnailSizeSlider->setValue(settings->value("GUI/ThumbWidth", 32).toInt());
+
 	//connect(ui->treeLeft, SIGNAL(expanded(QModelIndex)), ui->treeLeft, SIGNAL(clicked(QModelIndex)));
 
 	//connect(ui->filtersListWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(rebuildFilters()));
@@ -127,6 +129,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
 
 	connect(fm, SIGNAL(requestColumnResize()), this, SLOT(treeExpandedOrCollaped()));
+	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), fm, SLOT(setThumbWidth(int)));
+	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(adjustThumbColumnWidth(int)));
 
 	proxy = new QSortFilterProxyModel(this);
 	proxy->setSourceModel(fm);
@@ -434,6 +438,8 @@ void MainWindow::showSettings()
 
 		fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
 		fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
+
+		ui->thumbnailSizeSlider->setValue(settings->value("GUI/ThumbWidth", 32).toInt());
 
 		setupDeveloperMode();
 
@@ -786,6 +792,11 @@ void MainWindow::autoDescentNotFound()
 	}
 
 	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(autoDescentPath));
+}
+
+void MainWindow::adjustThumbColumnWidth(int width)
+{
+	ui->tree->setColumnWidth(1, width);
 }
 
 void MainWindow::loadSettings()

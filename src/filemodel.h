@@ -48,11 +48,11 @@ public:
 	//---
 
 	Item* getRootItem();
-	void setThumbWidth(int size);
 	void setPreviewWidth(int size);
 
 public slots:
 	void setRootIndex(const QModelIndex &index);
+	void setThumbWidth(int size);
 	void initMetadata(Item *i);
 	void prepareForUpdate();
 

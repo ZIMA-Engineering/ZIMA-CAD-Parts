@@ -86,8 +86,8 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		case Qt::DecorationRole:
 			if( !rootItem->files.at( row )->pixmap.isNull() )
 			{
-				if( rootItem->files.at( row )->scaledThumb.isNull() )
-					rootItem->files.at( row )->scaledThumb = rootItem->files.at( row )->pixmap.scaledToWidth( thumbWidth );
+				if( rootItem->files.at( row )->scaledThumb.isNull() || rootItem->files.at( row )->scaledThumb.width() != thumbWidth )
+					rootItem->files.at( row )->scaledThumb = rootItem->files.at( row )->pixmap.scaledToWidth(thumbWidth, Qt::SmoothTransformation);
 				return rootItem->files.at( row )->scaledThumb;
 			}
 		case Qt::SizeHintRole:
@@ -238,6 +238,9 @@ Item* FileModel::getRootItem()
 void FileModel::setThumbWidth(int size)
 {
 	thumbWidth = size;
+
+	if(rootItem)
+		emit dataChanged(index(0, 1), index(rootItem->files.count(), 1));
 }
 
 void FileModel::setPreviewWidth(int size)
