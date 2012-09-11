@@ -79,7 +79,26 @@ QStringList Metadata::getColumnLabels()
 
 QString Metadata::getPartParam(QString part, int col)
 {
-	return metadata->value(QString("%1/%2").arg(part.section('.', 0, 0)).arg(col), QString()).toString();
+	QString partGroup = part.section('.', 0, 0);
+	QString anyVal;
+	QString val;
+
+	metadata->beginGroup(partGroup);
+
+	foreach(QString group, metadata->childGroups())
+	{
+		if(!(val = metadata->value(QString("%1/%2").arg(group).arg(col)).toString()).isEmpty() && group == currentAppLang)
+			break;
+
+		if(anyVal.isEmpty())
+			anyVal = val;
+	}
+
+	metadata->endGroup();
+
+	if(!val.isEmpty())
+		return val;
+	else return anyVal.isEmpty() ? metadata->value(QString("%1/%2").arg(partGroup).arg(col), QString()).toString() : anyVal;
 }
 
 void Metadata::refresh()
