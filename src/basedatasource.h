@@ -78,6 +78,7 @@ public slots:
 	void assignThumbnailsToFiles(Item *item, QStringList thumbnails = QStringList());
 	void retranslate(QString lang = QString());
 	void saveSettings(QSettings& settings);
+	virtual void assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
 protected:
 	virtual void loadItemLogo(Item *item) = 0;
 
@@ -98,6 +99,7 @@ signals:
 	void techSpecAvailable(QUrl);
 	void metadataReady(Item*);
 	void errorOccured(QString);
+	void techSpecsIndexAlreadyExists(Item*);
 };
 
 #endif // BASEDATASOURCE_H

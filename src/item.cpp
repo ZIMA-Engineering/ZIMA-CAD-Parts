@@ -234,6 +234,7 @@ Item::Item()
 	isEmpty = true;
 	server = 0;
 	metadata = 0;
+	hasTechSpecs = false;
 	hasLoadedChildren = false;
 	showText = true;
 }

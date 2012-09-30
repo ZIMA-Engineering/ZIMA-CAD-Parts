@@ -293,6 +293,33 @@ void LocalDataSource::saveSettings(QSettings& settings)
 	settings.setValue("Path", localPath);
 }
 
+void LocalDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
+{
+	QByteArray htmlIndex = QString("<html>\n"
+			"	<head>\n"
+			"		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
+			"	</head>\n"
+			"</html>\n").arg(url).toUtf8();
+	QDir techSpecDir(item->path + "/" + TECHSPEC_DIR);
+
+	if(!techSpecDir.exists())
+		techSpecDir.mkdir(techSpecDir.absolutePath());
+
+	QFile indexFile(techSpecDir.absoluteFilePath("index_" + lang + ".html"));
+
+	if(indexFile.exists() && !overwrite)
+	{
+		emit techSpecsIndexAlreadyExists(item);
+		return;
+	}
+
+	if(!indexFile.open(QIODevice::WriteOnly))
+		return; // FIXME: Notify user on failure?
+
+	indexFile.write(htmlIndex);
+	indexFile.close();
+}
+
 void LocalDataSource::aboutToCopy(File *file)
 {
 	emit statusUpdated(tr("Copying ") + file->name);

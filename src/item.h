@@ -123,6 +123,7 @@ public:
 	bool    isDir;
 	bool    isEmpty;
 	bool isServer;
+	bool hasTechSpecs;
 	bool hasLoadedChildren;
 	BaseDataSource* server;
 

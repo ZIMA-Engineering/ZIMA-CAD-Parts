@@ -68,6 +68,7 @@ public slots:
 	void retranslateMetadata(Item *item = 0);
 	void abort();
 	void descentTo(QString path);
+	void assignTechSpecUrlToItem(QString url, Item *item, bool overwrite = false);
 protected:
 	QList<File*> getCheckedFiles(Item *item);
 protected slots:
@@ -104,6 +105,7 @@ signals:
 	void autoDescentProgress(const QModelIndex&);
 	void autoDescentCompleted(const QModelIndex&);
 	void autoDescentNotFound();
+	void techSpecsIndexAlreadyExists(Item*);
 };
 
 #endif // SERVERSMODEL_H

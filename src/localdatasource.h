@@ -69,6 +69,7 @@ public slots:
 	void abort();
 	void loadSettings(QSettings& settings);
 	void saveSettings(QSettings& settings);
+	void assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
 
 protected:
 	void loadItemLogo(Item *item);

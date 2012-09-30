@@ -162,3 +162,8 @@ void BaseDataSource::saveSettings(QSettings& settings)
 	settings.setValue("DataSourceType", internalName());
 	settings.setValue("Label", label);
 }
+
+void BaseDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
+{
+
+}

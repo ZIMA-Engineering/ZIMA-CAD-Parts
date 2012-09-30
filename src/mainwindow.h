@@ -167,6 +167,8 @@ private slots:
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();
 	void adjustThumbColumnWidth(int width);
+	void assignUrlToDirectory(bool overwrite = false);
+	void techSpecsIndexOverwrite(Item *item);
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();

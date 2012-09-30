@@ -208,6 +208,8 @@ void FtpDataSource::ftpListItemInQueue()
 
 			remoteBaseDir = item->children.first()->path;
 			ftpCurrentItem = item->children.first();
+			ftpCurrentItem->hasTechSpecs = false;
+
 			hasTechSpecDir = false;
 			hasMetadata = false;
 			metadataChanged = false;
@@ -255,6 +257,8 @@ void FtpDataSource::ftpListItemInQueue()
 		ftpCurrentItem = item;
 		ftpCurrentDir = remoteBaseDir;
 
+		ftpCurrentItem->hasTechSpecs = false;
+
 		browseDepth = 2;
 		hasTechSpecDir = false;
 		hasMetadata = false;
@@ -278,6 +282,7 @@ void FtpDataSource::ftpListItemInQueue()
 		qDebug() << "Browsing" << item->path << "dirsToList size=" << dirsToList.count();
 
 		ftpCurrentItem = item;
+		ftpCurrentItem->hasTechSpecs = false;
 
 		hasTechSpecDir = false;
 		hasMetadata = false;
@@ -339,6 +344,7 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 		{
 			//qDebug() << "Hey, I have found TECHSPEC directory... path is" << (ftpCurrentItem->path + n + "/") << "last edit is" << info.lastModified();
 			hasTechSpecDir = true;
+			ftpCurrentItem->hasTechSpecs = true;
 		} else {
 			Item *i = new Item();
 			i->isDir = true;
@@ -758,6 +764,40 @@ void FtpDataSource::saveSettings(QSettings &settings)
 	BaseRemoteDataSource::saveSettings(settings);
 
 	settings.setValue("PassiveMode", ftpPassiveMode);
+}
+
+void FtpDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
+{
+	QByteArray htmlIndex = QString("<html>\n"
+			"	<head>\n"
+			"		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
+			"	</head>\n"
+			"</html>\n").arg(url).toUtf8();
+	QString targetFile = item->path + "/" + TECHSPEC_DIR + "/" + "index_" + lang + ".html";
+
+	QDir cachedTechSpecDir = (cacheDirPath() + "/" + remoteHost + "/" + item->path + "/" + TECHSPEC_DIR);
+
+	if(!cachedTechSpecDir.exists())
+		cachedTechSpecDir.mkdir(cachedTechSpecDir.absolutePath());
+
+	QFile cachedIndexFile(cachedTechSpecDir.absoluteFilePath("index_" + lang + ".html"));
+
+	if(cachedIndexFile.exists() && !overwrite)
+	{
+		emit techSpecsIndexAlreadyExists(item);
+		return;
+	}
+
+	if(!cachedIndexFile.open(QIODevice::WriteOnly))
+		return; // FIXME: Notify user on failure?
+
+	cachedIndexFile.write(htmlIndex);
+	cachedIndexFile.close();
+
+	if(!item->hasTechSpecs)
+		ftp->mkdir(item->path + "/" + TECHSPEC_DIR);
+
+	ftp->put(htmlIndex, targetFile);
 }
 
 void FtpDataSource::checkConnection(QFtp *f)

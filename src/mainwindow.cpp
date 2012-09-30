@@ -117,6 +117,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(sm, SIGNAL(autoDescentProgress(QModelIndex)), this, SLOT(autoDescentProgress(QModelIndex)));
 	connect(sm, SIGNAL(autoDescentCompleted(QModelIndex)), this, SLOT(autoDescendComplete(QModelIndex)));
 	connect(sm, SIGNAL(autoDescentNotFound()), this, SLOT(autoDescentNotFound()));
+	connect(sm, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SLOT(techSpecsIndexOverwrite(Item*)));
 	connect(ui->deleteQueueBtn, SIGNAL(clicked()), sm, SLOT(deleteDownloadQueue()));
 
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
@@ -316,6 +317,8 @@ void MainWindow::setupDeveloperMode()
 		techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Go"), this, SLOT(goToUrl()));
 
 		connect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
+
+		techSpecToolBar->addAction(QIcon(":/gfx/pin.png"), tr("Pin this URL to current directory in tree (write permission required)"), this, SLOT(assignUrlToDirectory()));
 
 		techSpecToolBar->setIconSize(QSize(20, 20));
 
@@ -797,6 +800,20 @@ void MainWindow::autoDescentNotFound()
 void MainWindow::adjustThumbColumnWidth(int width)
 {
 	ui->tree->setColumnWidth(1, width);
+}
+
+void MainWindow::assignUrlToDirectory(bool overwrite)
+{
+	Item *it = fm->getRootItem();
+
+	if(it)
+		static_cast<ServersModel*>(ui->treeLeft->model())->assignTechSpecUrlToItem(urlBar->text(), it, overwrite);
+}
+
+void MainWindow::techSpecsIndexOverwrite(Item *item)
+{
+	if(QMessageBox::warning(this, tr("Tech specs index already exists"), tr("Index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+		assignUrlToDirectory(true);
 }
 
 void MainWindow::loadSettings()
