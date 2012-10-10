@@ -52,6 +52,8 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	//---
 	void setServerData(QVector<BaseDataSource*>);
+	QString translateDataSourceNameToPath(QString name);
+
 public slots:
 	void refresh(Item* item);
 	void clear();

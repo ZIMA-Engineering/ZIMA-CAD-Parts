@@ -54,6 +54,7 @@ SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> ser
 	m_ui->splashDurationSpinBox->setValue( settings->value("GUI/Splash/Duration", 1500).toInt() );
 	m_ui->developerModeGroupBox->setChecked( settings->value("Developer/Enabled", false).toBool() );
 	m_ui->techSpecToolBarCheckBox->setChecked( settings->value("Developer/TechSpecToolBar", true).toBool() );
+	m_ui->dirTreePathCheckBox->setChecked( settings->value("Developer/DirTreePath", true).toBool() );
 
 #ifdef INCLUDE_PRODUCT_VIEW
 	productViewSettings = new ProductViewSettings(settings, this);
@@ -91,6 +92,7 @@ void SettingsDialog::saveSettings()
 	settings->setValue("GUI/Splash/Duration", m_ui->splashDurationSpinBox->value());
 	settings->setValue("Developer/Enabled", m_ui->developerModeGroupBox->isChecked());
 	settings->setValue("Developer/TechSpecToolBar", m_ui->techSpecToolBarCheckBox->isChecked());
+	settings->setValue("Developer/DirTreePath", m_ui->dirTreePathCheckBox->isChecked());
 
 	QString lang = langIndexToName( m_ui->languageComboBox->currentIndex() );
 	if( lang != settings->value("Language").toString() )

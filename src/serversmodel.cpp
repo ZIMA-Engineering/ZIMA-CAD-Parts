@@ -273,6 +273,14 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 	reset();
 }
 
+QString ServersModel::translateDataSourceNameToPath(QString name)
+{
+	foreach(BaseDataSource *ds, servers)
+		if(ds->name() == name)
+			return ds->pathToDataRoot();
+	return QString();
+}
+
 void ServersModel::allPartsDownloaded(Item* item)
 {
 	//emit statusUpdated(tr("All done."));

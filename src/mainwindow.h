@@ -114,6 +114,7 @@ private:
 	QLabel *dirTreePathLabel;
 	QLineEdit *dirTreePath;
 	QToolButton *dirTreeGoBtn;
+	QPushButton *dirTreeOpenBtn;
 	QString autoDescentPath;
 	Item *lastPartsIndexItem;
 	QUrl lastPartsIndex;
@@ -169,6 +170,7 @@ private slots:
 	void adjustThumbColumnWidth(int width);
 	void assignUrlToDirectory(bool overwrite = false);
 	void techSpecsIndexOverwrite(Item *item);
+	void openDirTreePath();
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();

@@ -346,16 +346,21 @@ void MainWindow::setupDeveloperMode()
 
 		dirTreePathLabel = new QLabel(tr("Path"), this);
 
+		dirTreeOpenBtn = new QPushButton(tr("Open"), this);
+		connect(dirTreeOpenBtn, SIGNAL(clicked()), this, SLOT(openDirTreePath()));
+
 		dirTreePathLayout = new QHBoxLayout(this);
 		dirTreePathLayout->addWidget(dirTreePathLabel);
 		dirTreePathLayout->addWidget(dirTreePath);
 		dirTreePathLayout->addWidget(dirTreeGoBtn);
+		dirTreePathLayout->addWidget(dirTreeOpenBtn);
 
 		ui->mainVerticalLayout->insertLayout(0, dirTreePathLayout);
 	} else if(!dirTreePathEnabled && dirTreePath) {
 		dirTreePathLabel->deleteLater();
 		dirTreePath->deleteLater();
 		dirTreeGoBtn->deleteLater();
+		dirTreeOpenBtn->deleteLater();
 		delete dirTreePathLayout;
 
 		dirTreePath = 0;
@@ -814,6 +819,22 @@ void MainWindow::techSpecsIndexOverwrite(Item *item)
 {
 	if(QMessageBox::warning(this, tr("Tech specs index already exists"), tr("Index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
 		assignUrlToDirectory(true);
+}
+
+void MainWindow::openDirTreePath()
+{
+	QString path = dirTreePath->text();
+	QStringList parts = path.split('/');
+	QString dataRoot;
+
+	if(parts.isEmpty() || (dataRoot = static_cast<ServersModel*>(ui->treeLeft->model())->translateDataSourceNameToPath(parts.first())).isEmpty())
+	{
+		QMessageBox::warning(this, tr("Not found"), tr("Path %1 does not exist.").arg(path));
+		return;
+	}
+
+	parts.removeFirst();
+	QDesktopServices::openUrl(QUrl::fromLocalFile(dataRoot + "/" + parts.join("/")));
 }
 
 void MainWindow::loadSettings()
