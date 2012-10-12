@@ -61,8 +61,4 @@ TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts
 win32:CONFIG += static
 win32:RC_FILE = src/zima-cad-parts.rc
 
-
-
-
-
-
+ICON = gfx/icon.icns
