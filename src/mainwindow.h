@@ -106,15 +106,26 @@ private:
 	static QString currentMetadataLang;
 	QStringList langs;
 	QList<QPushButton*> langFlags;
+
+	// Tech spec toolbar
 	QToolBar *techSpecToolBar;
 	QAction *techSpecBackAction;
 	QAction *techSpecForwardAction;
 	QLineEdit *urlBar;
+
+	// Dir tree path
 	QHBoxLayout *dirTreePathLayout;
 	QLabel *dirTreePathLabel;
 	QLineEdit *dirTreePath;
 	QToolButton *dirTreeGoBtn;
 	QPushButton *dirTreeOpenBtn;
+
+	// Parts index toolbar
+	QToolBar *partsIndexToolBar;
+	QAction *partsIndexBackAction;
+	QAction *partsIndexForwardAction;
+	QLineEdit *partsIndexUrlBar;
+
 	QString autoDescentPath;
 	Item *lastPartsIndexItem;
 	QUrl lastPartsIndex;
@@ -163,6 +174,8 @@ private slots:
 	void setPartsIndex(const QModelIndex &index);
 	void partsIndexLoaded(const QModelIndex &index);
 	void viewHidePartsIndex(Item *item = 0);
+	void goToPartsIndexUrl();
+	void updatePartsUrlBar(QUrl url);
 	void descentTo();
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
@@ -170,6 +183,8 @@ private slots:
 	void adjustThumbColumnWidth(int width);
 	void assignUrlToDirectory(bool overwrite = false);
 	void techSpecsIndexOverwrite(Item *item);
+	void assignPartsIndexUrlToDirectory(bool overwrite = false);
+	void partsIndexOverwrite(Item *item);
 	void openDirTreePath();
 	void loadSettings();
 	QVector<BaseDataSource*> loadDataSources();

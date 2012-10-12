@@ -118,6 +118,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(sm, SIGNAL(autoDescentCompleted(QModelIndex)), this, SLOT(autoDescendComplete(QModelIndex)));
 	connect(sm, SIGNAL(autoDescentNotFound()), this, SLOT(autoDescentNotFound()));
 	connect(sm, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SLOT(techSpecsIndexOverwrite(Item*)));
+	connect(sm, SIGNAL(partsIndexAlreadyExists(Item*)), this, SLOT(partsIndexOverwrite(Item*)));
 	connect(ui->deleteQueueBtn, SIGNAL(clicked()), sm, SLOT(deleteDownloadQueue()));
 
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
@@ -323,13 +324,36 @@ void MainWindow::setupDeveloperMode()
 		techSpecToolBar->setIconSize(QSize(20, 20));
 
 		static_cast<QVBoxLayout*>(ui->tabWidget->widget(TECH_SPECS)->layout())->insertWidget(0, techSpecToolBar);
+
+		// Parts web view toolbar
+		partsIndexToolBar = new QToolBar(this);
+		partsIndexUrlBar = new QLineEdit(this);
+
+		partsIndexToolBar->setIconSize(QSize(20, 20));
+
+		connect(partsIndexUrlBar, SIGNAL(returnPressed()), this, SLOT(goToPartsIndexUrl()));
+
+		partsIndexToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->partsWebView, SLOT(back()));
+		partsIndexToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->partsWebView, SLOT(forward()));
+		partsIndexToolBar->addWidget(partsIndexUrlBar);
+		partsIndexToolBar->addAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Go"), this, SLOT(goToPartsIndexUrl()));
+
+		connect(ui->partsWebView, SIGNAL(urlChanged(QUrl)), this, SLOT(updatePartsUrlBar(QUrl)));
+
+		partsIndexToolBar->addAction(QIcon(":/gfx/pin.png"), tr("Pin this URL to current parts index (write permission required)"), this, SLOT(assignPartsIndexUrlToDirectory()));
+
+		static_cast<QVBoxLayout*>(ui->tabWidget->widget(PARTS)->layout())->insertWidget(0, partsIndexToolBar);
 	} else if(!techSpecToolBarEnabled && techSpecToolBar) {
 		techSpecToolBar->deleteLater();
 		urlBar->deleteLater();
 
+		partsIndexToolBar->deleteLater();
+		partsIndexUrlBar->deleteLater();
+
 		techSpecToolBar = 0;
 
 		disconnect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
+		disconnect(ui->partsWebView, SIGNAL(urlChanged(QUrl)), this, SLOT(updatePartsUrlBar(QUrl)));
 	}
 
 	// Dir tree path
@@ -695,6 +719,23 @@ void MainWindow::updateUrlBar(QUrl url)
 	urlBar->setText(str);
 }
 
+void MainWindow::goToPartsIndexUrl()
+{
+	QString str = partsIndexUrlBar->text();
+
+	ui->partsWebView->load(QUrl(str));
+
+	if(ui->partsWebView->isHidden())
+		ui->partsWebView->show();
+}
+
+void MainWindow::updatePartsUrlBar(QUrl url)
+{
+	QString str = url.toString();
+
+	partsIndexUrlBar->setText(str);
+}
+
 void MainWindow::setPartsIndex(const QModelIndex &index)
 {
 	qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
@@ -731,8 +772,8 @@ void MainWindow::viewHidePartsIndex(Item *item)
 
 	if(indexes.isEmpty())
 	{
-		ui->partsTextBrowser->clear();
-		ui->partsTextBrowser->hide();
+		ui->partsWebView->setHtml("");
+		ui->partsWebView->hide();
 		lastPartsIndex = QUrl();
 		lastPartsIndexItem = 0;
 		return;
@@ -756,8 +797,8 @@ void MainWindow::viewHidePartsIndex(Item *item)
 	{
 		if(modTime > lastPartsIndexModTime)
 			lastPartsIndexModTime = modTime;
-		else if(ui->partsTextBrowser->isHidden()) {
-			ui->partsTextBrowser->show();
+		else if(ui->partsWebView->isHidden()) {
+			ui->partsWebView->show();
 			return;
 		}
 	} else {
@@ -766,10 +807,10 @@ void MainWindow::viewHidePartsIndex(Item *item)
 		lastPartsIndexItem = item;
 	}
 
-	if(ui->partsTextBrowser->isHidden())
-		ui->partsTextBrowser->show();
+	if(ui->partsWebView->isHidden())
+		ui->partsWebView->show();
 
-	ui->partsTextBrowser->setSource(partsIndex);
+	ui->partsWebView->load(partsIndex);
 }
 
 void MainWindow::descentTo()
@@ -819,6 +860,20 @@ void MainWindow::techSpecsIndexOverwrite(Item *item)
 {
 	if(QMessageBox::warning(this, tr("Tech specs index already exists"), tr("Index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
 		assignUrlToDirectory(true);
+}
+
+void MainWindow::assignPartsIndexUrlToDirectory(bool overwrite)
+{
+	Item *it = fm->getRootItem();
+
+	if(it)
+		static_cast<ServersModel*>(ui->treeLeft->model())->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, overwrite);
+}
+
+void MainWindow::partsIndexOverwrite(Item *item)
+{
+	if(QMessageBox::warning(this, tr("Parts index already exists"), tr("Parts index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+		assignPartsIndexUrlToDirectory(true);
 }
 
 void MainWindow::openDirTreePath()

@@ -167,3 +167,8 @@ void BaseDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString la
 {
 
 }
+
+void BaseDataSource::assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite)
+{
+
+}

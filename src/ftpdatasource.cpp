@@ -800,6 +800,40 @@ void FtpDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lan
 	ftp->put(htmlIndex, targetFile);
 }
 
+void FtpDataSource::assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite)
+{
+	QByteArray htmlIndex = QString("<html>\n"
+			"	<head>\n"
+			"		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
+			"	</head>\n"
+			"</html>\n").arg(url).toUtf8();
+	QString targetFile = item->path + "/" + TECHSPEC_DIR + "/" + "index-parts_" + lang + ".html";
+
+	QDir cachedTechSpecDir = (cacheDirPath() + "/" + remoteHost + "/" + item->path + "/" + TECHSPEC_DIR);
+
+	if(!cachedTechSpecDir.exists())
+		cachedTechSpecDir.mkdir(cachedTechSpecDir.absolutePath());
+
+	QFile cachedIndexFile(cachedTechSpecDir.absoluteFilePath("index-parts_" + lang + ".html"));
+
+	if(cachedIndexFile.exists() && !overwrite)
+	{
+		emit partsIndexAlreadyExists(item);
+		return;
+	}
+
+	if(!cachedIndexFile.open(QIODevice::WriteOnly))
+		return; // FIXME: Notify user on failure?
+
+	cachedIndexFile.write(htmlIndex);
+	cachedIndexFile.close();
+
+	if(!item->hasTechSpecs)
+		ftp->mkdir(item->path + "/" + TECHSPEC_DIR);
+
+	ftp->put(htmlIndex, targetFile);
+}
+
 void FtpDataSource::checkConnection(QFtp *f)
 {
 	if( f->state() == QFtp::Unconnected )

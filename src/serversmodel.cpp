@@ -248,6 +248,7 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 		connect(i->server, SIGNAL(updateAvailable(Item*)), this, SLOT(itemUpdated(Item*)));
 		connect(i->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
 		connect(i->server, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
+		connect(i->server, SIGNAL(partsIndexAlreadyExists(Item*)), this, SIGNAL(partsIndexAlreadyExists(Item*)));
 
 		i->parent = rootItem;
 
@@ -723,4 +724,11 @@ void ServersModel::assignTechSpecUrlToItem(QString url, Item *item, bool overwri
 	QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
 
 	item->server->assignTechSpecUrlToItem(url, item, lang, overwrite);
+}
+
+void ServersModel::assignPartsIndexUrlToItem(QString url, Item *item, bool overwrite)
+{
+	QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+
+	item->server->assignPartsIndexUrlToItem(url, item, lang, overwrite);
 }

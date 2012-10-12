@@ -71,6 +71,7 @@ public slots:
 	void abort();
 	void descentTo(QString path);
 	void assignTechSpecUrlToItem(QString url, Item *item, bool overwrite = false);
+	void assignPartsIndexUrlToItem(QString url, Item *item, bool overwrite = false);
 protected:
 	QList<File*> getCheckedFiles(Item *item);
 protected slots:
@@ -108,6 +109,7 @@ signals:
 	void autoDescentCompleted(const QModelIndex&);
 	void autoDescentNotFound();
 	void techSpecsIndexAlreadyExists(Item*);
+	void partsIndexAlreadyExists(Item*);
 };
 
 #endif // SERVERSMODEL_H

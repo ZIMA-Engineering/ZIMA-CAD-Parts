@@ -79,6 +79,7 @@ public slots:
 	void retranslate(QString lang = QString());
 	void saveSettings(QSettings& settings);
 	virtual void assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
+	virtual void assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
 protected:
 	virtual void loadItemLogo(Item *item) = 0;
 
@@ -100,6 +101,7 @@ signals:
 	void metadataReady(Item*);
 	void errorOccured(QString);
 	void techSpecsIndexAlreadyExists(Item*);
+	void partsIndexAlreadyExists(Item*);
 };
 
 #endif // BASEDATASOURCE_H

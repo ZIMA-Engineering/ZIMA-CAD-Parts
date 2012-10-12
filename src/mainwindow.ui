@@ -148,7 +148,7 @@
              </sizepolicy>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="tab_3">
              <property name="minimumSize">
@@ -203,7 +203,7 @@
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
                 </property>
-                <widget class="QWebView" name="webView">
+                <widget class="QWebView" name="partsWebView">
                  <property name="url">
                   <url>
                    <string>about:blank</string>
