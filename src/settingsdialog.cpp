@@ -108,6 +108,10 @@ void SettingsDialog::saveSettings()
 				<< ("locale/" + filename)
 				<< (":/" + filename);
 
+#ifdef Q_OS_MAC
+		paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
+#endif
+
 		foreach(QString path, paths)
 			if( t->load(path) )
 			{

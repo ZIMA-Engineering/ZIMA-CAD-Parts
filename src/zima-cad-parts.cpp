@@ -53,6 +53,10 @@ int main(int argc, char *argv[])
 			<< ("locale/" + filename)
 			<< (":/" + filename);
 
+#ifdef Q_OS_MAC
+	paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
+#endif
+
 	foreach(QString path, paths)
 		if( translator.load(path) )
 		{
