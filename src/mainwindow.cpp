@@ -163,7 +163,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	filterGroups << FilterGroup("SolidWorks", "SolidWorks");
 	filterGroups.last().filters
 			<< Filter(File::SLDPRT)
-			<< Filter(File::SLDPRT)
+			<< Filter(File::SLDASM)
 			<< Filter(File::SLDDRW);
 
 	filterGroups << FilterGroup("SolidEdge", "Solid Edge");
@@ -177,7 +177,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	filterGroups.last().filters
 			<< Filter(File::IPT)
 			<< Filter(File::IAM)
-			<< Filter(File::DWG);
+			<< Filter(File::IDW);
 
 	filterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
 	filterGroups.last().filters

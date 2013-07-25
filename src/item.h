@@ -62,11 +62,11 @@ struct File
 		// Inventor
 		IPT,
 		IAM,
-		DWG,
+		IDW,
 		// CAD NEUTRAL
 		STEP,
 		IGES,
-//		DWG,
+		DWG,
 		DXF,
 		// NonCAD
 		STL,

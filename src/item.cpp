@@ -97,6 +97,8 @@ QString File::getInternalNameForFileType(File::FileTypes type)
 		return "ipt";
 	case File::IAM:
 		return "iam";
+	case File::IDW:
+		return "idw";
 	case File::DWG:
 		return "dwg";
 	case File::STEP:
@@ -152,6 +154,8 @@ QString File::getLabelForFileType(File::FileTypes type)
 		return "*.ipt";
 	case File::IAM:
 		return "*.iam";
+	case File::IDW:
+		return "*.idw";
 	case File::DWG:
 		return "*.dwg";
 	case File::STEP:
@@ -207,6 +211,8 @@ QString File::getRxForFileType(File::FileTypes type)
 		return "(^.+\\.ipt$)";
 	case File::IAM:
 		return "(^.+\\.iam$)";
+	case File::IDW:
+		return "(^.+\\.idw$)";
 	case File::DWG:
 		return "(^.+\\.dwg$)";
 	case File::STEP:
