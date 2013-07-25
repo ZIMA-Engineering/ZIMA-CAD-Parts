@@ -78,6 +78,13 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 	const int row = index.row();
 	const int col = index.column();
 
+	/**
+	  * When the rootItem is changed, old signals may still be in queue
+	  * and accessing non-existent items caused crash.
+	  */
+	if(row >= rootItem->files.size())
+		return QVariant();
+
 	switch(col)
 	{
 	case 1:
