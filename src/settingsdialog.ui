@@ -288,16 +288,6 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="dirTreePathCheckBox">
-            <property name="text">
-             <string>Directory tree path</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
            <spacer name="verticalSpacer_4">
             <property name="orientation">
              <enum>Qt::Vertical</enum>

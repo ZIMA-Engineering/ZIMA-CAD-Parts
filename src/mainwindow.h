@@ -113,13 +113,6 @@ private:
 	QAction *techSpecForwardAction;
 	QLineEdit *urlBar;
 
-	// Dir tree path
-	QHBoxLayout *dirTreePathLayout;
-	QLabel *dirTreePathLabel;
-	QLineEdit *dirTreePath;
-	QToolButton *dirTreeGoBtn;
-	QPushButton *dirTreeOpenBtn;
-
 	// Parts index toolbar
 	QToolBar *partsIndexToolBar;
 	QAction *partsIndexBackAction;

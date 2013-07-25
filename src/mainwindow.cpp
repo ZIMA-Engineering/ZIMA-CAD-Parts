@@ -48,7 +48,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
 	  techSpecToolBar(0),
-	  dirTreePath(0),
 #ifdef INCLUDE_PRODUCT_VIEW
 	  productView(0),
 #endif
@@ -72,6 +71,12 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	}
 
 	ui->setupUi(this);
+
+	ui->dirTreePathGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+
+	connect(ui->dirTreePathLineEdit, SIGNAL(returnPressed()), this, SLOT(descentTo()));
+	connect(ui->dirTreePathGoButton, SIGNAL(clicked()), this, SLOT(descentTo()));
+	connect(ui->dirTreePathOpenButton, SIGNAL(clicked()), this, SLOT(openDirTreePath()));
 
 	statusDir = new QLabel(tr("Ready"), this);
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -354,40 +359,6 @@ void MainWindow::setupDeveloperMode()
 
 		disconnect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
 		disconnect(ui->partsWebView, SIGNAL(urlChanged(QUrl)), this, SLOT(updatePartsUrlBar(QUrl)));
-	}
-
-	// Dir tree path
-	if(dirTreePathEnabled && !dirTreePath)
-	{
-		dirTreePath = new QLineEdit(this);
-		dirTreeGoBtn = new QToolButton(this);
-		dirTreeGoBtn->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
-		dirTreeGoBtn->setText(tr("Go"));
-		dirTreeGoBtn->setAutoRaise(true);
-
-		connect(dirTreePath, SIGNAL(returnPressed()), this, SLOT(descentTo()));
-		connect(dirTreeGoBtn, SIGNAL(clicked()), this, SLOT(descentTo()));
-
-		dirTreePathLabel = new QLabel(tr("Path"), this);
-
-		dirTreeOpenBtn = new QPushButton(tr("Open"), this);
-		connect(dirTreeOpenBtn, SIGNAL(clicked()), this, SLOT(openDirTreePath()));
-
-		dirTreePathLayout = new QHBoxLayout(this);
-		dirTreePathLayout->addWidget(dirTreePathLabel);
-		dirTreePathLayout->addWidget(dirTreePath);
-		dirTreePathLayout->addWidget(dirTreeGoBtn);
-		dirTreePathLayout->addWidget(dirTreeOpenBtn);
-
-		ui->mainVerticalLayout->insertLayout(0, dirTreePathLayout);
-	} else if(!dirTreePathEnabled && dirTreePath) {
-		dirTreePathLabel->deleteLater();
-		dirTreePath->deleteLater();
-		dirTreeGoBtn->deleteLater();
-		dirTreeOpenBtn->deleteLater();
-		delete dirTreePathLayout;
-
-		dirTreePath = 0;
 	}
 }
 
@@ -752,8 +723,7 @@ void MainWindow::partsIndexLoaded(const QModelIndex &index)
 	{
 		viewHidePartsIndex(it);
 
-		if(dirTreePath)
-			dirTreePath->setText(it->server->name() + it->pathRelativeToDataSource());
+		ui->dirTreePathLineEdit->setText(it->server->name() + it->pathRelativeToDataSource());
 	}
 }
 
@@ -815,7 +785,7 @@ void MainWindow::viewHidePartsIndex(Item *item)
 
 void MainWindow::descentTo()
 {
-	autoDescentPath = QDir::cleanPath(dirTreePath->text()).trimmed();
+	autoDescentPath = QDir::cleanPath(ui->dirTreePathLineEdit->text()).trimmed();
 	static_cast<ServersModel*>(ui->treeLeft->model())->descentTo( autoDescentPath );
 }
 
@@ -878,7 +848,7 @@ void MainWindow::partsIndexOverwrite(Item *item)
 
 void MainWindow::openDirTreePath()
 {
-	QString path = dirTreePath->text();
+	QString path = ui->dirTreePathLineEdit->text();
 	QStringList parts = path.split('/');
 	QString dataRoot;
 
