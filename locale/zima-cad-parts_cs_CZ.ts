@@ -135,13 +135,13 @@
 <context>
     <name>FileModel</name>
     <message>
-        <location filename="../src/filemodel.cpp" line="151"/>
+        <location filename="../src/filemodel.cpp" line="158"/>
         <source>Thumbnail</source>
         <translatorcomment>Název dílu</translatorcomment>
         <translation>Náhled</translation>
     </message>
     <message>
-        <location filename="../src/filemodel.cpp" line="153"/>
+        <location filename="../src/filemodel.cpp" line="160"/>
         <source>Part name</source>
         <translation>Díl</translation>
     </message>
@@ -186,12 +186,12 @@
         <translation>Odpojuji se...</translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="689"/>
+        <location filename="../src/ftpdatasource.cpp" line="709"/>
         <source>Downloading </source>
         <translation>Stahuji </translation>
     </message>
     <message>
-        <location filename="../src/ftpdatasource.cpp" line="756"/>
+        <location filename="../src/ftpdatasource.cpp" line="844"/>
         <source>Connecting to </source>
         <translation>Připojuji se k </translation>
     </message>
@@ -199,7 +199,7 @@
 <context>
     <name>LocalDataSource</name>
     <message>
-        <location filename="../src/localdatasource.cpp" line="318"/>
+        <location filename="../src/localdatasource.cpp" line="352"/>
         <source>Copying </source>
         <translation>Kopíruji </translation>
     </message>
@@ -207,7 +207,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="66"/>
+        <location filename="../src/mainwindow.cpp" line="81"/>
         <source>Ready</source>
         <translation>Připraven</translation>
     </message>
@@ -216,58 +216,141 @@
         <translation type="obsolete">ZIMA-Parts - nastavení pracovní složky</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="221"/>
+        <location filename="../src/mainwindow.cpp" line="255"/>
         <source>Preferences</source>
         <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="321"/>
+        <location filename="../src/mainwindow.cpp" line="314"/>
+        <location filename="../src/mainwindow.cpp" line="341"/>
+        <source>Back</source>
+        <translation>Zpět</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="315"/>
+        <location filename="../src/mainwindow.cpp" line="342"/>
+        <source>Forward</source>
+        <translation>Vpřed</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="316"/>
+        <source>Reload</source>
+        <translation>Aktualizovat</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="323"/>
+        <location filename="../src/mainwindow.cpp" line="344"/>
+        <source>Go</source>
+        <translation>Přejít</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="327"/>
+        <source>Pin this URL to current directory in tree (write permission required)</source>
+        <translation>Připíchnout tuto URL k aktuální složce ve stromu (nutné právo pro zápis)</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="348"/>
+        <source>Pin this URL to current parts index (write permission required)</source>
+        <translation>Připíchnout tuto URL k aktuálnímu indexu dílů</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="412"/>
         <source>ZIMA-CAD-Parts - set working directory</source>
         <translation>ZIMA-CAD-Parts - nastavení pracovní složky</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="415"/>
+        <location filename="../src/mainwindow.cpp" line="510"/>
         <source>Loading %1...</source>
-        <translation>Načítám %1...</translation>
+        <translation>Načítání %1...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="428"/>
+        <location filename="../src/mainwindow.cpp" line="522"/>
         <source>All items loaded.</source>
         <translation>Všechny položky načteny.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="446"/>
+        <location filename="../src/mainwindow.cpp" line="540"/>
         <source>Aborted.</source>
         <translation>Přerušeno.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="460"/>
+        <location filename="../src/mainwindow.cpp" line="551"/>
         <source>FTP error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba FTP.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="461"/>
+        <location filename="../src/mainwindow.cpp" line="552"/>
         <source>FTP error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba FTP</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="466"/>
+        <location filename="../src/mainwindow.cpp" line="557"/>
         <source>Parts downloaded.</source>
         <translation>Díly staženy.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="473"/>
+        <location filename="../src/mainwindow.cpp" line="564"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="690"/>
+        <location filename="../src/mainwindow.cpp" line="647"/>
+        <source>Unable to create working directory</source>
+        <translation>Nezdařilo se vytvoření pracovní složky</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="647"/>
+        <source>Unable to create working directory: %1</source>
+        <translation>Nezdařilo se vytvoření pracovní složky: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="813"/>
+        <source>Directory not found</source>
+        <translation>Složka enalezena</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="813"/>
+        <source>Directory not found: %1</source>
+        <translation>Složka nenalezena: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="831"/>
+        <source>Tech specs index already exists</source>
+        <translation>Index technické specifikace už existuje</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="831"/>
+        <source>Index already exists, would you like to overwrite it?</source>
+        <translation>Index už existuje, chcete jej přepsat?</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="845"/>
+        <source>Parts index already exists</source>
+        <translation>Index dílů už existuje</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="845"/>
+        <source>Parts index already exists, would you like to overwrite it?</source>
+        <translation>Index dílů už existuje, chcete jej přepsat?</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="857"/>
+        <source>Not found</source>
+        <translation>Nenalezeno</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="857"/>
+        <source>Path %1 does not exist.</source>
+        <translation>Cesta %1 neexistuje.</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1004"/>
         <source>ProductView</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="188"/>
-        <location filename="../src/mainwindow.cpp" line="480"/>
+        <location filename="../src/mainwindow.cpp" line="222"/>
+        <location filename="../src/mainwindow.cpp" line="571"/>
         <source>Resume</source>
         <translation>Pokračovat</translation>
     </message>
@@ -277,65 +360,100 @@
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
         <source>ZIMA-CAD-Parts</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="75"/>
+        <location filename="../src/mainwindow.ui" line="27"/>
+        <source>Path</source>
+        <translation>Cesta</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="50"/>
+        <source>Open</source>
+        <translation>Otevřít</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="111"/>
         <source>&amp;Settings</source>
         <translation>&amp;Nastavení</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="91"/>
+        <location filename="../src/mainwindow.ui" line="127"/>
         <source>Working directory</source>
         <translation>Pracovní složka</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="105"/>
         <source>&amp;Browse</source>
-        <translation>&amp;Procházet</translation>
+        <translation type="obsolete">&amp;Procházet</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="152"/>
+        <location filename="../src/mainwindow.ui" line="141"/>
+        <source>...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="154"/>
+        <source>&amp;Open</source>
+        <translation>&amp;Otevřít</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="201"/>
         <source>&amp;Technical specifications</source>
         <translation>&amp;Technické specifikace</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="168"/>
+        <location filename="../src/mainwindow.ui" line="217"/>
+        <location filename="../src/mainwindow.ui" line="243"/>
         <source>about:blank</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="177"/>
+        <location filename="../src/mainwindow.ui" line="232"/>
         <source>&amp;Parts</source>
         <translation>&amp;Díly</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="188"/>
+        <location filename="../src/mainwindow.ui" line="259"/>
         <source>&amp;Filters</source>
         <translation>&amp;Filtry</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="208"/>
+        <location filename="../src/mainwindow.ui" line="279"/>
+        <source>Thumbnail size</source>
+        <translation>Velikost náhledu</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="289"/>
+        <source>-</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="327"/>
+        <source>+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="334"/>
         <source>Update</source>
         <translation>Aktualizovat</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="215"/>
+        <location filename="../src/mainwindow.ui" line="341"/>
         <source>Download</source>
         <translation>Stáhnout</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="225"/>
+        <location filename="../src/mainwindow.ui" line="351"/>
         <source>&amp;Download queue</source>
         <translation>&amp;Fronta stahování</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="249"/>
+        <location filename="../src/mainwindow.ui" line="375"/>
         <source>Delete queue</source>
         <translation>Smazat frontu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="256"/>
+        <location filename="../src/mainwindow.ui" line="382"/>
         <source>Stop</source>
         <translation></translation>
     </message>
@@ -350,7 +468,7 @@
     <message>
         <location filename="../src/extensions/productview/productview.ui" line="30"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/extensions/productview/productview.cpp" line="45"/>
@@ -358,7 +476,7 @@
         <translation>2x klikněte na jakýkoliv PRO/E díl.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/productview.cpp" line="62"/>
+        <location filename="../src/extensions/productview/productview.cpp" line="57"/>
         <source>Waiting for part to download...</source>
         <translation>Čekám na stažení dílu...</translation>
     </message>
@@ -394,7 +512,7 @@
 <context>
     <name>ServersModel</name>
     <message>
-        <location filename="../src/serversmodel.cpp" line="153"/>
+        <location filename="../src/serversmodel.cpp" line="155"/>
         <source>Server</source>
         <translation></translation>
     </message>
@@ -476,12 +594,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="174"/>
+        <location filename="../src/settingsdialog.ui" line="161"/>
         <source>Cache</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="186"/>
+        <location filename="../src/settingsdialog.ui" line="173"/>
         <source>Prune cache</source>
         <translation>Vymazat cache</translation>
     </message>
@@ -506,7 +624,18 @@
         <translation>&amp;Odstranit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="58"/>
+        <location filename="../src/settingsdialog.ui" line="262"/>
+        <location filename="../src/settingsdialog.ui" line="271"/>
+        <source>Developer mode</source>
+        <translation>Vývojový mód</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="283"/>
+        <source>Toolbar for technical specifications</source>
+        <translation>Nástrojová lišta pro technickou specifikaci</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="60"/>
         <source>ProductView Settings</source>
         <translation>Nastavení ProductView</translation>
     </message>
@@ -516,7 +645,7 @@
     <message>
         <location filename="../src/techspecswebview.cpp" line="40"/>
         <source>ZIMA-CAD-Parts Technical Specifications</source>
-        <translation type="unfinished">ZIMA-CAD-Parts Technická Specifikace</translation>
+        <translation>ZIMA-CAD-Parts Technická Specifikace</translation>
     </message>
 </context>
 </TS>
