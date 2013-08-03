@@ -54,7 +54,8 @@ OTHER_FILES += \
     AUTHORS \
     data/extensions/productview/productview.html \
     data/zima-cad-parts.html \
-    data/zima-cad-parts_cs_CZ.html
+    data/zima-cad-parts_cs_CZ.html \
+    README
 
 TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts
 
