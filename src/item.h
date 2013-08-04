@@ -71,6 +71,7 @@ struct File
 		// NonCAD
 		STL,
 		BLEND,
+		PDF,
 		TYPES_COUNT,
 		UNDEFINED
 	};
@@ -96,6 +97,9 @@ struct File
 	FileTypes type;
 	qint64 bytesDone;
 	qint64 size;
+
+private:
+	QPixmap m_icon;
 };
 
 class Item

@@ -49,14 +49,15 @@ QPixmap File::icon()
 	if( type == File::UNDEFINED )
 		detectFileType();
 
-	switch( type )
-	{
-	case File::PRT_PROE:
-	case File::PRT_NX:
-		return QPixmap(":/gfx/icons/prt.png");
-	default:
-		return QPixmap();
-	}
+	if(!m_icon.isNull())
+		return m_icon;
+
+	QString s = QString(":/gfx/icons/%1.png").arg(getInternalNameForFileType(type));
+
+	if(QFile::exists(s))
+		m_icon = QPixmap(s);
+
+	return m_icon;
 }
 
 QString File::getInternalNameForFileType(File::FileTypes type)
@@ -111,6 +112,8 @@ QString File::getInternalNameForFileType(File::FileTypes type)
 		return "stl";
 	case File::BLEND:
 		return "blend";
+	case File::PDF:
+		return "pdf";
 	default:
 		return "undefined";
 	}
@@ -168,6 +171,8 @@ QString File::getLabelForFileType(File::FileTypes type)
 		return "*.stl";
 	case File::BLEND:
 		return "*.blend";
+	case File::PDF:
+		return "*.pdf";
 	default:
 		return "undefined";
 	}
@@ -225,6 +230,8 @@ QString File::getRxForFileType(File::FileTypes type)
 		return "(^.+\\.stl$)";
 	case File::BLEND:
 		return "(^.+\\.blend$)";
+	case File::PDF:
+		return "(^.+\\.pdf$)";
 	default:
 		return "";
 	}

@@ -189,7 +189,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	filterGroups << FilterGroup("NonCAD", "NonCAD");
 	filterGroups.last().filters
 			<< Filter(File::STL)
-			<< Filter(File::BLEND);
+			<< Filter(File::BLEND)
+			<< Filter(File::PDF);
 
 	loadFilters();
 	rebuildFilters();

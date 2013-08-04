@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>gfx/splash.png</file>
-        <file>gfx/icons/prt.png</file>
         <file>gfx/logo.png</file>
         <file>gfx/icon.png</file>
         <file>data/zima-cad-parts.html</file>
@@ -12,5 +11,27 @@
         <file>gfx/flags/de.png</file>
         <file>gfx/flags/ru.png</file>
         <file>gfx/pin.png</file>
+        <file>gfx/icons/asm.png</file>
+        <file>gfx/icons/blend.png</file>
+        <file>gfx/icons/catdrawing.png</file>
+        <file>gfx/icons/catpart.png</file>
+        <file>gfx/icons/catproduct.png</file>
+        <file>gfx/icons/dft.png</file>
+        <file>gfx/icons/drw.png</file>
+        <file>gfx/icons/dwg.png</file>
+        <file>gfx/icons/dxf.png</file>
+        <file>gfx/icons/frm.png</file>
+        <file>gfx/icons/iam.png</file>
+        <file>gfx/icons/idw.png</file>
+        <file>gfx/icons/ipt.png</file>
+        <file>gfx/icons/neu.png</file>
+        <file>gfx/icons/par.png</file>
+        <file>gfx/icons/pdf.png</file>
+        <file>gfx/icons/psm.png</file>
+        <file>gfx/icons/sldasm.png</file>
+        <file>gfx/icons/step.png</file>
+        <file>gfx/icons/stl.png</file>
+        <file>gfx/icons/prt_proe.png</file>
+        <file>gfx/icons/prt_nx.png</file>
     </qresource>
 </RCC>
