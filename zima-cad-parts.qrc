@@ -24,7 +24,6 @@
         <file>gfx/icons/iam.png</file>
         <file>gfx/icons/idw.png</file>
         <file>gfx/icons/ipt.png</file>
-        <file>gfx/icons/neu.png</file>
         <file>gfx/icons/par.png</file>
         <file>gfx/icons/pdf.png</file>
         <file>gfx/icons/psm.png</file>
@@ -33,5 +32,6 @@
         <file>gfx/icons/stl.png</file>
         <file>gfx/icons/prt_proe.png</file>
         <file>gfx/icons/prt_nx.png</file>
+        <file>gfx/icons/neu_proe.png</file>
     </qresource>
 </RCC>
