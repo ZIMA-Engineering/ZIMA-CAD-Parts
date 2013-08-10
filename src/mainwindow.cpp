@@ -31,6 +31,7 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QWebHistory>
+#include <QProcess>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -38,6 +39,7 @@
 #include "downloadmodel.h"
 #include "filtersdialog.h"
 #include "item.h"
+#include "zimautils.h"
 
 QList<MainWindow::FilterGroup> MainWindow::filterGroups;
 QSettings * MainWindow::settings;
@@ -112,6 +114,11 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	sm->setServerData(servers);
 	sm->retranslateMetadata();
 	ui->treeLeft->setModel(sm);
+	ui->treeLeft->setContextMenuPolicy(Qt::CustomContextMenu);
+
+	dirTreeSignalMapper = new QSignalMapper(this);
+
+	connect(dirTreeSignalMapper, SIGNAL(mapped(int)), this, SLOT(spawnZimaUtilityOnDir(int)));
 
 	connect(sm, SIGNAL(loadingItem(Item*)), this, SLOT(loadingItem(Item*)));
 	connect(sm, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(itemLoaded(const QModelIndex&)));
@@ -129,6 +136,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 //	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(dirTreeContextMenu(QPoint)));
 
 	fm = new FileModel(this);
 
@@ -205,6 +213,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 //	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
 //	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
 //	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
 	connect(sm, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(sm, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
@@ -418,9 +427,11 @@ void MainWindow::setWorkingDirectory()
 	}
 }
 
-void MainWindow::showSettings()
+void MainWindow::showSettings(SettingsDialog::Section section)
 {
 	SettingsDialog *settingsDlg = new SettingsDialog(settings, loadDataSources(), &translator, this);
+	settingsDlg->setSection(section);
+
 	//settingsDlg->loadSettings(settings);
 	int result = settingsDlg->exec();
 
@@ -451,6 +462,8 @@ void MainWindow::showSettings()
 
 		langButtonGroup->button(langIndex)->setChecked(true);
 		changeLanguage(langIndex);
+
+		loadZimaUtils();
 
 		loadAboutPage();
 
@@ -866,6 +879,24 @@ void MainWindow::openDirTreePath()
 void MainWindow::loadSettings()
 {
 	ui->editDir->setText(settings->value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
+
+	loadZimaUtils();
+}
+
+void MainWindow::loadZimaUtils()
+{
+	zimaUtils.clear();
+
+	settings->beginGroup("ExternalPrograms");
+
+	for(int i = 0; i < ZimaUtils::ZimaUtilsCount; i++)
+	{
+		settings->beginGroup(ZimaUtils::internalNameForUtility(i));
+		zimaUtils << settings->value("Executable").toString();
+		settings->endGroup();
+	}
+
+	settings->endGroup();
 }
 
 QVector<BaseDataSource*> MainWindow::loadDataSources()
@@ -979,6 +1010,58 @@ void MainWindow::saveFilters()
 	}
 
 	settings->endGroup();
+}
+
+void MainWindow::dirTreeContextMenu(QPoint point)
+{
+	QModelIndex i = ui->treeLeft->currentIndex();
+
+	if(!i.isValid())
+		return;
+
+	Item *it = static_cast<Item*>(i.internalPointer());
+
+	if(it->server->dataSource != LOCAL)
+		return;
+
+	QMenu *menu = new QMenu(this);
+
+	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), "Clean with ZIMA-PTC-Cleaner", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaPtcCleaner);
+	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), "Sync with ZIMA-CAD-Sync", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaCadSync);
+	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), "Convert postscript to PDF with ZIMA-PS2PDF", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaPs2Pdf);
+	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-STEP-Edit.png"), "Edit step files with ZIMA-STEP-Edit", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaStepEdit);
+
+	menu->exec(point);
+	menu->deleteLater();
+}
+
+void MainWindow::spawnZimaUtilityOnDir(int i)
+{
+	QString label = ZimaUtils::labelForUtility(i);
+
+	if(zimaUtils[i].isEmpty())
+	{
+		QMessageBox::warning(this, tr("Configure %1").arg(label), tr("Please first configure path to %1 executable.").arg(label));
+		showSettings(SettingsDialog::ExternalPrograms);
+		return;
+	}
+
+	QString executable = zimaUtils[i];
+
+	if(!QFile::exists(executable))
+	{
+		QMessageBox::warning(this, tr("Configure %1").arg(label), tr("Path '%1' to %2 executable does not exists!").arg(executable).arg(label));
+		showSettings(SettingsDialog::ExternalPrograms);
+		return;
+	}
+
+	qDebug() << "Spawn" << label;
+
+	QStringList args;
+
+	args << static_cast<Item*>(ui->treeLeft->currentIndex().internalPointer())->path;
+
+	QProcess::startDetached(executable, args);
 }
 
 QString MainWindow::getCurrentLanguageCode()

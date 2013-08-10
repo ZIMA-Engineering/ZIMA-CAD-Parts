@@ -26,6 +26,10 @@
 #include <QMultiHash>
 #include <QVector>
 #include <QTranslator>
+#include <QSignalMapper>
+#include <QList>
+#include <QLineEdit>
+
 #include "zima-cad-parts.h"
 #include "basedatasource.h"
 #include "ftpdatasource.h"
@@ -45,6 +49,17 @@ class SettingsDialog : public QDialog {
 	Q_OBJECT
 	Q_DISABLE_COPY(SettingsDialog)
 public:
+	enum Section {
+		General=0,
+		DataSources,
+		ExternalPrograms,
+		DeveloperMode,
+#ifdef INCLUDE_PRODUCT_VIEW
+		ProductView,
+#endif
+		SectionCount
+	};
+
 	enum Languages {
 		DETECT=0,
 		ENGLISH,
@@ -54,6 +69,7 @@ public:
 	explicit SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QTranslator **translator, QWidget *parent = 0);
 	virtual ~SettingsDialog();
 
+	void setSection(Section s);
 	void loadSettings(QSettings*);
 	void saveSettings();
 
@@ -73,6 +89,7 @@ private slots:
 	void pruneCache(QString path = QString());
 //	void changingText();
 //	void changingPassive();
+	void setZimaUtilPath(int util);
 
 private:
 	Ui::SettingsDialog  *m_ui;
@@ -82,6 +99,8 @@ private:
 	BaseDataSource           *currentServer;
 	QSettings *settings;
 	QTranslator **translator;
+	QSignalMapper *zimaUtilSignalMapper;
+	QList<QLineEdit*> zimaUtilLineEdits;
 #ifdef INCLUDE_PRODUCT_VIEW
 	ProductViewSettings *productViewSettings;
 #endif // INCLUDE_PRODUCT_VIEW

@@ -33,5 +33,9 @@
         <file>gfx/icons/prt_proe.png</file>
         <file>gfx/icons/prt_nx.png</file>
         <file>gfx/icons/neu_proe.png</file>
+        <file>gfx/external_programs/ZIMA-CAD-Sync.png</file>
+        <file>gfx/external_programs/ZIMA-PS2PDF.png</file>
+        <file>gfx/external_programs/ZIMA-PTC-Cleaner.png</file>
+        <file>gfx/external_programs/ZIMA-STEP-Edit.png</file>
     </qresource>
 </RCC>

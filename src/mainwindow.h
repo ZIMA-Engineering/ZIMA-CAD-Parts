@@ -34,6 +34,7 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QHBoxLayout>
+#include <QSignalMapper>
 
 #include "settingsdialog.h"
 #include "filemodel.h"
@@ -106,6 +107,7 @@ private:
 	static QString currentMetadataLang;
 	QStringList langs;
 	QList<QPushButton*> langFlags;
+	QSignalMapper *dirTreeSignalMapper;
 
 	// Tech spec toolbar
 	QToolBar *techSpecToolBar;
@@ -124,6 +126,9 @@ private:
 	QUrl lastPartsIndex;
 	QDateTime lastPartsIndexModTime;
 	QModelIndex lastFoundIndex;
+
+	QStringList zimaUtils;
+
 #ifdef INCLUDE_PRODUCT_VIEW
 	ProductView *productView;
 
@@ -140,7 +145,7 @@ private:
 public slots:
 	void downloadButton();
 	void setWorkingDirectory();
-	void showSettings();
+	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
 	void updateClicked();
 	void searchClicked();
 	void serverSelected(const QModelIndex&);
@@ -180,10 +185,13 @@ private slots:
 	void partsIndexOverwrite(Item *item);
 	void openDirTreePath();
 	void loadSettings();
+	void loadZimaUtils();
 	QVector<BaseDataSource*> loadDataSources();
 	void saveSettings();
 	void loadFilters();
 	void saveFilters();
+	void dirTreeContextMenu(QPoint point);
+	void spawnZimaUtilityOnDir(int i);
 
 #ifdef INCLUDE_PRODUCT_VIEW
 	void previewInProductView(const QModelIndex &index);

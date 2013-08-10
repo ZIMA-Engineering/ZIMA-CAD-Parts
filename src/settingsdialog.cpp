@@ -26,9 +26,11 @@
 #include <QDebug>
 #include <QApplication>
 #include <QLocale>
+#include <QToolButton>
 
 #include "addeditdatasource.h"
 #include "baseremotedatasource.h"
+#include "zimautils.h"
 
 SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QTranslator **translator, QWidget *parent) :
 	QDialog(parent),
@@ -55,6 +57,34 @@ SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> ser
 	m_ui->developerModeGroupBox->setChecked( settings->value("Developer/Enabled", false).toBool() );
 	m_ui->techSpecToolBarCheckBox->setChecked( settings->value("Developer/TechSpecToolBar", true).toBool() );
 
+	zimaUtilSignalMapper = new QSignalMapper(this);
+
+	connect(zimaUtilSignalMapper, SIGNAL(mapped(int)), this, SLOT(setZimaUtilPath(int)));
+
+	settings->beginGroup("ExternalPrograms");
+
+	for(int i = 0; i < ZimaUtils::ZimaUtilsCount; i++)
+	{
+		settings->beginGroup(ZimaUtils::internalNameForUtility(i));
+
+		QToolButton *t = new QToolButton(this);
+		t->setText("...");
+
+		connect(t, SIGNAL(clicked()), zimaUtilSignalMapper, SLOT(map()));
+
+		zimaUtilLineEdits << new QLineEdit(settings->value("Executable").toString(), this);
+
+		m_ui->gridLayout->addWidget(new QLabel(ZimaUtils::labelForUtility(i), this), i, 0);
+		m_ui->gridLayout->addWidget(zimaUtilLineEdits.last(), i, 1);
+		m_ui->gridLayout->addWidget(t, i, 2);
+
+		zimaUtilSignalMapper->setMapping(t, i);
+
+		settings->endGroup();
+	}
+
+	settings->endGroup();
+
 #ifdef INCLUDE_PRODUCT_VIEW
 	productViewSettings = new ProductViewSettings(settings, this);
 	m_ui->tabWidget->addTab(productViewSettings, tr("ProductView Settings"));
@@ -77,6 +107,11 @@ void SettingsDialog::changeEvent(QEvent *e)
 	default:
 		break;
 	}
+}
+
+void SettingsDialog::setSection(SettingsDialog::Section s)
+{
+	m_ui->tabWidget->setCurrentIndex(s);
 }
 
 void SettingsDialog::loadSettings(QSettings *settings)
@@ -120,6 +155,17 @@ void SettingsDialog::saveSettings()
 	}
 
 	settings->setValue("Language", lang);
+
+	settings->beginGroup("ExternalPrograms");
+
+	for(int i = 0; i < ZimaUtils::ZimaUtilsCount; i++)
+	{
+		settings->beginGroup(ZimaUtils::internalNameForUtility(i));
+		settings->setValue("Executable", zimaUtilLineEdits[i]->text());
+		settings->endGroup();
+	}
+
+	settings->endGroup();
 
 #ifdef INCLUDE_PRODUCT_VIEW
 	productViewSettings->saveSettings();
@@ -293,4 +339,12 @@ void SettingsDialog::pruneCache(QString path)
 	}
 
 	dir.rmdir(path);
+}
+
+void SettingsDialog::setZimaUtilPath(int util)
+{
+	QString path = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - set %1 path").arg(ZimaUtils::labelForUtility(util)), zimaUtilLineEdits[util]->text());
+
+	if (!path.isEmpty())
+		zimaUtilLineEdits[util]->setText(path);
 }
