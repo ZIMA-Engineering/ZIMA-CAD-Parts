@@ -1031,7 +1031,7 @@ void MainWindow::dirTreeContextMenu(QPoint point)
 	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), "Convert postscript to PDF with ZIMA-PS2PDF", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaPs2Pdf);
 	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-STEP-Edit.png"), "Edit step files with ZIMA-STEP-Edit", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaStepEdit);
 
-	menu->exec(point);
+	menu->exec(ui->treeLeft->mapToGlobal(point));
 	menu->deleteLater();
 }
 
