@@ -57,6 +57,7 @@ FiltersDialog::FiltersDialog(QWidget *parent) :
 		{
 			QCheckBox *chckBox = new QCheckBox(File::getLabelForFileType(MainWindow::filterGroups[i].filters[j].type), this);
 			chckBox->setChecked(MainWindow::filterGroups[i].filters[j].enabled);
+			chckBox->setIcon(QIcon(QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(MainWindow::filterGroups[i].filters[j].type))));
 
 			groupCheckBoxes->checkBoxes << chckBox;
 
