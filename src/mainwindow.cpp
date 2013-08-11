@@ -76,6 +76,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->dirTreePathGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
 
+	connect(ui->goHomeDirButton, SIGNAL(clicked()), this, SLOT(goToHomeDirectory()));
 	connect(ui->dirTreePathLineEdit, SIGNAL(returnPressed()), this, SLOT(descentTo()));
 	connect(ui->dirTreePathGoButton, SIGNAL(clicked()), this, SLOT(descentTo()));
 	connect(ui->dirTreePathOpenButton, SIGNAL(clicked()), this, SLOT(openDirTreePath()));
@@ -1026,6 +1027,9 @@ void MainWindow::dirTreeContextMenu(QPoint point)
 
 	QMenu *menu = new QMenu(this);
 
+	menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as home directory"), this, SLOT(setHomeDirectory()));
+	menu->addSeparator();
+
 	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), "Clean with ZIMA-PTC-Cleaner", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaPtcCleaner);
 	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), "Sync with ZIMA-CAD-Sync", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaCadSync);
 	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), "Convert postscript to PDF with ZIMA-PS2PDF", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaPs2Pdf);
@@ -1062,6 +1066,23 @@ void MainWindow::spawnZimaUtilityOnDir(int i)
 	args << static_cast<Item*>(ui->treeLeft->currentIndex().internalPointer())->path;
 
 	QProcess::startDetached(executable, args);
+}
+
+void MainWindow::setHomeDirectory()
+{
+	Item *it = static_cast<Item*>(ui->treeLeft->currentIndex().internalPointer());
+
+	settings->setValue("HomeDirectory", it->server->name() + it->pathRelativeToDataSource());
+}
+
+void MainWindow::goToHomeDirectory()
+{
+	autoDescentPath = settings->value("HomeDirectory").toString();
+
+	if(autoDescentPath.isEmpty())
+		return;
+
+	static_cast<ServersModel*>(ui->treeLeft->model())->descentTo(autoDescentPath);
 }
 
 QString MainWindow::getCurrentLanguageCode()

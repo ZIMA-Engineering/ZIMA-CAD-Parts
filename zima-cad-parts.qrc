@@ -37,5 +37,6 @@
         <file>gfx/external_programs/ZIMA-PS2PDF.png</file>
         <file>gfx/external_programs/ZIMA-PTC-Cleaner.png</file>
         <file>gfx/external_programs/ZIMA-STEP-Edit.png</file>
+        <file>gfx/gohome.png</file>
     </qresource>
 </RCC>

@@ -29,6 +29,20 @@
        </widget>
       </item>
       <item>
+       <widget class="QToolButton" name="goHomeDirButton">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../zima-cad-parts.qrc">
+          <normaloff>:/gfx/gohome.png</normaloff>:/gfx/gohome.png</iconset>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLineEdit" name="dirTreePathLineEdit"/>
       </item>
       <item>

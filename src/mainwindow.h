@@ -192,6 +192,8 @@ private slots:
 	void saveFilters();
 	void dirTreeContextMenu(QPoint point);
 	void spawnZimaUtilityOnDir(int i);
+	void setHomeDirectory();
+	void goToHomeDirectory();
 
 #ifdef INCLUDE_PRODUCT_VIEW
 	void previewInProductView(const QModelIndex &index);
