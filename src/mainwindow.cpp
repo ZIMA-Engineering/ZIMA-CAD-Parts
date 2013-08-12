@@ -84,7 +84,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->treeBackButton, SIGNAL(clicked()), this, SLOT(historyBack()));
 	connect(ui->treeForwardButton, SIGNAL(clicked()), this, SLOT(historyForward()));
 
-	connect(ui->goHomeDirButton, SIGNAL(clicked()), this, SLOT(goToHomeDirectory()));
+	connect(ui->goHomeDirButton, SIGNAL(clicked()), this, SLOT(goToWorkingDirectory()));
 	connect(ui->dirTreePathLineEdit, SIGNAL(returnPressed()), this, SLOT(descentTo()));
 	connect(ui->dirTreePathGoButton, SIGNAL(clicked()), this, SLOT(descentTo()));
 	connect(ui->dirTreePathOpenButton, SIGNAL(clicked()), this, SLOT(openDirTreePath()));
@@ -431,7 +431,7 @@ void MainWindow::downloadButton()
 	downloading = true;
 }
 
-void MainWindow::setWorkingDirectory()
+void MainWindow::setWorkingDirectoryDialog()
 {
 	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set working directory"), ui->editDir->text());
 	if (!str.isEmpty())
@@ -1040,7 +1040,7 @@ void MainWindow::dirTreeContextMenu(QPoint point)
 
 	QMenu *menu = new QMenu(this);
 
-	menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as home directory"), this, SLOT(setHomeDirectory()));
+	menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
 	menu->addSeparator();
 
 	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), "Clean with ZIMA-PTC-Cleaner", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaPtcCleaner);
@@ -1081,16 +1081,19 @@ void MainWindow::spawnZimaUtilityOnDir(int i)
 	QProcess::startDetached(executable, args);
 }
 
-void MainWindow::setHomeDirectory()
+void MainWindow::setWorkingDirectory()
 {
 	Item *it = static_cast<Item*>(ui->treeLeft->currentIndex().internalPointer());
 
-	settings->setValue("HomeDirectory", it->server->name() + it->pathRelativeToDataSource());
+	settings->setValue("HomeDir", it->server->name() + it->pathRelativeToDataSource());
+	settings->setValue("WorkingDir", it->path);
+
+	ui->editDir->setText(it->path);
 }
 
-void MainWindow::goToHomeDirectory()
+void MainWindow::goToWorkingDirectory()
 {
-	autoDescentPath = settings->value("HomeDirectory").toString();
+	autoDescentPath = settings->value("HomeDir").toString();
 
 	if(autoDescentPath.isEmpty())
 		return;
@@ -1106,10 +1109,7 @@ void MainWindow::trackHistory(const QModelIndex &index)
 	if(historyCurrentIndex != historySize-1)
 	{
 		for(int i = historyCurrentIndex + 1; i < historySize; i++)
-		{
-			qDebug() << "History delete" << i;
 			history.removeAt(i);
-		}
 
 		historySize = history.size();
 

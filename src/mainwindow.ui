@@ -31,7 +31,7 @@
       <item>
        <widget class="QToolButton" name="goHomeDirButton">
         <property name="toolTip">
-         <string>Go to home directory</string>
+         <string>Go to working directory</string>
         </property>
         <property name="text">
          <string/>

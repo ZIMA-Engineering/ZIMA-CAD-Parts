@@ -149,7 +149,7 @@ private:
 
 public slots:
 	void downloadButton();
-	void setWorkingDirectory();
+	void setWorkingDirectoryDialog();
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
 	void updateClicked();
 	void searchClicked();
@@ -197,8 +197,8 @@ private slots:
 	void saveFilters();
 	void dirTreeContextMenu(QPoint point);
 	void spawnZimaUtilityOnDir(int i);
-	void setHomeDirectory();
-	void goToHomeDirectory();
+	void setWorkingDirectory();
+	void goToWorkingDirectory();
 	void trackHistory(const QModelIndex &index);
 	void historyBack();
 	void historyForward();
