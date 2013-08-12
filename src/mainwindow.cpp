@@ -103,7 +103,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(ui->btnDownload, SIGNAL(clicked()), this, SLOT(downloadButton()));
 	connect(ui->btnSettings, SIGNAL(clicked()), this, SLOT(showSettings()));
-	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectory()));
+	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectoryDialog()));
 	connect(ui->openWorkDirButton, SIGNAL(clicked()), this, SLOT(openWorkingDirectory()));
 	connect(ui->btnUpdate, SIGNAL(clicked()), this, SLOT(updateClicked()));
 	connect(ui->startStopDownloadBtn, SIGNAL(clicked()), this, SLOT(toggleDownload()));
@@ -293,6 +293,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
 	loadAboutPage();
+	goToWorkingDirectory();
 
 #ifdef INCLUDE_PRODUCT_VIEW
 	showOrHideProductView();
@@ -436,7 +437,9 @@ void MainWindow::setWorkingDirectoryDialog()
 	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set working directory"), ui->editDir->text());
 	if (!str.isEmpty())
 	{
+		settings->setValue("HomeDir", "");
 		settings->setValue("WorkingDir", str);
+
 		ui->editDir->setText(str);
 	}
 }
