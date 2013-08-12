@@ -109,6 +109,11 @@ private:
 	QList<QPushButton*> langFlags;
 	QSignalMapper *dirTreeSignalMapper;
 
+	// History
+	QList<QModelIndex> history;
+	int historyCurrentIndex;
+	int historySize;
+
 	// Tech spec toolbar
 	QToolBar *techSpecToolBar;
 	QAction *techSpecBackAction;
@@ -194,6 +199,9 @@ private slots:
 	void spawnZimaUtilityOnDir(int i);
 	void setHomeDirectory();
 	void goToHomeDirectory();
+	void trackHistory(const QModelIndex &index);
+	void historyBack();
+	void historyForward();
 
 #ifdef INCLUDE_PRODUCT_VIEW
 	void previewInProductView(const QModelIndex &index);

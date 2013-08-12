@@ -50,6 +50,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
 	  techSpecToolBar(0),
+	  historyCurrentIndex(-1),
+	  historySize(0),
 #ifdef INCLUDE_PRODUCT_VIEW
 	  productView(0),
 #endif
@@ -75,6 +77,12 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	ui->setupUi(this);
 
 	ui->dirTreePathGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+
+	ui->treeBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
+	ui->treeForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
+
+	connect(ui->treeBackButton, SIGNAL(clicked()), this, SLOT(historyBack()));
+	connect(ui->treeForwardButton, SIGNAL(clicked()), this, SLOT(historyForward()));
 
 	connect(ui->goHomeDirButton, SIGNAL(clicked()), this, SLOT(goToHomeDirectory()));
 	connect(ui->dirTreePathLineEdit, SIGNAL(returnPressed()), this, SLOT(descentTo()));
@@ -136,6 +144,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
+	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
 //	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 	connect(ui->treeLeft, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(dirTreeContextMenu(QPoint)));
 
@@ -261,6 +271,10 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(langButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(changeLanguage(int)));
 
+	// History
+	ui->treeBackButton->setEnabled(false);
+	ui->treeForwardButton->setEnabled(false);
+
 #ifdef Q_OS_MAC
 	QMenu *menu = new QMenu(this);
 	QAction *settingsAction = new QAction(tr("Preferences"), this);
@@ -315,7 +329,6 @@ void MainWindow::setupDeveloperMode()
 {
 	bool developer = settings->value("Developer/Enabled", false).toBool();
 	bool techSpecToolBarEnabled = developer && settings->value("Developer/TechSpecToolBar", true).toBool();
-	bool dirTreePathEnabled = developer && settings->value("Developer/DirTreePath", true).toBool();
 
 	// Tech spec toolbar
 	if(techSpecToolBarEnabled && !techSpecToolBar)
@@ -1083,6 +1096,64 @@ void MainWindow::goToHomeDirectory()
 		return;
 
 	static_cast<ServersModel*>(ui->treeLeft->model())->descentTo(autoDescentPath);
+}
+
+void MainWindow::trackHistory(const QModelIndex &index)
+{
+	if(historyCurrentIndex >= 0 && history[historyCurrentIndex].internalPointer() == index.internalPointer())
+		return;
+
+	if(historyCurrentIndex != historySize-1)
+	{
+		for(int i = historyCurrentIndex + 1; i < historySize; i++)
+		{
+			qDebug() << "History delete" << i;
+			history.removeAt(i);
+		}
+
+		historySize = history.size();
+
+		ui->treeForwardButton->setEnabled(false);
+	}
+
+	history << index;
+	historyCurrentIndex++;
+	historySize++;
+
+	if(historyCurrentIndex > 0)
+		ui->treeBackButton->setEnabled(true);
+}
+
+void MainWindow::historyBack()
+{
+	const QModelIndex index = history[--historyCurrentIndex];
+	ServersModel *sm = static_cast<ServersModel*>(ui->treeLeft->model());
+	Item *item = static_cast<Item*>(index.internalPointer());
+
+	ui->treeLeft->setCurrentIndex(index);
+	sm->requestTechSpecs(item);
+	fm->setRootIndex(index);
+
+	ui->treeBackButton->setEnabled( !(historyCurrentIndex == 0) );
+	ui->treeForwardButton->setEnabled(true);
+
+	ui->dirTreePathLineEdit->setText(item->server->name() + item->pathRelativeToDataSource());
+}
+
+void MainWindow::historyForward()
+{
+	const QModelIndex index = history[++historyCurrentIndex];
+	ServersModel *sm = static_cast<ServersModel*>(ui->treeLeft->model());
+	Item *item = static_cast<Item*>(index.internalPointer());
+
+	ui->treeLeft->setCurrentIndex(index);
+	sm->requestTechSpecs(item);
+	fm->setRootIndex(index);
+
+	ui->treeForwardButton->setEnabled( !(historyCurrentIndex == historySize-1) );
+	ui->treeBackButton->setEnabled(true);
+
+	ui->dirTreePathLineEdit->setText(item->server->name() + item->pathRelativeToDataSource());
 }
 
 QString MainWindow::getCurrentLanguageCode()

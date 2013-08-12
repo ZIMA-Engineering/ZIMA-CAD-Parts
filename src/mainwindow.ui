@@ -30,12 +30,59 @@
       </item>
       <item>
        <widget class="QToolButton" name="goHomeDirButton">
+        <property name="toolTip">
+         <string>Go to home directory</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset resource="../zima-cad-parts.qrc">
           <normaloff>:/gfx/gohome.png</normaloff>:/gfx/gohome.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="treeBackButton">
+        <property name="toolTip">
+         <string>Back</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="treeForwardButton">
+        <property name="toolTip">
+         <string>Forward</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
         </property>
         <property name="autoRaise">
          <bool>true</bool>
