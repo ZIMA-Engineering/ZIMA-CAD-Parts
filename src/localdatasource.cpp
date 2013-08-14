@@ -150,7 +150,10 @@ QString LocalDataSource::name()
 void LocalDataSource::loadDirectory(Item* item)
 {
 	if(!item->children.isEmpty() || !item->files.isEmpty())
+	{
+		emit itemLoaded(item);
 		return;
+	}
 
 	QDir dir(item->path);
 	QFileInfoList entries = dir.entryInfoList( QDir::AllEntries | QDir::NoDotAndDotDot );
