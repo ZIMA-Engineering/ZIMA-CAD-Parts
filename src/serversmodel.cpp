@@ -626,8 +626,8 @@ void ServersModel::descentTo(QString path)
 
 			if(autoDescentPath.isEmpty())
 			{
-				emit autoDescentCompleted(createIndex(it->row(), 0, it));
 				autoDescent = false;
+				emit autoDescentCompleted(createIndex(it->row(), 0, it));
 				return;
 			}
 
@@ -654,15 +654,18 @@ void ServersModel::descentDeeper(bool loaded)
 		qDebug() << "schedule load immediately" << autoDescentCurrentItem->name;
 		loadItem(autoDescentCurrentItem);
 		return;
+
 	} else if(autoDescentCurrentItem->children.isEmpty()) {
 		emit autoDescentProgress(createIndex(autoDescentCurrentItem->row(), 0, autoDescentCurrentItem));
 		emit autoDescentNotFound();
 		autoDescent = false;
 		return;
+
 	} else if(autoDescentPath.isEmpty()) {
 		qDebug() << "NOT FOUND!!!";
-		emit autoDescentNotFound();
 		autoDescent = false;
+		emit autoDescentNotFound();
+
 	} else if(autoDescentPath.first().isEmpty()) {
 		do {
 			if(autoDescentPath.first().isEmpty())
@@ -673,9 +676,10 @@ void ServersModel::descentDeeper(bool loaded)
 		if(autoDescentPath.isEmpty())
 		{
 			qDebug() << "NOT FOUND!!!";
-			emit autoDescentNotFound();
 			autoDescent = false;
+			emit autoDescentNotFound();
 		}
+
 	} else {
 		bool found = false;
 
@@ -693,8 +697,8 @@ void ServersModel::descentDeeper(bool loaded)
 				if(autoDescentPath.isEmpty())
 				{
 					qDebug() << "Yeah completed here";
-					emit autoDescentCompleted(createIndex(child->row(), 0, child));
 					autoDescent = false;
+					emit autoDescentCompleted(createIndex(child->row(), 0, child));
 //					autoDescentCurrentItem = 0;
 					return;
 				} else {
