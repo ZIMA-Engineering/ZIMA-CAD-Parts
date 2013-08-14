@@ -480,6 +480,14 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 		langButtonGroup->button(langIndex)->setChecked(true);
 		changeLanguage(langIndex);
 
+		// Prune tree history
+		history.clear();
+		historyCurrentIndex = -1;
+		historySize = 0;
+
+		ui->treeBackButton->setEnabled(false);
+		ui->treeForwardButton->setEnabled(false);
+
 		loadZimaUtils();
 
 		loadAboutPage();
