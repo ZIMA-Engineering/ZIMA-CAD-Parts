@@ -514,7 +514,7 @@ void MainWindow::updateClicked()
 	ServersModel *sm = static_cast<ServersModel*>( ui->treeLeft->model() );
 	sm->refresh(i);
 	sm->requestTechSpecs(i);
-	ui->btnUpdate->setEnabled(false);
+//	ui->btnUpdate->setEnabled(false);
 }
 
 void MainWindow::searchClicked()
@@ -551,7 +551,7 @@ void MainWindow::loadingItem(Item *item)
 
 void MainWindow::itemLoaded(const QModelIndex &index)
 {
-	ui->btnUpdate->setEnabled(true);
+//	ui->btnUpdate->setEnabled(true);
 
 //	setPartsIndex(index);
 }
