@@ -829,6 +829,7 @@ void MainWindow::autoDescentProgress(const QModelIndex &index)
 void MainWindow::autoDescendComplete(const QModelIndex &index)
 {
 	ui->treeLeft->expand(index);
+	ui->treeLeft->setCurrentIndex(index);
 	setPartsIndex(index);
 	static_cast<ServersModel*>(ui->treeLeft->model())->requestTechSpecs(index);
 }
