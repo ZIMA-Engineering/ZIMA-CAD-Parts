@@ -716,7 +716,11 @@ void MainWindow::filesDeleted()
 		dlg->exec();
 
 	} else {
-		// refresh the file model
+		// FIXME: if the deletion should occur in another thread and take more time, it will
+		// be neccessary to check if the reset is needed (user might be viewing something entirely
+		// different by the time it's finished).
+
+		ui->tree->reset();
 	}
 }
 

@@ -254,7 +254,12 @@ void LocalDataSource::deleteFiles(QList<File*> files)
 {
 	foreach(File *f, files)
 	{
-		if(!QFile::remove(f->path))
+		if(QFile::remove(f->path))
+		{
+			f->parentItem->files.removeOne(f);
+			delete f;
+
+		} else
 			emit fileError(BaseDataSource::Delete, new BaseDataSource::Error(f, tr("Unable to delete")));
 	}
 
