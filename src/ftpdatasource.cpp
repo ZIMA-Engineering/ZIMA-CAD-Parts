@@ -673,6 +673,7 @@ void FtpDataSource::ftpFileDownloadFinished(int id, bool error)
 
 		delete f;
 		file->openFtpFile = 0;
+		file->targetPath.clear();
 
 		filesToDownload.removeFirst();
 		fileTasks.remove(id);
