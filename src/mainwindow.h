@@ -152,6 +152,7 @@ public slots:
 	void setWorkingDirectoryDialog();
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
 	void updateClicked();
+	void deleteSelectedParts();
 	void searchClicked();
 	void serverSelected(const QModelIndex&);
 	void updateStatus(QString);
@@ -168,6 +169,7 @@ public slots:
 	void resumeDownload();
 	void stopDownload();
 	void loadAboutPage();
+	void filesDeleted();
 
 private slots:
 	void openWorkingDirectory();

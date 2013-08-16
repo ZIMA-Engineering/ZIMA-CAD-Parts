@@ -33,6 +33,7 @@
 #include "metadata.h"
 
 class BaseDataSource;
+class ServersModel;
 class Item;
 
 struct File

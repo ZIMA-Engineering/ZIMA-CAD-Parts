@@ -250,6 +250,17 @@ void LocalDataSource::loadDirectory(Item* item)
 	emit itemLoaded(item);
 }
 
+void LocalDataSource::deleteFiles(QList<File*> files)
+{
+	foreach(File *f, files)
+	{
+		if(!QFile::remove(f->path))
+			emit fileError(BaseDataSource::Delete, new BaseDataSource::Error(f, tr("Unable to delete")));
+	}
+
+	emit filesDeleted();
+}
+
 void LocalDataSource::addFileToDownload(File *f)
 {
 	copier->addFile(f);

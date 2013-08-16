@@ -43,6 +43,9 @@ ServersModel::ServersModel(QObject *parent)
 ServersModel::~ServersModel()
 {
 	delete rootItem;
+
+	for(int i = 0; i < BaseDataSource::OperationCount; i++)
+		qDeleteAll(m_fileErrors[i]);
 }
 
 bool ServersModel::canFetchMore(const QModelIndex &parent) const
@@ -249,6 +252,8 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 		connect(i->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
 		connect(i->server, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
 		connect(i->server, SIGNAL(partsIndexAlreadyExists(Item*)), this, SIGNAL(partsIndexAlreadyExists(Item*)));
+		connect(i->server, SIGNAL(fileError(BaseDataSource::Operation,BaseDataSource::Error*)), this, SLOT(catchFileError(BaseDataSource::Operation,BaseDataSource::Error*)));
+		connect(i->server, SIGNAL(filesDeleted()), this, SLOT(dataSourceFinishedDeleting()));
 
 		i->parent = rootItem;
 
@@ -387,6 +392,17 @@ QList<File*> ServersModel::getCheckedFiles(Item *item)
 		ret << getCheckedFiles(i);
 
 	return ret;
+}
+
+void ServersModel::deleteFiles()
+{
+	qDeleteAll(m_fileErrors[BaseDataSource::Delete]);
+	m_fileErrors[BaseDataSource::Delete].clear();
+
+	dsDeleted = 0;
+
+	foreach(Item *i, rootItem->children)
+		i->server->deleteFiles(getCheckedFiles(i));
 }
 
 void ServersModel::downloadFiles(QString dir)
@@ -557,6 +573,12 @@ void ServersModel::dataSourceFinishedDownloading()
 {
 	if( downloadQueue.isEmpty() )
 		emit filesDownloaded();
+}
+
+void ServersModel::dataSourceFinishedDeleting()
+{
+	if(++dsDeleted == rootItem->children.size())
+		emit filesDeleted();
 }
 
 void ServersModel::metadataReady(Item *item)
@@ -735,4 +757,19 @@ void ServersModel::assignPartsIndexUrlToItem(QString url, Item *item, bool overw
 	QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
 
 	item->server->assignPartsIndexUrlToItem(url, item, lang, overwrite);
+}
+
+QList<BaseDataSource::Error*> ServersModel::fileErrors(BaseDataSource::Operation op)
+{
+	return m_fileErrors[op];
+}
+
+bool ServersModel::hasErrors(BaseDataSource::Operation op)
+{
+	return !m_fileErrors[op].isEmpty();
+}
+
+void ServersModel::catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err)
+{
+	m_fileErrors[op] << err;
 }

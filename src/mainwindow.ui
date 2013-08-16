@@ -22,13 +22,6 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Path</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QToolButton" name="goHomeDirButton">
         <property name="toolTip">
          <string>Go to working directory</string>
@@ -86,6 +79,13 @@
         </property>
         <property name="autoRaise">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Path</string>
         </property>
        </widget>
       </item>
@@ -393,6 +393,13 @@
                  <widget class="QPushButton" name="btnUpdate">
                   <property name="text">
                    <string>Update</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btnDelete">
+                  <property name="text">
+                   <string>Delete</string>
                   </property>
                  </widget>
                 </item>

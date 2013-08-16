@@ -40,6 +40,7 @@
 #include "filtersdialog.h"
 #include "item.h"
 #include "zimautils.h"
+#include "errordialog.h"
 
 QList<MainWindow::FilterGroup> MainWindow::filterGroups;
 QSettings * MainWindow::settings;
@@ -106,6 +107,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectoryDialog()));
 	connect(ui->openWorkDirButton, SIGNAL(clicked()), this, SLOT(openWorkingDirectory()));
 	connect(ui->btnUpdate, SIGNAL(clicked()), this, SLOT(updateClicked()));
+	connect(ui->btnDelete, SIGNAL(clicked()), this, SLOT(deleteSelectedParts()));
 	connect(ui->startStopDownloadBtn, SIGNAL(clicked()), this, SLOT(toggleDownload()));
 
 	ui->thumbnailSizeSlider->setValue(settings->value("GUI/ThumbWidth", 32).toInt());
@@ -228,6 +230,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 //	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
 	connect(sm, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(sm, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
+	connect(sm, SIGNAL(filesDeleted()), this, SLOT(filesDeleted()));
 
 	DownloadModel *dm = new DownloadModel(this);
 
@@ -517,6 +520,21 @@ void MainWindow::updateClicked()
 //	ui->btnUpdate->setEnabled(false);
 }
 
+void MainWindow::deleteSelectedParts()
+{
+	if( QMessageBox::question(this,
+				  tr("Do you really want to delete selected parts?"),
+				  tr("Do you really want to delete selected parts? This action is irreversible."),
+				  QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+		==  QMessageBox::Yes)
+	{
+		ServersModel *sm = static_cast<ServersModel*>(ui->treeLeft->model());
+
+		sm->deleteFiles();
+		sm->uncheckAll();
+	}
+}
+
 void MainWindow::searchClicked()
 {
 	QMessageBox::information(this, "ZimaParts", "Not yet implemented");
@@ -671,6 +689,35 @@ void MainWindow::loadAboutPage()
 		urlBar->setText("ZIMA-CAD-Parts:about");
 
 	ui->techSpec->setHtml( stream.readAll().replace("%VERSION%", VERSION) );
+}
+
+void MainWindow::filesDeleted()
+{
+	ServersModel *sm = static_cast<ServersModel*>(ui->treeLeft->model());
+
+	if(sm->hasErrors(BaseDataSource::Delete))
+	{
+		ErrorDialog *dlg = new ErrorDialog(this);
+
+		dlg->setError(tr("Unable to delete files:"));
+
+		QString str = "<html><body><dl>";
+
+		foreach(BaseDataSource::Error *e, sm->fileErrors(BaseDataSource::Delete))
+		{
+			str += "<dt>" + e->file->path + ":</dt>";
+			str += "<dd>" + e->error + "</dd>";
+		}
+
+		str += "</dl></body></html>";
+
+		dlg->setText(str);
+
+		dlg->exec();
+
+	} else {
+		// refresh the file model
+	}
 }
 
 void MainWindow::openWorkingDirectory()

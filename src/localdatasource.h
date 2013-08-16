@@ -62,6 +62,7 @@ public:
 public slots:
 	void loadRootItem(Item *item);
 	void loadDirectory(Item* item);
+	void deleteFiles(QList<File*> files);
 	void addFileToDownload(File *f);
 	void downloadFiles(QList<File*> files, QString dir);
 	void downloadFile(File* file);

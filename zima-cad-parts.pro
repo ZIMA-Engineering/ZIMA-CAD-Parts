@@ -23,7 +23,8 @@ SOURCES += zima-cad-parts.cpp \
     src/filtersdialog.cpp \
     src/metadata.cpp \
     src/techspecswebview.cpp \
-    src/zimautils.cpp
+    src/zimautils.cpp \
+    src/errordialog.cpp
 HEADERS += mainwindow.h \
     settingsdialog.h \
     serversmodel.h \
@@ -41,13 +42,15 @@ HEADERS += mainwindow.h \
     src/metadata.h \
     src/techspecswebview.h \
     src/zima-cad-parts.h \
-    src/zimautils.h
+    src/zimautils.h \
+    src/errordialog.h
 FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui \
     src/extensions/productview/productviewsettings.ui \
     src/extensions/productview/productview.ui \
-    src/filtersdialog.ui
+    src/filtersdialog.ui \
+    src/errordialog.ui
 RESOURCES += zima-cad-parts.qrc
 
 OTHER_FILES += \

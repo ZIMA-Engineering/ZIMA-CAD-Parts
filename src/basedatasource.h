@@ -49,6 +49,19 @@ class BaseDataSource : public QObject
 {
 	Q_OBJECT
 public:
+	enum Operation {
+		Download=0,
+		Delete,
+		OperationCount
+	};
+
+	struct Error {
+		File *file;
+		QString error;
+
+		Error(File *f, QString s) : file(f), error(s){}
+	};
+
 	explicit BaseDataSource(QObject *parent = 0);
 	Item *getRootItem();
 	virtual QString internalName() = 0;
@@ -68,6 +81,7 @@ public slots:
 	virtual void loadRootItem(Item *item) = 0;
 	virtual void loadDirectory(Item* item) = 0;
 	virtual void sendTechSpecUrl(Item* item);
+	virtual void deleteFiles(QList<File*> files) = 0;
 	virtual void addFileToDownload(File *f) = 0;
 	virtual void downloadFiles(QList<File*> files, QString dir) = 0;
 	virtual void downloadFile(File* file) = 0;
@@ -82,7 +96,6 @@ public slots:
 	virtual void assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
 protected:
 	virtual void loadItemLogo(Item *item) = 0;
-
 
 	QString currentMetadataLang;
 signals:
@@ -102,6 +115,8 @@ signals:
 	void errorOccured(QString);
 	void techSpecsIndexAlreadyExists(Item*);
 	void partsIndexAlreadyExists(Item*);
+	void fileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
+	void filesDeleted();
 };
 
 #endif // BASEDATASOURCE_H

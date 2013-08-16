@@ -26,8 +26,9 @@
 #include <QList>
 #include <QVector>
 #include <QKeyEvent>
-#include "basedatasource.h"
+
 #include "item.h"
+#include "basedatasource.h"
 
 class ServersModel : public QAbstractItemModel
 {
@@ -53,6 +54,8 @@ public:
 	//---
 	void setServerData(QVector<BaseDataSource*>);
 	QString translateDataSourceNameToPath(QString name);
+	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
+	bool hasErrors(BaseDataSource::Operation op);
 
 public slots:
 	void refresh(Item* item);
@@ -60,6 +63,7 @@ public slots:
 	void loadItem(Item *item);
 	void requestTechSpecs(const QModelIndex &index);
 	void requestTechSpecs(Item *item);
+	void deleteFiles();
 	void downloadFiles(QString dir);
 	void downloadSpecificFile(QString dir, File *f);
 	void resumeDownload();
@@ -72,6 +76,7 @@ public slots:
 	void descentTo(QString path);
 	void assignTechSpecUrlToItem(QString url, Item *item, bool overwrite = false);
 	void assignPartsIndexUrlToItem(QString url, Item *item, bool overwrite = false);
+	void catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
 protected:
 	QList<File*> getCheckedFiles(Item *item);
 protected slots:
@@ -87,9 +92,12 @@ private:
 	bool autoDescent;
 	QStringList autoDescentPath;
 	Item *autoDescentCurrentItem;
+	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];
+	int dsDeleted;
 
 private slots:
 	void dataSourceFinishedDownloading();
+	void dataSourceFinishedDeleting();
 	void metadataReady(Item *item);
 	void newItem(Item *item);
 	void itemUpdated(Item *item);
@@ -110,6 +118,7 @@ signals:
 	void autoDescentNotFound();
 	void techSpecsIndexAlreadyExists(Item*);
 	void partsIndexAlreadyExists(Item*);
+	void filesDeleted();
 };
 
 #endif // SERVERSMODEL_H

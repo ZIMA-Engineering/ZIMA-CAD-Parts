@@ -686,6 +686,14 @@ void FtpDataSource::ftpFileDownloadFinished(int id, bool error)
 	}
 }
 
+void FtpDataSource::deleteFiles(QList<File*> files)
+{
+	foreach(File *f, files)
+		emit fileError(BaseDataSource::Delete, new BaseDataSource::Error(f, tr("Operation not supported")));
+
+	emit filesDeleted();
+}
+
 void FtpDataSource::addFileToDownload(File *f)
 {
 	filesToDownload << f;

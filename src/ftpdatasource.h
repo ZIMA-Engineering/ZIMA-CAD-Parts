@@ -48,6 +48,7 @@ public slots:
 	void loadDirectory(Item* item);
 	void changeSettings(QString remoteHost, int remotePort, bool ftpPassiveMode, QString remoteLogin, QString remotePassword, QString remoteBaseDir);
 	void reset();
+	void deleteFiles(QList<File*> files);
 	void addFileToDownload(File *f);
 	void downloadFiles(QList<File*> files, QString dir);
 	void downloadFile(File* file);
