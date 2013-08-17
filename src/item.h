@@ -92,6 +92,7 @@ struct File
 	QString pixmapPath;
 	QPixmap pixmap;
 	QPixmap scaledThumb;
+	QStringList thumbnails;
 	QFile *openFtpFile;
 	bool isChecked;
 	QDateTime lastModified;

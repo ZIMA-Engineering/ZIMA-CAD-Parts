@@ -257,6 +257,13 @@ void LocalDataSource::deleteFiles(QList<File*> files)
 		if(QFile::remove(f->path))
 		{
 			f->parentItem->files.removeOne(f);
+
+			foreach(QString thumb, f->thumbnails)
+			{
+				qDebug() << "Remove thumbnail" << thumb;
+				QFile::remove(thumb);
+			}
+
 			delete f;
 
 		} else

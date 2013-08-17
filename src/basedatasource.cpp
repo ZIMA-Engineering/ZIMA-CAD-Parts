@@ -88,6 +88,8 @@ void BaseDataSource::assignThumbnailsToFiles(Item *item, QStringList thumbnails)
 
 				if(fileNamePrefix == thumbName || (isLocalized && fileNamePrefix == thumbPrefix))
 				{
+					f->thumbnails << itemPath + "/" + thumb;
+
 					// When there's no thumbnail set yet, pick first available
 					if(f->pixmapPath.isEmpty())
 						f->pixmapPath = itemPath + "/" + thumb;
@@ -96,7 +98,7 @@ void BaseDataSource::assignThumbnailsToFiles(Item *item, QStringList thumbnails)
 					if(isLocalized && thumbPrefix.right(2) == currentMetadataLang)
 					{
 						f->pixmapPath = itemPath + "/" + thumb;
-						break;
+						// break; // do not break, we need to load all thumbnails for delete function to work
 					}
 				}
 			}
