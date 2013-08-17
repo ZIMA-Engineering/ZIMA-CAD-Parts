@@ -101,6 +101,11 @@ QString Metadata::getPartParam(QString part, int col)
 	else return anyVal.isEmpty() ? metadata->value(QString("%1/%2").arg(partGroup).arg(col), QString()).toString() : anyVal;
 }
 
+void Metadata::deletePart(QString part)
+{
+	metadata->remove(part.section('.', 0, 0));
+}
+
 void Metadata::refresh()
 {
 	columnLabels.clear();

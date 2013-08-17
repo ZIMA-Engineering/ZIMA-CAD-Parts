@@ -34,6 +34,7 @@ public:
 	QString getLabel();
 	QStringList getColumnLabels();
 	QString getPartParam(QString part, int col);
+	void deletePart(QString part);
 
 public slots:
 	void refresh();

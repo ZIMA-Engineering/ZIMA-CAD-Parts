@@ -168,6 +168,14 @@ void LocalDataSource::loadDirectory(Item* item)
 			if( entries[i].fileName() == TECHSPEC_DIR )
 			{
 				sendTechSpecUrl(item);
+
+				if(item == rootItem && QFile::exists(item->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE))
+				{
+					item->metadata = new Metadata(item->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE);
+
+					emit metadataReady(item);
+				}
+
 				continue;
 			}
 
@@ -256,6 +264,7 @@ void LocalDataSource::deleteFiles(QList<File*> files)
 	{
 		if(QFile::remove(f->path))
 		{
+			f->parentItem->metadata->deletePart(f->name);
 			f->parentItem->files.removeOne(f);
 
 			foreach(QString thumb, f->thumbnails)
