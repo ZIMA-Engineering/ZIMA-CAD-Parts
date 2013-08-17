@@ -103,7 +103,12 @@ QString Metadata::getPartParam(QString part, int col)
 
 void Metadata::deletePart(QString part)
 {
-	metadata->remove(part.section('.', 0, 0));
+	QString grp = part.section('.', 0, 0);
+
+	if(grp.isEmpty())
+		return;
+
+	metadata->remove(grp);
 }
 
 void Metadata::refresh()
