@@ -29,6 +29,7 @@
 
 #include "item.h"
 #include "basedatasource.h"
+#include "treeautodescent.h"
 
 class ServersModel : public QAbstractItemModel
 {
@@ -73,27 +74,27 @@ public slots:
 	int loadQueue(QSettings *settings);
 	void retranslateMetadata(Item *item = 0);
 	void abort();
-	void descentTo(QString path);
+	void descentTo(QString path, Item *item = 0);
 	void assignTechSpecUrlToItem(QString url, Item *item, bool overwrite = false);
 	void assignPartsIndexUrlToItem(QString url, Item *item, bool overwrite = false);
 	void catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
+
 protected:
 	QList<File*> getCheckedFiles(Item *item);
+
 protected slots:
 	void allPartsDownloaded(Item* item);
-private:
-	void descentDeeper(bool loaded = false);
 
+private:
 	QIcon dirIcon, serverIcon;
 	QVector<BaseDataSource*> servers;
 	Item *rootItem;
 	Item *lastTechSpecRequest;
 	QList<File*> downloadQueue;
-	bool autoDescent;
-	QStringList autoDescentPath;
-	Item *autoDescentCurrentItem;
 	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];
 	int dsDeleted;
+	QList<TreeAutoDescent*> autoDescents;
+	QHash<TreeAutoDescent*, Item*> metadataIncludeHash;
 
 private slots:
 	void dataSourceFinishedDownloading();
@@ -101,6 +102,11 @@ private slots:
 	void metadataReady(Item *item);
 	void newItem(Item *item);
 	void itemUpdated(Item *item);
+	void forwardAutoDescentProgress(TreeAutoDescent *descent, Item *item);
+	void forwardAutoDescentCompleted(TreeAutoDescent *descent, Item *item);
+	void forwardAutoDescentNotFound(TreeAutoDescent *descent);
+	void metadataInclude(Item *item, QString path);
+
 signals:
 	void loadingItem(Item*);
 	void itemLoaded(const QModelIndex&);

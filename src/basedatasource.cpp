@@ -165,6 +165,16 @@ void BaseDataSource::saveSettings(QSettings& settings)
 	settings.setValue("Label", label);
 }
 
+void BaseDataSource::createMetadata(Item *item)
+{
+	item->metadata = new Metadata(item);
+
+	connect(item->metadata, SIGNAL(ready(Item*)), this, SIGNAL(metadataReady(Item*)));
+	connect(item->metadata, SIGNAL(includeRequired(Item*,QString)), this, SIGNAL(metadataInclude(Item*,QString)));
+
+	item->metadata->init();
+}
+
 void BaseDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
 {
 

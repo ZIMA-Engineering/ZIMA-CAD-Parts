@@ -19,25 +19,32 @@
 */
 
 #include <QRegExp>
+#include <QDir>
 #include <QDebug>
 
 #include "metadata.h"
 #include "mainwindow.h"
+#include "item.h"
 
-Metadata::Metadata(QString metadataPath, QObject *parent) : QObject(parent)
+Metadata::Metadata(Item *item, QObject *parent)
+	: QObject(parent),
+	  m_item(item),
+	  m_loadedIncludes(0)
 {
-	metadataFile = metadataPath;
-
-	openMetadata();
+	metadataFile = m_item->server->getPathForItem(m_item) + "/" + TECHSPEC_DIR + "/" + METADATA_FILE;
 
 	currentAppLang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-
-	probeMetadata();
 }
 
 Metadata::~Metadata()
 {
 	delete metadata;
+}
+
+void Metadata::init()
+{
+	openMetadata();
+	probeMetadata();
 }
 
 QString Metadata::getLabel()
@@ -74,6 +81,9 @@ QStringList Metadata::getColumnLabels()
 	}
 	metadata->endGroup();
 
+	foreach(Metadata *include, includes)
+		columnLabels << include->getColumnLabels();
+
 	return columnLabels;
 }
 
@@ -98,7 +108,23 @@ QString Metadata::getPartParam(QString part, int col)
 
 	if(!val.isEmpty())
 		return val;
-	else return anyVal.isEmpty() ? metadata->value(QString("%1/%2").arg(partGroup).arg(col), QString()).toString() : anyVal;
+	else {
+
+		QString ret = anyVal.isEmpty() ? metadata->value(QString("%1/%2").arg(partGroup).arg(col), QString()).toString() : anyVal;
+
+		if(ret.isEmpty())
+		{
+			foreach(Metadata *include, includes)
+			{
+				QString tmp = include->getPartParam(part, col);
+
+				if(!tmp.isEmpty())
+					return tmp;
+			}
+		}
+
+		return ret;
+	}
 }
 
 void Metadata::deletePart(QString part)
@@ -135,6 +161,26 @@ void Metadata::retranslate(QString lang)
 	emit retranslated();
 }
 
+void Metadata::provideInclude(Metadata *m, QString path)
+{
+	m_loadedIncludes++;
+
+	if(!m)
+	{
+		if(path.isEmpty())
+			qDebug() << "Unable to include" << path << ": this directory does not have metadata";
+		else
+			qDebug() << "Unable to include" << path << ": path does not exists";
+	} else {
+		qDebug() << "Include loaded" << m->getLabel();
+
+		includes << m;
+	}
+
+	if(m_loadedIncludes == includes.size())
+		ready(m_item);
+}
+
 void Metadata::openMetadata()
 {
 	metadata = new QSettings(metadataFile, QSettings::IniFormat);
@@ -169,4 +215,41 @@ void Metadata::probeMetadata()
 		}
 	}
 	metadata->endGroup();
+
+	metadata->beginGroup("include");
+	{
+		QStringList toInclude;
+		QStringList data = metadata->value("data").toStringList();
+
+		foreach(QString path, data)
+			toInclude << buildIncludePath(path);
+
+		toInclude.removeDuplicates();
+
+		if(data.isEmpty())
+			emit ready(m_item);
+		else {
+			foreach(QString path, toInclude)
+				emit includeRequired(m_item, path);
+		}
+	}
+	metadata->endGroup();
+}
+
+QString Metadata::buildIncludePath(QString raw)
+{
+	QString dsName = m_item->server->name();
+	QString ret;
+
+	raw = raw.trimmed();
+
+	if(raw.startsWith('/'))
+		ret = QDir::cleanPath(dsName + raw);
+	else
+		ret = QDir::cleanPath(dsName + m_item->pathRelativeToDataSource() + "/" + raw);
+
+	if(!ret.startsWith(dsName + "/"))
+		ret = dsName + "/" + ret;
+
+	return ret;
 }

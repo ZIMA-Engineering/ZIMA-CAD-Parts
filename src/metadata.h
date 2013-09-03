@@ -25,12 +25,15 @@
 #include <QSettings>
 #include <QStringList>
 
+class Item;
+
 class Metadata : public QObject
 {
 	Q_OBJECT
 public:
-	explicit Metadata(QString metadataPath, QObject *parent = 0);
+	explicit Metadata(Item *item, QObject *parent = 0);
 	~Metadata();
+	void init();
 	QString getLabel();
 	QStringList getColumnLabels();
 	QString getPartParam(QString part, int col);
@@ -39,11 +42,12 @@ public:
 public slots:
 	void refresh();
 	void retranslate(QString lang = QString());
+	void provideInclude(Metadata *m, QString path = QString());
 
 private:
-	void openMetadata();
-	void probeMetadata();
-
+	Item *m_item;
+	QList<Metadata*> includes;
+	int m_loadedIncludes;
 	QString metadataFile;
 	QSettings *metadata;
 	QString currentAppLang;
@@ -51,7 +55,13 @@ private:
 	QStringList columnLabels;
 	QString label;
 
+	void openMetadata();
+	void probeMetadata();
+	QString buildIncludePath(QString raw);
+
 signals:
+	void includeRequired(Item *item, QString path);
+	void ready(Item *item);
 	void retranslated();
 };
 

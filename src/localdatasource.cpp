@@ -170,11 +170,7 @@ void LocalDataSource::loadDirectory(Item* item)
 				sendTechSpecUrl(item);
 
 				if(item == rootItem && QFile::exists(item->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE))
-				{
-					item->metadata = new Metadata(item->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE);
-
-					emit metadataReady(item);
-				}
+					createMetadata(item);
 
 				continue;
 			}
@@ -191,11 +187,8 @@ void LocalDataSource::loadDirectory(Item* item)
 			item->children.append(it);
 
 			if(QFile::exists(it->path + TECHSPEC_DIR + "/" + METADATA_FILE))
-			{
-				it->metadata = new Metadata(it->path + TECHSPEC_DIR + "/" + METADATA_FILE);
+				createMetadata(it);
 
-				emit metadataReady(it);
-			}
 		} else {
 			if( entries[i].fileName().endsWith(".png", Qt::CaseInsensitive) || entries[i].fileName().endsWith(".jpg", Qt::CaseInsensitive) )
 			{

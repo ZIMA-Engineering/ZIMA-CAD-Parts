@@ -96,6 +96,7 @@ public slots:
 	virtual void assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
 protected:
 	virtual void loadItemLogo(Item *item) = 0;
+	void createMetadata(Item *item);
 
 	QString currentMetadataLang;
 signals:
@@ -111,6 +112,7 @@ signals:
 	void thumbnailLoaded(File*);
 	void statusUpdated(QString);
 	void techSpecAvailable(QUrl);
+	void metadataInclude(Item *item, QString path);
 	void metadataReady(Item*);
 	void errorOccured(QString);
 	void techSpecsIndexAlreadyExists(Item*);

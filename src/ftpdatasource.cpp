@@ -358,7 +358,7 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 			QString metadata = cacheDirPath() + "/" + remoteHost + "/" + i->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE;
 
 			if(QFile::exists(metadata))
-				i->metadata = new Metadata(metadata);
+				createMetadata(i);
 
 			ftpCurrentItem->children.append(i);
 
@@ -632,11 +632,10 @@ void FtpDataSource::checkLoadedItem()
 			if(metadataChanged)
 				ftpCurrentItem->metadata->refresh();
 		} else {
-			ftpCurrentItem->metadata = new Metadata(cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE);
+			createMetadata(ftpCurrentItem);
 			qDebug() << "Metadata loaded - techspecfiles" << ftpCurrentItem->metadata->getLabel();
 		}
 
-		emit metadataReady(ftpCurrentItem);
 	} else if( ftpCurrentItem->metadata )
 	{
 		delete ftpCurrentItem->metadata;

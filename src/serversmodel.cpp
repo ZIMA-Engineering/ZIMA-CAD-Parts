@@ -26,8 +26,7 @@
 #include "mainwindow.h"
 
 ServersModel::ServersModel(QObject *parent)
-	: QAbstractItemModel(parent),
-	  autoDescent(0)
+	: QAbstractItemModel(parent)
 {
 	rootItem = new Item();
 	lastTechSpecRequest = 0;
@@ -246,6 +245,7 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 		connect(i->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
 		connect(i->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
 		connect(i->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
+		connect(i->server, SIGNAL(metadataInclude(Item*,QString)), this, SLOT(metadataInclude(Item*,QString)));
 		connect(i->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
 		connect(i->server, SIGNAL(itemInserted(Item*)), this, SLOT(newItem(Item*)));
 		connect(i->server, SIGNAL(updateAvailable(Item*)), this, SLOT(itemUpdated(Item*)));
@@ -298,10 +298,17 @@ void ServersModel::allPartsDownloaded(Item* item)
 	emit layoutChanged();
 	emit itemLoaded( createIndex(item->row(), 0, item) );
 
-	if(autoDescent && item == autoDescentCurrentItem)
+	if(!autoDescents.isEmpty())
 	{
-		qDebug() << "calling descentDeeper loaded = true";
-		descentDeeper(true);
+		foreach(TreeAutoDescent *descent, autoDescents)
+		{
+			if(descent->waitsFor(item))
+			{
+				qDebug() << "Continue descent";
+				descent->continueDescent(true);
+				break;
+			}
+		}
 	}
 }
 
@@ -605,6 +612,47 @@ void ServersModel::itemUpdated(Item *item)
 	emit dataChanged(index, index);
 }
 
+void ServersModel::forwardAutoDescentProgress(TreeAutoDescent *descent, Item *item)
+{
+	if(!metadataIncludeHash.contains(descent))
+		emit autoDescentProgress(createIndex(item->row(), 0, item));
+}
+
+void ServersModel::forwardAutoDescentCompleted(TreeAutoDescent *descent, Item *item)
+{
+	autoDescents.removeOne(descent);
+
+	if(metadataIncludeHash.contains(descent))
+	{
+		metadataIncludeHash[descent]->metadata->provideInclude(item->metadata);
+		metadataIncludeHash.remove(descent);
+
+	} else
+		emit autoDescentCompleted(createIndex(item->row(), 0, item));
+
+	descent->deleteLater();
+}
+
+void ServersModel::forwardAutoDescentNotFound(TreeAutoDescent *descent)
+{
+	autoDescents.removeOne(descent);
+
+	if(metadataIncludeHash.contains(descent))
+	{
+		metadataIncludeHash[descent]->metadata->provideInclude(0, descent->path());
+		metadataIncludeHash.remove(descent);
+
+	} else
+		emit autoDescentNotFound();
+
+	descent->deleteLater();
+}
+
+void ServersModel::metadataInclude(Item *item, QString path)
+{
+	descentTo(path, item);
+}
+
 void ServersModel::abort()
 {
 	foreach(BaseDataSource *s, servers)
@@ -612,137 +660,26 @@ void ServersModel::abort()
 		s->abort();
 	}
 
-	autoDescent = false;
+	// FIXME: auto descents
 }
 
-void ServersModel::descentTo(QString path)
+void ServersModel::descentTo(QString path, Item *item)
 {
 	if(path.isEmpty())
 		return;
 
-	qDebug() << "Descending to" << path;
+	TreeAutoDescent *descent = new TreeAutoDescent(this, rootItem, path, this);
 
-	autoDescent = true;
-	autoDescentPath = path.split("/");
+	connect(descent, SIGNAL(progress(TreeAutoDescent*,Item*)), this, SLOT(forwardAutoDescentProgress(TreeAutoDescent*,Item*)));
+	connect(descent, SIGNAL(completed(TreeAutoDescent*,Item*)), this, SLOT(forwardAutoDescentCompleted(TreeAutoDescent*,Item*)));
+	connect(descent, SIGNAL(notFound(TreeAutoDescent*)), this, SLOT(forwardAutoDescentNotFound(TreeAutoDescent*)));
 
-	if(autoDescentPath.last().isEmpty())
-		autoDescentPath.removeLast();
+	autoDescents << descent;
 
-	if(autoDescentPath.isEmpty())
-		return;
+	if(item)
+		metadataIncludeHash[descent] = item;
 
-	qDebug() << "Descent path" << autoDescentPath;
-
-	QString dsName = autoDescentPath.takeFirst();
-	bool found = false;
-
-	for(int i = 0; i < servers.count(); i++)
-	{
-		if(dsName == servers[i]->name())
-		{
-			found = true;
-
-			Item *it = rootItem->child(i);
-
-			qDebug() << "DataSource" << servers[i]->label << "matches." << autoDescentPath;
-
-			if(autoDescentPath.isEmpty())
-			{
-				autoDescent = false;
-				emit autoDescentCompleted(createIndex(it->row(), 0, it));
-				return;
-			}
-
-			autoDescentCurrentItem = it;
-			emit autoDescentProgress(createIndex(it->row(), 0, it));
-
-			descentDeeper();
-		}
-	}
-
-	if(!found)
-	{
-		emit autoDescentNotFound();
-		autoDescent = false;
-	}
-}
-
-void ServersModel::descentDeeper(bool loaded)
-{
-	qDebug() << "Descending deeper" << autoDescentCurrentItem->name;
-
-	if(!loaded)
-	{
-		qDebug() << "schedule load immediately" << autoDescentCurrentItem->name;
-		loadItem(autoDescentCurrentItem);
-		return;
-
-	} else if(autoDescentCurrentItem->children.isEmpty()) {
-		emit autoDescentProgress(createIndex(autoDescentCurrentItem->row(), 0, autoDescentCurrentItem));
-		emit autoDescentNotFound();
-		autoDescent = false;
-		return;
-
-	} else if(autoDescentPath.isEmpty()) {
-		qDebug() << "NOT FOUND!!!";
-		autoDescent = false;
-		emit autoDescentNotFound();
-
-	} else if(autoDescentPath.first().isEmpty()) {
-		do {
-			if(autoDescentPath.first().isEmpty())
-				autoDescentPath.removeFirst();
-			else break;
-		} while(!autoDescentPath.isEmpty());
-
-		if(autoDescentPath.isEmpty())
-		{
-			qDebug() << "NOT FOUND!!!";
-			autoDescent = false;
-			emit autoDescentNotFound();
-		}
-
-	} else {
-		bool found = false;
-
-		foreach(Item *child, autoDescentCurrentItem->children)
-		{
-			if(child->name == autoDescentPath.first())
-			{
-				found = true;
-				autoDescentPath.removeFirst();
-
-				emit autoDescentProgress(createIndex(child->row(), 0, child));
-
-				qDebug() << "child" << child->name << "found" << autoDescentPath;
-
-				if(autoDescentPath.isEmpty())
-				{
-					qDebug() << "Yeah completed here";
-					autoDescent = false;
-					emit autoDescentCompleted(createIndex(child->row(), 0, child));
-//					autoDescentCurrentItem = 0;
-					return;
-				} else {
-					autoDescentCurrentItem = child;
-
-					qDebug() << "schedule load" << child->name;
-					loadItem(child);
-					return;
-				}
-			}
-		}
-
-		if(!found)
-		{
-			qDebug() << autoDescentPath.first() << "not found, exiting search";
-
-			autoDescent = false;
-
-			emit autoDescentProgress(createIndex(autoDescentCurrentItem->row(), 0, autoDescentCurrentItem));
-			emit autoDescentNotFound();
-		}
-	}
+	descent->descend();
 }
 
 void ServersModel::assignTechSpecUrlToItem(QString url, Item *item, bool overwrite)
