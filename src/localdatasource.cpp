@@ -157,7 +157,6 @@ void LocalDataSource::loadDirectory(Item* item)
 
 	QDir dir(item->path);
 	QFileInfoList entries = dir.entryInfoList( QDir::AllEntries | QDir::NoDotAndDotDot );
-	QStringList thumbnails;
 
 	int cnt = entries.count();
 
@@ -192,7 +191,7 @@ void LocalDataSource::loadDirectory(Item* item)
 		} else {
 			if( entries[i].fileName().endsWith(".png", Qt::CaseInsensitive) || entries[i].fileName().endsWith(".jpg", Qt::CaseInsensitive) )
 			{
-				thumbnails << entries[i].fileName();
+				item->addThumbnail(new Thumbnail(item, entries[i].fileName()));
 				continue;
 			}
 
@@ -246,7 +245,7 @@ void LocalDataSource::loadDirectory(Item* item)
 //		}
 //	}
 
-	assignThumbnailsToFiles(item, thumbnails);
+	assignThumbnailsToFiles(item);
 
 	emit itemLoaded(item);
 }
@@ -260,12 +259,13 @@ void LocalDataSource::deleteFiles(QList<File*> files)
 			f->parentItem->metadata->deletePart(f->name);
 			f->parentItem->files.removeOne(f);
 
-			foreach(QString thumb, f->thumbnails)
+			foreach(Thumbnail *thumb, f->thumbnails)
 			{
-				qDebug() << "Remove thumbnail" << thumb;
-				QFile::remove(thumb);
+				qDebug() << "Remove thumbnail" << thumb->absolutePath();
+				QFile::remove(thumb->absolutePath());
 			}
 
+			// FIXME: delete f->thumbnails?
 			delete f;
 
 		} else

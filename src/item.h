@@ -31,6 +31,7 @@
 
 #include "basedatasource.h"
 #include "metadata.h"
+#include "thumbnail.h"
 
 class BaseDataSource;
 class ServersModel;
@@ -77,7 +78,7 @@ struct File
 		UNDEFINED
 	};
 
-	File():openFtpFile(0),isChecked(false),type(UNDEFINED),bytesDone(0){}
+	File():openFtpFile(0),thumbnail(0),isChecked(false),type(UNDEFINED),bytesDone(0){}
 	void setName(QString name);
 	void detectFileType();
 	QPixmap icon();
@@ -89,10 +90,8 @@ struct File
 	QString name;
 	QString path;
 	QString targetPath;
-	QString pixmapPath;
-	QPixmap pixmap;
-	QPixmap scaledThumb;
-	QStringList thumbnails;
+	Thumbnail *thumbnail;
+	QList<Thumbnail*> thumbnails;
 	QFile *openFtpFile;
 	bool isChecked;
 	QDateTime lastModified;
@@ -114,6 +113,8 @@ public:
 	~Item();
 	QString getLabel();
 	QString pathRelativeToDataSource();
+	void addThumbnail(Thumbnail *thumb);
+	QList<Thumbnail*> thumbnails(bool include = true);
 
 	int     id;
 	QString name;
@@ -132,6 +133,7 @@ public:
 	bool hasTechSpecs;
 	bool hasLoadedChildren;
 	BaseDataSource* server;
+	QList<Thumbnail*> m_thumbnails;
 
 	Item            *parent;
 	QList<Item*>    children;

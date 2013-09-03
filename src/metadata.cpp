@@ -29,7 +29,8 @@
 Metadata::Metadata(Item *item, QObject *parent)
 	: QObject(parent),
 	  m_item(item),
-	  m_loadedIncludes(0)
+	  m_loadedIncludes(0),
+	  m_includedData(false)
 {
 	metadataFile = m_item->server->getPathForItem(m_item) + "/" + TECHSPEC_DIR + "/" + METADATA_FILE;
 
@@ -137,11 +138,18 @@ void Metadata::deletePart(QString part)
 	metadata->remove(grp);
 }
 
+QList<Item*> Metadata::includedThumbnailItems()
+{
+	return m_thumbItems;
+}
+
 void Metadata::refresh()
 {
 	columnLabels.clear();
 	label.clear();
 	lang.clear();
+	m_includeHash.clear();
+	m_thumbItems.clear();
 
 	delete metadata;
 
@@ -174,11 +182,45 @@ void Metadata::provideInclude(Metadata *m, QString path)
 	} else {
 		qDebug() << "Include loaded" << m->getLabel();
 
-		includes << m;
+		QString path = QDir::cleanPath(m->m_item->server->name() + m->m_item->pathRelativeToDataSource());
+
+		QHashIterator<QString, Include> i(m_includeHash);
+		while(i.hasNext())
+		{
+			i.next();
+
+			if(i.key() != path)
+			{
+				qDebug() << i.key() << "!=" << path;
+				continue;
+			}
+
+			Include inc = i.value();
+
+			if((inc & IncludeMetadata) == IncludeMetadata )
+				includes << m;
+
+			if((inc & IncludeThumbnails) == IncludeThumbnails)
+				m_thumbItems << m->m_item;
+
+		}
 	}
 
 	if(m_loadedIncludes == includes.size())
-		ready(m_item);
+	{
+		if(m_includedData)
+			emit ready(m_item);
+
+		if(!m_thumbItems.isEmpty())
+		{
+			QList<Thumbnail*> thumbs;
+
+			foreach(Item *it, m_thumbItems)
+				thumbs << it->thumbnails(false);
+
+			m_item->server->assignThumbnailsToFiles(m_item, thumbs);
+		}
+	}
 }
 
 void Metadata::openMetadata()
@@ -219,19 +261,23 @@ void Metadata::probeMetadata()
 	metadata->beginGroup("include");
 	{
 		QStringList toInclude;
-		QStringList data = metadata->value("data").toStringList();
+		QStringList data = buildIncludePaths(metadata->value("data").toStringList());
+		QStringList thumbs = buildIncludePaths(metadata->value("thumbnails").toStringList());
 
-		foreach(QString path, data)
-			toInclude << buildIncludePath(path);
+		setIncludeMark(data, IncludeMetadata);
+		setIncludeMark(thumbs, IncludeThumbnails);
+
+		toInclude << data << thumbs;
 
 		toInclude.removeDuplicates();
 
 		if(data.isEmpty())
 			emit ready(m_item);
-		else {
-			foreach(QString path, toInclude)
-				emit includeRequired(m_item, path);
-		}
+		else
+			m_includedData = true;
+
+		foreach(QString path, toInclude)
+			emit includeRequired(m_item, path);
 	}
 	metadata->endGroup();
 }
@@ -252,4 +298,25 @@ QString Metadata::buildIncludePath(QString raw)
 		ret = dsName + "/" + ret;
 
 	return ret;
+}
+
+QStringList Metadata::buildIncludePaths(QStringList raw)
+{
+	QStringList ret;
+
+	foreach(QString s, raw)
+		ret << buildIncludePath(s);
+
+	return ret;
+}
+
+void Metadata::setIncludeMark(QStringList &list, Include mark)
+{
+	foreach(QString path, list)
+	{
+		if(!m_includeHash.contains(path))
+			m_includeHash[path] = IncludeNothing;
+
+		m_includeHash[path] = (Include) (m_includeHash[path] | mark);
+	}
 }

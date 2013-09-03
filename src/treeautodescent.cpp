@@ -7,7 +7,8 @@ TreeAutoDescent::TreeAutoDescent(ServersModel *sm, Item *root, QString path, QOb
 	QObject(parent),
 	m_sm(sm),
 	m_root(root),
-	m_path(path)
+	m_path(path),
+	m_done(0)
 {
 	m_pathParts = m_path.split("/");
 
@@ -72,7 +73,12 @@ void TreeAutoDescent::continueDescent(bool loaded)
 {
 	qDebug() << "Continuing descent" << m_currentItem->name;
 
-	if(!loaded)
+	if(m_done)
+	{
+		emit completed(this, m_done);
+		return;
+
+	} else if(!loaded)
 	{
 		qDebug() << "Schedule load immediately" << m_currentItem->name;
 		m_sm->loadItem(m_currentItem);
@@ -118,7 +124,8 @@ void TreeAutoDescent::continueDescent(bool loaded)
 				if(m_pathParts.isEmpty())
 				{
 					qDebug() << "Descent completed";
-					emit completed(this, child);
+					m_done = child;
+					m_sm->loadItem(child);
 					return;
 
 				} else {

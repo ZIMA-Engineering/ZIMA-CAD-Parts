@@ -85,37 +85,41 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 	if(row >= rootItem->files.size())
 		return QVariant();
 
+	File *file = rootItem->files.at(row);
+
 	switch(col)
 	{
 	case 1:
 		switch( role )
 		{
 		case Qt::DecorationRole:
-			if( !rootItem->files.at( row )->pixmap.isNull() )
-			{
-				if( rootItem->files.at( row )->scaledThumb.isNull() || rootItem->files.at( row )->scaledThumb.width() != thumbWidth )
-					rootItem->files.at( row )->scaledThumb = rootItem->files.at( row )->pixmap.scaledToWidth(thumbWidth, Qt::SmoothTransformation);
-				return rootItem->files.at( row )->scaledThumb;
-			}
+			if(file->thumbnail)
+				return file->thumbnail->scaledPixmap(thumbWidth);
+
 		case Qt::SizeHintRole:
-			if( !rootItem->files.at( row )->pixmap.isNull() )
-                                return QSize(thumbWidth, thumbWidth);
-			else return QSize(thumbWidth, 0);
+			if(file->thumbnail)
+				return QSize(thumbWidth, thumbWidth);
+			else
+				return QSize(thumbWidth, 0);
+
 		case Qt::ToolTipRole:
-			if( !rootItem->files.at( row )->pixmap.isNull() )
-				return QString("<img src=\"%1\" width=\"%2\">").arg( rootItem->files.at( row )->pixmapPath ).arg( previewWidth );
+			if(file->thumbnail)
+				return QString("<img src=\"%1\" width=\"%2\">").arg(file->thumbnail->absolutePath()).arg(previewWidth);
 		}
 		break;
+
 	case 0:
 		switch( role )
 		{
 		case Qt::DisplayRole:
 			//qDebug() << "returning" << rootItem->files.at( index.row() )->name;
-			return rootItem->files.at( row )->name;
+			return file->name;
+
 		case Qt::CheckStateRole:
-			return rootItem->files.at( row )->isChecked ? Qt::Checked : Qt::Unchecked;
+			return file->isChecked ? Qt::Checked : Qt::Unchecked;
+
 		case Qt::DecorationRole: {
-			QPixmap tmp = rootItem->files.at( row )->icon();
+			QPixmap tmp = file->icon();
 
 			if( !tmp.isNull() )
 				return tmp.scaledToWidth(16);
@@ -128,7 +132,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 	{
 		//qDebug() << "Probing section" << rootItem->files.at( row )->name.section('.', 0, 0);
 		//return rootItem->metadata->value(QString("%1/%2").arg(rootItem->files.at( row )->name.section('.', 0, 0)).arg(col-1), QString()).toString();
-		return rootItem->metadata->getPartParam(rootItem->files.at(row)->name, col-1);
+		return rootItem->metadata->getPartParam(file->name, col-1);
 	}
 
 	return QVariant();
@@ -257,8 +261,6 @@ void FileModel::setPreviewWidth(int size)
 
 void FileModel::thumbnailDownloaded(File *file)
 {
-	file->scaledThumb = QPixmap();
-
 	QModelIndex mi = index( file->parentItem->files.indexOf(file), 1 );
 
 	emit dataChanged(mi, mi);

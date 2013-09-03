@@ -25,7 +25,8 @@ SOURCES += zima-cad-parts.cpp \
     src/techspecswebview.cpp \
     src/zimautils.cpp \
     src/errordialog.cpp \
-    src/treeautodescent.cpp
+    src/treeautodescent.cpp \
+    src/thumbnail.cpp
 HEADERS += mainwindow.h \
     settingsdialog.h \
     serversmodel.h \
@@ -45,7 +46,8 @@ HEADERS += mainwindow.h \
     src/zima-cad-parts.h \
     src/zimautils.h \
     src/errordialog.h \
-    src/treeautodescent.h
+    src/treeautodescent.h \
+    src/thumbnail.h
 FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui \

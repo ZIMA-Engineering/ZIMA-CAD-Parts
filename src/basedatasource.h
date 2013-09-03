@@ -37,6 +37,7 @@
 
 class QListWidgetItem;
 class Item;
+class Thumbnail;
 struct File;
 
 enum DataSources {
@@ -89,7 +90,7 @@ public slots:
 	virtual void abort() = 0;
 	virtual void loadSettings(QSettings& settings);
 	virtual void deleteDownloadQueue();
-	void assignThumbnailsToFiles(Item *item, QStringList thumbnails = QStringList());
+	void assignThumbnailsToFiles(Item *item, QList<Thumbnail*> thumbnails = QList<Thumbnail*>());
 	void retranslate(QString lang = QString());
 	void saveSettings(QSettings& settings);
 	virtual void assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);

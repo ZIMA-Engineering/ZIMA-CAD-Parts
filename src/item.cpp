@@ -258,6 +258,7 @@ Item::~Item()
 	delete metadata;
 	metadata = 0;
 	qDeleteAll(files);
+	qDeleteAll(m_thumbnails);
 	qDeleteAll(children);
 	files.clear();
 	children.clear();
@@ -294,4 +295,23 @@ QString Item::getLabel()
 QString Item::pathRelativeToDataSource()
 {
 	return server->getRelativePathForItem(this);
+}
+
+void Item::addThumbnail(Thumbnail *thumb)
+{
+	m_thumbnails << thumb;
+}
+
+QList<Thumbnail*> Item::thumbnails(bool include)
+{
+	if(!include || !metadata)
+		return m_thumbnails;
+
+	QList<Thumbnail*> ret;
+	ret << m_thumbnails;
+
+	foreach(Item *it, metadata->includedThumbnailItems())
+		ret << it->thumbnails();
+
+	return ret;
 }

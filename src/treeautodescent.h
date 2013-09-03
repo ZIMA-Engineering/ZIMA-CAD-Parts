@@ -29,6 +29,7 @@ private:
 	QStringList m_pathParts;
 	Item *m_currentItem;
 	BaseDataSource *m_ds;
+	Item *m_done;
 	
 };
 

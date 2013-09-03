@@ -474,34 +474,34 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 			}
 		}*/
 
-		QStringList thumbnailNames;
-
 		foreach(File *thumb, thumbnails)
 		{
-			thumbnailNames << thumb->name;
+			Thumbnail *t = new Thumbnail(ftpCurrentItem, thumb->name);
+			ftpCurrentItem->addThumbnail(t);
 
-			QString thumbPath = cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path + "/" + thumb->name;
-			QFileInfo fi(thumbPath);
+			QFileInfo fi(t->absolutePath());
 
-			if( !QFile::exists(thumbPath) || thumb->lastModified > fi.lastModified().toUTC() )
+			if( !QFile::exists(fi.absoluteFilePath()) || thumb->lastModified > fi.lastModified().toUTC() )
 			{
 				if(thumb->openFtpFile)
 					break;
 
+				thumb->thumbnail = t;
+				t->setReady(false);
+
 				QDir dir;
 				dir.mkpath(cacheDirPath() + "/" + remoteHost + "/" + ftpCurrentItem->path);
 
-				QFile *f = new QFile(thumbPath);
+				QFile *f = new QFile(t->absolutePath());
 				f->open(QFile::WriteOnly);
 
 				thumb->openFtpFile = f;
-				thumb->pixmapPath = thumbPath;
 
 				partPicTasks[ ftp->get(remoteBaseDir + "/" + thumb->name, f) ] = thumb;
 			}
 		}
 
-		assignThumbnailsToFiles(ftpCurrentItem, thumbnailNames);
+		assignThumbnailsToFiles(ftpCurrentItem);
 
 		// Start browsing next folder in dirsToList
 		if(!hasTechSpecDir && partPicTasks.isEmpty())
@@ -571,15 +571,12 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 		{
 			foreach(File *f, thumb->parentItem->files)
 			{
-				if( f->pixmapPath == thumb->pixmapPath )
-				{
-					f->pixmap = QPixmap(thumb->pixmapPath);
+				if(f->thumbnail == thumb->thumbnail)
 					emit thumbnailLoaded(f);
-				}
 			}
 		}
 
-		qDebug() << "Pixmap" << thumb->pixmapPath << "downloaded from dir" << ftpCurrentItem->name;
+		delete thumb;
 
 		if(partPicTasks.isEmpty() && techSpecFiles.isEmpty())
 			ftpListItemInQueue();

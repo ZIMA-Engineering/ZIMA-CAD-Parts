@@ -38,6 +38,7 @@ public:
 	QStringList getColumnLabels();
 	QString getPartParam(QString part, int col);
 	void deletePart(QString part);
+	QList<Item*> includedThumbnailItems();
 
 public slots:
 	void refresh();
@@ -45,6 +46,12 @@ public slots:
 	void provideInclude(Metadata *m, QString path = QString());
 
 private:
+	enum Include {
+		IncludeNothing=0,
+		IncludeMetadata=1,
+		IncludeThumbnails=2
+	};
+
 	Item *m_item;
 	QList<Metadata*> includes;
 	int m_loadedIncludes;
@@ -54,10 +61,15 @@ private:
 	QString lang;
 	QStringList columnLabels;
 	QString label;
+	QHash<QString, Include> m_includeHash;
+	QList<Item*> m_thumbItems;
+	bool m_includedData;
 
 	void openMetadata();
 	void probeMetadata();
 	QString buildIncludePath(QString raw);
+	QStringList buildIncludePaths(QStringList raw);
+	void setIncludeMark(QStringList &list, Include mark);
 
 signals:
 	void includeRequired(Item *item, QString path);

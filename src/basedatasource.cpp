@@ -53,64 +53,34 @@ void BaseDataSource::deleteDownloadQueue()
 
 }
 
-void BaseDataSource::assignThumbnailsToFiles(Item *item, QStringList thumbnails)
+void BaseDataSource::assignThumbnailsToFiles(Item *item, QList<Thumbnail*> thumbnails)
 {
-	QString itemPath = getPathForItem(item);
-
 	if(thumbnails.isEmpty())
-	{
-		QStringList filters;
-		filters << "*.jpg" << "*.png";
+		thumbnails << item->thumbnails();
 
-		QDir dir(itemPath);
-		thumbnails = dir.entryList(filters, QDir::Files | QDir::Readable);
-	}
+	if(item->files.isEmpty() || thumbnails.isEmpty())
+		return;
 
-	if(!item->files.isEmpty() && !thumbnails.isEmpty())
+	foreach(File *f, item->files)
 	{
-		foreach(File *f, item->files)
+		f->thumbnail = 0;
+		f->thumbnails.clear();
+
+		QString fileNamePrefix = f->name.section('.', 0, 0);
+
+		foreach(Thumbnail *thumb, thumbnails)
 		{
-			f->pixmapPath = "";
-
-			QString fileNamePrefix = f->name.section('.', 0, 0);
-
-			foreach(QString thumb, thumbnails)
+			if(fileNamePrefix == thumb->name())
 			{
-				QString thumbPrefix = thumb.section('.', -2, -2);
-				QString thumbName;
-				bool isLocalized = false;
+				f->thumbnails << thumb;
 
-				if(thumbPrefix.lastIndexOf('_') == thumbPrefix.count()-3)
-				{
-					thumbName = thumbPrefix.left(thumbPrefix.count()-3);
-					isLocalized = true;
-				} else thumbName = thumbPrefix;
-
-				if(fileNamePrefix == thumbName || (isLocalized && fileNamePrefix == thumbPrefix))
-				{
-					f->thumbnails << itemPath + "/" + thumb;
-
-					// When there's no thumbnail set yet, pick first available
-					if(f->pixmapPath.isEmpty())
-						f->pixmapPath = itemPath + "/" + thumb;
-
-					// Localized thumbnail has precedence
-					if(isLocalized && thumbPrefix.right(2) == currentMetadataLang)
-					{
-						f->pixmapPath = itemPath + "/" + thumb;
-						// break; // do not break, we need to load all thumbnails for delete function to work
-					}
-				}
-			}
-
-			if(!f->pixmapPath.isEmpty())
-			{
-				f->pixmap = QPixmap(f->pixmapPath);
-
-				if(!f->pixmap.isNull())
-					emit thumbnailLoaded(f);
+				if(!f->thumbnail || thumb->language() == currentMetadataLang)
+					f->thumbnail = thumb;
 			}
 		}
+
+		if(f->thumbnail && f->thumbnail->isReady())
+			emit thumbnailLoaded(f);
 	}
 }
 
