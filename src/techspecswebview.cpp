@@ -22,10 +22,19 @@
 
 #include <QDialog>
 #include <QVBoxLayout>
+#include <QWebFrame>
+#include <QWebElementCollection>
+#include <QDebug>
 
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
         QWebView(parent)
 {
+	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
+}
+
+void TechSpecsWebView::setRootPath(QString path)
+{
+	m_rootPath = path;
 }
 
 TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
@@ -44,4 +53,29 @@ TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
 
 	popup->show();
 	return webview;
+}
+
+void TechSpecsWebView::pageLoaded(bool ok)
+{
+	if(url().scheme() != "file")
+		return;
+
+	QWebFrame *frame = page()->mainFrame();
+
+	QWebElementCollection collection = frame->findAllElements("* [href], * [src]");
+
+	foreach(QWebElement el, collection)
+	{
+		foreach(QString attr, el.attributeNames())
+		{
+			QString val = el.attribute(attr);
+
+			if(!val.startsWith('/'))
+				continue;
+
+			val.insert(0, m_rootPath);
+
+			el.setAttribute(attr, val);
+		}
+	}
 }

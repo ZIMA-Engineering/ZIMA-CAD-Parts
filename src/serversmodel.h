@@ -57,6 +57,7 @@ public:
 	QString translateDataSourceNameToPath(QString name);
 	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
 	bool hasErrors(BaseDataSource::Operation op);
+	Item *lastTechSpecRequest();
 
 public slots:
 	void refresh(Item* item);
@@ -89,7 +90,7 @@ private:
 	QIcon dirIcon, serverIcon;
 	QVector<BaseDataSource*> servers;
 	Item *rootItem;
-	Item *lastTechSpecRequest;
+	Item *m_lastTechSpecRequest;
 	QList<File*> downloadQueue;
 	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];
 	int dsDeleted;

@@ -28,6 +28,7 @@ class TechSpecsWebView : public QWebView
 	Q_OBJECT
 public:
 	explicit TechSpecsWebView(QWidget *parent = 0);
+	void setRootPath(QString path);
 	
 signals:
 	
@@ -35,6 +36,12 @@ public slots:
 
 protected:
 	TechSpecsWebView *createWindow(QWebPage::WebWindowType type);
+
+private slots:
+	void pageLoaded(bool ok);
+
+private:
+	QString m_rootPath;
 	
 };
 

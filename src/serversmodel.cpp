@@ -29,7 +29,7 @@ ServersModel::ServersModel(QObject *parent)
 	: QAbstractItemModel(parent)
 {
 	rootItem = new Item();
-	lastTechSpecRequest = 0;
+	m_lastTechSpecRequest = 0;
 
 //	ftpData = new FtpData(this);
 
@@ -223,6 +223,7 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 	//qDeleteAll(rootItem->children);
 	rootItem->children.clear();
 	servers = srv;
+	m_lastTechSpecRequest = 0;
 
 	foreach(BaseDataSource *s, servers)
 	{
@@ -353,7 +354,7 @@ void ServersModel::requestTechSpecs(Item *item)
 {
 	item->server->sendTechSpecUrl(item);
 
-	lastTechSpecRequest = item;
+	m_lastTechSpecRequest = item;
 }
 
 void ServersModel::loadItem(Item* item)
@@ -558,10 +559,10 @@ void ServersModel::retranslateMetadata(Item *item)
 		foreach(BaseDataSource *ds, servers)
 			ds->retranslate(lang);
 
-		if(lastTechSpecRequest)
+		if(m_lastTechSpecRequest)
 		{
-			lastTechSpecRequest->server->sendTechSpecUrl(lastTechSpecRequest);
-			lastTechSpecRequest->server->assignThumbnailsToFiles(lastTechSpecRequest);
+			m_lastTechSpecRequest->server->sendTechSpecUrl(m_lastTechSpecRequest);
+			m_lastTechSpecRequest->server->assignThumbnailsToFiles(m_lastTechSpecRequest);
 		}
 	}
 
@@ -722,6 +723,11 @@ QList<BaseDataSource::Error*> ServersModel::fileErrors(BaseDataSource::Operation
 bool ServersModel::hasErrors(BaseDataSource::Operation op)
 {
 	return !m_fileErrors[op].isEmpty();
+}
+
+Item* ServersModel::lastTechSpecRequest()
+{
+	return m_lastTechSpecRequest;
 }
 
 void ServersModel::catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err)

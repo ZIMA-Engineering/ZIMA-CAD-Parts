@@ -581,6 +581,11 @@ void MainWindow::allItemsLoaded()
 
 void MainWindow::loadTechSpec(QUrl url)
 {
+	Item *it = static_cast<ServersModel*>(ui->treeLeft->model())->lastTechSpecRequest();
+
+	if(it)
+		ui->techSpec->setRootPath(it->server->pathToDataRoot());
+
 	ui->techSpec->load(url);
 }
 
