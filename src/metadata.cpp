@@ -39,7 +39,8 @@ Metadata::Metadata(Item *item, QObject *parent)
 
 Metadata::~Metadata()
 {
-	emit includeRequireCancelled(m_item);
+	if(m_includeHash.size())
+		emit includeRequireCancelled(m_item);
 
 	delete metadata;
 }
@@ -204,7 +205,6 @@ void Metadata::provideInclude(Metadata *m, QString path)
 
 			if((inc & IncludeThumbnails) == IncludeThumbnails)
 				m_thumbItems << m->m_item;
-
 		}
 	}
 
