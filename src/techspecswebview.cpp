@@ -51,6 +51,7 @@ TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
 	if(type == QWebPage::WebModalDialog)
 		popup->setModal(true);
 
+	popup->setWindowFlags(popup->windowFlags() | Qt::WindowMinMaxButtonsHint);
 	popup->show();
 	return webview;
 }
