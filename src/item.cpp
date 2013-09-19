@@ -28,6 +28,13 @@ void File::setName(QString name)
 	detectFileType();
 }
 
+QString File::baseName()
+{
+	if(!m_baseName.isEmpty())
+		return m_baseName;
+	return name;
+}
+
 void File::detectFileType()
 {
 	type = File::UNDEFINED;
@@ -39,6 +46,13 @@ void File::detectFileType()
 		if(rx.exactMatch(name))
 		{
 			type = (File::FileTypes)i;
+
+			if(rx.captureCount() == 3)
+			{
+				m_baseName = rx.cap(2);
+				version = rx.cap(3).toInt();
+			}
+
 			break;
 		}
 	}
@@ -183,15 +197,15 @@ QString File::getRxForFileType(File::FileTypes type)
 	switch(type)
 	{
 	case File::PRT_PROE:
-		return "(^.+\\.prt\\.\\d+$)";
+		return "((^.+\\.prt)\\.(\\d+)$)";
 	case File::ASM:
-		return "(^.+\\.asm\\.\\d+$)";
+		return "((^.+\\.asm)\\.(\\d+)$)";
 	case File::DRW:
-		return "(^.+\\.drw\\.\\d+$)";
+		return "((^.+\\.drw)\\.(\\d+)$)";
 	case File::FRM:
-		return "(^.+\\.frm\\.\\d+$)";
+		return "((^.+\\.frm)\\.(\\d+)$)";
 	case File::NEU_PROE:
-		return "(^.+\\.neu\\.\\d+$)";
+		return "((^.+\\.neu)\\.(\\d+)$)";
 	case File::CATPART:
 		return "(^.+\\.catpart$)";
 	case File::CATPRODUCT:

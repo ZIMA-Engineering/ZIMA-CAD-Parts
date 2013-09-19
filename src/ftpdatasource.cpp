@@ -502,6 +502,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 		}
 
 		assignThumbnailsToFiles(ftpCurrentItem);
+		determineFileVersions(ftpCurrentItem);
 
 		// Start browsing next folder in dirsToList
 		if(!hasTechSpecDir && partPicTasks.isEmpty())

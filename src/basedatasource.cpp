@@ -84,6 +84,25 @@ void BaseDataSource::assignThumbnailsToFiles(Item *item, QList<Thumbnail*> thumb
 	}
 }
 
+void BaseDataSource::determineFileVersions(Item *item)
+{
+	foreach(File *f, item->files)
+	{
+		File *newest = f;
+
+		foreach(File *g, item->files)
+		{
+			if(f->baseName() != g->baseName())
+				continue;
+
+			if(g->version > newest->version)
+				newest = g;
+		}
+
+		newest->newestVersion = true;
+	}
+}
+
 void BaseDataSource::sendTechSpecUrl(Item* item)
 {
 	QStringList filters;

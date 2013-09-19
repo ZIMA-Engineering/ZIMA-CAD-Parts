@@ -91,6 +91,7 @@ public slots:
 	virtual void loadSettings(QSettings& settings);
 	virtual void deleteDownloadQueue();
 	void assignThumbnailsToFiles(Item *item, QList<Thumbnail*> thumbnails = QList<Thumbnail*>());
+	void determineFileVersions(Item *item);
 	void retranslate(QString lang = QString());
 	void saveSettings(QSettings& settings);
 	virtual void assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);

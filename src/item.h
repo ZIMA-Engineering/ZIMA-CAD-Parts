@@ -78,8 +78,9 @@ struct File
 		UNDEFINED
 	};
 
-	File():openFtpFile(0),thumbnail(0),isChecked(false),type(UNDEFINED),bytesDone(0){}
+	File():openFtpFile(0),thumbnail(0),isChecked(false),type(UNDEFINED),bytesDone(0),version(0),newestVersion(false){}
 	void setName(QString name);
+	QString baseName();
 	void detectFileType();
 	QPixmap icon();
 	static QString getInternalNameForFileType(FileTypes type);
@@ -87,6 +88,7 @@ struct File
 	static QString getRxForFileType(FileTypes type);
 
 	Item* parentItem;
+	QString m_baseName; // name without version
 	QString name;
 	QString path;
 	QString targetPath;
@@ -98,6 +100,8 @@ struct File
 	FileTypes type;
 	qint64 bytesDone;
 	qint64 size;
+	int version;
+	bool newestVersion;
 
 private:
 	QPixmap m_icon;

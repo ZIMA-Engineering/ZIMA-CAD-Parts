@@ -43,14 +43,7 @@ public:
 	void accept();
 	
 private:
-	struct GroupCheckBox
-	{
-		QGroupBox *groupBox;
-		QList<QCheckBox*> checkBoxes;
-	};
-
 	Ui::FiltersDialog *ui;
-	QList<GroupCheckBox*> groups;
 };
 
 #endif // FILTERSDIALOG_H

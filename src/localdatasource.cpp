@@ -246,6 +246,7 @@ void LocalDataSource::loadDirectory(Item* item)
 //	}
 
 	assignThumbnailsToFiles(item);
+	determineFileVersions(item);
 
 	emit itemLoaded(item);
 }

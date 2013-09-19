@@ -41,8 +41,10 @@
 #include "item.h"
 #include "zimautils.h"
 #include "errordialog.h"
+#include "filefilters/extensionfilter.h"
+#include "filefilters/versionfilter.h"
 
-QList<MainWindow::FilterGroup> MainWindow::filterGroups;
+QList<FilterGroup> MainWindow::filterGroups;
 QSettings * MainWindow::settings;
 QString MainWindow::currentMetadataLang;
 
@@ -160,58 +162,59 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), fm, SLOT(setThumbWidth(int)));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(adjustThumbColumnWidth(int)));
 
-	proxy = new QSortFilterProxyModel(this);
+	proxy = new FileFilterModel(this);
 	proxy->setSourceModel(fm);
 
 	filterGroups << FilterGroup("ProE", "Pro/Engineer");
-	filterGroups.last().filters
-			<< Filter(File::PRT_PROE)
-			<< Filter(File::ASM)
-			<< Filter(File::DRW)
-			<< Filter(File::FRM)
-			<< Filter(File::NEU_PROE);
+	filterGroups.last()
+			<< new ExtensionFilter(File::PRT_PROE)
+			<< new ExtensionFilter(File::ASM)
+			<< new ExtensionFilter(File::DRW)
+			<< new ExtensionFilter(File::FRM)
+			<< new ExtensionFilter(File::NEU_PROE)
+			<< new VersionFilter();
 
 	filterGroups << FilterGroup("CATIA", "CATIA");
-	filterGroups.last().filters
-			<< Filter(File::CATPART)
-			<< Filter(File::CATPRODUCT)
-			<< Filter(File::CATDRAWING);
+	filterGroups.last()
+			<< new ExtensionFilter(File::CATPART)
+			<< new ExtensionFilter(File::CATPRODUCT)
+			<< new ExtensionFilter(File::CATDRAWING);
 
 	filterGroups << FilterGroup("NX", "NX (UGS)");
-	filterGroups.last().filters
-			<< Filter(File::PRT_NX);
+	filterGroups.last()
+			<< new ExtensionFilter(File::PRT_NX);
 
 	filterGroups << FilterGroup("SolidWorks", "SolidWorks");
 	filterGroups.last().filters
-			<< Filter(File::SLDPRT)
-			<< Filter(File::SLDASM)
-			<< Filter(File::SLDDRW);
+			<< new ExtensionFilter(File::SLDPRT)
+			<< new ExtensionFilter(File::SLDASM)
+			<< new ExtensionFilter(File::SLDDRW);
 
 	filterGroups << FilterGroup("SolidEdge", "Solid Edge");
-	filterGroups.last().filters
-			<< Filter(File::PAR)
-			<< Filter(File::PSM)
-			<< Filter(File::ASM)
-			<< Filter(File::DFT);
+	filterGroups.last()
+			<< new ExtensionFilter(File::PAR)
+			<< new ExtensionFilter(File::PSM)
+			<< new ExtensionFilter(File::ASM)
+			<< new ExtensionFilter(File::DFT);
 
 	filterGroups << FilterGroup("Invertor", "INVERTOR");
-	filterGroups.last().filters
-			<< Filter(File::IPT)
-			<< Filter(File::IAM)
-			<< Filter(File::IDW);
+	filterGroups.last()
+			<< new ExtensionFilter(File::IPT)
+			<< new ExtensionFilter(File::IAM)
+			<< new ExtensionFilter(File::IDW);
 
 	filterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
-	filterGroups.last().filters
-			<< Filter(File::STEP)
-			<< Filter(File::IGES)
-			<< Filter(File::DWG)
-			<< Filter(File::DXF);
+	filterGroups.last()
+			<< new ExtensionFilter(File::STEP)
+			<< new ExtensionFilter(File::IGES)
+			<< new ExtensionFilter(File::DWG)
+			<< new ExtensionFilter(File::DXF);
 
 	filterGroups << FilterGroup("NonCAD", "NonCAD");
-	filterGroups.last().filters
-			<< Filter(File::STL)
-			<< Filter(File::BLEND)
-			<< Filter(File::PDF);
+	filterGroups.last()
+			<< new ExtensionFilter(File::STL)
+			<< new ExtensionFilter(File::BLEND)
+			<< new ExtensionFilter(File::PDF);
 
 	loadFilters();
 	rebuildFilters();
@@ -682,8 +685,19 @@ void MainWindow::rebuildFilters()
 
 		for(int j = 0; j < filterCnt; j++)
 		{
-			if(filterGroups[i].filters[j].enabled)
-				expressions << File::getRxForFileType(filterGroups[i].filters[j].type);
+			switch(filterGroups[i].filters[j]->filterType())
+			{
+			case FileFilter::Extension:
+				if(filterGroups[i].filters[j]->enabled)
+					expressions << File::getRxForFileType(filterGroups[i].filters[j]->type);
+				break;
+
+			case FileFilter::Version:
+				proxy->setShowProeVersions(filterGroups[i].filters[j]->enabled);
+				break;
+			}
+
+
 		}
 	}
 
@@ -1085,9 +1099,7 @@ void MainWindow::loadFilters()
 		int filterCnt = filterGroups[i].filters.count();
 
 		for(int j = 0; j < filterCnt; j++)
-		{
-			filterGroups[i].filters[j].enabled = settings->value(File::getInternalNameForFileType(filterGroups[i].filters[j].type), true).toBool();
-		}
+			filterGroups[i].filters[j]->load(settings);
 
 		settings->endGroup();
 	}
@@ -1109,9 +1121,7 @@ void MainWindow::saveFilters()
 		int filterCnt = filterGroups[i].filters.count();
 
 		for(int j = 0; j < filterCnt; j++)
-		{
-			settings->setValue(File::getInternalNameForFileType(filterGroups[i].filters[j].type), filterGroups[i].filters[j].enabled);
-		}
+			filterGroups[i].filters[j]->save(settings);
 
 		settings->endGroup();
 	}

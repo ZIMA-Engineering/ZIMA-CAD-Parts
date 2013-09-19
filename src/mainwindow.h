@@ -26,7 +26,6 @@
 #include <QModelIndex>
 #include <QLabel>
 #include <QUrl>
-#include <QSortFilterProxyModel>
 #include <QThread>
 #include <QTranslator>
 #include <QButtonGroup>
@@ -39,6 +38,8 @@
 #include "settingsdialog.h"
 #include "filemodel.h"
 #include "zima-cad-parts.h"
+#include "filefiltermodel.h"
+#include "filefilters/filtergroup.h"
 
 #ifdef INCLUDE_PRODUCT_VIEW
 #include "extensions/productview/productview.h"
@@ -63,24 +64,6 @@ public:
 	static QString getCurrentLanguageCode();
 	static QString getCurrentMetadataLanguageCode();
 
-	struct Filter
-	{
-		Filter(File::FileTypes type) : type(type){}
-
-		File::FileTypes type;
-		bool enabled;
-	};
-
-	struct FilterGroup
-	{
-		FilterGroup(QString internalName, QString label) : internalName(internalName), label(label), enabled(0){}
-
-		QString label;
-		QString internalName;
-		QList<Filter> filters;
-		bool enabled;
-	};
-
 	static QList<FilterGroup> filterGroups;
 
 private:
@@ -100,7 +83,7 @@ private:
 	QLabel              *statusState, *statusDir;
 	FtpDataSource           *currentServer;
 	FileModel *fm;
-	QSortFilterProxyModel *proxy;
+	FileFilterModel *proxy;
 	QTranslator *translator;
 	bool downloading;
 	QButtonGroup *langButtonGroup;

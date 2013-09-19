@@ -26,7 +26,12 @@ SOURCES += zima-cad-parts.cpp \
     src/zimautils.cpp \
     src/errordialog.cpp \
     src/treeautodescent.cpp \
-    src/thumbnail.cpp
+    src/thumbnail.cpp \
+    src/filefiltermodel.cpp \
+    src/filefilters/filefilter.cpp \
+    src/filefilters/extensionfilter.cpp \
+    src/filefilters/filtergroup.cpp \
+    src/filefilters/versionfilter.cpp
 HEADERS += mainwindow.h \
     settingsdialog.h \
     serversmodel.h \
@@ -47,7 +52,12 @@ HEADERS += mainwindow.h \
     src/zimautils.h \
     src/errordialog.h \
     src/treeautodescent.h \
-    src/thumbnail.h
+    src/thumbnail.h \
+    src/filefiltermodel.h \
+    src/filefilters/filefilter.h \
+    src/filefilters/extensionfilter.h \
+    src/filefilters/filtergroup.h \
+    src/filefilters/versionfilter.h
 FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui \
