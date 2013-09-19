@@ -170,6 +170,7 @@ public slots:
 	void stopDownload();
 	void loadAboutPage();
 	void filesDeleted();
+	void selectDirTreePath();
 
 private slots:
 	void openWorkingDirectory();

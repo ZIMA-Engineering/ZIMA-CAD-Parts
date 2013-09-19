@@ -298,6 +298,20 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	loadAboutPage();
 	goToWorkingDirectory();
 
+	QAction *act = new QAction(this);
+	act->setShortcut(QKeySequence("Ctrl+Q"));
+
+	connect(act, SIGNAL(triggered()), qApp, SLOT(quit()));
+
+	addAction(act);
+
+	act = new QAction(this);
+	act->setShortcut(QKeySequence("Ctrl+L"));
+
+	connect(act, SIGNAL(triggered()), this, SLOT(selectDirTreePath()));
+
+	addAction(act);
+
 #ifdef INCLUDE_PRODUCT_VIEW
 	showOrHideProductView();
 #endif // INCLUDE_PRODUCT_VIEW
@@ -727,6 +741,12 @@ void MainWindow::filesDeleted()
 
 		ui->tree->reset();
 	}
+}
+
+void MainWindow::selectDirTreePath()
+{
+	ui->dirTreePathLineEdit->selectAll();
+	ui->dirTreePathLineEdit->setFocus();
 }
 
 void MainWindow::openWorkingDirectory()
