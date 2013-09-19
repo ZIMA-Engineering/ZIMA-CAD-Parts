@@ -114,6 +114,7 @@ signals:
 	void statusUpdated(QString);
 	void techSpecAvailable(QUrl);
 	void metadataInclude(Item *item, QString path);
+	void metadataIncludeCancelled(Item *item);
 	void metadataReady(Item*);
 	void errorOccured(QString);
 	void techSpecsIndexAlreadyExists(Item*);

@@ -73,6 +73,7 @@ private:
 
 signals:
 	void includeRequired(Item *item, QString path);
+	void includeRequireCancelled(Item *item);
 	void ready(Item *item);
 	void retranslated();
 };

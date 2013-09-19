@@ -881,6 +881,10 @@ void MainWindow::descentTo()
 
 void MainWindow::autoDescentProgress(const QModelIndex &index)
 {
+	Item *item = static_cast<Item*>(index.internalPointer());
+
+	qDebug() << "Progress expand" << index << item->name << item->parent->name;
+
 	lastFoundIndex = index;
 	ui->treeLeft->expand(index);
 }
@@ -888,7 +892,7 @@ void MainWindow::autoDescentProgress(const QModelIndex &index)
 void MainWindow::autoDescendComplete(const QModelIndex &index)
 {
 	ui->treeLeft->expand(index);
-	ui->treeLeft->setCurrentIndex(index);
+//	ui->treeLeft->setCurrentIndex(index);
 	setPartsIndex(index);
 	static_cast<ServersModel*>(ui->treeLeft->model())->requestTechSpecs(index);
 	trackHistory(index);

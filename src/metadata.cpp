@@ -39,6 +39,8 @@ Metadata::Metadata(Item *item, QObject *parent)
 
 Metadata::~Metadata()
 {
+	emit includeRequireCancelled(m_item);
+
 	delete metadata;
 }
 

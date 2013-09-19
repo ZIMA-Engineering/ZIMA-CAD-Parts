@@ -141,6 +141,7 @@ void BaseDataSource::createMetadata(Item *item)
 
 	connect(item->metadata, SIGNAL(ready(Item*)), this, SIGNAL(metadataReady(Item*)));
 	connect(item->metadata, SIGNAL(includeRequired(Item*,QString)), this, SIGNAL(metadataInclude(Item*,QString)));
+	connect(item->metadata, SIGNAL(includeRequireCancelled(Item*)), this, SIGNAL(metadataIncludeCancelled(Item*)));
 
 	item->metadata->init();
 }

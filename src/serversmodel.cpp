@@ -246,6 +246,7 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 		connect(i->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
 		connect(i->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
 		connect(i->server, SIGNAL(metadataInclude(Item*,QString)), this, SLOT(metadataInclude(Item*,QString)));
+		connect(i->server, SIGNAL(metadataIncludeCancelled(Item*)), this, SLOT(metadataIncludeCancel(Item*)));
 		connect(i->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
 		connect(i->server, SIGNAL(itemInserted(Item*)), this, SLOT(newItem(Item*)));
 		connect(i->server, SIGNAL(updateAvailable(Item*)), this, SLOT(itemUpdated(Item*)));
@@ -624,7 +625,9 @@ void ServersModel::forwardAutoDescentCompleted(TreeAutoDescent *descent, Item *i
 
 	if(metadataIncludeHash.contains(descent))
 	{
-		metadataIncludeHash[descent]->metadata->provideInclude(item->metadata);
+		if(metadataIncludeHash[descent])
+			metadataIncludeHash[descent]->metadata->provideInclude(item->metadata);
+
 		metadataIncludeHash.remove(descent);
 
 	} else
@@ -639,7 +642,9 @@ void ServersModel::forwardAutoDescentNotFound(TreeAutoDescent *descent)
 
 	if(metadataIncludeHash.contains(descent))
 	{
-		metadataIncludeHash[descent]->metadata->provideInclude(0, descent->path());
+		if(metadataIncludeHash[descent])
+			metadataIncludeHash[descent]->metadata->provideInclude(0, descent->path());
+
 		metadataIncludeHash.remove(descent);
 
 	} else
@@ -651,6 +656,19 @@ void ServersModel::forwardAutoDescentNotFound(TreeAutoDescent *descent)
 void ServersModel::metadataInclude(Item *item, QString path)
 {
 	descentTo(path, item);
+}
+
+void ServersModel::metadataIncludeCancel(Item *item)
+{
+	QHashIterator<TreeAutoDescent*, Item*> i(metadataIncludeHash);
+
+	while(i.hasNext())
+	{
+	    i.next();
+
+	    if(i.value() == item)
+		    metadataIncludeHash[i.key()] = 0;
+	}
 }
 
 void ServersModel::abort()

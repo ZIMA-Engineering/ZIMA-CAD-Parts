@@ -106,6 +106,7 @@ private slots:
 	void forwardAutoDescentCompleted(TreeAutoDescent *descent, Item *item);
 	void forwardAutoDescentNotFound(TreeAutoDescent *descent);
 	void metadataInclude(Item *item, QString path);
+	void metadataIncludeCancel(Item *item);
 
 signals:
 	void loadingItem(Item*);
