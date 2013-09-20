@@ -26,15 +26,33 @@
 #include <QWebElementCollection>
 #include <QDebug>
 
+#include "mainwindow.h"
+
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
         QWebView(parent)
 {
+	loadAboutPage();
+
+	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
 }
 
 void TechSpecsWebView::setRootPath(QString path)
 {
 	m_rootPath = path;
+}
+
+void TechSpecsWebView::loadAboutPage()
+{
+	QString url = ":/data/zima-cad-parts%1.html";
+	QString localized = url.arg("_" + MainWindow::getCurrentLanguageCode());
+	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
+
+	QFile f(filename);
+	f.open(QIODevice::ReadOnly);
+	QTextStream stream(&f);
+
+	setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
 
 TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
@@ -54,6 +72,15 @@ TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
 	popup->setWindowFlags(popup->windowFlags() | Qt::WindowMinMaxButtonsHint);
 	popup->show();
 	return webview;
+}
+
+void TechSpecsWebView::urlChange(const QUrl &url)
+{
+	if(this->url() == url)
+		return;
+
+	if(url.scheme() == "about" || url.scheme() == "ZIMA-CAD-Parts")
+		loadAboutPage();
 }
 
 void TechSpecsWebView::pageLoaded(bool ok)

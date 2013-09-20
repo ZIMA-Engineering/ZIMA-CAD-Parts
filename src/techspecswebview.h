@@ -33,12 +33,14 @@ public:
 signals:
 	
 public slots:
+	void loadAboutPage();
 
 protected:
 	TechSpecsWebView *createWindow(QWebPage::WebWindowType type);
 
 private slots:
 	void pageLoaded(bool ok);
+	void urlChange(const QUrl &url);
 
 private:
 	QString m_rootPath;

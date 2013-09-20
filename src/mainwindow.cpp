@@ -298,7 +298,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
-	loadAboutPage();
 	goToWorkingDirectory();
 
 	QAction *act = new QAction(this);
@@ -413,7 +412,7 @@ void MainWindow::changeEvent(QEvent *event)
 		ui->retranslateUi(this);
 
 		if( ui->techSpec->url().path().startsWith("/data/zima-cad-parts") )
-			loadAboutPage();
+			ui->techSpec->loadAboutPage();
 	} else QMainWindow::changeEvent(event);
 }
 
@@ -510,7 +509,7 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 
 		loadZimaUtils();
 
-		loadAboutPage();
+		ui->techSpec->loadAboutPage();
 
 		allItemsLoaded();
 
@@ -707,23 +706,6 @@ void MainWindow::rebuildFilters()
 	proxy->setFilterRegExp(rx);
 }
 
-void MainWindow::loadAboutPage()
-{
-	QString url = ":/data/zima-cad-parts%1.html";
-	QString locale = settings->value("Language").toString();
-	QString localized = url.arg("_" + (locale.isEmpty() || locale == "detect" ? QLocale::system().name() : locale));
-	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
-
-	QFile f(filename);
-	f.open(QIODevice::ReadOnly);
-	QTextStream stream(&f);
-
-	if(techSpecToolBar)
-		urlBar->setText("ZIMA-CAD-Parts:about");
-
-	ui->techSpec->setHtml( stream.readAll().replace("%VERSION%", VERSION) );
-}
-
 void MainWindow::filesDeleted()
 {
 	ServersModel *sm = static_cast<ServersModel*>(ui->treeLeft->model());
@@ -799,7 +781,7 @@ void MainWindow::goToUrl()
 
 	if(urlBar->text() == "ZIMA-CAD-Parts:about")
 	{
-		loadAboutPage();
+		ui->techSpec->loadAboutPage();
 		return;
 	}
 

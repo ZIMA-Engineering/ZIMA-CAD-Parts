@@ -151,7 +151,6 @@ public slots:
 	void toggleDownload();
 	void resumeDownload();
 	void stopDownload();
-	void loadAboutPage();
 	void filesDeleted();
 	void selectDirTreePath();
 
