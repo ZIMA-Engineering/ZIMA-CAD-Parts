@@ -577,8 +577,6 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 			}
 		}
 
-		delete thumb;
-
 		if(partPicTasks.isEmpty() && techSpecFiles.isEmpty())
 			ftpListItemInQueue();
 	}/* else if (partTasks.contains(id)) //finished downloading a .db file
