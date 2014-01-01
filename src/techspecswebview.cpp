@@ -24,9 +24,11 @@
 #include <QVBoxLayout>
 #include <QWebFrame>
 #include <QWebElementCollection>
+#include <QRegExp>
 #include <QDebug>
 
 #include "mainwindow.h"
+#include "datatransfer.h"
 
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
         QWebView(parent)
@@ -35,11 +37,19 @@ TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
 
 	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
+
+	page()->setForwardUnsupportedContent(true);
+	connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
 }
 
 void TechSpecsWebView::setRootPath(QString path)
 {
 	m_rootPath = path;
+}
+
+void TechSpecsWebView::setDownloadDirectory(QString path)
+{
+	m_dlDir = path;
 }
 
 void TechSpecsWebView::loadAboutPage()
@@ -106,4 +116,47 @@ void TechSpecsWebView::pageLoaded(bool ok)
 			el.setAttribute(attr, val);
 		}
 	}
+}
+
+void TechSpecsWebView::downloadFile(QNetworkReply *reply)
+{
+	qDebug() << reply->url();
+	qDebug() << reply->rawHeaderList();
+	qDebug() << reply->rawHeader("Content-Disposition");
+
+	QString fileName = reply->url().path().split('/').last();
+
+	if(reply->hasRawHeader("Content-Disposition"))
+	{
+		QStringList patterns;
+		patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
+
+		QRegExp rx;
+
+		foreach(QString pattern, patterns)
+		{
+			rx.setPattern(pattern);
+
+			if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
+			{
+				fileName = rx.cap(1).replace('\\', '/').split('/').last();
+
+				if(fileName.endsWith(';'))
+					fileName.chop(1);
+
+				break;
+			}
+		}
+	}
+
+	QFile *f = new QFile(m_dlDir + "/" + fileName);
+
+	if(!f->open(QIODevice::WriteOnly))
+	{
+		qWarning() << "Failed to open file to download" << f->fileName();
+		delete f;
+		return;
+	}
+
+	new DataTransfer(reply, f);
 }

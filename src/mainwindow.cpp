@@ -459,6 +459,7 @@ void MainWindow::setWorkingDirectoryDialog()
 		settings->setValue("HomeDir", "");
 		settings->setValue("WorkingDir", str);
 
+		ui->techSpec->setDownloadDirectory(str);
 		ui->editDir->setText(str);
 	}
 }
@@ -982,6 +983,7 @@ void MainWindow::openDirTreePath()
 void MainWindow::loadSettings()
 {
 	ui->editDir->setText(settings->value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
+	ui->techSpec->setDownloadDirectory(ui->editDir->text());
 
 	loadZimaUtils();
 }
@@ -1172,6 +1174,8 @@ void MainWindow::setWorkingDirectory()
 
 	settings->setValue("HomeDir", it->server->name() + it->pathRelativeToDataSource());
 	settings->setValue("WorkingDir", it->path);
+
+	ui->techSpec->setDownloadDirectory(it->path);
 
 	ui->editDir->setText(it->path);
 }
