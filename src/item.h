@@ -32,10 +32,12 @@
 #include "basedatasource.h"
 #include "metadata.h"
 #include "thumbnail.h"
+#include "downloadmodel.h"
 
 class BaseDataSource;
 class ServersModel;
 class Item;
+class DataTransfer;
 
 struct File
 {
@@ -78,7 +80,7 @@ struct File
 		UNDEFINED
 	};
 
-	File():openFtpFile(0),thumbnail(0),isChecked(false),type(UNDEFINED),bytesDone(0),version(0),newestVersion(false){}
+	File():openFtpFile(0),thumbnail(0),isChecked(false),type(UNDEFINED),bytesDone(0),version(0),newestVersion(false),transfer(0){}
 	void setName(QString name);
 	QString baseName();
 	void detectFileType();
@@ -102,6 +104,8 @@ struct File
 	qint64 size;
 	int version;
 	bool newestVersion;
+	DataTransfer *transfer;
+	DownloadModel::TransferHandlerType transferHandler;
 
 private:
 	QPixmap m_icon;

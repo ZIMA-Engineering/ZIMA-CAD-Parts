@@ -52,6 +52,7 @@ class MainWindowClass;
 
 class QFtp;
 class FtpDataSource;
+class DownloadModel;
 
 class MainWindow : public QMainWindow
 {
@@ -91,6 +92,9 @@ private:
 	QStringList langs;
 	QList<QPushButton*> langFlags;
 	QSignalMapper *dirTreeSignalMapper;
+
+	// Models
+	DownloadModel *downloadModel;
 
 	// History
 	QList<QModelIndex> history;

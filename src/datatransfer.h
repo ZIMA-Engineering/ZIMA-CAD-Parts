@@ -2,25 +2,39 @@
 #define DATATRANSFER_H
 
 #include <QObject>
-#include <QIODevice>
+#include <QNetworkReply>
+
+struct File;
 
 class DataTransfer : public QObject
 {
 	Q_OBJECT
 public:
-	explicit DataTransfer(QIODevice *src, QIODevice *dst, QObject *parent = 0);
+	explicit DataTransfer(QNetworkReply *src, File *dst, QObject *parent = 0);
+	~DataTransfer();
+	bool initiate() const;
+	void setSource(QNetworkReply *src);
+	void setDeleteSrc(bool d);
+	void setDeleteDst(bool d);
+
+public slots:
+	void cancel();
 
 signals:
-	void done();
+	void progress(File *f);
+	void done(File *f);
 
 private slots:
 	void onReadingChannelClosed();
 	void onReadyRead();
+	void onMetadataChange();
 
 private:
-	QIODevice *src;
-	QIODevice *dst;
-
+	QNetworkReply *src;
+	File *dst;
+	bool deleteSrc;
+	bool deleteDst;
+	bool canceled;
 };
 
 #endif // DATATRANSFER_H

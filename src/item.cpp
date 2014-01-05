@@ -21,6 +21,8 @@
 #include "item.h"
 #include <QDebug>
 
+#include "datatransfer.h"
+
 void File::setName(QString name)
 {
 	this->name = name;

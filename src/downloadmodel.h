@@ -25,7 +25,10 @@
 #include <QItemDelegate>
 #include <QList>
 #include <QSettings>
-#include "item.h"
+
+class DataTransfer;
+class TransferHandler;
+struct File;
 
 class DownloadDelegate : public QItemDelegate
 {
@@ -38,6 +41,12 @@ class DownloadModel : public QAbstractItemModel
 {
 	Q_OBJECT
 public:
+	enum TransferHandlerType {
+		ServersModel,
+		TechSpec,
+		None
+	};
+
 	explicit DownloadModel(QObject *parent = 0);
 
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -46,17 +55,29 @@ public:
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+	QList<File*> files(TransferHandlerType type = None);
+	bool isEmpty() const;
+	bool isDownloading() const;
+	void registerHandler(TransferHandlerType type, TransferHandler *handler);
 
 signals:
 
 public slots:
-	void setQueue(QList<File*> *q);
+	void enqueue(File *f);
+	void enqueue(QList<File*> list);
+	void clear();
 	void fileChanged(File *file);
 	void fileDownloaded(File *file);
-	void queueChanged();
+	void stop();
+	void resume();
+
+private slots:
+
 
 private:
-	QList<File*> *queue;
+	QList<File*> queue;
+	QHash<TransferHandlerType, TransferHandler*> m_handlers;
+	bool m_downloading;
 
 };
 

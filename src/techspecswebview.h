@@ -23,14 +23,22 @@
 
 #include <QWebView>
 #include <QNetworkReply>
+#include "transferhandler.h"
 
-class TechSpecsWebView : public QWebView
+class DownloadModel;
+struct File;
+
+class TechSpecsWebView : public QWebView, public TransferHandler
 {
 	Q_OBJECT
 public:
 	explicit TechSpecsWebView(QWidget *parent = 0);
 	void setRootPath(QString path);
 	void setDownloadDirectory(QString path);
+	void setDownloadQueue(DownloadModel *queue);
+	void stopDownload();
+	void resumeDownload();
+	void clearQueue();
 	
 signals:
 	
@@ -43,11 +51,12 @@ protected:
 private slots:
 	void pageLoaded(bool ok);
 	void urlChange(const QUrl &url);
-	void downloadFile(QNetworkReply *reply);
+	void downloadFile(QNetworkReply *reply, File *f = 0);
 
 private:
 	QString m_rootPath;
 	QString m_dlDir;
+	DownloadModel *downloadQueue;
 	
 };
 

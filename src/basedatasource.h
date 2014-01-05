@@ -101,6 +101,7 @@ protected:
 	void createMetadata(Item *item);
 
 	QString currentMetadataLang;
+
 signals:
 	//void partDownloaded(Item*);
 	void itemInserted(Item*);

@@ -144,7 +144,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(sm, SIGNAL(autoDescentNotFound()), this, SLOT(autoDescentNotFound()));
 	connect(sm, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SLOT(techSpecsIndexOverwrite(Item*)));
 	connect(sm, SIGNAL(partsIndexAlreadyExists(Item*)), this, SLOT(partsIndexOverwrite(Item*)));
-	connect(ui->deleteQueueBtn, SIGNAL(clicked()), sm, SLOT(deleteDownloadQueue()));
 
 	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
 	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
@@ -235,15 +234,17 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(sm, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 	connect(sm, SIGNAL(filesDeleted()), this, SLOT(filesDeleted()));
 
-	DownloadModel *dm = new DownloadModel(this);
+	downloadModel = new DownloadModel(this);
 
-	ui->downloadTreeView->setModel(dm);
+	connect(ui->deleteQueueBtn, SIGNAL(clicked()), downloadModel, SLOT(clear()));
+
+	downloadModel->registerHandler(DownloadModel::ServersModel, sm);
+	downloadModel->registerHandler(DownloadModel::TechSpec, ui->techSpec);
+
+	ui->downloadTreeView->setModel(downloadModel);
 	ui->downloadTreeView->setItemDelegate(new DownloadDelegate(this));
 
-	connect(sm, SIGNAL(newDownloadQueue(QList<File*>*)), dm, SLOT(setQueue(QList<File*>*)));
-	connect(sm, SIGNAL(fileProgress(File*)), dm, SLOT(fileChanged(File*)));
-	connect(sm, SIGNAL(fileDownloaded(File*)), dm, SLOT(fileDownloaded(File*)));
-	connect(sm, SIGNAL(queueChanged()), dm, SLOT(queueChanged()));
+	sm->setDownloadQueue(downloadModel);
 
 	if( sm->loadQueue(settings) )
 		ui->startStopDownloadBtn->setText(tr("Resume"));
@@ -295,6 +296,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	QAction *copyAction = ui->techSpec->pageAction(QWebPage::Copy);
 	copyAction->setShortcut(QKeySequence::Copy);
 	ui->techSpec->addAction(copyAction);
+
+	ui->techSpec->setDownloadQueue(downloadModel);
 
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
@@ -639,21 +642,24 @@ void MainWindow::filesDownloaded()
 
 void MainWindow::resumeDownload()
 {
-	static_cast<ServersModel*>( ui->treeLeft->model() )->resumeDownload();
+	downloadModel->resume();
 	ui->startStopDownloadBtn->setText(tr("Stop"));
 	downloading = true;
 }
 
 void MainWindow::stopDownload()
 {
-	static_cast<ServersModel*>( ui->treeLeft->model() )->abort();
+	downloadModel->stop();
 	ui->startStopDownloadBtn->setText(tr("Resume"));
 	downloading = false;
 }
 
 void MainWindow::toggleDownload()
 {
-	if( downloading )
+	if(downloadModel->isEmpty())
+		return;
+
+	if( downloadModel->isDownloading() )
 		stopDownload();
 	else
 		resumeDownload();

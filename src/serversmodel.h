@@ -30,8 +30,11 @@
 #include "item.h"
 #include "basedatasource.h"
 #include "treeautodescent.h"
+#include "transferhandler.h"
 
-class ServersModel : public QAbstractItemModel
+class DownloadModel;
+
+class ServersModel : public QAbstractItemModel, public TransferHandler
 {
 	Q_OBJECT
 
@@ -53,11 +56,14 @@ public:
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	//---
+	void setDownloadQueue(DownloadModel *queue);
 	void setServerData(QVector<BaseDataSource*>);
 	QString translateDataSourceNameToPath(QString name);
 	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
 	bool hasErrors(BaseDataSource::Operation op);
 	Item *lastTechSpecRequest();
+	void stopDownload();
+	void clearQueue();
 
 public slots:
 	void refresh(Item* item);
@@ -91,11 +97,11 @@ private:
 	QVector<BaseDataSource*> servers;
 	Item *rootItem;
 	Item *m_lastTechSpecRequest;
-	QList<File*> downloadQueue;
 	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];
 	int dsDeleted;
 	QList<TreeAutoDescent*> autoDescents;
 	QHash<TreeAutoDescent*, Item*> metadataIncludeHash;
+	DownloadModel *downloadQueue;
 
 private slots:
 	void dataSourceFinishedDownloading();
@@ -119,7 +125,6 @@ signals:
 	void fileProgress(File*);
 	void fileDownloaded(File*);
 	void filesDownloaded();
-	void newDownloadQueue(QList<File*>*);
 	void queueChanged();
 	void autoDescentProgress(const QModelIndex&);
 	void autoDescentCompleted(const QModelIndex&);

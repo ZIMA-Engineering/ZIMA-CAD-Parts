@@ -32,8 +32,8 @@ SOURCES += zima-cad-parts.cpp \
     src/filefilters/extensionfilter.cpp \
     src/filefilters/filtergroup.cpp \
     src/filefilters/versionfilter.cpp \
-    src/webdownloaddialog.cpp \
-    src/datatransfer.cpp
+    src/datatransfer.cpp \
+    src/transferhandler.cpp
 HEADERS += mainwindow.h \
     settingsdialog.h \
     serversmodel.h \
@@ -60,16 +60,15 @@ HEADERS += mainwindow.h \
     src/filefilters/extensionfilter.h \
     src/filefilters/filtergroup.h \
     src/filefilters/versionfilter.h \
-    src/webdownloaddialog.h \
-    src/datatransfer.h
+    src/datatransfer.h \
+    src/transferhandler.h
 FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui \
     src/extensions/productview/productviewsettings.ui \
     src/extensions/productview/productview.ui \
     src/filtersdialog.ui \
-    src/errordialog.ui \
-    src/webdownloaddialog.ui
+    src/errordialog.ui
 RESOURCES += zima-cad-parts.qrc
 
 OTHER_FILES += \

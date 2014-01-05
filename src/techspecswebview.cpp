@@ -29,6 +29,7 @@
 
 #include "mainwindow.h"
 #include "datatransfer.h"
+#include "downloadmodel.h"
 
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
         QWebView(parent)
@@ -50,6 +51,36 @@ void TechSpecsWebView::setRootPath(QString path)
 void TechSpecsWebView::setDownloadDirectory(QString path)
 {
 	m_dlDir = path;
+}
+
+void TechSpecsWebView::setDownloadQueue(DownloadModel *queue)
+{
+	downloadQueue = queue;
+}
+
+void TechSpecsWebView::stopDownload()
+{
+	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
+
+	foreach(File *f, tmp)
+		f->transfer->cancel();
+}
+
+void TechSpecsWebView::resumeDownload()
+{
+	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
+
+	foreach(File *f, tmp)
+		downloadFile(page()->networkAccessManager()->get(QNetworkRequest(f->path)), f);
+
+}
+
+void TechSpecsWebView::clearQueue()
+{
+	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
+
+	foreach(File *f, tmp)
+		delete f->transfer;
 }
 
 void TechSpecsWebView::loadAboutPage()
@@ -118,45 +149,54 @@ void TechSpecsWebView::pageLoaded(bool ok)
 	}
 }
 
-void TechSpecsWebView::downloadFile(QNetworkReply *reply)
+void TechSpecsWebView::downloadFile(QNetworkReply *reply, File *f)
 {
-	qDebug() << reply->url();
-	qDebug() << reply->rawHeaderList();
-	qDebug() << reply->rawHeader("Content-Disposition");
+	bool isNew = !f;
 
-	QString fileName = reply->url().path().split('/').last();
-
-	if(reply->hasRawHeader("Content-Disposition"))
+	if(isNew)
 	{
-		QStringList patterns;
-		patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
+		QString fileName = reply->url().path().split('/').last();
 
-		QRegExp rx;
-
-		foreach(QString pattern, patterns)
+		if(reply->hasRawHeader("Content-Disposition"))
 		{
-			rx.setPattern(pattern);
+			QStringList patterns;
+			patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
 
-			if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
+			QRegExp rx;
+
+			foreach(QString pattern, patterns)
 			{
-				fileName = rx.cap(1).replace('\\', '/').split('/').last();
+				rx.setPattern(pattern);
 
-				if(fileName.endsWith(';'))
-					fileName.chop(1);
+				if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
+				{
+					fileName = rx.cap(1).replace('\\', '/').split('/').last();
 
-				break;
+					if(fileName.endsWith(';'))
+						fileName.chop(1);
+
+					break;
+				}
 			}
 		}
+
+		f = new File;
+		f->parentItem = 0;
+		f->name = fileName;
+		f->path = reply->url().toString();
+		f->targetPath = m_dlDir + "/" + fileName;
+		f->transferHandler = DownloadModel::TechSpec;
+		f->transfer = new DataTransfer(reply, f);
+		f->transfer->setDeleteSrc(true);
+		f->transfer->setDeleteDst(true);
+	} else {
+		f->bytesDone = 0;
+		f->transfer->setSource(reply);
 	}
 
-	QFile *f = new QFile(m_dlDir + "/" + fileName);
+	if(reply->hasRawHeader("Content-Length"))
+		f->size = reply->rawHeader("Content-Length").toULongLong();
 
-	if(!f->open(QIODevice::WriteOnly))
-	{
-		qWarning() << "Failed to open file to download" << f->fileName();
-		delete f;
-		return;
-	}
-
-	new DataTransfer(reply, f);
+	if(f->transfer->initiate() && isNew)
+		downloadQueue->enqueue(f);
 }
