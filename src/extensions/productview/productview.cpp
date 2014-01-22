@@ -23,71 +23,73 @@
 #ifdef INCLUDE_PRODUCT_VIEW
 
 #include "ui_productview.h"
-
-#include <QDir>
-#include <QFile>
-#include <QTemporaryFile>
-#include <QTextStream>
-#include <QDebug>
-
+#include "proeproductview.h"
+#include "dxfproductview.h"
 #include "productviewsettings.h"
 
-ProductView::ProductView(QSettings *settings, QWidget *parent) :
-        QWidget(parent),
-	ui(new Ui::ProductView),
-	settings(settings)
+
+ProductView::ProductView(QWidget *parent) :
+        QDialog(parent),
+        ui(new Ui::ProductView()),
+        currentProvider(0)
 {
 	ui->setupUi(this);
+    ui->statusLabel->setText(tr("Double click any part."));
 
-	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavaEnabled, true);
-	QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
-
-	ui->appletWebView->setHtml(tr("Double click any PRO/E part."));
+    addProviders<ProEProductView>();
+    addProviders<DxfProductView>();
 }
 
 ProductView::~ProductView()
 {
 	delete ui;
+
+    QHashIterator<File::FileTypes, AbstractProductView*> i(providers);
+    while (i.hasNext())
+    {
+        i.next();
+        i.value()->deleteLater();
+    }
+
+    providers.clear();
+}
+
+bool ProductView::canHandle(File *f)
+{
+    return providers.contains(f->type);
 }
 
 void ProductView::expectFile(File *f)
 {
 	expectedFile = f;
-
-	ui->appletWebView->setHtml(tr("Waiting for part to download..."));
+	ui->statusLabel->setText(tr("Waiting for part to download..."));
 }
 
 void ProductView::fileDownloaded(File *f)
 {
-	if(f == expectedFile)
+    if (currentProvider)
+    {
+        currentProvider->hide();
+        ui->verticalLayout->removeWidget(currentProvider);
+    }
+
+	if (f != expectedFile)
 	{
-		QFile pv(":/data/extensions/productview/productview.html");
-		pv.open(QIODevice::ReadOnly);
-		QTextStream stream(&pv);
-		QString html = stream.readAll();
+        ui->statusLabel->setText(tr("Double click any part."));
+        return;
+    }
 
-		html.replace("%VERSION%", VERSION);
-		html.replace("%FILE_NAME%", f->name);
-		html.replace("%FILE_PATH%", f->targetPath);
-		html.replace("%PRODUCTVIEW_PATH%", settings->value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
+    if (!providers.contains(f->type))
+    {
+        ui->statusLabel->setText(tr("Unknown provider to handle: %1").arg(f->name));
+        return;
+    }
 
-		QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->name + ".html");
-
-		if(tmp.open())
-		{
-			QTextStream out(&tmp);
-			out << html;
-			out.flush();
-
-			// It doesn't work with double slash in windows
-			ui->appletWebView->setUrl(QUrl(QString("file:/%1").arg(tmp.fileName())));
-
-			//tmp.setAutoRemove(false);
-			tmp.close();
-		} else {
-			ui->appletWebView->setHtml("Sorry, cannot create temporary file.");
-		}
-	}
+    currentProvider = providers.value(f->type);
+    ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
+    currentProvider->handle(f);
+    ui->verticalLayout->insertWidget(1, currentProvider);
+    currentProvider->show();
 }
 
 #endif // INCLUDE_PRODUCT_VIEW

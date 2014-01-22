@@ -26,7 +26,8 @@
 #ifdef INCLUDE_PRODUCT_VIEW
 
 #include <QWidget>
-#include <QSettings>
+#include "ui_productview.h"
+#include "abstractproductview.h"
 
 #include "../../item.h"
 
@@ -34,13 +35,15 @@ namespace Ui {
 class ProductView;
 }
 
-class ProductView : public QWidget
+class ProductView : public QDialog
 {
 	Q_OBJECT
 	
 public:
-	explicit ProductView(QSettings *settings, QWidget *parent = 0);
+	explicit ProductView(QWidget *parent = 0);
 	~ProductView();
+
+    bool canHandle(File *f);
 
 public slots:
 	void expectFile(File* f);
@@ -48,8 +51,17 @@ public slots:
 	
 private:
 	Ui::ProductView *ui;
-	QSettings *settings;
 	File *expectedFile;
+    QHash<File::FileTypes, AbstractProductView*> providers;
+    AbstractProductView *currentProvider;
+
+    template <class T> void addProviders()
+    {
+        T *provider = new T(this);
+        provider->hide();
+        foreach(File::FileTypes i, provider->canHandle())
+            providers[i] = provider;
+    }
 };
 
 #endif // INCLUDE_PRODUCT_VIEW

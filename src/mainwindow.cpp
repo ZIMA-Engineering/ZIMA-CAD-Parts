@@ -1020,7 +1020,7 @@ QVector<BaseDataSource*> MainWindow::loadDataSources()
 	{
 		settings->beginGroup(str);
 
-		QString dataSourceType = settings->value("dataSourceType", "ftp").toString();
+		QString dataSourceType = settings->value("DataSourceType", "ftp").toString();
 
 		if( dataSourceType == "ftp" )
 		{
@@ -1271,11 +1271,13 @@ void MainWindow::showOrHideProductView()
 	{
 		if(!productView)
 		{
-			productView = new ProductView(settings, ui->tabWidget);
-			ui->tabWidget->addTab(productView, tr("ProductView"));
+			productView = new ProductView(ui->tabWidget);
+			//ui->tabWidget->addTab(productView, tr("ProductView"));
 
-			connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(previewInProductView(QModelIndex)));
-			connect(static_cast<ServersModel*>(ui->treeLeft->model()), SIGNAL(fileDownloaded(File*)), productView, SLOT(fileDownloaded(File*)));
+			connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
+                    this, SLOT(previewInProductView(QModelIndex)));
+			connect(static_cast<ServersModel*>(ui->treeLeft->model()), SIGNAL(fileDownloaded(File*)),
+                    productView, SLOT(fileDownloaded(File*)));
 		}
 	} else {
 		if(productView)
@@ -1295,15 +1297,18 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
-	if(f->type == File::PRT_PROE || f->type == File::PRT_NX)
-	{
-		productView->expectFile(f);
+    if (productView->canHandle(f))
+    {
+        productView->expectFile(f);
 
-		static_cast<ServersModel*>(ui->treeLeft->model())->downloadSpecificFile(ui->editDir->text(), f);
-		downloading = true;
+        static_cast<ServersModel*>(ui->treeLeft->model())->downloadSpecificFile(ui->editDir->text(), f);
+        downloading = true;
 
-		ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
-	}
+        //ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
+
+        if (!productView->isVisible())
+            productView->show();
+    }
 }
 
 #endif // INCLUDE_PRODUCT_VIEW
