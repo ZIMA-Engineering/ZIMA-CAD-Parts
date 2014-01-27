@@ -4,13 +4,14 @@
 QT += network webkit opengl
 TARGET = ZIMA-CAD-Parts
 TEMPLATE = app
+
 win32:INCLUDEPATH += ../
 VPATH += ./src
 
 # TODO/FIXME: correct handling of external lib
-LIBS += -L/Users/pvanek/oss/zima/ZIMA-libqdxf-1.0.0-src -lqdxf
-INCLUDEPATH += /Users/pvanek/oss/zima/ZIMA-libqdxf-1.0.0-src/src
-INCLUDEPATH += /Users/pvanek/oss/zima/ZIMA-libqdxf-1.0.0-src/libdxfrw/src
+#LIBS += -L/Users/pvanek/oss/zima/ZIMA-libqdxf-1.0.0-src -lqdxf
+INCLUDEPATH += libqdxf/src
+INCLUDEPATH += libqdxf/libdxfrw/src
 
 SOURCES += zima-cad-parts.cpp \
     mainwindow.cpp \
@@ -42,7 +43,32 @@ SOURCES += zima-cad-parts.cpp \
     src/transferhandler.cpp \
     src/extensions/productview/abstractproductview.cpp \
     src/extensions/productview/proeproductview.cpp \
-    src/extensions/productview/dxfproductview.cpp
+    src/extensions/productview/dxfproductview.cpp \
+    libqdxf/libdxfrw/src/drw_base.h \
+    libqdxf/libdxfrw/src/drw_entities.cpp \
+    libqdxf/libdxfrw/src/drw_entities.h \
+    libqdxf/libdxfrw/src/drw_interface.h \
+    libqdxf/libdxfrw/src/drw_objects.cpp \
+    libqdxf/libdxfrw/src/drw_objects.h \
+    libqdxf/libdxfrw/src/libdxfrw.cpp \
+    libqdxf/libdxfrw/src/libdxfrw.h \
+    libqdxf/libdxfrw/src/intern/drw_cptable932.h \
+    libqdxf/libdxfrw/src/intern/drw_cptable936.h \
+    libqdxf/libdxfrw/src/intern/drw_cptable949.h \
+    libqdxf/libdxfrw/src/intern/drw_cptable950.h \
+    libqdxf/libdxfrw/src/intern/drw_cptables.h \
+    libqdxf/libdxfrw/src/intern/drw_textcodec.cpp \
+    libqdxf/libdxfrw/src/intern/drw_textcodec.h \
+    libqdxf/libdxfrw/src/intern/dxfreader.cpp \
+    libqdxf/libdxfrw/src/intern/dxfreader.h \
+    libqdxf/libdxfrw/src/intern/dxfwriter.cpp \
+    libqdxf/libdxfrw/src/intern/dxfwriter.h \
+    libqdxf/src/dxfinterface.cpp \
+    libqdxf/src/dxfsceneview.cpp \
+    libqdxf/src/mtexttohtml.cpp \
+    libqdxf/src/spline.cpp
+
+
 HEADERS += mainwindow.h \
     settingsdialog.h \
     serversmodel.h \
@@ -73,7 +99,14 @@ HEADERS += mainwindow.h \
     src/transferhandler.h \
     src/extensions/productview/abstractproductview.h \
     src/extensions/productview/proeproductview.h \
-    src/extensions/productview/dxfproductview.h
+    src/extensions/productview/dxfproductview.h \
+    libqdxf/src/mtexttohtml.h \
+    libqdxf/src/scene_items.h \
+    libqdxf/src/dxfsceneview.h \
+    libqdxf/src/dxfinterface.h \
+    libqdxf/src/spline.h
+
+
 FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui \
