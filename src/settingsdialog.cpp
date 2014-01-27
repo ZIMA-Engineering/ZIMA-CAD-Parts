@@ -35,8 +35,8 @@
 SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QTranslator **translator, QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SettingsDialog),
+    originServers(servers),
 	settings(settings),
-	originServers(servers),
 	translator(translator)
 {
 	m_ui->setupUi(this);
@@ -85,10 +85,8 @@ SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> ser
 
 	settings->endGroup();
 
-#ifdef INCLUDE_PRODUCT_VIEW
 	productViewSettings = new ProductViewSettings(settings, this);
 	m_ui->tabWidget->addTab(productViewSettings, tr("ProductView Settings"));
-#endif // INCLUDE_PRODUCT_VIEW
 }
 
 SettingsDialog::~SettingsDialog()
@@ -116,6 +114,7 @@ void SettingsDialog::setSection(SettingsDialog::Section s)
 
 void SettingsDialog::loadSettings(QSettings *settings)
 {
+    Q_UNUSED(settings);
 }
 
 void SettingsDialog::saveSettings()
@@ -167,9 +166,7 @@ void SettingsDialog::saveSettings()
 
 	settings->endGroup();
 
-#ifdef INCLUDE_PRODUCT_VIEW
 	productViewSettings->saveSettings();
-#endif // INCLUDE_PRODUCT_VIEW
 }
 
 void SettingsDialog::addDataSource()

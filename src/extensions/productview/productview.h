@@ -23,8 +23,6 @@
 
 #include "../../zima-cad-parts.h"
 
-#ifdef INCLUDE_PRODUCT_VIEW
-
 #include <QWidget>
 #include "ui_productview.h"
 #include "abstractproductview.h"
@@ -63,7 +61,5 @@ private:
             providers[i] = provider;
     }
 };
-
-#endif // INCLUDE_PRODUCT_VIEW
 
 #endif // PRODUCTVIEW_H

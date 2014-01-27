@@ -20,7 +20,6 @@
 
 #include "productview.h"
 
-#ifdef INCLUDE_PRODUCT_VIEW
 
 #include "ui_productview.h"
 #include "proeproductview.h"
@@ -91,5 +90,3 @@ void ProductView::fileDownloaded(File *f)
     ui->verticalLayout->insertWidget(1, currentProvider);
     currentProvider->show();
 }
-
-#endif // INCLUDE_PRODUCT_VIEW

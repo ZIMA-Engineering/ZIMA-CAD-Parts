@@ -295,7 +295,7 @@ void LocalDataSource::downloadFiles(QList<File*> files, QString dir)
 
 void LocalDataSource::downloadFile(File* file)
 {
-
+    Q_UNUSED(file);
 }
 
 void LocalDataSource::resumeDownload()

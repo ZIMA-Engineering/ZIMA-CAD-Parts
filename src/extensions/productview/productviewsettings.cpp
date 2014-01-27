@@ -20,8 +20,6 @@
 
 #include "productviewsettings.h"
 
-#ifdef INCLUDE_PRODUCT_VIEW
-
 #include "ui_productviewsettings.h"
 
 #include <QFileDialog>
@@ -56,5 +54,3 @@ void ProductViewSettings::saveSettings()
 	settings->setValue("Extensions/ProductView/Enabled", ui->enabledCheckBox->isChecked());
 	settings->setValue("Extensions/ProductView/Path", ui->pathLineEdit->text());
 }
-
-#endif // INCLUDE_PRODUCT_VIEW

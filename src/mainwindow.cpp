@@ -52,13 +52,11 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
-	  techSpecToolBar(0),
 	  historyCurrentIndex(-1),
-	  historySize(0),
-#ifdef INCLUDE_PRODUCT_VIEW
-	  productView(0),
-#endif
-	  lastPartsIndexItem(0)
+      historySize(0),
+      techSpecToolBar(0),
+      lastPartsIndexItem(0),
+      productView(0)
 {
 	downloading = false;
 
@@ -317,9 +315,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	addAction(act);
 
-#ifdef INCLUDE_PRODUCT_VIEW
 	showOrHideProductView();
-#endif // INCLUDE_PRODUCT_VIEW
 
 	if( useSplash )
 	{
@@ -446,7 +442,7 @@ void MainWindow::downloadButton()
 	static_cast<ServersModel*>( ui->treeLeft->model() )->uncheckAll();
 	ui->tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
 
-	int columnCnt = ui->downloadTreeView->model()->columnCount(QModelIndex());
+    //int columnCnt = ui->downloadTreeView->model()->columnCount(QModelIndex());
 
 	ui->downloadTreeView->resizeColumnToContents(0);
 	ui->downloadTreeView->resizeColumnToContents(2);
@@ -517,9 +513,7 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 
 		allItemsLoaded();
 
-#ifdef INCLUDE_PRODUCT_VIEW
 		showOrHideProductView();
-#endif // INCLUDE_PRODUCT_VIEW
 	}
 
 	delete settingsDlg;
@@ -589,6 +583,7 @@ void MainWindow::loadingItem(Item *item)
 
 void MainWindow::itemLoaded(const QModelIndex &index)
 {
+    Q_UNUSED(index);
 //	ui->btnUpdate->setEnabled(true);
 
 //	setPartsIndex(index);
@@ -952,6 +947,7 @@ void MainWindow::assignUrlToDirectory(bool overwrite)
 
 void MainWindow::techSpecsIndexOverwrite(Item *item)
 {
+    Q_UNUSED(item);
 	if(QMessageBox::warning(this, tr("Tech specs index already exists"), tr("Index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
 		assignUrlToDirectory(true);
 }
@@ -966,6 +962,7 @@ void MainWindow::assignPartsIndexUrlToDirectory(bool overwrite)
 
 void MainWindow::partsIndexOverwrite(Item *item)
 {
+    Q_UNUSED(item);
 	if(QMessageBox::warning(this, tr("Parts index already exists"), tr("Parts index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
 		assignPartsIndexUrlToDirectory(true);
 }
@@ -1264,7 +1261,6 @@ QString MainWindow::getCurrentMetadataLanguageCode()
 	return currentMetadataLang;
 }
 
-#ifdef INCLUDE_PRODUCT_VIEW
 void MainWindow::showOrHideProductView()
 {
 	if(settings->value("Extensions/ProductView/Enabled", false).toBool())
@@ -1310,5 +1306,3 @@ void MainWindow::previewInProductView(const QModelIndex &index)
             productView->show();
     }
 }
-
-#endif // INCLUDE_PRODUCT_VIEW

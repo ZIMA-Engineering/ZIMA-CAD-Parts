@@ -146,6 +146,8 @@ void FtpDataSource::ftpStateChanged(int state)
 
 void FtpDataSource::ftpDataTransferProgress(qint64 done, qint64 total)
 {
+    Q_UNUSED(total);
+
 	if( !fileTasks.contains( dlFtp->currentId() ) )
 		return;
 
@@ -368,8 +370,9 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 			{
 				dirsToList << i;
 				//qDebug() << "new directory" << i->path << "IN QUEUE";
-			} else
+            } else {
 				;//qDebug() << "new directory" << i->path << "NOT IN QUEUE";
+            }
 			emit itemInserted(i);
 		}
 
@@ -419,7 +422,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 	} else if (id == ftpListId) { //finished listing a directory
 		//ftpListId = -1;
 
-		Item *currentDir = 0;
+//		Item *currentDir = 0;
 
 		if( hasTechSpecDir )
 		{

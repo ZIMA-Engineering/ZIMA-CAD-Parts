@@ -33,7 +33,7 @@ void DownloadDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
 	{
 		File* f = static_cast<File*>( index.internalPointer() );
 		QStyleOptionProgressBarV2 opts;
-		const int row = index.row();
+//		const int row = index.row();
 
 		opts.text = QString("%1 %").arg( f->size ? (f->bytesDone * 100 / f->size) : 0 );
 		opts.maximum = f->size;
@@ -57,6 +57,7 @@ DownloadModel::DownloadModel(QObject *parent) :
 
 int DownloadModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
 	return 3;
 }
 
@@ -70,11 +71,13 @@ int DownloadModel::rowCount(const QModelIndex &parent) const
 
 QModelIndex DownloadModel::parent(const QModelIndex &index) const
 {
+    Q_UNUSED(index);
 	return QModelIndex();
 }
 
 QModelIndex DownloadModel::index(int row, int column, const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
 	if( queue.isEmpty() )
 		return QModelIndex();
 
@@ -124,6 +127,8 @@ QVariant DownloadModel::headerData (int section, Qt::Orientation orientation, in
 	case 2:
 		return tr("Progress");
 	}
+
+    return "unknown data";
 }
 
 QList<File*> DownloadModel::files(DownloadModel::TransferHandlerType type)

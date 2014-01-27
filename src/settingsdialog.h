@@ -35,9 +35,7 @@
 #include "ftpdatasource.h"
 #include "localdatasource.h"
 
-#ifdef INCLUDE_PRODUCT_VIEW
 #include "extensions/productview/productviewsettings.h"
-#endif // INCLUDE_PRODUCT_VIEW
 
 class QListWidgetItem;
 
@@ -54,9 +52,7 @@ public:
 		DataSources,
 		ExternalPrograms,
 		DeveloperMode,
-#ifdef INCLUDE_PRODUCT_VIEW
 		ProductView,
-#endif
 		SectionCount
 	};
 
@@ -101,9 +97,7 @@ private:
 	QTranslator **translator;
 	QSignalMapper *zimaUtilSignalMapper;
 	QList<QLineEdit*> zimaUtilLineEdits;
-#ifdef INCLUDE_PRODUCT_VIEW
 	ProductViewSettings *productViewSettings;
-#endif // INCLUDE_PRODUCT_VIEW
 };
 
 #endif // SETTINGSDIALOG_H

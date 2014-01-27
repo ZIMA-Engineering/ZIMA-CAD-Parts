@@ -164,13 +164,3 @@ void BaseDataSource::createMetadata(Item *item)
 
 	item->metadata->init();
 }
-
-void BaseDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
-{
-
-}
-
-void BaseDataSource::assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite)
-{
-
-}

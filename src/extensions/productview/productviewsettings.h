@@ -23,8 +23,6 @@
 
 #include "../../zima-cad-parts.h"
 
-#ifdef INCLUDE_PRODUCT_VIEW
-
 #include <QWidget>
 #include <QSettings>
 
@@ -51,5 +49,4 @@ private slots:
 	void setPathDialog();
 };
 
-#endif // INCLUDE_PRODUCT_VIEW
 #endif // PRODUCTVIEWSETTINGS_H

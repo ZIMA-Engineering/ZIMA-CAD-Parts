@@ -10,7 +10,7 @@ class FileFilter;
 class FilterGroup
 {
 public:
-	FilterGroup(QString internalName, QString label) : internalName(internalName), label(label), enabled(0){}
+    FilterGroup(QString internalName, QString label) : label(label), internalName(internalName), enabled(0){}
 	FilterGroup& operator<<(FileFilter* f);
 	QWidget* widget();
 	void apply();

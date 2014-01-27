@@ -53,7 +53,7 @@ bool ServersModel::canFetchMore(const QModelIndex &parent) const
 	if(!parent.isValid())
 		return false;
 
-	Item* item = static_cast<Item*>(parent.internalPointer());
+    //Item* item = static_cast<Item*>(parent.internalPointer());
 
 //	if(!item->children.isEmpty() || !item->files.isEmpty())
 //		return false;
@@ -104,6 +104,7 @@ int ServersModel::rowCount(const QModelIndex &parent) const
 
 int ServersModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
 	return 1;
 }
 
@@ -163,6 +164,10 @@ QVariant ServersModel::headerData(int section, Qt::Orientation orientation, int 
 //nemenitelne
 bool ServersModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {
+    Q_UNUSED(section);
+    Q_UNUSED(orientation);
+    Q_UNUSED(value);
+    Q_UNUSED(role);
 	return false;
 }
 
@@ -211,6 +216,9 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 
 bool ServersModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    Q_UNUSED(index);
+    Q_UNUSED(value);
+    Q_UNUSED(role);
 	return false;
 }
 

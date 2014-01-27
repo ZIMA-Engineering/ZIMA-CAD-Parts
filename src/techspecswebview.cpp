@@ -126,6 +126,8 @@ void TechSpecsWebView::urlChange(const QUrl &url)
 
 void TechSpecsWebView::pageLoaded(bool ok)
 {
+    Q_UNUSED(ok);
+
 	if(url().scheme() != "file")
 		return;
 
