@@ -8,10 +8,10 @@ TEMPLATE = app
 win32:INCLUDEPATH += ../
 VPATH += ./src
 
-# TODO/FIXME: correct handling of external lib
-#LIBS += -L/Users/pvanek/oss/zima/ZIMA-libqdxf-1.0.0-src -lqdxf
 INCLUDEPATH += libqdxf/src
 INCLUDEPATH += libqdxf/libdxfrw/src
+
+LIBS += -lpoppler-qt4
 
 SOURCES += zima-cad-parts.cpp \
     mainwindow.cpp \
@@ -66,7 +66,8 @@ SOURCES += zima-cad-parts.cpp \
     libqdxf/src/dxfinterface.cpp \
     libqdxf/src/dxfsceneview.cpp \
     libqdxf/src/mtexttohtml.cpp \
-    libqdxf/src/spline.cpp
+    libqdxf/src/spline.cpp \
+    src/extensions/productview/pdfproductview.cpp
 
 
 HEADERS += mainwindow.h \
@@ -104,7 +105,8 @@ HEADERS += mainwindow.h \
     libqdxf/src/scene_items.h \
     libqdxf/src/dxfsceneview.h \
     libqdxf/src/dxfinterface.h \
-    libqdxf/src/spline.h
+    libqdxf/src/spline.h \
+    src/extensions/productview/pdfproductview.h
 
 
 FORMS += mainwindow.ui \
@@ -115,7 +117,8 @@ FORMS += mainwindow.ui \
     src/errordialog.ui \
     src/extensions/productview/proeproductview.ui \
     src/extensions/productview/productview.ui \
-    src/extensions/productview/dxfproductview.ui
+    src/extensions/productview/dxfproductview.ui \
+    src/extensions/productview/pdfproductview.ui
 RESOURCES += zima-cad-parts.qrc
 
 OTHER_FILES += \

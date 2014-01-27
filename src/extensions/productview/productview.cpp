@@ -24,6 +24,7 @@
 #include "ui_productview.h"
 #include "proeproductview.h"
 #include "dxfproductview.h"
+#include "pdfproductview.h"
 #include "productviewsettings.h"
 
 
@@ -37,6 +38,7 @@ ProductView::ProductView(QWidget *parent) :
 
     addProviders<ProEProductView>();
     addProviders<DxfProductView>();
+    addProviders<PDFProductView>();
 }
 
 ProductView::~ProductView()
