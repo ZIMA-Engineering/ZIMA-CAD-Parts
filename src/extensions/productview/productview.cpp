@@ -94,6 +94,8 @@ void ProductView::expectFile(File *f)
 
 void ProductView::fileDownloaded(File *f)
 {
+	qDebug() << "PW" << f->cachePath << f->path;
+
 	if (currentProvider)
 	{
 		currentProvider->hide();

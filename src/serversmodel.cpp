@@ -21,6 +21,7 @@
 #include "serversmodel.h"
 #include <QDir>
 #include <QDebug>
+#include "basedatasource.h"
 #include "baseremotedatasource.h"
 #include "localdatasource.h"
 #include "mainwindow.h"
@@ -449,21 +450,6 @@ void ServersModel::downloadFiles(QString dir)
 		if( tmp.count() > 0 )
 			i->server->downloadFiles(tmp, dir);
 	}
-}
-
-void ServersModel::downloadSpecificFile(QString dir, File *f)
-{
-	QDir d;
-	d.mkpath(dir);
-
-	QList<File*> tmp;
-	tmp << f;
-
-	f->transferHandler = DownloadModel::ServersModel;
-
-	f->parentItem->server->downloadFiles(tmp, dir);
-
-	downloadQueue->enqueue(tmp);
 }
 
 void ServersModel::resumeDownload()

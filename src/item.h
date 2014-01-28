@@ -94,6 +94,15 @@ struct File
 	QString name;
 	QString path;
 	QString targetPath;
+
+	/*! A cache path for file. Including file name.
+	 * Datasource type:
+	 *	LOCAL: It's a synonym for File::path. File is not copied.
+	 *  <remote>: File is downloaded to Item::getPathForItem.
+	 *			  see: ServersModel::cacheSpecificFile()
+	 */
+	QString cachePath;
+
 	Thumbnail *thumbnail;
 	QList<Thumbnail*> thumbnails;
 	QFile *openFtpFile;

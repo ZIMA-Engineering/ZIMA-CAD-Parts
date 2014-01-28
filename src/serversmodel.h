@@ -73,7 +73,6 @@ public slots:
 	void requestTechSpecs(Item *item);
 	void deleteFiles();
 	void downloadFiles(QString dir);
-	void downloadSpecificFile(QString dir, File *f);
 	void resumeDownload();
 	void uncheckAll(Item *item = 0);
 	void deleteDownloadQueue();

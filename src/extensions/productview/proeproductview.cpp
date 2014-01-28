@@ -41,7 +41,7 @@ bool ProEProductView::handle(File *f)
 	QSettings settings;
 	html.replace("%VERSION%", VERSION);
 	html.replace("%FILE_NAME%", f->name);
-	html.replace("%FILE_PATH%", f->targetPath);
+	html.replace("%FILE_PATH%", f->cachePath);
 	html.replace("%PRODUCTVIEW_PATH%", settings.value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
 
 	QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->name + ".html");

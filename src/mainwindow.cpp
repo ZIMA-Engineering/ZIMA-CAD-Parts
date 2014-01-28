@@ -1293,10 +1293,31 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 
 	productView->expectFile(f);
 
-	static_cast<ServersModel*>(ui->treeLeft->model())->downloadSpecificFile(ui->editDir->text(), f);
-	downloading = true;
-
 	//ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
+
+	// local files are not copied - just open the original
+	// remote datasources are cached in ~/.cache/... or something similar
+	if (f->parentItem->server->dataSource == LOCAL)
+	{
+		f->cachePath = f->path;
+		productView->fileDownloaded(f);
+	}
+	else if (f->parentItem->server->dataSource == FTP)
+	{
+		downloading = true;
+
+		QString pathForItem(f->parentItem->server->getPathForItem(f->parentItem));
+		QDir d;
+		d.mkpath(pathForItem);
+
+		f->cachePath = pathForItem + "/" + f->name;
+		f->transferHandler = DownloadModel::ServersModel;
+		f->parentItem->server->downloadFiles(QList<File*>() << f, pathForItem);
+	}
+	else
+	{
+		Q_ASSERT_X(0, "business logic error", "Unhandled dataSource type");
+	}
 
 	if (!productView->isVisible())
 	{
