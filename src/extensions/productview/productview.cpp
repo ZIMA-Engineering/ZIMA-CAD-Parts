@@ -115,6 +115,7 @@ void ProductView::fileDownloaded(File *f)
 		currentProvider = providers.value(f->type);
 	}
 
+	//qDebug() << "PTH" << f->path << f->targetPath;
 	ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
 	currentProvider->handle(f);
 	ui->verticalLayout->insertWidget(1, currentProvider);

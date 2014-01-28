@@ -36,7 +36,7 @@ bool DxfProductView::handle(File *f)
 		dxf = 0;
 	}
 
-	dxf = new DXFInterface(f->path);
+	dxf = new DXFInterface(f->targetPath);
 
 	ui->view->setScene(dxf->scene());
 	ui->view->fitInView(dxf->scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
