@@ -119,7 +119,7 @@ private:
 
 	ProductView *productView;
 
-    bool s_developerMode;
+	bool s_developerMode;
 
 	void showOrHideProductView();
 

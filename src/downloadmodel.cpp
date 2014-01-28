@@ -57,7 +57,7 @@ DownloadModel::DownloadModel(QObject *parent) :
 
 int DownloadModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
+	Q_UNUSED(parent);
 	return 3;
 }
 
@@ -71,13 +71,13 @@ int DownloadModel::rowCount(const QModelIndex &parent) const
 
 QModelIndex DownloadModel::parent(const QModelIndex &index) const
 {
-    Q_UNUSED(index);
+	Q_UNUSED(index);
 	return QModelIndex();
 }
 
 QModelIndex DownloadModel::index(int row, int column, const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
+	Q_UNUSED(parent);
 	if( queue.isEmpty() )
 		return QModelIndex();
 
@@ -105,9 +105,11 @@ QVariant DownloadModel::data(const QModelIndex &index, int role) const
 			return queue[row]->targetPath;
 		case 2:
 			return queue[row]->bytesDone;
-		default:break;
+		default:
+			break;
 		}
-	default:break;
+	default:
+		break;
 	}
 
 	return QVariant();
@@ -128,7 +130,7 @@ QVariant DownloadModel::headerData (int section, Qt::Orientation orientation, in
 		return tr("Progress");
 	}
 
-    return "unknown data";
+	return "unknown data";
 }
 
 QList<File*> DownloadModel::files(DownloadModel::TransferHandlerType type)
@@ -139,8 +141,8 @@ QList<File*> DownloadModel::files(DownloadModel::TransferHandlerType type)
 	QList<File*> tmp;
 
 	foreach(File *f, queue)
-		if(f->transferHandler == type)
-			tmp << f;
+	if(f->transferHandler == type)
+		tmp << f;
 
 	return tmp;
 }
@@ -199,7 +201,7 @@ void DownloadModel::clear()
 	stop();
 
 	foreach(TransferHandler *h, m_handlers)
-		h->clearQueue();
+	h->clearQueue();
 
 	queue.clear();
 
@@ -232,7 +234,7 @@ void DownloadModel::stop()
 	m_downloading = false;
 
 	foreach(TransferHandler *h, m_handlers)
-		h->stopDownload();
+	h->stopDownload();
 }
 
 void DownloadModel::resume()
@@ -240,5 +242,5 @@ void DownloadModel::resume()
 	m_downloading = true;
 
 	foreach(TransferHandler *h, m_handlers)
-		h->resumeDownload();
+	h->resumeDownload();
 }

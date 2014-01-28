@@ -80,7 +80,7 @@ struct File
 		UNDEFINED
 	};
 
-    File():thumbnail(0),openFtpFile(0),isChecked(false),type(UNDEFINED),bytesDone(0),version(0),newestVersion(false),transfer(0){}
+	File():thumbnail(0),openFtpFile(0),isChecked(false),type(UNDEFINED),bytesDone(0),version(0),newestVersion(false),transfer(0){}
 	void setName(QString name);
 	QString baseName();
 	void detectFileType();

@@ -35,7 +35,7 @@
 SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QTranslator **translator, QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SettingsDialog),
-    originServers(servers),
+	originServers(servers),
 	settings(settings),
 	translator(translator)
 {
@@ -114,7 +114,7 @@ void SettingsDialog::setSection(SettingsDialog::Section s)
 
 void SettingsDialog::loadSettings(QSettings *settings)
 {
-    Q_UNUSED(settings);
+	Q_UNUSED(settings);
 }
 
 void SettingsDialog::saveSettings()
@@ -136,21 +136,21 @@ void SettingsDialog::saveSettings()
 		QStringList paths;
 
 		paths
-				<< filename
-				<< ("locale/" + filename)
-				<< (":/" + filename);
+		        << filename
+		        << ("locale/" + filename)
+		        << (":/" + filename);
 
 #ifdef Q_OS_MAC
 		paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
 #endif
 
 		foreach(QString path, paths)
-			if( t->load(path) )
-			{
-				qApp->installTranslator(t);
-				*translator = t;
-				break;
-			}
+		if( t->load(path) )
+		{
+			qApp->installTranslator(t);
+			*translator = t;
+			break;
+		}
 	}
 
 	settings->setValue("Language", lang);

@@ -29,35 +29,35 @@
 
 
 ProductView::ProductView(QWidget *parent) :
-        QDialog(parent),
-        ui(new Ui::ProductView()),
-        currentProvider(0)
+	QDialog(parent),
+	ui(new Ui::ProductView()),
+	currentProvider(0)
 {
 	ui->setupUi(this);
-    ui->statusLabel->setText(tr("Double click any part."));
+	ui->statusLabel->setText(tr("Double click any part."));
 
-    addProviders<ProEProductView>();
-    addProviders<DxfProductView>();
-    addProviders<PDFProductView>();
+	addProviders<ProEProductView>();
+	addProviders<DxfProductView>();
+	addProviders<PDFProductView>();
 }
 
 ProductView::~ProductView()
 {
 	delete ui;
 
-    QHashIterator<File::FileTypes, AbstractProductView*> i(providers);
-    while (i.hasNext())
-    {
-        i.next();
-        i.value()->deleteLater();
-    }
+	QHashIterator<File::FileTypes, AbstractProductView*> i(providers);
+	while (i.hasNext())
+	{
+		i.next();
+		i.value()->deleteLater();
+	}
 
-    providers.clear();
+	providers.clear();
 }
 
 bool ProductView::canHandle(File *f)
 {
-    return providers.contains(f->type);
+	return providers.contains(f->type);
 }
 
 void ProductView::expectFile(File *f)
@@ -68,27 +68,27 @@ void ProductView::expectFile(File *f)
 
 void ProductView::fileDownloaded(File *f)
 {
-    if (currentProvider)
-    {
-        currentProvider->hide();
-        ui->verticalLayout->removeWidget(currentProvider);
-    }
+	if (currentProvider)
+	{
+		currentProvider->hide();
+		ui->verticalLayout->removeWidget(currentProvider);
+	}
 
 	if (f != expectedFile)
 	{
-        ui->statusLabel->setText(tr("Double click any part."));
-        return;
-    }
+		ui->statusLabel->setText(tr("Double click any part."));
+		return;
+	}
 
-    if (!providers.contains(f->type))
-    {
-        ui->statusLabel->setText(tr("Unknown provider to handle: %1").arg(f->name));
-        return;
-    }
+	if (!providers.contains(f->type))
+	{
+		ui->statusLabel->setText(tr("Unknown provider to handle: %1").arg(f->name));
+		return;
+	}
 
-    currentProvider = providers.value(f->type);
-    ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
-    currentProvider->handle(f);
-    ui->verticalLayout->insertWidget(1, currentProvider);
-    currentProvider->show();
+	currentProvider = providers.value(f->type);
+	ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
+	currentProvider->handle(f);
+	ui->verticalLayout->insertWidget(1, currentProvider);
+	currentProvider->show();
 }

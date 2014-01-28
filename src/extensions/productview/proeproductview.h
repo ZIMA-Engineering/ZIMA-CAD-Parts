@@ -10,21 +10,21 @@ class ProEProductView;
 
 class ProEProductView : public AbstractProductView
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit ProEProductView(QWidget *parent = 0);
-    ~ProEProductView();
+	explicit ProEProductView(QWidget *parent = 0);
+	~ProEProductView();
 
-    QString title();
-    QList<File::FileTypes> canHandle();
-    bool handle(File *f);
+	QString title();
+	QList<File::FileTypes> canHandle();
+	bool handle(File *f);
 
 signals:
 
 public slots:
 
 private:
-    Ui::ProEProductView *ui;
+	Ui::ProEProductView *ui;
 
 };
 

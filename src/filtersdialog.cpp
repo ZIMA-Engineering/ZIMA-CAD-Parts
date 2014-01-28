@@ -28,8 +28,8 @@
 #include "item.h"
 
 FiltersDialog::FiltersDialog(QWidget *parent) :
-        QDialog(parent),
-        ui(new Ui::FiltersDialog)
+	QDialog(parent),
+	ui(new Ui::FiltersDialog)
 {
 	ui->setupUi(this);
 

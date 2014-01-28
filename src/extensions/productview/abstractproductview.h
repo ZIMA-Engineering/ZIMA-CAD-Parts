@@ -7,13 +7,13 @@
 
 class AbstractProductView : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit AbstractProductView(QWidget *parent = 0);
+	explicit AbstractProductView(QWidget *parent = 0);
 
-    virtual QString title() = 0;
-    virtual QList<File::FileTypes> canHandle() = 0;
-    virtual bool handle(File *f) = 0;
+	virtual QString title() = 0;
+	virtual QList<File::FileTypes> canHandle() = 0;
+	virtual bool handle(File *f) = 0;
 
 signals:
 

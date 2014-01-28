@@ -25,7 +25,7 @@
 #include "mainwindow.h"
 
 BaseDataSource::BaseDataSource(QObject *parent) :
-    QObject(parent)
+	QObject(parent)
 {
 	rootItem = 0;
 	dataSource = UNDEFINED;

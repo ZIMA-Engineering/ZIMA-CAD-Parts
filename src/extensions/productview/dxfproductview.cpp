@@ -6,40 +6,40 @@
 #include <dxfsceneview.h>
 
 DxfProductView::DxfProductView(QWidget *parent) :
-    AbstractProductView(parent),
-    ui(new Ui::DxfProductView),
-    dxf(0)
+	AbstractProductView(parent),
+	ui(new Ui::DxfProductView),
+	dxf(0)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 }
 
 DxfProductView::~DxfProductView()
 {
-    delete ui;
+	delete ui;
 }
 
 QString DxfProductView::title()
 {
-    return tr("DXF part");
+	return tr("DXF part");
 }
 
 QList<File::FileTypes> DxfProductView::canHandle()
 {
-    return QList<File::FileTypes>() << File::DXF;
+	return QList<File::FileTypes>() << File::DXF;
 }
 
 bool DxfProductView::handle(File *f)
 {
-    if (dxf)
-    {
-        delete dxf;
-        dxf = 0;
-    }
+	if (dxf)
+	{
+		delete dxf;
+		dxf = 0;
+	}
 
-    dxf = new DXFInterface(f->path);
+	dxf = new DXFInterface(f->path);
 
-    ui->view->setScene(dxf->scene());
-    ui->view->fitInView(dxf->scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
+	ui->view->setScene(dxf->scene());
+	ui->view->fitInView(dxf->scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
 
-    return true;
+	return true;
 }

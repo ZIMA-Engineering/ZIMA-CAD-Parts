@@ -25,7 +25,7 @@
 #include <QFileDialog>
 
 ProductViewSettings::ProductViewSettings(QSettings *settings, QWidget *parent) :
-        QWidget(parent),
+	QWidget(parent),
 	ui(new Ui::ProductViewSettings),
 	settings(settings)
 {

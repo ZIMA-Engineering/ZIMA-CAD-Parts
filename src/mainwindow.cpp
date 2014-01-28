@@ -53,14 +53,14 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
 	  historyCurrentIndex(-1),
-      historySize(0),
-      techSpecToolBar(0),
-      lastPartsIndexItem(0),
-      productView(0)
+	  historySize(0),
+	  techSpecToolBar(0),
+	  lastPartsIndexItem(0),
+	  productView(0)
 {
 	downloading = false;
 
-        qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
+	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
 	settings = new QSettings(this);
 	bool useSplash = settings->value("GUI/Splash/Enabled", true).toBool();
@@ -164,54 +164,54 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	filterGroups << FilterGroup("ProE", "Pro/Engineer");
 	filterGroups.last()
-			<< new ExtensionFilter(File::PRT_PROE)
-			<< new ExtensionFilter(File::ASM)
-			<< new ExtensionFilter(File::DRW)
-			<< new ExtensionFilter(File::FRM)
-			<< new ExtensionFilter(File::NEU_PROE)
-			<< new VersionFilter();
+	        << new ExtensionFilter(File::PRT_PROE)
+	        << new ExtensionFilter(File::ASM)
+	        << new ExtensionFilter(File::DRW)
+	        << new ExtensionFilter(File::FRM)
+	        << new ExtensionFilter(File::NEU_PROE)
+	        << new VersionFilter();
 
 	filterGroups << FilterGroup("CATIA", "CATIA");
 	filterGroups.last()
-			<< new ExtensionFilter(File::CATPART)
-			<< new ExtensionFilter(File::CATPRODUCT)
-			<< new ExtensionFilter(File::CATDRAWING);
+	        << new ExtensionFilter(File::CATPART)
+	        << new ExtensionFilter(File::CATPRODUCT)
+	        << new ExtensionFilter(File::CATDRAWING);
 
 	filterGroups << FilterGroup("NX", "NX (UGS)");
 	filterGroups.last()
-			<< new ExtensionFilter(File::PRT_NX);
+	        << new ExtensionFilter(File::PRT_NX);
 
 	filterGroups << FilterGroup("SolidWorks", "SolidWorks");
 	filterGroups.last().filters
-			<< new ExtensionFilter(File::SLDPRT)
-			<< new ExtensionFilter(File::SLDASM)
-			<< new ExtensionFilter(File::SLDDRW);
+	        << new ExtensionFilter(File::SLDPRT)
+	        << new ExtensionFilter(File::SLDASM)
+	        << new ExtensionFilter(File::SLDDRW);
 
 	filterGroups << FilterGroup("SolidEdge", "Solid Edge");
 	filterGroups.last()
-			<< new ExtensionFilter(File::PAR)
-			<< new ExtensionFilter(File::PSM)
-			<< new ExtensionFilter(File::ASM)
-			<< new ExtensionFilter(File::DFT);
+	        << new ExtensionFilter(File::PAR)
+	        << new ExtensionFilter(File::PSM)
+	        << new ExtensionFilter(File::ASM)
+	        << new ExtensionFilter(File::DFT);
 
 	filterGroups << FilterGroup("Invertor", "INVERTOR");
 	filterGroups.last()
-			<< new ExtensionFilter(File::IPT)
-			<< new ExtensionFilter(File::IAM)
-			<< new ExtensionFilter(File::IDW);
+	        << new ExtensionFilter(File::IPT)
+	        << new ExtensionFilter(File::IAM)
+	        << new ExtensionFilter(File::IDW);
 
 	filterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
 	filterGroups.last()
-			<< new ExtensionFilter(File::STEP)
-			<< new ExtensionFilter(File::IGES)
-			<< new ExtensionFilter(File::DWG)
-			<< new ExtensionFilter(File::DXF);
+	        << new ExtensionFilter(File::STEP)
+	        << new ExtensionFilter(File::IGES)
+	        << new ExtensionFilter(File::DWG)
+	        << new ExtensionFilter(File::DXF);
 
 	filterGroups << FilterGroup("NonCAD", "NonCAD");
 	filterGroups.last()
-			<< new ExtensionFilter(File::STL)
-			<< new ExtensionFilter(File::BLEND)
-			<< new ExtensionFilter(File::PDF);
+	        << new ExtensionFilter(File::STL)
+	        << new ExtensionFilter(File::BLEND)
+	        << new ExtensionFilter(File::PDF);
 
 	loadFilters();
 	rebuildFilters();
@@ -442,7 +442,7 @@ void MainWindow::downloadButton()
 	static_cast<ServersModel*>( ui->treeLeft->model() )->uncheckAll();
 	ui->tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
 
-    //int columnCnt = ui->downloadTreeView->model()->columnCount(QModelIndex());
+	//int columnCnt = ui->downloadTreeView->model()->columnCount(QModelIndex());
 
 	ui->downloadTreeView->resizeColumnToContents(0);
 	ui->downloadTreeView->resizeColumnToContents(2);
@@ -537,10 +537,10 @@ void MainWindow::updateClicked()
 void MainWindow::deleteSelectedParts()
 {
 	if( QMessageBox::question(this,
-				  tr("Do you really want to delete selected parts?"),
-				  tr("Do you really want to delete selected parts? This action is irreversible."),
-				  QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
-		==  QMessageBox::Yes)
+	                          tr("Do you really want to delete selected parts?"),
+	                          tr("Do you really want to delete selected parts? This action is irreversible."),
+	                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+	        ==  QMessageBox::Yes)
 	{
 		ServersModel *sm = static_cast<ServersModel*>(ui->treeLeft->model());
 
@@ -583,7 +583,7 @@ void MainWindow::loadingItem(Item *item)
 
 void MainWindow::itemLoaded(const QModelIndex &index)
 {
-    Q_UNUSED(index);
+	Q_UNUSED(index);
 //	ui->btnUpdate->setEnabled(true);
 
 //	setPartsIndex(index);
@@ -947,7 +947,7 @@ void MainWindow::assignUrlToDirectory(bool overwrite)
 
 void MainWindow::techSpecsIndexOverwrite(Item *item)
 {
-    Q_UNUSED(item);
+	Q_UNUSED(item);
 	if(QMessageBox::warning(this, tr("Tech specs index already exists"), tr("Index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
 		assignUrlToDirectory(true);
 }
@@ -962,7 +962,7 @@ void MainWindow::assignPartsIndexUrlToDirectory(bool overwrite)
 
 void MainWindow::partsIndexOverwrite(Item *item)
 {
-    Q_UNUSED(item);
+	Q_UNUSED(item);
 	if(QMessageBox::warning(this, tr("Parts index already exists"), tr("Parts index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
 		assignPartsIndexUrlToDirectory(true);
 }
@@ -1271,9 +1271,9 @@ void MainWindow::showOrHideProductView()
 			//ui->tabWidget->addTab(productView, tr("ProductView"));
 
 			connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
-                    this, SLOT(previewInProductView(QModelIndex)));
+			        this, SLOT(previewInProductView(QModelIndex)));
 			connect(static_cast<ServersModel*>(ui->treeLeft->model()), SIGNAL(fileDownloaded(File*)),
-                    productView, SLOT(fileDownloaded(File*)));
+			        productView, SLOT(fileDownloaded(File*)));
 		}
 	} else {
 		if(productView)
@@ -1293,16 +1293,16 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
-    if (productView->canHandle(f))
-    {
-        productView->expectFile(f);
+	if (productView->canHandle(f))
+	{
+		productView->expectFile(f);
 
-        static_cast<ServersModel*>(ui->treeLeft->model())->downloadSpecificFile(ui->editDir->text(), f);
-        downloading = true;
+		static_cast<ServersModel*>(ui->treeLeft->model())->downloadSpecificFile(ui->editDir->text(), f);
+		downloading = true;
 
-        //ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
+		//ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
 
-        if (!productView->isVisible())
-            productView->show();
-    }
+		if (!productView->isVisible())
+			productView->show();
+	}
 }

@@ -32,7 +32,7 @@ FileModel::FileModel(QObject *parent) :
 
 int FileModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
+	Q_UNUSED(parent);
 	//qDebug() << "col count = " << 2 + colLabels.count();
 	return 2 + colLabels.count();
 }
@@ -51,14 +51,14 @@ int FileModel::rowCount(const QModelIndex &parent) const
 
 QModelIndex FileModel::parent(const QModelIndex &index) const
 {
-    Q_UNUSED(index);
+	Q_UNUSED(index);
 	//qDebug() << "Asking about parent";
 	return QModelIndex();
 }
 
 QModelIndex FileModel::index(int row, int column, const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
+	Q_UNUSED(parent);
 
 	if( rootItem == 0 )
 		return QModelIndex();
@@ -173,15 +173,15 @@ QVariant FileModel::headerData (int section, Qt::Orientation orientation, int ro
 		return colLabels[section - 2];
 	}
 
-        return QVariant();
+	return QVariant();
 }
 
 bool FileModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {
-    Q_UNUSED(section);
-    Q_UNUSED(orientation);
-    Q_UNUSED(value);
-    Q_UNUSED(role);
+	Q_UNUSED(section);
+	Q_UNUSED(orientation);
+	Q_UNUSED(value);
+	Q_UNUSED(role);
 	return false;
 }
 

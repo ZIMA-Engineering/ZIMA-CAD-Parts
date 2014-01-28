@@ -36,30 +36,30 @@ class ProductView;
 class ProductView : public QDialog
 {
 	Q_OBJECT
-	
+
 public:
 	explicit ProductView(QWidget *parent = 0);
 	~ProductView();
 
-    bool canHandle(File *f);
+	bool canHandle(File *f);
 
 public slots:
 	void expectFile(File* f);
 	void fileDownloaded(File* f);
-	
+
 private:
 	Ui::ProductView *ui;
 	File *expectedFile;
-    QHash<File::FileTypes, AbstractProductView*> providers;
-    AbstractProductView *currentProvider;
+	QHash<File::FileTypes, AbstractProductView*> providers;
+	AbstractProductView *currentProvider;
 
-    template <class T> void addProviders()
-    {
-        T *provider = new T(this);
-        provider->hide();
-        foreach(File::FileTypes i, provider->canHandle())
-            providers[i] = provider;
-    }
+	template <class T> void addProviders()
+	{
+		T *provider = new T(this);
+		provider->hide();
+		foreach(File::FileTypes i, provider->canHandle())
+		providers[i] = provider;
+	}
 };
 
 #endif // PRODUCTVIEW_H

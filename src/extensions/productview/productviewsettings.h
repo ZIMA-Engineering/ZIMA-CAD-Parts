@@ -35,12 +35,12 @@ class ProductViewSettings;
 class ProductViewSettings : public QWidget
 {
 	Q_OBJECT
-	
+
 public:
 	explicit ProductViewSettings(QSettings *settings, QWidget *parent = 0);
 	~ProductViewSettings();
 	void saveSettings();
-	
+
 private:
 	Ui::ProductViewSettings *ui;
 	QSettings *settings;

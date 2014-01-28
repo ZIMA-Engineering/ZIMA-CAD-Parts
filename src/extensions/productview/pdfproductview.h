@@ -11,18 +11,18 @@ class PDFProductView;
 
 class PDFProductView : public AbstractProductView
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit PDFProductView(QWidget *parent = 0);
-    ~PDFProductView();
+	explicit PDFProductView(QWidget *parent = 0);
+	~PDFProductView();
 
-    QString title();
-    QList<File::FileTypes> canHandle();
-    bool handle(File *f);
+	QString title();
+	QList<File::FileTypes> canHandle();
+	bool handle(File *f);
 
 private:
-    Ui::PDFProductView *ui;
+	Ui::PDFProductView *ui;
 };
 
 #endif // PDFPRODUCTVIEW_H
