@@ -26,6 +26,7 @@
 #include <QWidget>
 #include "ui_productview.h"
 #include "abstractproductview.h"
+#include "failbackproductview.h"
 
 #include "../../item.h"
 
@@ -41,25 +42,30 @@ public:
 	explicit ProductView(QWidget *parent = 0);
 	~ProductView();
 
-	bool canHandle(File *f);
-
 public slots:
 	void expectFile(File* f);
 	void fileDownloaded(File* f);
+
+protected:
+	void hideEvent(QHideEvent *e);
+	void showEvent(QShowEvent *e);
 
 private:
 	Ui::ProductView *ui;
 	File *expectedFile;
 	QHash<File::FileTypes, AbstractProductView*> providers;
 	AbstractProductView *currentProvider;
+	FailbackProductView *failbackProvider;
 
 	template <class T> void addProviders()
 	{
 		T *provider = new T(this);
 		provider->hide();
 		foreach(File::FileTypes i, provider->canHandle())
-		providers[i] = provider;
+			providers[i] = provider;
 	}
+
+	void saveSettings();
 };
 
 #endif // PRODUCTVIEW_H

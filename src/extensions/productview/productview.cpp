@@ -27,7 +27,7 @@
 #include "pdfproductview.h"
 #include "productviewsettings.h"
 
-
+#include <QtDebug>
 ProductView::ProductView(QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::ProductView()),
@@ -39,10 +39,15 @@ ProductView::ProductView(QWidget *parent) :
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
 	addProviders<PDFProductView>();
+
+	failbackProvider = new FailbackProductView(this);
+	failbackProvider->hide();
 }
 
 ProductView::~ProductView()
 {
+	saveSettings();
+
 	delete ui;
 
 	QHashIterator<File::FileTypes, AbstractProductView*> i(providers);
@@ -55,10 +60,31 @@ ProductView::~ProductView()
 	providers.clear();
 }
 
-bool ProductView::canHandle(File *f)
+void ProductView::hideEvent(QHideEvent * e)
 {
-	return providers.contains(f->type);
+	saveSettings();
+	QDialog::hideEvent(e);
 }
+
+void ProductView::showEvent(QShowEvent *e)
+{
+	QSettings s;
+	restoreGeometry(s.value("Extensions/ProductView/geometry").toByteArray());
+	QPoint pt = s.value("Extensions/ProductView/position").toPoint();
+	if (!pt.isNull())
+		move(pt);
+
+	QDialog::showEvent(e);
+}
+
+void ProductView::saveSettings()
+{
+	QSettings s;
+	qDebug() << "CE " << s.fileName();
+	s.setValue("Extensions/ProductView/geometry", saveGeometry());
+	s.setValue("Extensions/ProductView/position", pos());
+}
+
 
 void ProductView::expectFile(File *f)
 {
@@ -82,11 +108,13 @@ void ProductView::fileDownloaded(File *f)
 
 	if (!providers.contains(f->type))
 	{
-		ui->statusLabel->setText(tr("Unknown provider to handle: %1").arg(f->name));
-		return;
+		currentProvider = failbackProvider;
+	}
+	else
+	{
+		currentProvider = providers.value(f->type);
 	}
 
-	currentProvider = providers.value(f->type);
 	ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
 	currentProvider->handle(f);
 	ui->verticalLayout->insertWidget(1, currentProvider);
