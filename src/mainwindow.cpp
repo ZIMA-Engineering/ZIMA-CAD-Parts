@@ -1304,15 +1304,22 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 	}
 	else if (f->parentItem->server->dataSource == FTP)
 	{
-		downloading = true;
-
 		QString pathForItem(f->parentItem->server->getPathForItem(f->parentItem));
 		QDir d;
 		d.mkpath(pathForItem);
 
 		f->cachePath = pathForItem + "/" + f->name;
-		f->transferHandler = DownloadModel::ServersModel;
-		f->parentItem->server->downloadFiles(QList<File*>() << f, pathForItem);
+		// simulate "real cache" hit. Use local copy of the file (if it exists)
+		if (QFile::exists(f->cachePath))
+		{
+			productView->fileDownloaded(f);
+		}
+		else
+		{
+			f->transferHandler = DownloadModel::ServersModel;
+			downloading = true;
+			f->parentItem->server->downloadFiles(QList<File*>() << f, pathForItem);
+		}
 	}
 	else
 	{
