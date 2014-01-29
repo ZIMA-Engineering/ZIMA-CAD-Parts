@@ -219,14 +219,17 @@ void DownloadModel::fileDownloaded(File *file)
 {
 	int i = queue.indexOf(file);
 
-	beginRemoveRows(QModelIndex(), i, i);
+    if (i != -1)
+    {
+		beginRemoveRows(QModelIndex(), i, i);
 
-	File *f = queue.takeAt(i);
+		File *f = queue.takeAt(i);
 
-	endRemoveRows();
+		endRemoveRows();
 
-	if(f->transfer)
-		delete f->transfer;
+		if(f->transfer)
+			delete f->transfer;
+	}
 }
 
 void DownloadModel::stop()
