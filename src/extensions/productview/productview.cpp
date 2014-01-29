@@ -34,7 +34,7 @@ ProductView::ProductView(QWidget *parent) :
 	currentProvider(0)
 {
 	ui->setupUi(this);
-	ui->statusLabel->setText(tr("Double click any part."));
+//	ui->statusLabel->setText(tr("Double click any part."));
 
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
@@ -80,7 +80,6 @@ void ProductView::showEvent(QShowEvent *e)
 void ProductView::saveSettings()
 {
 	QSettings s;
-	qDebug() << "CE " << s.fileName();
 	s.setValue("Extensions/ProductView/geometry", saveGeometry());
 	s.setValue("Extensions/ProductView/position", pos());
 }
@@ -89,13 +88,11 @@ void ProductView::saveSettings()
 void ProductView::expectFile(File *f)
 {
 	expectedFile = f;
-	ui->statusLabel->setText(tr("Waiting for part to download..."));
+//	ui->statusLabel->setText(tr("Waiting for part to download..."));
 }
 
 void ProductView::fileDownloaded(File *f)
 {
-	qDebug() << "PW" << f->cachePath << f->path;
-
 	if (currentProvider)
 	{
 		currentProvider->hide();
@@ -104,7 +101,7 @@ void ProductView::fileDownloaded(File *f)
 
 	if (f != expectedFile)
 	{
-		ui->statusLabel->setText(tr("Double click any part."));
+//		ui->statusLabel->setText(tr("Double click any part."));
 		return;
 	}
 
@@ -117,9 +114,12 @@ void ProductView::fileDownloaded(File *f)
 		currentProvider = providers.value(f->type);
 	}
 
+    setWindowTitle(f->baseName() + " " + currentProvider->title());
+
 	//qDebug() << "PTH" << f->path << f->targetPath;
-	ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
+	//ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
 	currentProvider->handle(f);
-	ui->verticalLayout->insertWidget(1, currentProvider);
+	//ui->verticalLayout->insertWidget(1, currentProvider);
+    ui->verticalLayout->addWidget(currentProvider);
 	currentProvider->show();
 }
