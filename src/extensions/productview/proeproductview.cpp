@@ -28,7 +28,12 @@ QString ProEProductView::title()
 
 QList<File::FileTypes> ProEProductView::canHandle()
 {
+#ifdef Q_OS_WIN
+	// ProductView Express is available for windows only
 	return QList<File::FileTypes>() << File::PRT_PROE << File::PRT_NX;
+#else
+	return QList<File::FileTypes>();
+#endif
 }
 
 bool ProEProductView::handle(File *f)
