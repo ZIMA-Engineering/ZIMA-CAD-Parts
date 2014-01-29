@@ -25,7 +25,7 @@
 #include <QStringList>
 
 class Item;
-class File;
+struct File;
 
 class FileModel : public QAbstractItemModel
 {
