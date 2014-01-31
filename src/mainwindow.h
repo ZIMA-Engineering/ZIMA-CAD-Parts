@@ -187,6 +187,7 @@ private slots:
 	void historyForward();
 
 	void previewInProductView(const QModelIndex &index);
+	void tree_doubleClicked(const QModelIndex &index);
 };
 
 class SleeperThread : public QThread

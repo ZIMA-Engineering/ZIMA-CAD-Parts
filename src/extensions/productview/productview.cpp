@@ -85,9 +85,14 @@ void ProductView::saveSettings()
 }
 
 
-void ProductView::expectFile(File *f)
+bool ProductView::expectFile(File *f)
 {
-	expectedFile = f;
+	if (expectedFile != f)
+	{
+		expectedFile = f;
+		return true;
+	}
+	return false;
 //	ui->statusLabel->setText(tr("Waiting for part to download..."));
 }
 
@@ -114,12 +119,12 @@ void ProductView::fileDownloaded(File *f)
 		currentProvider = providers.value(f->type);
 	}
 
-    setWindowTitle(f->baseName() + " " + currentProvider->title());
+	setWindowTitle(f->baseName() + " " + currentProvider->title());
 
 	//qDebug() << "PTH" << f->path << f->targetPath;
 	//ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
 	currentProvider->handle(f);
 	//ui->verticalLayout->insertWidget(1, currentProvider);
-    ui->verticalLayout->addWidget(currentProvider);
+	ui->verticalLayout->addWidget(currentProvider);
 	currentProvider->show();
 }

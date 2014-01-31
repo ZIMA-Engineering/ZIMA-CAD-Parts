@@ -42,8 +42,9 @@ public:
 	explicit ProductView(QWidget *parent = 0);
 	~ProductView();
 
+	bool expectFile(File* f);
+
 public slots:
-	void expectFile(File* f);
 	void fileDownloaded(File* f);
 
 protected:

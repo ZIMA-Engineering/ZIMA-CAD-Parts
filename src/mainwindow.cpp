@@ -1272,6 +1272,10 @@ void MainWindow::showOrHideProductView()
 
 			connect(ui->tree, SIGNAL(activated(QModelIndex)),
 					this, SLOT(previewInProductView(QModelIndex)));
+			connect(ui->tree, SIGNAL(clicked(QModelIndex)),
+					this, SLOT(previewInProductView(QModelIndex)));
+			connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
+					this, SLOT(tree_doubleClicked(QModelIndex)));
 			connect(static_cast<ServersModel*>(ui->treeLeft->model()), SIGNAL(fileDownloaded(File*)),
 					productView, SLOT(fileDownloaded(File*)));
 		}
@@ -1291,7 +1295,8 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
-	productView->expectFile(f);
+	if (!productView->expectFile(f))
+		return;
 
 	//ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
 
@@ -1333,4 +1338,13 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 		activateWindow();
 	}
 
+}
+
+void MainWindow::tree_doubleClicked(const QModelIndex &index)
+{
+	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->tree->model())->mapToSource(index);
+
+	File *f = fm->getRootItem()->files.at(srcIndex.row());
+
+	QDesktopServices::openUrl(QUrl::fromLocalFile(f->path));
 }
