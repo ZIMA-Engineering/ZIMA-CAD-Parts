@@ -35,6 +35,7 @@ ProductView::ProductView(QWidget *parent) :
 {
 	ui->setupUi(this);
 //	ui->statusLabel->setText(tr("Double click any part."));
+	setWindowFlags(Qt::Window);
 
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
