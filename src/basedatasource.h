@@ -75,7 +75,6 @@ public:
 	virtual QString name() = 0;
 
 	Item    *rootItem;
-	QListWidgetItem *lwItem;
 	QString label;
 	DataSources dataSource;
 public slots:

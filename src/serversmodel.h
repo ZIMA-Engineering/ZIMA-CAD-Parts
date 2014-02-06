@@ -24,7 +24,6 @@
 #include <QAbstractItemModel>
 #include <QIcon>
 #include <QList>
-#include <QVector>
 #include <QKeyEvent>
 
 #include "item.h"
@@ -57,7 +56,7 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	//---
 	void setDownloadQueue(DownloadModel *queue);
-	void setServerData(QVector<BaseDataSource*>);
+	void setServerData(QList<BaseDataSource*>);
 	QString translateDataSourceNameToPath(QString name);
 	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
 	bool hasErrors(BaseDataSource::Operation op);
@@ -93,7 +92,7 @@ protected slots:
 
 private:
 	QIcon dirIcon, serverIcon;
-	QVector<BaseDataSource*> servers;
+	QList<BaseDataSource*> servers;
 	Item *rootItem;
 	Item *m_lastTechSpecRequest;
 	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];

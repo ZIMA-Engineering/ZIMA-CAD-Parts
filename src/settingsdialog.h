@@ -24,7 +24,6 @@
 #include <QtGui/QDialog>
 #include <QSettings>
 #include <QMultiHash>
-#include <QVector>
 #include <QTranslator>
 #include <QSignalMapper>
 #include <QList>
@@ -48,40 +47,40 @@ class SettingsDialog : public QDialog {
 	Q_DISABLE_COPY(SettingsDialog)
 public:
 	enum Section {
-		General=0,
-		DataSources,
-		ExternalPrograms,
-		DeveloperMode,
-		ProductView,
-		SectionCount
+	    General=0,
+	    DataSources,
+	    ExternalPrograms,
+	    DeveloperMode,
+	    ProductView,
+	    SectionCount
 	};
 
 	enum Languages {
-		DETECT=0,
-		ENGLISH,
-		CZECH
+	    DETECT=0,
+	    ENGLISH,
+	    CZECH
 	};
 
-	explicit SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QTranslator **translator, QWidget *parent = 0);
+	explicit SettingsDialog(QSettings *settings, QList<BaseDataSource*> datasources, QTranslator **translator, QWidget *parent = 0);
 	virtual ~SettingsDialog();
 
 	void setSection(Section s);
 	void loadSettings(QSettings*);
 	void saveSettings();
 
-	QVector<BaseDataSource*> getData();
+	QList<BaseDataSource*> getDatasources();
 	static QString langIndexToName(int lang);
 	static int langIndex(QString lang);
 
 protected:
 	virtual void changeEvent(QEvent *e);
-	void updateServerList();
 
 private slots:
 	void addDataSource();
 	void editDataSource();
 	void removeDataSource();
-	void selectDataSource(QListWidgetItem*, QListWidgetItem*);
+	void datasourceUpButton_clicked();
+	void datasourceDownButton_clicked();
 	void pruneCache(QString path = QString());
 //	void changingText();
 //	void changingPassive();
@@ -89,15 +88,13 @@ private slots:
 
 private:
 	Ui::SettingsDialog  *m_ui;
-	QVector<BaseDataSource*> originServers;
-	QVector<BaseDataSource*> servers;
-	//QHash<QListWidgetItem*, BaseDataSource*> lastUsedDataSources;
-	BaseDataSource           *currentServer;
 	QSettings *settings;
 	QTranslator **translator;
 	QSignalMapper *zimaUtilSignalMapper;
 	QList<QLineEdit*> zimaUtilLineEdits;
 	ProductViewSettings *productViewSettings;
+
+	void setupDatasourceList(QList<BaseDataSource*> datasources);
 };
 
 #endif // SETTINGSDIALOG_H

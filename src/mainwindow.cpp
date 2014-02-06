@@ -164,54 +164,54 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	filterGroups << FilterGroup("ProE", "Pro/Engineer");
 	filterGroups.last()
-			<< new ExtensionFilter(File::PRT_PROE)
-			<< new ExtensionFilter(File::ASM)
-			<< new ExtensionFilter(File::DRW)
-			<< new ExtensionFilter(File::FRM)
-			<< new ExtensionFilter(File::NEU_PROE)
-			<< new VersionFilter();
+	        << new ExtensionFilter(File::PRT_PROE)
+	        << new ExtensionFilter(File::ASM)
+	        << new ExtensionFilter(File::DRW)
+	        << new ExtensionFilter(File::FRM)
+	        << new ExtensionFilter(File::NEU_PROE)
+	        << new VersionFilter();
 
 	filterGroups << FilterGroup("CATIA", "CATIA");
 	filterGroups.last()
-			<< new ExtensionFilter(File::CATPART)
-			<< new ExtensionFilter(File::CATPRODUCT)
-			<< new ExtensionFilter(File::CATDRAWING);
+	        << new ExtensionFilter(File::CATPART)
+	        << new ExtensionFilter(File::CATPRODUCT)
+	        << new ExtensionFilter(File::CATDRAWING);
 
 	filterGroups << FilterGroup("NX", "NX (UGS)");
 	filterGroups.last()
-			<< new ExtensionFilter(File::PRT_NX);
+	        << new ExtensionFilter(File::PRT_NX);
 
 	filterGroups << FilterGroup("SolidWorks", "SolidWorks");
 	filterGroups.last().filters
-			<< new ExtensionFilter(File::SLDPRT)
-			<< new ExtensionFilter(File::SLDASM)
-			<< new ExtensionFilter(File::SLDDRW);
+	        << new ExtensionFilter(File::SLDPRT)
+	        << new ExtensionFilter(File::SLDASM)
+	        << new ExtensionFilter(File::SLDDRW);
 
 	filterGroups << FilterGroup("SolidEdge", "Solid Edge");
 	filterGroups.last()
-			<< new ExtensionFilter(File::PAR)
-			<< new ExtensionFilter(File::PSM)
-			<< new ExtensionFilter(File::ASM)
-			<< new ExtensionFilter(File::DFT);
+	        << new ExtensionFilter(File::PAR)
+	        << new ExtensionFilter(File::PSM)
+	        << new ExtensionFilter(File::ASM)
+	        << new ExtensionFilter(File::DFT);
 
 	filterGroups << FilterGroup("Invertor", "INVERTOR");
 	filterGroups.last()
-			<< new ExtensionFilter(File::IPT)
-			<< new ExtensionFilter(File::IAM)
-			<< new ExtensionFilter(File::IDW);
+	        << new ExtensionFilter(File::IPT)
+	        << new ExtensionFilter(File::IAM)
+	        << new ExtensionFilter(File::IDW);
 
 	filterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
 	filterGroups.last()
-			<< new ExtensionFilter(File::STEP)
-			<< new ExtensionFilter(File::IGES)
-			<< new ExtensionFilter(File::DWG)
-			<< new ExtensionFilter(File::DXF);
+	        << new ExtensionFilter(File::STEP)
+	        << new ExtensionFilter(File::IGES)
+	        << new ExtensionFilter(File::DWG)
+	        << new ExtensionFilter(File::DXF);
 
 	filterGroups << FilterGroup("NonCAD", "NonCAD");
 	filterGroups.last()
-			<< new ExtensionFilter(File::STL)
-			<< new ExtensionFilter(File::BLEND)
-			<< new ExtensionFilter(File::PDF);
+	        << new ExtensionFilter(File::STL)
+	        << new ExtensionFilter(File::BLEND)
+	        << new ExtensionFilter(File::PDF);
 
 	loadFilters();
 	rebuildFilters();
@@ -478,9 +478,9 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 		ServersModel* sm = static_cast<ServersModel*>(ui->treeLeft->model());
 		fm->setRootIndex(QModelIndex());
 
-		QVector<BaseDataSource*> oldServers = servers;
+		QList<BaseDataSource*> oldServers = servers;
 
-		servers = settingsDlg->getData();
+		servers = settingsDlg->getDatasources();
 		sm->setServerData(servers);
 
 		qDeleteAll(oldServers);
@@ -537,10 +537,10 @@ void MainWindow::updateClicked()
 void MainWindow::deleteSelectedParts()
 {
 	if( QMessageBox::question(this,
-							  tr("Do you really want to delete selected parts?"),
-							  tr("Do you really want to delete selected parts? This action is irreversible."),
-							  QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
-			==  QMessageBox::Yes)
+	                          tr("Do you really want to delete selected parts?"),
+	                          tr("Do you really want to delete selected parts? This action is irreversible."),
+	                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+	        ==  QMessageBox::Yes)
 	{
 		ServersModel *sm = static_cast<ServersModel*>(ui->treeLeft->model());
 
@@ -1007,10 +1007,10 @@ void MainWindow::loadZimaUtils()
 	settings->endGroup();
 }
 
-QVector<BaseDataSource*> MainWindow::loadDataSources()
+QList<BaseDataSource*> MainWindow::loadDataSources()
 {
 	QString currentLang = getCurrentMetadataLanguageCode().left(2);
-	QVector<BaseDataSource*> servers;
+	QList<BaseDataSource*> servers;
 
 	settings->beginGroup("DataSources");
 	foreach(QString str, settings->childGroups())
@@ -1271,13 +1271,13 @@ void MainWindow::showOrHideProductView()
 			//ui->tabWidget->addTab(productView, tr("ProductView"));
 
 			connect(ui->tree, SIGNAL(activated(QModelIndex)),
-					this, SLOT(previewInProductView(QModelIndex)));
+			        this, SLOT(previewInProductView(QModelIndex)));
 			connect(ui->tree, SIGNAL(clicked(QModelIndex)),
-					this, SLOT(previewInProductView(QModelIndex)));
+			        this, SLOT(previewInProductView(QModelIndex)));
 			connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
-					this, SLOT(tree_doubleClicked(QModelIndex)));
+			        this, SLOT(tree_doubleClicked(QModelIndex)));
 			connect(static_cast<ServersModel*>(ui->treeLeft->model()), SIGNAL(fileDownloaded(File*)),
-					productView, SLOT(fileDownloaded(File*)));
+			        productView, SLOT(fileDownloaded(File*)));
 		}
 	} else if (productView)
 	{

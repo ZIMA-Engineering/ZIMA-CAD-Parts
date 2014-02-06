@@ -108,7 +108,6 @@ void AddEditDataSource::dataSourceTypeChanged(int index)
 	{
 	case LOCAL: {
 		LocalDataSource *s = new LocalDataSource();
-		s->lwItem = lastDataSource->lwItem;
 
 		dataSources << s;
 		lastDataSource = s;
@@ -116,7 +115,6 @@ void AddEditDataSource::dataSourceTypeChanged(int index)
 	}
 	case FTP: {
 		FtpDataSource *s = new FtpDataSource();
-		s->lwItem = lastDataSource->lwItem;
 
 		dataSources << s;
 		lastDataSource = s;

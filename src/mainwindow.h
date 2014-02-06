@@ -67,16 +67,16 @@ public:
 
 private:
 	enum Tabs {
-		TECH_SPECS,
-		PARTS,
-		DOWNLOADS,
+	    TECH_SPECS,
+	    PARTS,
+	    DOWNLOADS,
 //		PRODUCT_VIEW,
-		TABS_COUNT
+	    TABS_COUNT
 	};
 
 	Ui::MainWindowClass *ui;
 	static QSettings           *settings;
-	QVector<BaseDataSource*> servers;
+	QList<BaseDataSource*> servers;
 	QLabel              *statusState, *statusDir;
 	FtpDataSource           *currentServer;
 	FileModel *fm;
@@ -174,7 +174,7 @@ private slots:
 	void openDirTreePath();
 	void loadSettings();
 	void loadZimaUtils();
-	QVector<BaseDataSource*> loadDataSources();
+	QList<BaseDataSource*> loadDataSources();
 	void saveSettings();
 	void loadFilters();
 	void saveFilters();

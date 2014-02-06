@@ -237,7 +237,7 @@ void ServersModel::setDownloadQueue(DownloadModel *queue)
 	connect(this, SIGNAL(fileDownloaded(File*)), queue, SLOT(fileDownloaded(File*)));
 }
 
-void ServersModel::setServerData(QVector<BaseDataSource*> srv)
+void ServersModel::setServerData(QList<BaseDataSource*> srv)
 {
 	//qDeleteAll(rootItem->children);
 	rootItem->children.clear();
