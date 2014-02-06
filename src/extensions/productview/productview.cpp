@@ -39,7 +39,8 @@ ProductView::ProductView(QWidget *parent) :
 
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
-	addProviders<PDFProductView>();
+    // dosabled 20140206 by Vlad's request:
+    // addProviders<PDFProductView>();
 
 	failbackProvider = new FailbackProductView(this);
 	failbackProvider->hide();
