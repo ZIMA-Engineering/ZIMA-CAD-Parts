@@ -157,7 +157,7 @@ QVariant ServersModel::headerData(int section, Qt::Orientation orientation, int 
 		return QVariant();
 
 	if (section == 0)
-		return tr("Server");
+		return tr("Data sources");
 
 	return QVariant();
 }
