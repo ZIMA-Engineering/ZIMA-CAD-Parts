@@ -1331,13 +1331,14 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 		Q_ASSERT_X(0, "business logic error", "Unhandled dataSource type");
 	}
 
-	if (!productView->isVisible())
+	if (productView->canHandle())
 	{
 		productView->show();
 		// keep focus on the main window - keyboard handling
 		activateWindow();
 	}
-
+	else
+		productView->hide();
 }
 
 void MainWindow::tree_doubleClicked(const QModelIndex &index)

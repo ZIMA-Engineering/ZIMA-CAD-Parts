@@ -43,6 +43,7 @@ public:
 	~ProductView();
 
 	bool expectFile(File* f);
+	bool canHandle();
 
 public slots:
 	void fileDownloaded(File* f);
@@ -63,7 +64,7 @@ private:
 		T *provider = new T(this);
 		provider->hide();
 		foreach(File::FileTypes i, provider->canHandle())
-			providers[i] = provider;
+		providers[i] = provider;
 	}
 
 	void saveSettings();

@@ -39,11 +39,12 @@ ProductView::ProductView(QWidget *parent) :
 
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
-    // dosabled 20140206 by Vlad's request:
-    // addProviders<PDFProductView>();
-
-	failbackProvider = new FailbackProductView(this);
-	failbackProvider->hide();
+	// disabled 20140206 by Vlad's request:
+	// only "supported" files should be displayed. For rest of files this dialog should be closed
+	// addProviders<PDFProductView>();
+	//failbackProvider = new FailbackProductView(this);
+	//failbackProvider->hide();
+	failbackProvider = 0;
 }
 
 ProductView::~ProductView()
@@ -60,6 +61,11 @@ ProductView::~ProductView()
 	}
 
 	providers.clear();
+}
+
+bool ProductView::canHandle()
+{
+	return currentProvider != 0;
 }
 
 void ProductView::hideEvent(QHideEvent * e)
@@ -114,7 +120,9 @@ void ProductView::fileDownloaded(File *f)
 
 	if (!providers.contains(f->type))
 	{
-		currentProvider = failbackProvider;
+		//currentProvider = failbackProvider;
+		currentProvider = 0;
+		return;
 	}
 	else
 	{
