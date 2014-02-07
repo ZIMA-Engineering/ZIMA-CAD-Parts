@@ -85,6 +85,7 @@ private slots:
 //	void changingText();
 //	void changingPassive();
 	void setZimaUtilPath(int util);
+	void proeButton_clicked();
 
 private:
 	Ui::SettingsDialog  *m_ui;

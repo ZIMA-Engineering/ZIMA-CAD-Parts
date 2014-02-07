@@ -1347,5 +1347,24 @@ void MainWindow::tree_doubleClicked(const QModelIndex &index)
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
-	QDesktopServices::openUrl(QUrl::fromLocalFile(f->path));
+	switch (f->type)
+	{
+	case File::PRT_PROE:
+	case File::ASM:
+	case File::DRW:
+	case File::FRM:
+	case File::NEU_PROE:
+	{
+		QString exe = settings->value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
+		qDebug() << "Starting ProE:" << exe << f->path << "; working dir" << ui->editDir->text();
+		bool ret = QProcess::startDetached(exe, QStringList() << f->path, ui->editDir->text());
+		if (!ret)
+			QMessageBox::information(this, tr("ProE Startup Error"),
+			                         tr("An error occured while ProE has been requested to start"),
+			                         QMessageBox::Ok);
+		break;
+	}
+	default:
+		QDesktopServices::openUrl(QUrl::fromLocalFile(f->path));
+	}
 }

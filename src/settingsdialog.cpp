@@ -81,6 +81,9 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 	m_ui->developerModeGroupBox->setChecked( settings->value("Developer/Enabled", false).toBool() );
 	m_ui->techSpecToolBarCheckBox->setChecked( settings->value("Developer/TechSpecToolBar", true).toBool() );
 
+	connect(m_ui->proeButton, SIGNAL(clicked()),
+	        this, SLOT(proeButton_clicked()));
+
 	zimaUtilSignalMapper = new QSignalMapper(this);
 
 	connect(zimaUtilSignalMapper, SIGNAL(mapped(int)), this, SLOT(setZimaUtilPath(int)));
@@ -106,6 +109,10 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 
 		settings->endGroup();
 	}
+
+	settings->beginGroup("ProE");
+	m_ui->proeEdit->setText(settings->value("Executable", "proe.exe").toString());
+	settings->endGroup();
 
 	settings->endGroup();
 
@@ -185,6 +192,10 @@ void SettingsDialog::saveSettings()
 		settings->setValue("Executable", zimaUtilLineEdits[i]->text());
 		settings->endGroup();
 	}
+
+	settings->beginGroup("ProE");
+	settings->setValue("Executable", m_ui->proeEdit->text());
+	settings->endGroup();
 
 	settings->endGroup();
 
@@ -402,4 +413,15 @@ void SettingsDialog::setZimaUtilPath(int util)
 
 	if (!path.isEmpty())
 		zimaUtilLineEdits[util]->setText(path);
+}
+
+void SettingsDialog::proeButton_clicked()
+{
+	qDebug() << 1;
+	QString exe = QFileDialog::getOpenFileName(this, tr("Locate ProE launcher"),
+	              QDir::currentPath(),
+	              tr("ProE executable (proe.exe);;All files (*)"));
+	if (exe.isNull())
+		return;
+	m_ui->proeEdit->setText(exe);
 }

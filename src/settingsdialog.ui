@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>577</width>
-    <height>398</height>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -290,16 +290,29 @@
       <attribute name="title">
        <string>External programs</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
-        <widget class="QGroupBox" name="zimaUtilsGroupBox">
-         <property name="title">
-          <string>ZIMA utilities</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout"/>
-        </widget>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="1" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>ProE executable:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="proeEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="proeButton">
+           <property name="text">
+            <string>Find...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item>
+       <item row="2" column="1">
         <spacer name="verticalSpacer_5">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -311,6 +324,14 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QGroupBox" name="zimaUtilsGroupBox">
+         <property name="title">
+          <string>ZIMA utilities</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout"/>
+        </widget>
        </item>
       </layout>
      </widget>
