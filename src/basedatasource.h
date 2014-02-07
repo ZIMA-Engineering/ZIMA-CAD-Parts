@@ -75,7 +75,6 @@ public:
 	virtual QString name() = 0;
 
 	Item    *rootItem;
-	QListWidgetItem *lwItem;
 	QString label;
 	DataSources dataSource;
 public slots:
@@ -94,8 +93,8 @@ public slots:
 	void determineFileVersions(Item *item);
 	void retranslate(QString lang = QString());
 	void saveSettings(QSettings& settings);
-	virtual void assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
-	virtual void assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
+	virtual void assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite = false) = 0;
+	virtual void assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite = false) = 0;
 protected:
 	virtual void loadItemLogo(Item *item) = 0;
 	void createMetadata(Item *item);

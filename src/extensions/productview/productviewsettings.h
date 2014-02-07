@@ -23,8 +23,6 @@
 
 #include "../../zima-cad-parts.h"
 
-#ifdef INCLUDE_PRODUCT_VIEW
-
 #include <QWidget>
 #include <QSettings>
 
@@ -37,12 +35,12 @@ class ProductViewSettings;
 class ProductViewSettings : public QWidget
 {
 	Q_OBJECT
-	
+
 public:
 	explicit ProductViewSettings(QSettings *settings, QWidget *parent = 0);
 	~ProductViewSettings();
 	void saveSettings();
-	
+
 private:
 	Ui::ProductViewSettings *ui;
 	QSettings *settings;
@@ -51,5 +49,4 @@ private slots:
 	void setPathDialog();
 };
 
-#endif // INCLUDE_PRODUCT_VIEW
 #endif // PRODUCTVIEWSETTINGS_H

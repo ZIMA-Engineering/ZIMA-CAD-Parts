@@ -103,7 +103,7 @@ void FtpDataSource::loadRootItem(Item *item)
 void FtpDataSource::checkAndSendTechSpecUrl(Item *item)
 {
 	if(techSpecItem != item)
-			return;
+		return;
 
 	BaseRemoteDataSource::checkAndSendTechSpecUrl(item);
 }
@@ -146,6 +146,8 @@ void FtpDataSource::ftpStateChanged(int state)
 
 void FtpDataSource::ftpDataTransferProgress(qint64 done, qint64 total)
 {
+	Q_UNUSED(total);
+
 	if( !fileTasks.contains( dlFtp->currentId() ) )
 		return;
 
@@ -368,8 +370,9 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 			{
 				dirsToList << i;
 				//qDebug() << "new directory" << i->path << "IN QUEUE";
-			} else
+			} else {
 				;//qDebug() << "new directory" << i->path << "NOT IN QUEUE";
+			}
 			emit itemInserted(i);
 		}
 
@@ -419,7 +422,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 	} else if (id == ftpListId) { //finished listing a directory
 		//ftpListId = -1;
 
-		Item *currentDir = 0;
+//		Item *currentDir = 0;
 
 		if( hasTechSpecDir )
 		{
@@ -685,7 +688,7 @@ void FtpDataSource::ftpFileDownloadFinished(int id, bool error)
 void FtpDataSource::deleteFiles(QList<File*> files)
 {
 	foreach(File *f, files)
-		emit fileError(BaseDataSource::Delete, new BaseDataSource::Error(f, tr("Operation not supported")));
+	emit fileError(BaseDataSource::Delete, new BaseDataSource::Error(f, tr("Operation not supported")));
 
 	emit filesDeleted();
 }
@@ -705,7 +708,7 @@ void FtpDataSource::downloadFiles(QList<File*> files, QString dir)
 	//if( filesToDownload.size() > 0 )
 	//	downloadFile(filesToDownload[0]);
 	foreach(File *f, filesToDownload)
-		downloadFile(f);
+	downloadFile(f);
 }
 
 void FtpDataSource::downloadFile(File* file)
@@ -730,7 +733,7 @@ void FtpDataSource::resumeDownload()
 	checkConnection(dlFtp);
 
 	foreach(File *f, filesToDownload)
-		downloadFile(f);
+	downloadFile(f);
 }
 
 void FtpDataSource::deleteDownloadQueue()
@@ -773,10 +776,10 @@ void FtpDataSource::saveSettings(QSettings &settings)
 void FtpDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
 {
 	QByteArray htmlIndex = QString("<html>\n"
-			"	<head>\n"
-			"		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
-			"	</head>\n"
-			"</html>\n").arg(url).toUtf8();
+	                               "	<head>\n"
+	                               "		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
+	                               "	</head>\n"
+	                               "</html>\n").arg(url).toUtf8();
 	QString targetFile = item->path + "/" + TECHSPEC_DIR + "/" + "index_" + lang + ".html";
 
 	QDir cachedTechSpecDir = (cacheDirPath() + "/" + remoteHost + "/" + item->path + "/" + TECHSPEC_DIR);
@@ -807,10 +810,10 @@ void FtpDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lan
 void FtpDataSource::assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite)
 {
 	QByteArray htmlIndex = QString("<html>\n"
-			"	<head>\n"
-			"		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
-			"	</head>\n"
-			"</html>\n").arg(url).toUtf8();
+	                               "	<head>\n"
+	                               "		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
+	                               "	</head>\n"
+	                               "</html>\n").arg(url).toUtf8();
 	QString targetFile = item->path + "/" + TECHSPEC_DIR + "/" + "index-parts_" + lang + ".html";
 
 	QDir cachedTechSpecDir = (cacheDirPath() + "/" + remoteHost + "/" + item->path + "/" + TECHSPEC_DIR);

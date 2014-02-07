@@ -23,10 +23,10 @@
 
 #include "../../zima-cad-parts.h"
 
-#ifdef INCLUDE_PRODUCT_VIEW
-
 #include <QWidget>
-#include <QSettings>
+#include "ui_productview.h"
+#include "abstractproductview.h"
+#include "failbackproductview.h"
 
 #include "../../item.h"
 
@@ -34,24 +34,40 @@ namespace Ui {
 class ProductView;
 }
 
-class ProductView : public QWidget
+class ProductView : public QDialog
 {
 	Q_OBJECT
-	
+
 public:
-	explicit ProductView(QSettings *settings, QWidget *parent = 0);
+	explicit ProductView(QWidget *parent = 0);
 	~ProductView();
 
+	bool expectFile(File* f);
+	bool canHandle();
+
 public slots:
-	void expectFile(File* f);
 	void fileDownloaded(File* f);
-	
+
+protected:
+	void hideEvent(QHideEvent *e);
+	void showEvent(QShowEvent *e);
+
 private:
 	Ui::ProductView *ui;
-	QSettings *settings;
 	File *expectedFile;
-};
+	QHash<File::FileTypes, AbstractProductView*> providers;
+	AbstractProductView *currentProvider;
+	FailbackProductView *failbackProvider;
 
-#endif // INCLUDE_PRODUCT_VIEW
+	template <class T> void addProviders()
+	{
+		T *provider = new T(this);
+		provider->hide();
+		foreach(File::FileTypes i, provider->canHandle())
+		providers[i] = provider;
+	}
+
+	void saveSettings();
+};
 
 #endif // PRODUCTVIEW_H

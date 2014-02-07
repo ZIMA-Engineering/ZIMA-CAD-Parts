@@ -32,11 +32,32 @@
 #include "baseremotedatasource.h"
 #include "zimautils.h"
 
-SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> servers, QTranslator **translator, QWidget *parent) :
+//! A helpter template class to convert any pointer to QVariant and vice versa
+template <class T> class PtrVariant
+{
+public:
+	static T* asPtr(QVariant v)
+	{
+		return  (T *) v.value<void *>();
+	}
+
+	static QVariant asQVariant(T* ptr)
+	{
+		return qVariantFromValue((void *) ptr);
+	}
+};
+
+// store datasource in qlistwidgetitem to save additional qlist handling
+#define DATASOURCE_ROLE Qt::UserRole+1
+// role to sign if the datasource is used in app or just created here
+//    true = created here; false = used in app (do not delete)
+#define UNUSED_ROLE Qt::UserRole+2
+
+
+SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datasources, QTranslator **translator, QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SettingsDialog),
 	settings(settings),
-	originServers(servers),
 	translator(translator)
 {
 	m_ui->setupUi(this);
@@ -44,10 +65,13 @@ SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> ser
 	connect(m_ui->btnAdd, SIGNAL(clicked()), this, SLOT(addDataSource()));
 	connect(m_ui->editBtn, SIGNAL(clicked()), this, SLOT(editDataSource()));
 	connect(m_ui->btnRemove, SIGNAL(clicked()), this, SLOT(removeDataSource()));
-	connect(m_ui->listFtp, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(selectDataSource(QListWidgetItem*,QListWidgetItem*)));
+	connect(m_ui->datasourceUpButton, SIGNAL(clicked()),
+	        this, SLOT(datasourceUpButton_clicked()));
+	connect(m_ui->datasourceDownButton, SIGNAL(clicked()),
+	        this, SLOT(datasourceDownButton_clicked()));
 	connect(m_ui->pruneCacheButton, SIGNAL(clicked()), this, SLOT(pruneCache()));
 
-	updateServerList();
+	setupDatasourceList(datasources);
 
 	m_ui->spinPicture->setValue( settings->value("GUI/ThumbWidth", 32).toInt() );
 	m_ui->previewWidthSpinBox->setValue( settings->value("GUI/PreviewWidth", 256).toInt() );
@@ -85,16 +109,12 @@ SettingsDialog::SettingsDialog(QSettings *settings, QVector<BaseDataSource*> ser
 
 	settings->endGroup();
 
-#ifdef INCLUDE_PRODUCT_VIEW
 	productViewSettings = new ProductViewSettings(settings, this);
 	m_ui->tabWidget->addTab(productViewSettings, tr("ProductView Settings"));
-#endif // INCLUDE_PRODUCT_VIEW
 }
 
 SettingsDialog::~SettingsDialog()
 {
-	servers.clear();
-
 	delete m_ui;
 }
 
@@ -116,6 +136,7 @@ void SettingsDialog::setSection(SettingsDialog::Section s)
 
 void SettingsDialog::loadSettings(QSettings *settings)
 {
+	Q_UNUSED(settings);
 }
 
 void SettingsDialog::saveSettings()
@@ -137,21 +158,21 @@ void SettingsDialog::saveSettings()
 		QStringList paths;
 
 		paths
-				<< filename
-				<< ("locale/" + filename)
-				<< (":/" + filename);
+		        << filename
+		        << ("locale/" + filename)
+		        << (":/" + filename);
 
 #ifdef Q_OS_MAC
 		paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
 #endif
 
 		foreach(QString path, paths)
-			if( t->load(path) )
-			{
-				qApp->installTranslator(t);
-				*translator = t;
-				break;
-			}
+		if( t->load(path) )
+		{
+			qApp->installTranslator(t);
+			*translator = t;
+			break;
+		}
 	}
 
 	settings->setValue("Language", lang);
@@ -167,18 +188,20 @@ void SettingsDialog::saveSettings()
 
 	settings->endGroup();
 
-#ifdef INCLUDE_PRODUCT_VIEW
 	productViewSettings->saveSettings();
-#endif // INCLUDE_PRODUCT_VIEW
 }
 
 void SettingsDialog::addDataSource()
 {
 	BaseDataSource *dataSource = 0;
 
-	if ( m_ui->listFtp->count() )
+	if ( m_ui->datasourceList->count() )
 	{
-		switch( currentServer->dataSource )
+		QListWidgetItem *item = m_ui->datasourceList->currentItem();
+		if (!item)
+			item = m_ui->datasourceList->item(0);
+		BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
+		switch( ds->dataSource )
 		{
 		case LOCAL: {
 			LocalDataSource *s = new LocalDataSource;
@@ -207,15 +230,15 @@ void SettingsDialog::addDataSource()
 
 		if( addEdit->exec() == QDialog::Accepted )
 		{
-			currentServer = addEdit->dataSource();
-
-			currentServer->lwItem = new QListWidgetItem( currentServer->dataSourceIcon(), currentServer->label );
-
-			servers << currentServer;
-
-			m_ui->listFtp->addItem(currentServer->lwItem);
-			m_ui->listFtp->setCurrentItem(currentServer->lwItem);
-		} else delete dataSource;
+			BaseDataSource *ds = addEdit->dataSource();
+			QListWidgetItem *item =  new QListWidgetItem(ds->dataSourceIcon(), ds->label);
+			item->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(ds));
+			item->setData(UNUSED_ROLE, true);
+			m_ui->datasourceList->addItem(item);
+			m_ui->datasourceList->setCurrentItem(item);
+		}
+		else
+			delete dataSource;
 
 		delete addEdit;
 	}
@@ -224,26 +247,27 @@ void SettingsDialog::addDataSource()
 
 void SettingsDialog::editDataSource()
 {
-	if ( !m_ui->listFtp->count() )
+	if ( !m_ui->datasourceList->count() )
 		return;
 
-	AddEditDataSource *addEdit = new AddEditDataSource(currentServer, AddEditDataSource::EDIT);
+	QListWidgetItem *item = m_ui->datasourceList->currentItem();
+	if (!item)
+		return;
 
-	if( addEdit->exec() == QDialog::Accepted )
+	BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
+	AddEditDataSource *addEdit = new AddEditDataSource(ds, AddEditDataSource::EDIT);
+
+	if (addEdit->exec())
 	{
 		BaseDataSource *edited = addEdit->dataSource();
 
-		if( edited != currentServer )
+		if ( edited != ds )
 		{
-			servers.remove( m_ui->listFtp->currentRow() );
-			servers.insert( m_ui->listFtp->currentRow(), edited );
-
-			// old currentServer is deleted in ~AddEditDataSource
-			currentServer = edited;
-			currentServer->lwItem->setIcon( currentServer->dataSourceIcon() );
+			// old datasource is deleted in ~AddEditDataSource
+			item->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(edited));
+			item->setIcon(edited->dataSourceIcon());
+			item->setText(edited->label);
 		}
-
-		currentServer->lwItem->setText( currentServer->label );
 	}
 
 	delete addEdit;
@@ -251,51 +275,82 @@ void SettingsDialog::editDataSource()
 
 void SettingsDialog::removeDataSource()
 {
-	if ( !m_ui->listFtp->count() )
+	if ( !m_ui->datasourceList->count() )
 		return;
 
-	QListWidgetItem *it = m_ui->listFtp->currentItem();
-	int row = m_ui->listFtp->currentRow();
+	QListWidgetItem *it = m_ui->datasourceList->currentItem();
+	if (!it)
+		return;
 
-	m_ui->listFtp->takeItem(row);
-	servers.remove(row);
+	//  no need to call deleteLater() on used/application datasource
+	//  because unused datasources are deleted in
+	//  mainwindow.cpp
+	BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(it->data(DATASOURCE_ROLE));
+	if (it->data(UNUSED_ROLE).toBool())
+	{
+		ds->deleteLater();
+	}
+
+	int row = m_ui->datasourceList->currentRow();
+	m_ui->datasourceList->takeItem(row);
+
 	delete it;
 }
 
-void SettingsDialog::selectDataSource(QListWidgetItem *current, QListWidgetItem *)
+void SettingsDialog::datasourceUpButton_clicked()
 {
-	if (!current)
+	QListWidget *lw = m_ui->datasourceList;
+	QListWidgetItem *current = lw->currentItem();
+	int ix = lw->row(current);
+	if (ix > 0)
+	{
+		QListWidgetItem *temp = lw->takeItem(ix);
+		lw->insertItem(ix-1, temp);
+		lw->setCurrentRow(ix-1);
+	}
+}
+
+void SettingsDialog::datasourceDownButton_clicked()
+{
+	QListWidget *lw = m_ui->datasourceList;
+	QListWidgetItem *current = lw->currentItem();
+	int ix = lw->row(current);
+	if (ix < lw->count()-1)
+	{
+		QListWidgetItem *temp = lw->takeItem(ix);
+		lw->insertItem(ix+1, temp);
+		lw->setCurrentRow(ix+1);
+	}
+}
+
+void SettingsDialog::setupDatasourceList(QList<BaseDataSource*> datasources)
+{
+	m_ui->datasourceList->clear();
+	if (datasources.isEmpty())
 		return;
 
-	currentServer = servers[ m_ui->listFtp->currentRow() ];
-}
-
-void SettingsDialog::updateServerList()
-{
-	m_ui->listFtp->clear();
-
-	foreach(BaseDataSource *s, originServers)
+	foreach(BaseDataSource *s, datasources)
 	{
-		QListWidgetItem *lwi = new QListWidgetItem(s->dataSourceIcon(), s->label);
-		s->lwItem = lwi;
-
-		servers << s;
-
-		m_ui->listFtp->addItem(lwi);
+		QListWidgetItem *i = new QListWidgetItem(s->dataSourceIcon(), s->label);
+		i->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(s));
+		i->setData(UNUSED_ROLE, false);
+		m_ui->datasourceList->addItem(i);
 	}
 
-	if(!servers.isEmpty())
-	{
-		currentServer = servers.first();
-		m_ui->listFtp->setCurrentItem(currentServer->lwItem);
-	}
-
-	m_ui->listFtp->setFocus();
+	m_ui->datasourceList->setCurrentRow(0);
+	m_ui->datasourceList->setFocus();
 }
 
-QVector<BaseDataSource*> SettingsDialog::getData()
+QList<BaseDataSource*> SettingsDialog::getDatasources()
 {
-	return servers;
+	QList<BaseDataSource*> ret;
+	for (int i = 0; i < m_ui->datasourceList->count(); ++i)
+	{
+		QListWidgetItem *item = m_ui->datasourceList->item(i);
+		ret << PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
+	}
+
+	return ret;
 }
 
 int SettingsDialog::langIndex(QString lang)

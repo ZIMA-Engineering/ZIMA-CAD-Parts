@@ -52,17 +52,15 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
-	  techSpecToolBar(0),
 	  historyCurrentIndex(-1),
 	  historySize(0),
-#ifdef INCLUDE_PRODUCT_VIEW
-	  productView(0),
-#endif
-	  lastPartsIndexItem(0)
+	  techSpecToolBar(0),
+	  lastPartsIndexItem(0),
+	  productView(0)
 {
 	downloading = false;
 
-        qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
+	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
 	settings = new QSettings(this);
 	bool useSplash = settings->value("GUI/Splash/Enabled", true).toBool();
@@ -166,54 +164,54 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	filterGroups << FilterGroup("ProE", "Pro/Engineer");
 	filterGroups.last()
-			<< new ExtensionFilter(File::PRT_PROE)
-			<< new ExtensionFilter(File::ASM)
-			<< new ExtensionFilter(File::DRW)
-			<< new ExtensionFilter(File::FRM)
-			<< new ExtensionFilter(File::NEU_PROE)
-			<< new VersionFilter();
+	        << new ExtensionFilter(File::PRT_PROE)
+	        << new ExtensionFilter(File::ASM)
+	        << new ExtensionFilter(File::DRW)
+	        << new ExtensionFilter(File::FRM)
+	        << new ExtensionFilter(File::NEU_PROE)
+	        << new VersionFilter();
 
 	filterGroups << FilterGroup("CATIA", "CATIA");
 	filterGroups.last()
-			<< new ExtensionFilter(File::CATPART)
-			<< new ExtensionFilter(File::CATPRODUCT)
-			<< new ExtensionFilter(File::CATDRAWING);
+	        << new ExtensionFilter(File::CATPART)
+	        << new ExtensionFilter(File::CATPRODUCT)
+	        << new ExtensionFilter(File::CATDRAWING);
 
 	filterGroups << FilterGroup("NX", "NX (UGS)");
 	filterGroups.last()
-			<< new ExtensionFilter(File::PRT_NX);
+	        << new ExtensionFilter(File::PRT_NX);
 
 	filterGroups << FilterGroup("SolidWorks", "SolidWorks");
 	filterGroups.last().filters
-			<< new ExtensionFilter(File::SLDPRT)
-			<< new ExtensionFilter(File::SLDASM)
-			<< new ExtensionFilter(File::SLDDRW);
+	        << new ExtensionFilter(File::SLDPRT)
+	        << new ExtensionFilter(File::SLDASM)
+	        << new ExtensionFilter(File::SLDDRW);
 
 	filterGroups << FilterGroup("SolidEdge", "Solid Edge");
 	filterGroups.last()
-			<< new ExtensionFilter(File::PAR)
-			<< new ExtensionFilter(File::PSM)
-			<< new ExtensionFilter(File::ASM)
-			<< new ExtensionFilter(File::DFT);
+	        << new ExtensionFilter(File::PAR)
+	        << new ExtensionFilter(File::PSM)
+	        << new ExtensionFilter(File::ASM)
+	        << new ExtensionFilter(File::DFT);
 
 	filterGroups << FilterGroup("Invertor", "INVERTOR");
 	filterGroups.last()
-			<< new ExtensionFilter(File::IPT)
-			<< new ExtensionFilter(File::IAM)
-			<< new ExtensionFilter(File::IDW);
+	        << new ExtensionFilter(File::IPT)
+	        << new ExtensionFilter(File::IAM)
+	        << new ExtensionFilter(File::IDW);
 
 	filterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
 	filterGroups.last()
-			<< new ExtensionFilter(File::STEP)
-			<< new ExtensionFilter(File::IGES)
-			<< new ExtensionFilter(File::DWG)
-			<< new ExtensionFilter(File::DXF);
+	        << new ExtensionFilter(File::STEP)
+	        << new ExtensionFilter(File::IGES)
+	        << new ExtensionFilter(File::DWG)
+	        << new ExtensionFilter(File::DXF);
 
 	filterGroups << FilterGroup("NonCAD", "NonCAD");
 	filterGroups.last()
-			<< new ExtensionFilter(File::STL)
-			<< new ExtensionFilter(File::BLEND)
-			<< new ExtensionFilter(File::PDF);
+	        << new ExtensionFilter(File::STL)
+	        << new ExtensionFilter(File::BLEND)
+	        << new ExtensionFilter(File::PDF);
 
 	loadFilters();
 	rebuildFilters();
@@ -317,9 +315,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	addAction(act);
 
-#ifdef INCLUDE_PRODUCT_VIEW
 	showOrHideProductView();
-#endif // INCLUDE_PRODUCT_VIEW
 
 	if( useSplash )
 	{
@@ -446,7 +442,7 @@ void MainWindow::downloadButton()
 	static_cast<ServersModel*>( ui->treeLeft->model() )->uncheckAll();
 	ui->tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
 
-	int columnCnt = ui->downloadTreeView->model()->columnCount(QModelIndex());
+	//int columnCnt = ui->downloadTreeView->model()->columnCount(QModelIndex());
 
 	ui->downloadTreeView->resizeColumnToContents(0);
 	ui->downloadTreeView->resizeColumnToContents(2);
@@ -482,9 +478,9 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 		ServersModel* sm = static_cast<ServersModel*>(ui->treeLeft->model());
 		fm->setRootIndex(QModelIndex());
 
-		QVector<BaseDataSource*> oldServers = servers;
+		QList<BaseDataSource*> oldServers = servers;
 
-		servers = settingsDlg->getData();
+		servers = settingsDlg->getDatasources();
 		sm->setServerData(servers);
 
 		qDeleteAll(oldServers);
@@ -517,9 +513,7 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 
 		allItemsLoaded();
 
-#ifdef INCLUDE_PRODUCT_VIEW
 		showOrHideProductView();
-#endif // INCLUDE_PRODUCT_VIEW
 	}
 
 	delete settingsDlg;
@@ -543,10 +537,10 @@ void MainWindow::updateClicked()
 void MainWindow::deleteSelectedParts()
 {
 	if( QMessageBox::question(this,
-				  tr("Do you really want to delete selected parts?"),
-				  tr("Do you really want to delete selected parts? This action is irreversible."),
-				  QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
-		==  QMessageBox::Yes)
+	                          tr("Do you really want to delete selected parts?"),
+	                          tr("Do you really want to delete selected parts? This action is irreversible."),
+	                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+	        ==  QMessageBox::Yes)
 	{
 		ServersModel *sm = static_cast<ServersModel*>(ui->treeLeft->model());
 
@@ -589,6 +583,7 @@ void MainWindow::loadingItem(Item *item)
 
 void MainWindow::itemLoaded(const QModelIndex &index)
 {
+	Q_UNUSED(index);
 //	ui->btnUpdate->setEnabled(true);
 
 //	setPartsIndex(index);
@@ -952,6 +947,7 @@ void MainWindow::assignUrlToDirectory(bool overwrite)
 
 void MainWindow::techSpecsIndexOverwrite(Item *item)
 {
+	Q_UNUSED(item);
 	if(QMessageBox::warning(this, tr("Tech specs index already exists"), tr("Index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
 		assignUrlToDirectory(true);
 }
@@ -966,6 +962,7 @@ void MainWindow::assignPartsIndexUrlToDirectory(bool overwrite)
 
 void MainWindow::partsIndexOverwrite(Item *item)
 {
+	Q_UNUSED(item);
 	if(QMessageBox::warning(this, tr("Parts index already exists"), tr("Parts index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
 		assignPartsIndexUrlToDirectory(true);
 }
@@ -1010,17 +1007,17 @@ void MainWindow::loadZimaUtils()
 	settings->endGroup();
 }
 
-QVector<BaseDataSource*> MainWindow::loadDataSources()
+QList<BaseDataSource*> MainWindow::loadDataSources()
 {
 	QString currentLang = getCurrentMetadataLanguageCode().left(2);
-	QVector<BaseDataSource*> servers;
+	QList<BaseDataSource*> servers;
 
 	settings->beginGroup("DataSources");
 	foreach(QString str, settings->childGroups())
 	{
 		settings->beginGroup(str);
 
-		QString dataSourceType = settings->value("dataSourceType", "ftp").toString();
+		QString dataSourceType = settings->value("DataSourceType", "ftp").toString();
 
 		if( dataSourceType == "ftp" )
 		{
@@ -1264,25 +1261,28 @@ QString MainWindow::getCurrentMetadataLanguageCode()
 	return currentMetadataLang;
 }
 
-#ifdef INCLUDE_PRODUCT_VIEW
 void MainWindow::showOrHideProductView()
 {
 	if(settings->value("Extensions/ProductView/Enabled", false).toBool())
 	{
 		if(!productView)
 		{
-			productView = new ProductView(settings, ui->tabWidget);
-			ui->tabWidget->addTab(productView, tr("ProductView"));
+			productView = new ProductView(ui->tabWidget);
+			//ui->tabWidget->addTab(productView, tr("ProductView"));
 
-			connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(previewInProductView(QModelIndex)));
-			connect(static_cast<ServersModel*>(ui->treeLeft->model()), SIGNAL(fileDownloaded(File*)), productView, SLOT(fileDownloaded(File*)));
+			connect(ui->tree, SIGNAL(activated(QModelIndex)),
+			        this, SLOT(previewInProductView(QModelIndex)));
+			connect(ui->tree, SIGNAL(clicked(QModelIndex)),
+			        this, SLOT(previewInProductView(QModelIndex)));
+			connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
+			        this, SLOT(tree_doubleClicked(QModelIndex)));
+			connect(static_cast<ServersModel*>(ui->treeLeft->model()), SIGNAL(fileDownloaded(File*)),
+			        productView, SLOT(fileDownloaded(File*)));
 		}
-	} else {
-		if(productView)
-		{
-			productView->deleteLater();
-			productView = 0;
-		}
+	} else if (productView)
+	{
+		productView->deleteLater();
+		productView = 0;
 	}
 }
 
@@ -1295,15 +1295,57 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
-	if(f->type == File::PRT_PROE || f->type == File::PRT_NX)
+	if (!productView->expectFile(f))
+		return;
+
+	//ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
+
+	// local files are not copied - just open the original
+	// remote datasources are cached in ~/.cache/... or something similar
+	if (f->parentItem->server->dataSource == LOCAL)
 	{
-		productView->expectFile(f);
-
-		static_cast<ServersModel*>(ui->treeLeft->model())->downloadSpecificFile(ui->editDir->text(), f);
-		downloading = true;
-
-		ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
+		f->cachePath = f->path;
+		productView->fileDownloaded(f);
 	}
+	else if (f->parentItem->server->dataSource == FTP)
+	{
+		QString pathForItem(f->parentItem->server->getPathForItem(f->parentItem));
+		QDir d;
+		d.mkpath(pathForItem);
+
+		f->cachePath = pathForItem + "/" + f->name;
+		// simulate "real cache" hit. Use local copy of the file (if it exists)
+		if (QFile::exists(f->cachePath))
+		{
+			productView->fileDownloaded(f);
+		}
+		else
+		{
+			f->transferHandler = DownloadModel::ServersModel;
+			downloading = true;
+			f->parentItem->server->downloadFiles(QList<File*>() << f, pathForItem);
+		}
+	}
+	else
+	{
+		Q_ASSERT_X(0, "business logic error", "Unhandled dataSource type");
+	}
+
+	if (productView->canHandle())
+	{
+		productView->show();
+		// keep focus on the main window - keyboard handling
+		activateWindow();
+	}
+	else
+		productView->hide();
 }
 
-#endif // INCLUDE_PRODUCT_VIEW
+void MainWindow::tree_doubleClicked(const QModelIndex &index)
+{
+	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->tree->model())->mapToSource(index);
+
+	File *f = fm->getRootItem()->files.at(srcIndex.row());
+
+	QDesktopServices::openUrl(QUrl::fromLocalFile(f->path));
+}

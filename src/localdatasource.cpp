@@ -284,8 +284,8 @@ void LocalDataSource::addFileToDownload(File *f)
 void LocalDataSource::downloadFiles(QList<File*> files, QString dir)
 {
 	foreach(File *f, files)
-		if( f->targetPath.isEmpty() )
-			f->targetPath = dir + "/" + f->name;
+	if( f->targetPath.isEmpty() )
+		f->targetPath = dir + "/" + f->name;
 
 	copier->addFiles(files);
 
@@ -295,7 +295,7 @@ void LocalDataSource::downloadFiles(QList<File*> files, QString dir)
 
 void LocalDataSource::downloadFile(File* file)
 {
-
+	Q_UNUSED(file);
 }
 
 void LocalDataSource::resumeDownload()
@@ -325,10 +325,10 @@ void LocalDataSource::saveSettings(QSettings& settings)
 void LocalDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
 {
 	QByteArray htmlIndex = QString("<html>\n"
-			"	<head>\n"
-			"		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
-			"	</head>\n"
-			"</html>\n").arg(url).toUtf8();
+	                               "	<head>\n"
+	                               "		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
+	                               "	</head>\n"
+	                               "</html>\n").arg(url).toUtf8();
 	QDir techSpecDir(item->path + "/" + TECHSPEC_DIR);
 
 	if(!techSpecDir.exists())
@@ -352,10 +352,10 @@ void LocalDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString l
 void LocalDataSource::assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite)
 {
 	QByteArray htmlIndex = QString("<html>\n"
-			"	<head>\n"
-			"		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
-			"	</head>\n"
-			"</html>\n").arg(url).toUtf8();
+	                               "	<head>\n"
+	                               "		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
+	                               "	</head>\n"
+	                               "</html>\n").arg(url).toUtf8();
 	QDir techSpecDir(item->path + "/" + TECHSPEC_DIR);
 
 	if(!techSpecDir.exists())

@@ -80,7 +80,7 @@ struct File
 		UNDEFINED
 	};
 
-	File():openFtpFile(0),thumbnail(0),isChecked(false),type(UNDEFINED),bytesDone(0),version(0),newestVersion(false),transfer(0){}
+	File():thumbnail(0),openFtpFile(0),isChecked(false),type(UNDEFINED),bytesDone(0),version(0),newestVersion(false),transfer(0){}
 	void setName(QString name);
 	QString baseName();
 	void detectFileType();
@@ -94,6 +94,15 @@ struct File
 	QString name;
 	QString path;
 	QString targetPath;
+
+	/*! A cache path for file. Including file name.
+	 * Datasource type:
+	 *	LOCAL: It's a synonym for File::path. File is not copied.
+	 *  <remote>: File is downloaded to Item::getPathForItem.
+	 *			  see: ServersModel::cacheSpecificFile()
+	 */
+	QString cachePath;
+
 	Thumbnail *thumbnail;
 	QList<Thumbnail*> thumbnails;
 	QFile *openFtpFile;

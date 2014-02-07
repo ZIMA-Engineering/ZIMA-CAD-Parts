@@ -25,7 +25,7 @@
 #include "mainwindow.h"
 
 BaseDataSource::BaseDataSource(QObject *parent) :
-    QObject(parent)
+	QObject(parent)
 {
 	rootItem = 0;
 	dataSource = UNDEFINED;
@@ -163,14 +163,4 @@ void BaseDataSource::createMetadata(Item *item)
 	connect(item->metadata, SIGNAL(includeRequireCancelled(Item*)), this, SIGNAL(metadataIncludeCancelled(Item*)));
 
 	item->metadata->init();
-}
-
-void BaseDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
-{
-
-}
-
-void BaseDataSource::assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite)
-{
-
 }

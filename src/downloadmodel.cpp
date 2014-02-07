@@ -33,7 +33,7 @@ void DownloadDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
 	{
 		File* f = static_cast<File*>( index.internalPointer() );
 		QStyleOptionProgressBarV2 opts;
-		const int row = index.row();
+//		const int row = index.row();
 
 		opts.text = QString("%1 %").arg( f->size ? (f->bytesDone * 100 / f->size) : 0 );
 		opts.maximum = f->size;
@@ -57,6 +57,7 @@ DownloadModel::DownloadModel(QObject *parent) :
 
 int DownloadModel::columnCount(const QModelIndex &parent) const
 {
+	Q_UNUSED(parent);
 	return 3;
 }
 
@@ -70,11 +71,13 @@ int DownloadModel::rowCount(const QModelIndex &parent) const
 
 QModelIndex DownloadModel::parent(const QModelIndex &index) const
 {
+	Q_UNUSED(index);
 	return QModelIndex();
 }
 
 QModelIndex DownloadModel::index(int row, int column, const QModelIndex &parent) const
 {
+	Q_UNUSED(parent);
 	if( queue.isEmpty() )
 		return QModelIndex();
 
@@ -102,9 +105,11 @@ QVariant DownloadModel::data(const QModelIndex &index, int role) const
 			return queue[row]->targetPath;
 		case 2:
 			return queue[row]->bytesDone;
-		default:break;
+		default:
+			break;
 		}
-	default:break;
+	default:
+		break;
 	}
 
 	return QVariant();
@@ -124,6 +129,8 @@ QVariant DownloadModel::headerData (int section, Qt::Orientation orientation, in
 	case 2:
 		return tr("Progress");
 	}
+
+	return "unknown data";
 }
 
 QList<File*> DownloadModel::files(DownloadModel::TransferHandlerType type)
@@ -134,8 +141,8 @@ QList<File*> DownloadModel::files(DownloadModel::TransferHandlerType type)
 	QList<File*> tmp;
 
 	foreach(File *f, queue)
-		if(f->transferHandler == type)
-			tmp << f;
+	if(f->transferHandler == type)
+		tmp << f;
 
 	return tmp;
 }
@@ -194,7 +201,7 @@ void DownloadModel::clear()
 	stop();
 
 	foreach(TransferHandler *h, m_handlers)
-		h->clearQueue();
+	h->clearQueue();
 
 	queue.clear();
 
@@ -212,14 +219,17 @@ void DownloadModel::fileDownloaded(File *file)
 {
 	int i = queue.indexOf(file);
 
-	beginRemoveRows(QModelIndex(), i, i);
+    if (i != -1)
+    {
+		beginRemoveRows(QModelIndex(), i, i);
 
-	File *f = queue.takeAt(i);
+		File *f = queue.takeAt(i);
 
-	endRemoveRows();
+		endRemoveRows();
 
-	if(f->transfer)
-		delete f->transfer;
+		if(f->transfer)
+			delete f->transfer;
+	}
 }
 
 void DownloadModel::stop()
@@ -227,7 +237,7 @@ void DownloadModel::stop()
 	m_downloading = false;
 
 	foreach(TransferHandler *h, m_handlers)
-		h->stopDownload();
+	h->stopDownload();
 }
 
 void DownloadModel::resume()
@@ -235,5 +245,5 @@ void DownloadModel::resume()
 	m_downloading = true;
 
 	foreach(TransferHandler *h, m_handlers)
-		h->resumeDownload();
+	h->resumeDownload();
 }

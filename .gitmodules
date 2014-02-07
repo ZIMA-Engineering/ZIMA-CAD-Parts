@@ -1,0 +1,3 @@
+[submodule "libqdxf"]
+	path = libqdxf
+	url = gitolite3@zima-engineering.cz:ZIMA-libqdxf.git

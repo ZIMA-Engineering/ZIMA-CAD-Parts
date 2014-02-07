@@ -20,74 +20,121 @@
 
 #include "productview.h"
 
-#ifdef INCLUDE_PRODUCT_VIEW
 
 #include "ui_productview.h"
-
-#include <QDir>
-#include <QFile>
-#include <QTemporaryFile>
-#include <QTextStream>
-#include <QDebug>
-
+#include "proeproductview.h"
+#include "dxfproductview.h"
+#include "pdfproductview.h"
 #include "productviewsettings.h"
 
-ProductView::ProductView(QSettings *settings, QWidget *parent) :
-        QWidget(parent),
-	ui(new Ui::ProductView),
-	settings(settings)
+#include <QtDebug>
+ProductView::ProductView(QWidget *parent) :
+	QDialog(parent),
+	ui(new Ui::ProductView()),
+	currentProvider(0)
 {
 	ui->setupUi(this);
+//	ui->statusLabel->setText(tr("Double click any part."));
+	setWindowFlags(Qt::Window);
 
-	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavaEnabled, true);
-	QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
-
-	ui->appletWebView->setHtml(tr("Double click any PRO/E part."));
+	addProviders<ProEProductView>();
+	addProviders<DxfProductView>();
+	// disabled 20140206 by Vlad's request:
+	// only "supported" files should be displayed. For rest of files this dialog should be closed
+	// addProviders<PDFProductView>();
+	//failbackProvider = new FailbackProductView(this);
+	//failbackProvider->hide();
+	failbackProvider = 0;
 }
 
 ProductView::~ProductView()
 {
+	saveSettings();
+
 	delete ui;
+
+	QHashIterator<File::FileTypes, AbstractProductView*> i(providers);
+	while (i.hasNext())
+	{
+		i.next();
+		i.value()->deleteLater();
+	}
+
+	providers.clear();
 }
 
-void ProductView::expectFile(File *f)
+bool ProductView::canHandle()
 {
-	expectedFile = f;
+	return currentProvider != 0;
+}
 
-	ui->appletWebView->setHtml(tr("Waiting for part to download..."));
+void ProductView::hideEvent(QHideEvent * e)
+{
+	saveSettings();
+	QDialog::hideEvent(e);
+}
+
+void ProductView::showEvent(QShowEvent *e)
+{
+	QSettings s;
+	restoreGeometry(s.value("Extensions/ProductView/geometry").toByteArray());
+	QPoint pt = s.value("Extensions/ProductView/position").toPoint();
+	if (!pt.isNull())
+		move(pt);
+
+	QDialog::showEvent(e);
+}
+
+void ProductView::saveSettings()
+{
+	QSettings s;
+	s.setValue("Extensions/ProductView/geometry", saveGeometry());
+	s.setValue("Extensions/ProductView/position", pos());
+}
+
+
+bool ProductView::expectFile(File *f)
+{
+	if (expectedFile != f)
+	{
+		expectedFile = f;
+		return true;
+	}
+	return false;
+//	ui->statusLabel->setText(tr("Waiting for part to download..."));
 }
 
 void ProductView::fileDownloaded(File *f)
 {
-	if(f == expectedFile)
+	if (currentProvider)
 	{
-		QFile pv(":/data/extensions/productview/productview.html");
-		pv.open(QIODevice::ReadOnly);
-		QTextStream stream(&pv);
-		QString html = stream.readAll();
-
-		html.replace("%VERSION%", VERSION);
-		html.replace("%FILE_NAME%", f->name);
-		html.replace("%FILE_PATH%", f->targetPath);
-		html.replace("%PRODUCTVIEW_PATH%", settings->value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
-
-		QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->name + ".html");
-
-		if(tmp.open())
-		{
-			QTextStream out(&tmp);
-			out << html;
-			out.flush();
-
-			// It doesn't work with double slash in windows
-			ui->appletWebView->setUrl(QUrl(QString("file:/%1").arg(tmp.fileName())));
-
-			//tmp.setAutoRemove(false);
-			tmp.close();
-		} else {
-			ui->appletWebView->setHtml("Sorry, cannot create temporary file.");
-		}
+		currentProvider->hide();
+		ui->verticalLayout->removeWidget(currentProvider);
 	}
-}
 
-#endif // INCLUDE_PRODUCT_VIEW
+	if (f != expectedFile)
+	{
+//		ui->statusLabel->setText(tr("Double click any part."));
+		return;
+	}
+
+	if (!providers.contains(f->type))
+	{
+		//currentProvider = failbackProvider;
+		currentProvider = 0;
+		return;
+	}
+	else
+	{
+		currentProvider = providers.value(f->type);
+	}
+
+	setWindowTitle(f->baseName() + " " + currentProvider->title());
+
+	//qDebug() << "PTH" << f->path << f->targetPath;
+	//ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
+	currentProvider->handle(f);
+	//ui->verticalLayout->insertWidget(1, currentProvider);
+	ui->verticalLayout->addWidget(currentProvider);
+	currentProvider->show();
+}

@@ -41,9 +41,7 @@
 #include "filefiltermodel.h"
 #include "filefilters/filtergroup.h"
 
-#ifdef INCLUDE_PRODUCT_VIEW
 #include "extensions/productview/productview.h"
-#endif // INCLUDE_PRODUCT_VIEW
 
 namespace Ui
 {
@@ -69,18 +67,16 @@ public:
 
 private:
 	enum Tabs {
-		TECH_SPECS,
-		PARTS,
-		DOWNLOADS,
-#ifdef INCLUDE_PRODUCT_VIEW
-		PRODUCT_VIEW,
-#endif // INCLUDE_PRODUCT_VIEW
-		TABS_COUNT
+	    TECH_SPECS,
+	    PARTS,
+	    DOWNLOADS,
+//		PRODUCT_VIEW,
+	    TABS_COUNT
 	};
 
 	Ui::MainWindowClass *ui;
 	static QSettings           *settings;
-	QVector<BaseDataSource*> servers;
+	QList<BaseDataSource*> servers;
 	QLabel              *statusState, *statusDir;
 	FtpDataSource           *currentServer;
 	FileModel *fm;
@@ -121,13 +117,11 @@ private:
 
 	QStringList zimaUtils;
 
-#ifdef INCLUDE_PRODUCT_VIEW
 	ProductView *productView;
 
-	void showOrHideProductView();
-#endif // INCLUDE_PRODUCT_VIEW
-
 	bool s_developerMode;
+
+	void showOrHideProductView();
 
 	void loadExtensions();
 	void setupDeveloperMode();
@@ -180,7 +174,7 @@ private slots:
 	void openDirTreePath();
 	void loadSettings();
 	void loadZimaUtils();
-	QVector<BaseDataSource*> loadDataSources();
+	QList<BaseDataSource*> loadDataSources();
 	void saveSettings();
 	void loadFilters();
 	void saveFilters();
@@ -192,9 +186,8 @@ private slots:
 	void historyBack();
 	void historyForward();
 
-#ifdef INCLUDE_PRODUCT_VIEW
 	void previewInProductView(const QModelIndex &index);
-#endif // INCLUDE_PRODUCT_VIEW
+	void tree_doubleClicked(const QModelIndex &index);
 };
 
 class SleeperThread : public QThread

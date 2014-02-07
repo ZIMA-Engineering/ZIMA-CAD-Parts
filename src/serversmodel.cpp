@@ -21,6 +21,7 @@
 #include "serversmodel.h"
 #include <QDir>
 #include <QDebug>
+#include "basedatasource.h"
 #include "baseremotedatasource.h"
 #include "localdatasource.h"
 #include "mainwindow.h"
@@ -53,7 +54,7 @@ bool ServersModel::canFetchMore(const QModelIndex &parent) const
 	if(!parent.isValid())
 		return false;
 
-	Item* item = static_cast<Item*>(parent.internalPointer());
+	//Item* item = static_cast<Item*>(parent.internalPointer());
 
 //	if(!item->children.isEmpty() || !item->files.isEmpty())
 //		return false;
@@ -104,6 +105,7 @@ int ServersModel::rowCount(const QModelIndex &parent) const
 
 int ServersModel::columnCount(const QModelIndex &parent) const
 {
+	Q_UNUSED(parent);
 	return 1;
 }
 
@@ -155,7 +157,7 @@ QVariant ServersModel::headerData(int section, Qt::Orientation orientation, int 
 		return QVariant();
 
 	if (section == 0)
-		return tr("Server");
+		return tr("Data sources");
 
 	return QVariant();
 }
@@ -163,6 +165,10 @@ QVariant ServersModel::headerData(int section, Qt::Orientation orientation, int 
 //nemenitelne
 bool ServersModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {
+	Q_UNUSED(section);
+	Q_UNUSED(orientation);
+	Q_UNUSED(value);
+	Q_UNUSED(role);
 	return false;
 }
 
@@ -203,7 +209,8 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 		if(!item->logo.isNull())
 			return QSize(item->logo.width(), item->logo.height());
 		break;
-	default:;
+	default:
+		;
 	}
 
 	return QVariant();
@@ -211,6 +218,9 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 
 bool ServersModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+	Q_UNUSED(index);
+	Q_UNUSED(value);
+	Q_UNUSED(role);
 	return false;
 }
 
@@ -227,7 +237,7 @@ void ServersModel::setDownloadQueue(DownloadModel *queue)
 	connect(this, SIGNAL(fileDownloaded(File*)), queue, SLOT(fileDownloaded(File*)));
 }
 
-void ServersModel::setServerData(QVector<BaseDataSource*> srv)
+void ServersModel::setServerData(QList<BaseDataSource*> srv)
 {
 	//qDeleteAll(rootItem->children);
 	rootItem->children.clear();
@@ -293,8 +303,8 @@ void ServersModel::setServerData(QVector<BaseDataSource*> srv)
 QString ServersModel::translateDataSourceNameToPath(QString name)
 {
 	foreach(BaseDataSource *ds, servers)
-		if(ds->name() == name)
-			return ds->pathToDataRoot();
+	if(ds->name() == name)
+		return ds->pathToDataRoot();
 	return QString();
 }
 
@@ -403,11 +413,11 @@ QList<File*> ServersModel::getCheckedFiles(Item *item)
 	QList<File*> ret;
 
 	foreach(File *f, item->files)
-		if( f->isChecked )
-			ret << f;
+	if( f->isChecked )
+		ret << f;
 
 	foreach(Item *i, item->children)
-		ret << getCheckedFiles(i);
+	ret << getCheckedFiles(i);
 
 	return ret;
 }
@@ -420,7 +430,7 @@ void ServersModel::deleteFiles()
 	dsDeleted = 0;
 
 	foreach(Item *i, rootItem->children)
-		i->server->deleteFiles(getCheckedFiles(i));
+	i->server->deleteFiles(getCheckedFiles(i));
 }
 
 void ServersModel::downloadFiles(QString dir)
@@ -433,7 +443,7 @@ void ServersModel::downloadFiles(QString dir)
 		QList<File*> tmp = getCheckedFiles(i);
 
 		foreach(File *f, tmp)
-			f->transferHandler = DownloadModel::ServersModel;
+		f->transferHandler = DownloadModel::ServersModel;
 
 		downloadQueue->enqueue(tmp);
 
@@ -442,25 +452,10 @@ void ServersModel::downloadFiles(QString dir)
 	}
 }
 
-void ServersModel::downloadSpecificFile(QString dir, File *f)
-{
-	QDir d;
-	d.mkpath(dir);
-
-	QList<File*> tmp;
-	tmp << f;
-
-	f->transferHandler = DownloadModel::ServersModel;
-
-	f->parentItem->server->downloadFiles(tmp, dir);
-
-	downloadQueue->enqueue(tmp);
-}
-
 void ServersModel::resumeDownload()
 {
 	foreach(Item *i, rootItem->children)
-		i->server->resumeDownload();
+	i->server->resumeDownload();
 }
 
 void ServersModel::uncheckAll(Item *item)
@@ -469,10 +464,10 @@ void ServersModel::uncheckAll(Item *item)
 		item = rootItem;
 
 	foreach(File* f, item->files)
-		f->isChecked = false;
+	f->isChecked = false;
 
 	foreach(Item *i, item->children)
-		uncheckAll(i);
+	uncheckAll(i);
 
 	//emit dataChanged( index(0, 0), index(rootItem->files.size(), 0) );
 }
@@ -492,7 +487,7 @@ void ServersModel::deleteDownloadQueue()
 	downloadQueue->clear();
 
 	foreach(Item *i, rootItem->children)
-		i->server->deleteDownloadQueue();
+	i->server->deleteDownloadQueue();
 
 	emit queueChanged();
 }
@@ -575,7 +570,7 @@ void ServersModel::retranslateMetadata(Item *item)
 		item = rootItem;
 
 		foreach(BaseDataSource *ds, servers)
-			ds->retranslate(lang);
+		ds->retranslate(lang);
 
 		if(m_lastTechSpecRequest)
 		{
@@ -683,10 +678,10 @@ void ServersModel::metadataIncludeCancel(Item *item)
 
 	while(i.hasNext())
 	{
-	    i.next();
+		i.next();
 
-	    if(i.value() == item)
-		    metadataIncludeHash[i.key()] = 0;
+		if(i.value() == item)
+			metadataIncludeHash[i.key()] = 0;
 	}
 }
 
@@ -756,7 +751,7 @@ void ServersModel::stopDownload()
 void ServersModel::clearQueue()
 {
 	foreach(Item *i, rootItem->children)
-		i->server->deleteDownloadQueue();
+	i->server->deleteDownloadQueue();
 }
 
 void ServersModel::catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err)

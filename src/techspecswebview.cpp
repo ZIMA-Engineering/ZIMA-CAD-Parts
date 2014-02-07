@@ -32,7 +32,7 @@
 #include "downloadmodel.h"
 
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
-        QWebView(parent)
+	QWebView(parent)
 {
 	loadAboutPage();
 
@@ -63,7 +63,7 @@ void TechSpecsWebView::stopDownload()
 	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
 
 	foreach(File *f, tmp)
-		f->transfer->cancel();
+	f->transfer->cancel();
 }
 
 void TechSpecsWebView::resumeDownload()
@@ -71,7 +71,7 @@ void TechSpecsWebView::resumeDownload()
 	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
 
 	foreach(File *f, tmp)
-		downloadFile(page()->networkAccessManager()->get(QNetworkRequest(f->path)), f);
+	downloadFile(page()->networkAccessManager()->get(QNetworkRequest(f->path)), f);
 
 }
 
@@ -80,7 +80,7 @@ void TechSpecsWebView::clearQueue()
 	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
 
 	foreach(File *f, tmp)
-		delete f->transfer;
+	delete f->transfer;
 }
 
 void TechSpecsWebView::loadAboutPage()
@@ -126,6 +126,8 @@ void TechSpecsWebView::urlChange(const QUrl &url)
 
 void TechSpecsWebView::pageLoaded(bool ok)
 {
+	Q_UNUSED(ok);
+
 	if(url().scheme() != "file")
 		return;
 
