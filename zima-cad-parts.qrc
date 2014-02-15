@@ -33,6 +33,12 @@
         <file>gfx/icons/prt_proe.png</file>
         <file>gfx/icons/prt_nx.png</file>
         <file>gfx/icons/neu_proe.png</file>
+        <file>gfx/icons/office-database.png</file>
+        <file>gfx/icons/office-document.png</file>
+        <file>gfx/icons/office-presentation.png</file>
+        <file>gfx/icons/office-project.png</file>
+        <file>gfx/icons/office-spreadsheet.png</file>
+        <file>gfx/icons/office-drawing.png</file>
         <file>gfx/external_programs/ZIMA-CAD-Sync.png</file>
         <file>gfx/external_programs/ZIMA-PS2PDF.png</file>
         <file>gfx/external_programs/ZIMA-PTC-Cleaner.png</file>

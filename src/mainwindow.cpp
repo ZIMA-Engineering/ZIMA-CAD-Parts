@@ -211,7 +211,13 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	filterGroups.last()
 	        << new ExtensionFilter(File::STL)
 	        << new ExtensionFilter(File::BLEND)
-	        << new ExtensionFilter(File::PDF);
+	        << new ExtensionFilter(File::PDF)
+	        << new ExtensionFilter(File::OFFICE_BASE)
+	        << new ExtensionFilter(File::OFFICE_CALC)
+	        << new ExtensionFilter(File::OFFICE_DRAW)
+	        << new ExtensionFilter(File::OFFICE_IMPRESS)
+	        << new ExtensionFilter(File::OFFICE_PROJECT)
+	        << new ExtensionFilter(File::OFFICE_WRITER);
 
 	loadFilters();
 	rebuildFilters();
