@@ -12,11 +12,7 @@ public:
 	FileFilters filterType();
 	void load(QSettings *settings);
 	void save(QSettings *settings);
-	QWidget* widget();
-	void apply();
-
-private:
-	QCheckBox *checkBox;
+	QTreeWidgetItem* widget();
 };
 
 #endif // VERSIONFILTER_H
