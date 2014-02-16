@@ -70,8 +70,8 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 	connect(m_ui->datasourceDownButton, SIGNAL(clicked()),
 	        this, SLOT(datasourceDownButton_clicked()));
 	connect(m_ui->pruneCacheButton, SIGNAL(clicked()), this, SLOT(pruneCache()));
-    connect(m_ui->productViewButton, SIGNAL(clicked()),
-            this, SLOT(productViewButton_clicked()));
+	connect(m_ui->productViewButton, SIGNAL(clicked()),
+	        this, SLOT(productViewButton_clicked()));
 
 	setupDatasourceList(datasources);
 
@@ -82,7 +82,7 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 	m_ui->splashDurationSpinBox->setValue( settings->value("GUI/Splash/Duration", 1500).toInt() );
 	m_ui->developerModeGroupBox->setChecked( settings->value("Developer/Enabled", false).toBool() );
 	m_ui->techSpecToolBarCheckBox->setChecked( settings->value("Developer/TechSpecToolBar", true).toBool() );
-    m_ui->productViewEdit->setText(settings->value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
+	m_ui->productViewEdit->setText(settings->value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
 
 	connect(m_ui->proeButton, SIGNAL(clicked()),
 	        this, SLOT(proeButton_clicked()));
@@ -154,7 +154,7 @@ void SettingsDialog::saveSettings()
 	settings->setValue("GUI/Splash/Duration", m_ui->splashDurationSpinBox->value());
 	settings->setValue("Developer/Enabled", m_ui->developerModeGroupBox->isChecked());
 	settings->setValue("Developer/TechSpecToolBar", m_ui->techSpecToolBarCheckBox->isChecked());
-    settings->setValue("Extensions/ProductView/Path", m_ui->productViewEdit->text());
+	settings->setValue("Extensions/ProductView/Path", m_ui->productViewEdit->text());
 
 
 	QString lang = langIndexToName( m_ui->languageComboBox->currentIndex() );
@@ -428,7 +428,7 @@ void SettingsDialog::proeButton_clicked()
 void SettingsDialog::productViewButton_clicked()
 {
 	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set ProductView path"),
-                                                    m_ui->productViewEdit->text());
+	              m_ui->productViewEdit->text());
 	if (!str.isEmpty())
 		m_ui->productViewEdit->setText(str);
 }

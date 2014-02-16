@@ -1301,11 +1301,11 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
-    if (!productView->canHandle(f->type))
-    {
-        productView->hide();
-        return;
-    }
+	if (!productView->canHandle(f->type))
+	{
+		productView->hide();
+		return;
+	}
 
 	if (!productView->expectFile(f))
 		return;

@@ -85,7 +85,7 @@ private slots:
 //	void changingPassive();
 	void setZimaUtilPath(int util);
 	void proeButton_clicked();
-    void productViewButton_clicked();
+	void productViewButton_clicked();
 
 private:
 	Ui::SettingsDialog  *m_ui;
