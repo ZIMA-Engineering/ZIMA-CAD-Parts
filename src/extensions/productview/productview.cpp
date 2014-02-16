@@ -62,9 +62,9 @@ ProductView::~ProductView()
 	providers.clear();
 }
 
-bool ProductView::canHandle()
+bool ProductView::canHandle(File::FileTypes t)
 {
-	return currentProvider != 0;
+	return providers.contains(t);
 }
 
 void ProductView::hideEvent(QHideEvent * e)

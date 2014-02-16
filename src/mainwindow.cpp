@@ -1301,10 +1301,14 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
+    if (!productView->canHandle(f->type))
+    {
+        productView->hide();
+        return;
+    }
+
 	if (!productView->expectFile(f))
 		return;
-
-	//ui->tabWidget->setCurrentIndex(PRODUCT_VIEW);
 
 	// local files are not copied - just open the original
 	// remote datasources are cached in ~/.cache/... or something similar
@@ -1337,14 +1341,9 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 		Q_ASSERT_X(0, "business logic error", "Unhandled dataSource type");
 	}
 
-	if (productView->canHandle())
-	{
-		productView->show();
-		// keep focus on the main window - keyboard handling
-		activateWindow();
-	}
-	else
-		productView->hide();
+	productView->show();
+	// keep focus on the main window - keyboard handling
+	activateWindow();
 }
 
 void MainWindow::tree_doubleClicked(const QModelIndex &index)
