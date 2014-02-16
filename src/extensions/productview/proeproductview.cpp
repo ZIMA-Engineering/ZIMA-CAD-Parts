@@ -1,5 +1,4 @@
 #include "proeproductview.h"
-#include "productviewsettings.h"
 #include "../../zima-cad-parts.h"
 
 #include <QTextStream>

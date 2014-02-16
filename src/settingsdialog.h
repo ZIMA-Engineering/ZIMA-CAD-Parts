@@ -34,7 +34,6 @@
 #include "ftpdatasource.h"
 #include "localdatasource.h"
 
-#include "extensions/productview/productviewsettings.h"
 
 class QListWidgetItem;
 
@@ -86,6 +85,7 @@ private slots:
 //	void changingPassive();
 	void setZimaUtilPath(int util);
 	void proeButton_clicked();
+    void productViewButton_clicked();
 
 private:
 	Ui::SettingsDialog  *m_ui;
@@ -93,7 +93,6 @@ private:
 	QTranslator **translator;
 	QSignalMapper *zimaUtilSignalMapper;
 	QList<QLineEdit*> zimaUtilLineEdits;
-	ProductViewSettings *productViewSettings;
 
 	void setupDatasourceList(QList<BaseDataSource*> datasources);
 };

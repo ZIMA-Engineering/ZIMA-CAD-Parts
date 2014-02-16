@@ -70,6 +70,8 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 	connect(m_ui->datasourceDownButton, SIGNAL(clicked()),
 	        this, SLOT(datasourceDownButton_clicked()));
 	connect(m_ui->pruneCacheButton, SIGNAL(clicked()), this, SLOT(pruneCache()));
+    connect(m_ui->productViewButton, SIGNAL(clicked()),
+            this, SLOT(productViewButton_clicked()));
 
 	setupDatasourceList(datasources);
 
@@ -80,6 +82,7 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 	m_ui->splashDurationSpinBox->setValue( settings->value("GUI/Splash/Duration", 1500).toInt() );
 	m_ui->developerModeGroupBox->setChecked( settings->value("Developer/Enabled", false).toBool() );
 	m_ui->techSpecToolBarCheckBox->setChecked( settings->value("Developer/TechSpecToolBar", true).toBool() );
+    m_ui->productViewEdit->setText(settings->value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
 
 	connect(m_ui->proeButton, SIGNAL(clicked()),
 	        this, SLOT(proeButton_clicked()));
@@ -115,9 +118,6 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 	settings->endGroup();
 
 	settings->endGroup();
-
-	productViewSettings = new ProductViewSettings(settings, this);
-	m_ui->tabWidget->addTab(productViewSettings, tr("ProductView Settings"));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -154,6 +154,8 @@ void SettingsDialog::saveSettings()
 	settings->setValue("GUI/Splash/Duration", m_ui->splashDurationSpinBox->value());
 	settings->setValue("Developer/Enabled", m_ui->developerModeGroupBox->isChecked());
 	settings->setValue("Developer/TechSpecToolBar", m_ui->techSpecToolBarCheckBox->isChecked());
+    settings->setValue("Extensions/ProductView/Path", m_ui->productViewEdit->text());
+
 
 	QString lang = langIndexToName( m_ui->languageComboBox->currentIndex() );
 	if( lang != settings->value("Language").toString() )
@@ -198,8 +200,6 @@ void SettingsDialog::saveSettings()
 	settings->endGroup();
 
 	settings->endGroup();
-
-	productViewSettings->saveSettings();
 }
 
 void SettingsDialog::addDataSource()
@@ -417,11 +417,18 @@ void SettingsDialog::setZimaUtilPath(int util)
 
 void SettingsDialog::proeButton_clicked()
 {
-	qDebug() << 1;
 	QString exe = QFileDialog::getOpenFileName(this, tr("Locate ProE launcher"),
 	              QDir::currentPath(),
 	              tr("ProE executable (proe.exe);;All files (*)"));
 	if (exe.isNull())
 		return;
 	m_ui->proeEdit->setText(exe);
+}
+
+void SettingsDialog::productViewButton_clicked()
+{
+	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set ProductView path"),
+                                                    m_ui->productViewEdit->text());
+	if (!str.isEmpty())
+		m_ui->productViewEdit->setText(str);
 }

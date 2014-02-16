@@ -25,9 +25,8 @@
 #include "proeproductview.h"
 #include "dxfproductview.h"
 #include "pdfproductview.h"
-#include "productviewsettings.h"
 
-#include <QtDebug>
+
 ProductView::ProductView(QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::ProductView()),
