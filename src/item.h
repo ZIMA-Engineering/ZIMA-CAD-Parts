@@ -130,6 +130,14 @@ private:
 class Item
 {
 public:
+	enum ItemType {
+	    Unknown,
+	    Root,
+	    Group,
+	    Server,
+	    Dir
+	};
+
 	Item();
 	int row() const;
 	void setNotEmpty();
@@ -140,20 +148,13 @@ public:
 	void addThumbnail(Thumbnail *thumb);
 	QList<Thumbnail*> thumbnails(bool include = true);
 
-	int     id;
 	QString name;
-	QString part;
-	QPixmap pixmap;
-	QString pixmapFile;
 	QPixmap logo;
 	bool showText;
 	QString path;
-	QMap<QString, QVariant> params;
 	QFile   *openFtpFile;
 	bool    isChecked;
-	bool    isDir;
 	bool    isEmpty;
-	bool isServer;
 	bool hasTechSpecs;
 	bool hasLoadedChildren;
 	BaseDataSource* server;
@@ -164,6 +165,24 @@ public:
 	QList<File*> files;
 
 	Metadata *metadata;
+
+	ItemType type() {
+		return m_type;
+	}
+	void setType(ItemType t) {
+		m_type = t;
+	}
+
+	QString group() {
+		return m_group;
+	}
+	void setGroup(const QString &g) {
+		m_group = g;
+	}
+
+private:
+	ItemType m_type;
+	QString m_group;
 };
 
 #endif // ITEM_H

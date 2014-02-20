@@ -305,8 +305,7 @@ Item::Item()
 	isChecked = false;
 	openFtpFile = 0;
 	parent = 0;
-	isDir = false;
-	isServer = false;
+	m_type = Item::Unknown;
 	isEmpty = true;
 	server = 0;
 	metadata = 0;

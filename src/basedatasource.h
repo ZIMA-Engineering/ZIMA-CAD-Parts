@@ -41,9 +41,9 @@ class Thumbnail;
 struct File;
 
 enum DataSources {
-	LOCAL=0,
-	FTP,
-	UNDEFINED
+    LOCAL=0,
+    FTP,
+    UNDEFINED
 };
 
 class BaseDataSource : public QObject
@@ -51,16 +51,16 @@ class BaseDataSource : public QObject
 	Q_OBJECT
 public:
 	enum Operation {
-		Download=0,
-		Delete,
-		OperationCount
+	    Download=0,
+	    Delete,
+	    OperationCount
 	};
 
 	struct Error {
 		File *file;
 		QString error;
 
-		Error(File *f, QString s) : file(f), error(s){}
+		Error(File *f, QString s) : file(f), error(s) {}
 	};
 
 	explicit BaseDataSource(QObject *parent = 0);
@@ -73,6 +73,13 @@ public:
 	virtual QString getPathForItem(Item *item) = 0;
 	virtual QString getRelativePathForItem(Item *item) = 0;
 	virtual QString name() = 0;
+
+	QString group() {
+		return m_group;
+	}
+	void setGroup(const QString &g) {
+		m_group = g;
+	}
 
 	Item    *rootItem;
 	QString label;
@@ -122,6 +129,9 @@ signals:
 	void partsIndexAlreadyExists(Item*);
 	void fileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
 	void filesDeleted();
+
+private:
+	QString m_group;
 };
 
 #endif // BASEDATASOURCE_H
