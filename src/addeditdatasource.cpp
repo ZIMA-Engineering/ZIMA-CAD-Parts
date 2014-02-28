@@ -36,7 +36,15 @@ AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, Actions action,
 
 	ui->dataSourceComboBox->setCurrentIndex( dataSource->dataSource );
 	ui->stackedWidget->setCurrentIndex( dataSource->dataSource );
-	ui->groupComboBox->addItem("");
+	QStringList groupsFiltered;
+	// ensure there is at least one empty group
+	groupsFiltered << "" << groups;
+	groupsFiltered.removeDuplicates();
+	ui->groupComboBox->addItems(groupsFiltered);
+
+	int i = ui->groupComboBox->findText(dataSource->group());
+	if (i != -1)
+		ui->groupComboBox->setCurrentIndex(i);
 
 	refill();
 

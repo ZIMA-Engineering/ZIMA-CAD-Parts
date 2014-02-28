@@ -269,23 +269,17 @@ void SettingsDialog::editDataSource()
 		return;
 
 	BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(0, DATASOURCE_ROLE));
-	AddEditDataSource *addEdit = new AddEditDataSource(ds, AddEditDataSource::EDIT, allGroups());
+	AddEditDataSource addEdit(ds, AddEditDataSource::EDIT, allGroups());
 
-	if (addEdit->exec())
-	{
-		BaseDataSource *edited = addEdit->dataSource();
+	if (!addEdit.exec())
+		return;
 
-		if ( edited != ds )
-		{
-			// old datasource is deleted in ~AddEditDataSource
-			item->setData(0, DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(edited));
-			item->setIcon(0, edited->dataSourceIcon());
-			item->setText(0, edited->label);
-			item->setText(1, edited->group());
-		}
-	}
-
-	delete addEdit;
+	BaseDataSource *edited = addEdit.dataSource();
+	// old datasource is deleted in ~AddEditDataSource
+	item->setData(0, DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(edited));
+	item->setIcon(0, edited->dataSourceIcon());
+	item->setText(0, edited->label);
+	item->setText(1, edited->group());
 }
 
 void SettingsDialog::removeDataSource()
