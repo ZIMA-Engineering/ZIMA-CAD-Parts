@@ -828,7 +828,10 @@ void MainWindow::updatePartsUrlBar(QUrl url)
 
 void MainWindow::setPartsIndex(const QModelIndex &index)
 {
-	qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
+	Item *item = static_cast<Item*>(index.internalPointer());
+	qDebug() << "Set parts index" << item->name;
+	if (item->type() == Item::Group || item->type() == Item::Root)
+		return;
 
 	fm->setRootIndex(index);
 	partsIndexLoaded(index);
@@ -852,6 +855,9 @@ void MainWindow::viewHidePartsIndex(Item *item)
 		return;
 	else if(!item)
 		item = lastPartsIndexItem;
+
+	if (item->type() == Item::Group || item->type() == Item::Root)
+		return;
 
 	QStringList filters;
 	filters << "index-parts_??.html" << "index-parts_??.htm" << "index-parts.html" << "index-parts.htm";
