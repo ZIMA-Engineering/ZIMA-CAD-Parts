@@ -31,7 +31,6 @@ ServersModel::ServersModel(QObject *parent)
 	: QAbstractItemModel(parent)
 {
 	rootItem = new Item();
-	rootItem->setType(Item::Root);
 	m_lastTechSpecRequest = 0;
 
 //	ftpData = new FtpData(this);
@@ -195,13 +194,16 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 	{
 	case Qt::DisplayRole:
 		if(item->showText)
-			return item->type() == Item::Server ? item->name : item->getLabel();
+			return item->isServer ? item->name : item->getLabel();
 		break;
 	case Qt::DecorationRole:
+//		if( item->isServer )
+//			return serverIcon;
+//		else if( item->isDir )
+//			return dirIcon;
 		if(!item->logo.isNull())
 			return item->logo;
-		if (item->type() == Item::Server)
-			return item->server->itemIcon(item);
+		return item->server->itemIcon(item);
 		break;
 	case Qt::SizeHintRole:
 		if(!item->logo.isNull())
@@ -238,7 +240,6 @@ void ServersModel::setDownloadQueue(DownloadModel *queue)
 void ServersModel::setServerData(QList<BaseDataSource*> srv)
 {
 	//qDeleteAll(rootItem->children);
-	m_groupMap.clear();
 	rootItem->children.clear();
 	servers = srv;
 	m_lastTechSpecRequest = 0;
@@ -247,25 +248,15 @@ void ServersModel::setServerData(QList<BaseDataSource*> srv)
 	{
 		Item *i = new Item();
 		i->name = s->label;
-		i->setType(Item::Server);
+		i->isServer = true;
 		i->server = s;
 		i->server->rootItem = i;
-
-		switch( i->server->dataSource )
-		{
-		case LOCAL: {
-			LocalDataSource *lds = static_cast<LocalDataSource*>(i->server);
-			i->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
-			break;
-		}
-		case UNDEFINED:
-			// FIXME
-			break;
-		default:
-			BaseRemoteDataSource *rds = static_cast<BaseRemoteDataSource*>(i->server);
-			i->path = rds->remoteBaseDir.endsWith('/') ? rds->remoteBaseDir : rds->remoteBaseDir + "/";
-		}
-
+//		i->server->changeSettings(i->server->remoteHost,
+//					i->server->remotePort,
+//					i->server->passiveMode,
+//					i->server->login,
+//					i->server->password,
+//					i->server->baseDir);
 		connect(i->server, SIGNAL(loadingItem(Item*)), this, SIGNAL(loadingItem(Item*)));
 		connect(i->server, SIGNAL(itemLoaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
 		connect(i->server, SIGNAL(allItemsLoaded()), this, SIGNAL(allItemsLoaded()));
@@ -284,33 +275,27 @@ void ServersModel::setServerData(QList<BaseDataSource*> srv)
 		connect(i->server, SIGNAL(partsIndexAlreadyExists(Item*)), this, SIGNAL(partsIndexAlreadyExists(Item*)));
 		connect(i->server, SIGNAL(fileError(BaseDataSource::Operation,BaseDataSource::Error*)), this, SLOT(catchFileError(BaseDataSource::Operation,BaseDataSource::Error*)));
 		connect(i->server, SIGNAL(filesDeleted()), this, SLOT(dataSourceFinishedDeleting()));
-		qDebug() << s << s->group() << s->name();
-		if (!s->group().isEmpty())
+
+		i->parent = rootItem;
+
+		switch( i->server->dataSource )
 		{
-			qDebug() << "group" << s->group();
-			Item *group = 0;
-			if (m_groupMap.contains(s->group()))
-				group = m_groupMap[s->group()];
-			else
-			{
-				group = new Item();
-				group->setType(Item::Group);
-				group->setGroup(s->group());
-				group->name = s->group();
-				group->parent = rootItem;
-				m_groupMap[s->group()] = group;
-				rootItem->children.append(group);
-			}
-			i->parent = group;
-			group->children.append(i);
+		case LOCAL: {
+			LocalDataSource *lds = static_cast<LocalDataSource*>(i->server);
+			i->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
+			break;
 		}
-		else
-		{
-			i->parent = rootItem;
-			rootItem->children.append(i);
+		case UNDEFINED:
+			// FIXME
+			break;
+		default:
+			BaseRemoteDataSource *rds = static_cast<BaseRemoteDataSource*>(i->server);
+			i->path = rds->remoteBaseDir.endsWith('/') ? rds->remoteBaseDir : rds->remoteBaseDir + "/";
 		}
 
 		s->loadRootItem(i);
+
+		rootItem->children.append(i);
 	}
 	reset();
 }
@@ -394,8 +379,6 @@ void ServersModel::requestTechSpecs(Item *item)
 void ServersModel::loadItem(Item* item)
 {
 	//clear();
-	if (item->type() != Item::Server)
-		return;
 
 	if(item->hasLoadedChildren)
 	{
@@ -408,6 +391,20 @@ void ServersModel::loadItem(Item* item)
 		//qDebug() << "Item" << item->name << "has not yet loaded children - go on";
 	}
 
+//	if( item->children.size() > 0 || item->files.size() > 0 )
+//	{
+//		item->server->sendTechSpecUrl(item);
+//		allPartsDownloaded(item);
+//		return;
+//	}
+
+	// FIXME: may be missing when commented... we'll see
+//	item->server->ftpData->changeSettings(item->server->address,
+//				item->server->port,
+//				item->server->passiveMode,
+//				item->server->login,
+//				item->server->password,
+//				item->server->baseDir);
 	item->server->loadDirectory(item);
 }
 

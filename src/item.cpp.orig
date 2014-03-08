@@ -130,18 +130,18 @@ QString File::getInternalNameForFileType(File::FileTypes type)
 		return "blend";
 	case File::PDF:
 		return "pdf";
-	case File::OFFICE_WRITER:
-		return "office-document";
-	case File::OFFICE_CALC:
-		return "office-spreadsheet";
-	case File::OFFICE_IMPRESS:
-		return "office-presentation";
-	case File::OFFICE_DRAW:
-		return "office-drawing";
-	case File::OFFICE_PROJECT:
-		return "office-project";
-	case File::OFFICE_BASE:
-		return "office-database";
+    case File::OFFICE_WRITER:
+        return "office-document";
+    case File::OFFICE_CALC:
+        return "office-spreadsheet";
+    case File::OFFICE_IMPRESS:
+        return "office-presentation";
+    case File::OFFICE_DRAW:
+        return "office-drawing";
+    case File::OFFICE_PROJECT:
+        return "office-project";
+    case File::OFFICE_BASE:
+        return "office-database";
 	default:
 		return "undefined";
 	}
@@ -201,18 +201,18 @@ QString File::getLabelForFileType(File::FileTypes type)
 		return "*.blend";
 	case File::PDF:
 		return "*.pdf";
-	case File::OFFICE_WRITER:
-		return QObject::tr("Office document");
-	case File::OFFICE_CALC:
-		return QObject::tr("Office spreadsheet");
-	case File::OFFICE_IMPRESS:
-		return QObject::tr("Office presentation");
-	case File::OFFICE_DRAW:
-		return QObject::tr("Office drawing");
-	case File::OFFICE_PROJECT:
-		return QObject::tr("Office project");
-	case File::OFFICE_BASE:
-		return QObject::tr("Office database");
+    case File::OFFICE_WRITER:
+        return QObject::tr("Office document");
+    case File::OFFICE_CALC:
+        return QObject::tr("Office spreadsheet");
+    case File::OFFICE_IMPRESS:
+        return QObject::tr("Office presentation");
+    case File::OFFICE_DRAW:
+        return QObject::tr("Office drawing");
+    case File::OFFICE_PROJECT:
+        return QObject::tr("Office project");
+    case File::OFFICE_BASE:
+        return QObject::tr("Office database");
 	default:
 		return "undefined";
 	}
@@ -272,18 +272,18 @@ QString File::getRxForFileType(File::FileTypes type)
 		return "(^.+\\.blend$)";
 	case File::PDF:
 		return "(^.+\\.pdf$)";
-	case File::OFFICE_WRITER:
-		return getRxFromStringList(QStringList() << "odt" << "ott" << "odm" << "doc" << "dot" << "docx" << "docm" << "dotx" << "dotm");
-	case File::OFFICE_CALC:
-		return getRxFromStringList(QStringList() << "ods" << "ots" << "xls" << "xlt" << "xlm" << "xlsx" << "xlsm" << "xltx" << "xltm" << "csv");
-	case File::OFFICE_IMPRESS:
-		return getRxFromStringList(QStringList() << "odp" << "otp" << "ppt" << "pot" << "pps" << "pptx" << "pptm" << "potx" << "potm" << "ppam" << "ppsx" << "ppsm" << "sldx" << "sldm");
-	case File::OFFICE_DRAW:
-		return getRxFromStringList(QStringList() << "odg" << "otg");
-	case File::OFFICE_PROJECT:
-		return getRxFromStringList(QStringList() << "mpd" << "mpp");
-	case File::OFFICE_BASE:
-		return getRxFromStringList(QStringList() << "odb" << "mdb" << "accdb" << "accde" << "accdt" << "accdr");
+    case File::OFFICE_WRITER:
+        return getRxFromStringList(QStringList() << "odt" << "ott" << "odm" << "doc" << "dot" << "docx" << "docm" << "dotx" << "dotm");
+    case File::OFFICE_CALC:
+        return getRxFromStringList(QStringList() << "ods" << "ots" << "xls" << "xlt" << "xlm" << "xlsx" << "xlsm" << "xltx" << "xltm" << "csv");
+    case File::OFFICE_IMPRESS:
+        return getRxFromStringList(QStringList() << "odp" << "otp" << "ppt" << "pot" << "pps" << "pptx" << "pptm" << "potx" << "potm" << "ppam" << "ppsx" << "ppsm" << "sldx" << "sldm");
+    case File::OFFICE_DRAW:
+        return getRxFromStringList(QStringList() << "odg" << "otg");
+    case File::OFFICE_PROJECT:
+        return getRxFromStringList(QStringList() << "mpd" << "mpp");
+    case File::OFFICE_BASE:
+        return getRxFromStringList(QStringList() << "odb" << "mdb" << "accdb" << "accde" << "accdt" << "accdr");
 	default:
 		return "";
 	}
@@ -291,13 +291,13 @@ QString File::getRxForFileType(File::FileTypes type)
 
 QString File::getRxFromStringList(const QStringList &extensions)
 {
-	QString ret;
-	foreach(QString i, extensions)
-	{
-		ret += QString("(^.+\\.%1)|").arg(i);
-	}
-	ret.chop(1);
-	return ret;
+    QString ret;
+    foreach(QString i, extensions)
+    {
+        ret += QString("(^.+\\.%1)|").arg(i);
+    }
+    ret.chop(1);
+    return ret;
 }
 
 Item::Item()
@@ -374,7 +374,7 @@ QList<Thumbnail*> Item::thumbnails(bool include)
 	ret << m_thumbnails;
 
 	foreach(Item *it, metadata->includedThumbnailItems())
-	ret << it->thumbnails();
+		ret << it->thumbnails();
 
 	return ret;
 }

@@ -100,7 +100,6 @@ private:
 	QList<TreeAutoDescent*> autoDescents;
 	QHash<TreeAutoDescent*, Item*> metadataIncludeHash;
 	DownloadModel *downloadQueue;
-	QHash<QString,Item*> m_groupMap;
 
 private slots:
 	void dataSourceFinishedDownloading();

@@ -175,7 +175,7 @@ void LocalDataSource::loadDirectory(Item* item)
 			}
 
 			Item *it = new Item;
-			item->setType(Item::Dir);
+			it->isDir = true;
 			it->name = entries[i].fileName();
 			it->parent = item;
 			it->path = item->path + it->name + "/";

@@ -146,14 +146,12 @@ void BaseDataSource::retranslate(QString lang)
 void BaseDataSource::loadSettings(QSettings& settings)
 {
 	label = settings.value("Label").toString();
-	m_group = settings.value("Group").toString();
 }
 
 void BaseDataSource::saveSettings(QSettings& settings)
 {
 	settings.setValue("DataSourceType", internalName());
 	settings.setValue("Label", label);
-	settings.setValue("Group", m_group);
 }
 
 void BaseDataSource::createMetadata(Item *item)

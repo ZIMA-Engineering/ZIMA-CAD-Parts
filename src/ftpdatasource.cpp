@@ -349,7 +349,7 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 			ftpCurrentItem->hasTechSpecs = true;
 		} else {
 			Item *i = new Item();
-			i->setType(Item::Dir);
+			i->isDir = true;
 			i->name = n;
 			i->parent = ftpCurrentItem;
 			i->path = remoteBaseDir + n + "/";
@@ -377,7 +377,17 @@ void FtpDataSource::ftpListInfo(const QUrlInfo &info)
 		}
 
 		//qDebug() << "reading directory" << n;
-	}
+	}/*else if (info.isFile() && n.right(n.length() - n.lastIndexOf('.') - 1) == "db")
+	{
+		emit statusUpdated("Loading " + n);
+		qDebug() << "Loading db file " << ftpCurrentDir << "/" << n;
+		Item *p = new Item();
+		p->path = ftpCurrentDir;
+		p->parent = ftpCurrentItem;
+		dbFilesQueued++;
+		int id = ftp->get(ftpCurrentDir + "/" + n);
+		partTasks[id] = p;
+	}*/
 	else if( info.isFile() ) {
 		File *f = new File;
 		//f->isDir = false;
