@@ -197,6 +197,28 @@
        <string>&amp;Data sources</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QListWidget" name="datasourceList">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::InternalMove</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="1">
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -261,29 +283,6 @@
           </spacer>
          </item>
         </layout>
-       </item>
-       <item row="0" column="0">
-        <widget class="QTreeWidget" name="datasourceList">
-         <property name="dragEnabled">
-          <bool>true</bool>
-         </property>
-         <property name="dragDropMode">
-          <enum>QAbstractItemView::InternalMove</enum>
-         </property>
-         <property name="alternatingRowColors">
-          <bool>true</bool>
-         </property>
-         <column>
-          <property name="text">
-           <string>Datasource</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Group</string>
-          </property>
-         </column>
-        </widget>
        </item>
       </layout>
      </widget>
@@ -461,6 +460,22 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>datasourceList</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>editBtn</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>213</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>455</x>
+     <y>87</y>
     </hint>
    </hints>
   </connection>

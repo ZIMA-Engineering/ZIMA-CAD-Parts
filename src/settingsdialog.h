@@ -95,7 +95,6 @@ private:
 	QList<QLineEdit*> zimaUtilLineEdits;
 
 	void setupDatasourceList(QList<BaseDataSource*> datasources);
-	QStringList allGroups();
 };
 
 #endif // SETTINGSDIALOG_H

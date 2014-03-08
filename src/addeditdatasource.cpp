@@ -25,7 +25,7 @@
 #include "addeditdatasource.h"
 #include "ui_addeditdatasource.h"
 
-AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, Actions action, const QStringList &groups, QWidget *parent) :
+AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, Actions action, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::AddEditDataSource)
 {
@@ -36,7 +36,6 @@ AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, Actions action,
 
 	ui->dataSourceComboBox->setCurrentIndex( dataSource->dataSource );
 	ui->stackedWidget->setCurrentIndex( dataSource->dataSource );
-	ui->groupComboBox->addItem("");
 
 	refill();
 
@@ -54,14 +53,13 @@ AddEditDataSource::~AddEditDataSource()
 	delete ui;
 
 	foreach(BaseDataSource *bs, dataSources)
-	if( bs != lastDataSource )
-		delete bs;
+		if( bs != lastDataSource )
+			delete bs;
 }
 
 BaseDataSource* AddEditDataSource::dataSource()
 {
 	lastDataSource->label = ui->labelLineEdit->text();
-	lastDataSource->setGroup(ui->groupComboBox->currentText());
 
 	switch( lastDataSource->dataSource )
 	{

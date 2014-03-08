@@ -72,8 +72,6 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 	connect(m_ui->pruneCacheButton, SIGNAL(clicked()), this, SLOT(pruneCache()));
 	connect(m_ui->productViewButton, SIGNAL(clicked()),
 	        this, SLOT(productViewButton_clicked()));
-	connect(m_ui->datasourceList, SIGNAL(doubleClicked(QModelIndex)),
-	        this, SLOT(editDataSource()));
 
 	setupDatasourceList(datasources);
 
@@ -208,12 +206,12 @@ void SettingsDialog::addDataSource()
 {
 	BaseDataSource *dataSource = 0;
 
-	if ( m_ui->datasourceList->topLevelItemCount() )
+	if ( m_ui->datasourceList->count() )
 	{
-		QTreeWidgetItem *item = m_ui->datasourceList->currentItem();
+		QListWidgetItem *item = m_ui->datasourceList->currentItem();
 		if (!item)
-			item = m_ui->datasourceList->topLevelItem(0);
-		BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(0, DATASOURCE_ROLE));
+			item = m_ui->datasourceList->item(0);
+		BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
 		switch( ds->dataSource )
 		{
 		case LOCAL: {
@@ -239,16 +237,15 @@ void SettingsDialog::addDataSource()
 
 	if( dataSource != 0 )
 	{
-		AddEditDataSource *addEdit = new AddEditDataSource(dataSource, AddEditDataSource::ADD, allGroups());
+		AddEditDataSource *addEdit = new AddEditDataSource(dataSource, AddEditDataSource::ADD);
 
 		if( addEdit->exec() == QDialog::Accepted )
 		{
 			BaseDataSource *ds = addEdit->dataSource();
-			QTreeWidgetItem *item =  new QTreeWidgetItem(QStringList() << ds->label << ds->group());
-			item->setIcon(0, ds->dataSourceIcon());
-			item->setData(0, DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(ds));
-			item->setData(0, UNUSED_ROLE, true);
-			m_ui->datasourceList->addTopLevelItem(item);
+			QListWidgetItem *item =  new QListWidgetItem(ds->dataSourceIcon(), ds->label);
+			item->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(ds));
+			item->setData(UNUSED_ROLE, true);
+			m_ui->datasourceList->addItem(item);
 			m_ui->datasourceList->setCurrentItem(item);
 		}
 		else
@@ -261,15 +258,15 @@ void SettingsDialog::addDataSource()
 
 void SettingsDialog::editDataSource()
 {
-	if ( !m_ui->datasourceList->topLevelItemCount() )
+	if ( !m_ui->datasourceList->count() )
 		return;
 
-	QTreeWidgetItem *item = m_ui->datasourceList->currentItem();
+	QListWidgetItem *item = m_ui->datasourceList->currentItem();
 	if (!item)
 		return;
 
-	BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(0, DATASOURCE_ROLE));
-	AddEditDataSource *addEdit = new AddEditDataSource(ds, AddEditDataSource::EDIT, allGroups());
+	BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
+	AddEditDataSource *addEdit = new AddEditDataSource(ds, AddEditDataSource::EDIT);
 
 	if (addEdit->exec())
 	{
@@ -278,10 +275,9 @@ void SettingsDialog::editDataSource()
 		if ( edited != ds )
 		{
 			// old datasource is deleted in ~AddEditDataSource
-			item->setData(0, DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(edited));
-			item->setIcon(0, edited->dataSourceIcon());
-			item->setText(0, edited->label);
-			item->setText(1, edited->group());
+			item->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(edited));
+			item->setIcon(edited->dataSourceIcon());
+			item->setText(edited->label);
 		}
 	}
 
@@ -290,51 +286,51 @@ void SettingsDialog::editDataSource()
 
 void SettingsDialog::removeDataSource()
 {
-	if ( !m_ui->datasourceList->topLevelItemCount() )
+	if ( !m_ui->datasourceList->count() )
 		return;
 
-	QTreeWidgetItem *it = m_ui->datasourceList->currentItem();
+	QListWidgetItem *it = m_ui->datasourceList->currentItem();
 	if (!it)
 		return;
 
 	//  no need to call deleteLater() on used/application datasource
 	//  because unused datasources are deleted in
 	//  mainwindow.cpp
-	BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(it->data(0, DATASOURCE_ROLE));
-	if (it->data(0, UNUSED_ROLE).toBool())
+	BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(it->data(DATASOURCE_ROLE));
+	if (it->data(UNUSED_ROLE).toBool())
 	{
 		ds->deleteLater();
 	}
 
-	int row = m_ui->datasourceList->indexOfTopLevelItem(it);
-	m_ui->datasourceList->takeTopLevelItem(row);
+	int row = m_ui->datasourceList->currentRow();
+	m_ui->datasourceList->takeItem(row);
 
 	delete it;
 }
 
 void SettingsDialog::datasourceUpButton_clicked()
 {
-	QTreeWidget *lw = m_ui->datasourceList;
-	QTreeWidgetItem *current = lw->currentItem();
-	int ix = lw->indexOfTopLevelItem(current);
+	QListWidget *lw = m_ui->datasourceList;
+	QListWidgetItem *current = lw->currentItem();
+	int ix = lw->row(current);
 	if (ix > 0)
 	{
-		QTreeWidgetItem *temp = lw->takeTopLevelItem(ix);
-		lw->insertTopLevelItem(ix-1, temp);
-		lw->setCurrentItem(temp);
+		QListWidgetItem *temp = lw->takeItem(ix);
+		lw->insertItem(ix-1, temp);
+		lw->setCurrentRow(ix-1);
 	}
 }
 
 void SettingsDialog::datasourceDownButton_clicked()
 {
-	QTreeWidget *lw = m_ui->datasourceList;
-	QTreeWidgetItem *current = lw->currentItem();
-	int ix = lw->indexOfTopLevelItem(current);
-	if (ix < lw->topLevelItemCount()-1)
+	QListWidget *lw = m_ui->datasourceList;
+	QListWidgetItem *current = lw->currentItem();
+	int ix = lw->row(current);
+	if (ix < lw->count()-1)
 	{
-		QTreeWidgetItem *temp = lw->takeTopLevelItem(ix);
-		lw->insertTopLevelItem(ix+1, temp);
-		lw->setCurrentItem(temp);
+		QListWidgetItem *temp = lw->takeItem(ix);
+		lw->insertItem(ix+1, temp);
+		lw->setCurrentRow(ix+1);
 	}
 }
 
@@ -344,32 +340,25 @@ void SettingsDialog::setupDatasourceList(QList<BaseDataSource*> datasources)
 	if (datasources.isEmpty())
 		return;
 
-	QTreeWidgetItem *first = 0;
 	foreach(BaseDataSource *s, datasources)
 	{
-		QTreeWidgetItem *i = new QTreeWidgetItem(QStringList() << s->label << s->group());
-		i->setIcon(0, s->dataSourceIcon());
-		i->setData(0, DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(s));
-		i->setData(0, UNUSED_ROLE, false);
-		m_ui->datasourceList->addTopLevelItem(i);
-
-		if (!first)
-			first = i;
+		QListWidgetItem *i = new QListWidgetItem(s->dataSourceIcon(), s->label);
+		i->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(s));
+		i->setData(UNUSED_ROLE, false);
+		m_ui->datasourceList->addItem(i);
 	}
 
-	m_ui->datasourceList->setCurrentItem(first);
+	m_ui->datasourceList->setCurrentRow(0);
 	m_ui->datasourceList->setFocus();
-	m_ui->datasourceList->resizeColumnToContents(0);
-	m_ui->datasourceList->resizeColumnToContents(1);
 }
 
 QList<BaseDataSource*> SettingsDialog::getDatasources()
 {
 	QList<BaseDataSource*> ret;
-	for (int i = 0; i < m_ui->datasourceList->topLevelItemCount(); ++i)
+	for (int i = 0; i < m_ui->datasourceList->count(); ++i)
 	{
-		QTreeWidgetItem *item = m_ui->datasourceList->topLevelItem(i);
-		ret << PtrVariant<BaseDataSource>::asPtr(item->data(0, DATASOURCE_ROLE));
+		QListWidgetItem *item = m_ui->datasourceList->item(i);
+		ret << PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
 	}
 
 	return ret;
@@ -442,18 +431,4 @@ void SettingsDialog::productViewButton_clicked()
 	              m_ui->productViewEdit->text());
 	if (!str.isEmpty())
 		m_ui->productViewEdit->setText(str);
-}
-
-QStringList SettingsDialog::allGroups()
-{
-	QStringList ret;
-	for (int i = 0; i < m_ui->datasourceList->topLevelItemCount(); ++i)
-	{
-		QString val = m_ui->datasourceList->topLevelItem(i)->text(1);
-		if (!ret.contains(val))
-			ret << val;
-	}
-
-	ret.sort();
-	return ret;
 }
