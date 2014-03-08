@@ -401,9 +401,6 @@ void ServersModel::requestTechSpecs(const QModelIndex &index)
 
 void ServersModel::requestTechSpecs(Item *item)
 {
-	if (item->type() == Item::Group || item->type() == Item::Root)
-		return;
-
 	item->server->sendTechSpecUrl(item);
 
 	m_lastTechSpecRequest = item;
