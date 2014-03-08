@@ -74,7 +74,7 @@ public:
 	virtual QString getRelativePathForItem(Item *item) = 0;
 	virtual QString name() = 0;
 
-	QString group() const {
+	QString group() {
 		return m_group;
 	}
 	void setGroup(const QString &g) {
@@ -84,7 +84,6 @@ public:
 	Item    *rootItem;
 	QString label;
 	DataSources dataSource;
-
 public slots:
 	virtual void loadRootItem(Item *item) = 0;
 	virtual void loadDirectory(Item* item) = 0;

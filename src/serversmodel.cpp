@@ -200,27 +200,12 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 	case Qt::DecorationRole:
 		if(!item->logo.isNull())
 			return item->logo;
-		switch (item->type())
-		{
-		case Item::Server:
+		if (item->type() == Item::Server)
 			return item->server->itemIcon(item);
-		case Item::Group:
-			return QIcon(":/gfx/icons/view-group.png");
-		default:
-			break;
-		}
 		break;
 	case Qt::SizeHintRole:
 		if(!item->logo.isNull())
 			return QSize(item->logo.width(), item->logo.height());
-		break;
-	case Qt::FontRole:
-		if (item->type() == Item::Group)
-		{
-			QFont f;
-			f.setBold(true);
-			return f;
-		}
 		break;
 	default:
 		;
