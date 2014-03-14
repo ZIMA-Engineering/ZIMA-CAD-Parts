@@ -21,7 +21,7 @@
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
 #include <QSettings>
 #include <QMultiHash>
 #include <QTranslator>

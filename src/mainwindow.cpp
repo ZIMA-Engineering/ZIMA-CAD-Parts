@@ -103,7 +103,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	restoreGeometry(settings->value("geometry", QByteArray()).toByteArray());
 
 	connect(ui->btnDownload, SIGNAL(clicked()), this, SLOT(downloadButton()));
-	connect(ui->btnSettings, SIGNAL(clicked()), this, SLOT(showSettings()));
+	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(showSettings()));
 	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectoryDialog()));
 	connect(ui->openWorkDirButton, SIGNAL(clicked()), this, SLOT(openWorkingDirectory()));
 	connect(ui->btnUpdate, SIGNAL(clicked()), this, SLOT(updateClicked()));
@@ -112,9 +112,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->thumbnailSizeSlider->setValue(settings->value("GUI/ThumbWidth", 32).toInt());
 
-	//connect(ui->treeLeft, SIGNAL(expanded(QModelIndex)), ui->treeLeft, SIGNAL(clicked(QModelIndex)));
-
-	//connect(ui->filtersListWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(rebuildFilters()));
 	connect(ui->filtersButton, SIGNAL(clicked()), this, SLOT(setFiltersDialog()));
 
 	QList<int> list;
@@ -124,12 +121,11 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	serversModel = new ServersModel(this);
 	serversModel->setServerData(servers);
 	serversModel->retranslateMetadata();
-	ui->treeLeft->setModel(serversModel);
-	ui->treeLeft->setContextMenuPolicy(Qt::CustomContextMenu);
+	ui->serversWidget->setModel(serversModel);
+	ui->serversWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 
-	dirTreeSignalMapper = new QSignalMapper(this);
-
-	connect(dirTreeSignalMapper, SIGNAL(mapped(int)), this, SLOT(spawnZimaUtilityOnDir(int)));
+	connect(ui->serversWidget, SIGNAL(showSettings(SettingsDialog::Section)),
+	        this, SLOT(showSettings(SettingsDialog::Section)));
 
 	connect(serversModel, SIGNAL(loadingItem(Item*)), this, SLOT(loadingItem(Item*)));
 	connect(serversModel, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(itemLoaded(const QModelIndex&)));
@@ -143,12 +139,10 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(serversModel, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SLOT(techSpecsIndexOverwrite(Item*)));
 	connect(serversModel, SIGNAL(partsIndexAlreadyExists(Item*)), this, SLOT(partsIndexOverwrite(Item*)));
 
-	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), serversModel, SLOT(requestTechSpecs(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), serversModel, SLOT(requestTechSpecs(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
-//	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), sm, SLOT(requestTechSpecs(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(dirTreeContextMenu(QPoint)));
+	connect(ui->serversWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
+	connect(ui->serversWidget, SIGNAL(activated(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
+	connect(ui->serversWidget, SIGNAL(groupChanged(const QModelIndex&)),
+	        this, SLOT(setPartsIndex(const QModelIndex&)));
 
 	fm = new FileModel(this);
 
@@ -228,12 +222,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->tree->setModel(proxy);
 
-	//connect(sm, SIGNAL(itemLoaded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
-//	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
-//	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), fm, SLOT(setRootIndex(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(clicked(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
-	connect(ui->treeLeft, SIGNAL(activated(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
-//	connect(ui->treeLeft, SIGNAL(expanded(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
+	connect(ui->serversWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
+	connect(ui->serversWidget, SIGNAL(activated(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
 	connect(serversModel, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(serversModel, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 	connect(serversModel, SIGNAL(filesDeleted()), this, SLOT(filesDeleted()));
@@ -277,8 +267,11 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 		langButtonGroup->addButton(flag, i);
 
-		ui->langsHorizontalLayout->addWidget(flag);
+		ui->toolBar->addWidget(flag);
 	}
+
+	if (cnt)
+		ui->toolBar->addSeparator();
 
 	connect(langButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(changeLanguage(int)));
 
@@ -501,8 +494,6 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 		ui->treeBackButton->setEnabled(false);
 		ui->treeForwardButton->setEnabled(false);
 
-		loadZimaUtils();
-
 		ui->techSpec->loadAboutPage();
 
 		allItemsLoaded();
@@ -610,7 +601,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::errorOccured(QString error)
 {
-	ui->treeLeft->setEnabled(true);
+	ui->serversWidget->setEnabled(true);
 	ui->btnUpdate->setEnabled(true);
 
 	updateStatus(tr("FTP error."));
@@ -895,13 +886,12 @@ void MainWindow::autoDescentProgress(const QModelIndex &index)
 	qDebug() << "Progress expand" << index << item->name << item->parent->name;
 
 	lastFoundIndex = index;
-	ui->treeLeft->expand(index);
+	ui->serversWidget->expand(index);
 }
 
 void MainWindow::autoDescendComplete(const QModelIndex &index)
 {
-	ui->treeLeft->expand(index);
-//	ui->treeLeft->setCurrentIndex(index);
+	ui->serversWidget->expand(index);
 	setPartsIndex(index);
 	serversModel->requestTechSpecs(index);
 	trackHistory(index);
@@ -973,24 +963,6 @@ void MainWindow::loadSettings()
 {
 	ui->editDir->setText(settings->value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
 	ui->techSpec->setDownloadDirectory(ui->editDir->text());
-
-	loadZimaUtils();
-}
-
-void MainWindow::loadZimaUtils()
-{
-	zimaUtils.clear();
-
-	settings->beginGroup("ExternalPrograms");
-
-	for(int i = 0; i < ZimaUtils::ZimaUtilsCount; i++)
-	{
-		settings->beginGroup(ZimaUtils::internalNameForUtility(i));
-		zimaUtils << settings->value("Executable").toString();
-		settings->endGroup();
-	}
-
-	settings->endGroup();
 }
 
 QList<BaseDataSource*> MainWindow::loadDataSources()
@@ -1102,64 +1074,9 @@ void MainWindow::saveFilters()
 	settings->endGroup();
 }
 
-void MainWindow::dirTreeContextMenu(QPoint point)
-{
-	QModelIndex i = ui->treeLeft->currentIndex();
-
-	if(!i.isValid())
-		return;
-
-	Item *it = static_cast<Item*>(i.internalPointer());
-
-	if(it->server->dataSource != LOCAL)
-		return;
-
-	QMenu *menu = new QMenu(this);
-
-	menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
-	menu->addSeparator();
-
-	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), "Clean with ZIMA-PTC-Cleaner", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaPtcCleaner);
-	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), "Sync with ZIMA-CAD-Sync", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaCadSync);
-	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), "Convert postscript to PDF with ZIMA-PS2PDF", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaPs2Pdf);
-	dirTreeSignalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-STEP-Edit.png"), "Edit step files with ZIMA-STEP-Edit", dirTreeSignalMapper, SLOT(map())), ZimaUtils::ZimaStepEdit);
-
-	menu->exec(ui->treeLeft->mapToGlobal(point));
-	menu->deleteLater();
-}
-
-void MainWindow::spawnZimaUtilityOnDir(int i)
-{
-	QString label = ZimaUtils::labelForUtility(i);
-
-	if(zimaUtils[i].isEmpty())
-	{
-		QMessageBox::warning(this, tr("Configure %1").arg(label), tr("Please first configure path to %1 executable.").arg(label));
-		showSettings(SettingsDialog::ExternalPrograms);
-		return;
-	}
-
-	QString executable = zimaUtils[i];
-
-	if(!QFile::exists(executable))
-	{
-		QMessageBox::warning(this, tr("Configure %1").arg(label), tr("Path '%1' to %2 executable does not exists!").arg(executable).arg(label));
-		showSettings(SettingsDialog::ExternalPrograms);
-		return;
-	}
-
-	qDebug() << "Spawn" << label;
-
-	QStringList args;
-
-	args << static_cast<Item*>(ui->treeLeft->currentIndex().internalPointer())->path;
-
-	QProcess::startDetached(executable, args);
-}
-
 void MainWindow::setWorkingDirectory()
 {
-	Item *it = static_cast<Item*>(ui->treeLeft->currentIndex().internalPointer());
+	Item *it = static_cast<Item*>(ui->serversWidget->currentIndex().internalPointer());
 
 	settings->setValue("HomeDir", it->server->name() + it->pathRelativeToDataSource());
 	settings->setValue("WorkingDir", it->path);
@@ -1207,7 +1124,7 @@ void MainWindow::historyBack()
 	const QModelIndex index = history[--historyCurrentIndex];
 	Item *item = static_cast<Item*>(index.internalPointer());
 
-	ui->treeLeft->setCurrentIndex(index);
+	ui->serversWidget->setCurrentIndex(index);
 	serversModel->requestTechSpecs(item);
 	fm->setRootIndex(index);
 
@@ -1222,7 +1139,7 @@ void MainWindow::historyForward()
 	const QModelIndex index = history[++historyCurrentIndex];
 	Item *item = static_cast<Item*>(index.internalPointer());
 
-	ui->treeLeft->setCurrentIndex(index);
+	ui->serversWidget->setCurrentIndex(index);
 	serversModel->requestTechSpecs(item);
 	fm->setRootIndex(index);
 

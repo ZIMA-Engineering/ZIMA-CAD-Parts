@@ -57,6 +57,9 @@ public:
 	//---
 	void setDownloadQueue(DownloadModel *queue);
 	void setServerData(QList<BaseDataSource*>);
+	QList<BaseDataSource*> serversData() {
+		return servers;
+	}
 	QString translateDataSourceNameToPath(QString name);
 	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
 	bool hasErrors(BaseDataSource::Operation op);

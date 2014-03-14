@@ -87,7 +87,6 @@ private:
 	static QString currentMetadataLang;
 	QStringList langs;
 	QList<QPushButton*> langFlags;
-	QSignalMapper *dirTreeSignalMapper;
 
 	// Models
 	DownloadModel *downloadModel;
@@ -115,8 +114,6 @@ private:
 	QUrl lastPartsIndex;
 	QDateTime lastPartsIndexModTime;
 	QModelIndex lastFoundIndex;
-
-	QStringList zimaUtils;
 
 	ProductView *productView;
 
@@ -174,13 +171,10 @@ private slots:
 	void partsIndexOverwrite(Item *item);
 	void openDirTreePath();
 	void loadSettings();
-	void loadZimaUtils();
 	QList<BaseDataSource*> loadDataSources();
 	void saveSettings();
 	void loadFilters();
 	void saveFilters();
-	void dirTreeContextMenu(QPoint point);
-	void spawnZimaUtilityOnDir(int i);
 	void setWorkingDirectory();
 	void goToWorkingDirectory();
 	void trackHistory(const QModelIndex &index);

@@ -3,6 +3,7 @@
         <file>gfx/splash.png</file>
         <file>gfx/logo.png</file>
         <file>gfx/icon.png</file>
+        <file>gfx/configure.png</file>
         <file>data/zima-cad-parts.html</file>
         <file>data/zima-cad-parts_cs_CZ.html</file>
         <file>data/extensions/productview/proeproductview.html</file>
