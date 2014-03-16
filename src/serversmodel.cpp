@@ -153,13 +153,12 @@ QModelIndex ServersModel::index(int row, int column, const QModelIndex &parent) 
 //data v hlavicke, v podstate budu zavisiet od nastaveni stlpcov
 QVariant ServersModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-#if 0
 	if (role != Qt::DisplayRole || orientation != Qt::Horizontal)
 		return QVariant();
 
 	if (section == 0)
 		return tr("Data sources");
-#endif
+
 	return QVariant();
 }
 
@@ -406,6 +405,8 @@ void ServersModel::loadItem(Item* item)
 //				item->server->login,
 //				item->server->password,
 //				item->server->baseDir);
+    Q_ASSERT(item);
+    Q_ASSERT(item->server);
 	item->server->loadDirectory(item);
 }
 

@@ -122,7 +122,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	serversModel->setServerData(servers);
 	serversModel->retranslateMetadata();
 	ui->serversWidget->setModel(serversModel);
-	ui->serversWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	connect(ui->serversWidget, SIGNAL(showSettings(SettingsDialog::Section)),
 	        this, SLOT(showSettings(SettingsDialog::Section)));

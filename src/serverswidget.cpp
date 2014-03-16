@@ -48,6 +48,7 @@ void ServersWidget::setup()
 		view->header()->close();
 		m_views.append(view);
 		view->setModel(m_model);
+        view->setContextMenuPolicy(Qt::CustomContextMenu);
 
 		QModelIndex ix = m_model->index(i, 0);
 		view->setRootIndex(ix);
