@@ -82,6 +82,23 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	ui->treeBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 	ui->treeForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
 
+	fm = new FileModel(this);
+
+	fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
+	fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
+
+	proxy = new FileFilterModel(this);
+	proxy->setSourceModel(fm);
+
+	connect(ui->serversWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
+	connect(ui->serversWidget, SIGNAL(activated(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
+	connect(ui->serversWidget, SIGNAL(showSettings(SettingsDialog::Section)),
+	        this, SLOT(showSettings(SettingsDialog::Section)));
+	connect(ui->serversWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
+	connect(ui->serversWidget, SIGNAL(activated(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
+	connect(ui->serversWidget, SIGNAL(groupChanged(const QModelIndex&)),
+	        this, SLOT(setPartsIndex(const QModelIndex&)));
+
 	connect(ui->treeBackButton, SIGNAL(clicked()), this, SLOT(historyBack()));
 	connect(ui->treeForwardButton, SIGNAL(clicked()), this, SLOT(historyForward()));
 
@@ -123,9 +140,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	serversModel->retranslateMetadata();
 	ui->serversWidget->setModel(serversModel);
 
-	connect(ui->serversWidget, SIGNAL(showSettings(SettingsDialog::Section)),
-	        this, SLOT(showSettings(SettingsDialog::Section)));
-
 	connect(serversModel, SIGNAL(loadingItem(Item*)), this, SLOT(loadingItem(Item*)));
 	connect(serversModel, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(itemLoaded(const QModelIndex&)));
 	connect(serversModel, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(partsIndexLoaded(const QModelIndex&)));
@@ -138,22 +152,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(serversModel, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SLOT(techSpecsIndexOverwrite(Item*)));
 	connect(serversModel, SIGNAL(partsIndexAlreadyExists(Item*)), this, SLOT(partsIndexOverwrite(Item*)));
 
-	connect(ui->serversWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
-	connect(ui->serversWidget, SIGNAL(activated(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
-	connect(ui->serversWidget, SIGNAL(groupChanged(const QModelIndex&)),
-	        this, SLOT(setPartsIndex(const QModelIndex&)));
-
-	fm = new FileModel(this);
-
-	fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
-	fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
-
 	connect(fm, SIGNAL(requestColumnResize()), this, SLOT(treeExpandedOrCollaped()));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), fm, SLOT(setThumbWidth(int)));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(adjustThumbColumnWidth(int)));
-
-	proxy = new FileFilterModel(this);
-	proxy->setSourceModel(fm);
 
 	filterGroups << FilterGroup("ProE", "Pro/Engineer");
 	filterGroups.last()
@@ -221,8 +222,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->tree->setModel(proxy);
 
-	connect(ui->serversWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
-	connect(ui->serversWidget, SIGNAL(activated(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
 	connect(serversModel, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(serversModel, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 	connect(serversModel, SIGNAL(filesDeleted()), this, SLOT(filesDeleted()));

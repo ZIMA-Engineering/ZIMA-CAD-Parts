@@ -48,13 +48,16 @@ void ServersWidget::setup()
 		view->header()->close();
 		m_views.append(view);
 		view->setModel(m_model);
-        view->setContextMenuPolicy(Qt::CustomContextMenu);
+		view->setContextMenuPolicy(Qt::CustomContextMenu);
 
 		QModelIndex ix = m_model->index(i, 0);
+		view->setExpanded(ix, true);
 		view->setRootIndex(ix);
 		if (i == 0)
+		{
 			emit groupChanged(ix);
-		view->setExpanded(ix, true);
+		}
+
 
 		connect(view, SIGNAL(clicked(const QModelIndex&)),
 		        m_model, SLOT(requestTechSpecs(const QModelIndex&)));
