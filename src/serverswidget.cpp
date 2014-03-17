@@ -11,8 +11,7 @@
 
 
 ServersWidget::ServersWidget(QWidget *parent)
-	: QToolBox(parent),
-	  m_model(0)
+	: QToolBox(parent)
 {
 	setStyleSheet("icon-size: 16px;");
 	m_signalMapper = new QSignalMapper(this);
@@ -21,6 +20,7 @@ ServersWidget::ServersWidget(QWidget *parent)
 	connect(this, SIGNAL(currentChanged(int)), this, SLOT(this_currentChanged(int)));
 }
 
+#if 0
 void ServersWidget::setModel(ServersModel *model)
 {
 	m_model = model;
@@ -29,8 +29,9 @@ void ServersWidget::setModel(ServersModel *model)
 	// Note: here we expect that ServersModel will send only the reset as in 2014-03-08
 	connect(m_model, SIGNAL(reset()), this, SLOT(setup()));
 }
+#endif
 
-void ServersWidget::setup()
+void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 {
 	// firstly delete all stuff used. Remember "the reset"
 	for (int i = 0; i < count(); ++i)
@@ -38,31 +39,26 @@ void ServersWidget::setup()
 		removeItem(i);
 	}
 	qDeleteAll(m_views);
+    qDeleteAll(m_models);
 	m_views.clear();
+    m_models.clear();
 
 	// now setup all item==group again
-	int i = 0;
-	foreach(BaseDataSource *ds, m_model->serversData())
+	foreach(BaseDataSource *ds, datasources)
 	{
+        ServersModel *model = new ServersModel(ds, this);
+        model->retranslateMetadata();
+
 		QTreeView *view = new QTreeView(this);
 		view->header()->close();
 		m_views.append(view);
-		view->setModel(m_model);
+		view->setModel(model);
 		view->setContextMenuPolicy(Qt::CustomContextMenu);
 
-		QModelIndex ix = m_model->index(i, 0);
-		view->setExpanded(ix, true);
-		view->setRootIndex(ix);
-		if (i == 0)
-		{
-			emit groupChanged(ix);
-		}
-
-
 		connect(view, SIGNAL(clicked(const QModelIndex&)),
-		        m_model, SLOT(requestTechSpecs(const QModelIndex&)));
+		        model, SLOT(requestTechSpecs(const QModelIndex&)));
 		connect(view, SIGNAL(activated(const QModelIndex&)),
-		        m_model, SLOT(requestTechSpecs(const QModelIndex&)));
+		        model, SLOT(requestTechSpecs(const QModelIndex&)));
 		connect(view, SIGNAL(clicked(const QModelIndex&)),
 		        this, SIGNAL(clicked(const QModelIndex&)));
 		connect(view, SIGNAL(activated(const QModelIndex&)),
@@ -72,8 +68,6 @@ void ServersWidget::setup()
 		        this, SLOT(dirTreeContextMenu(QPoint)));
 
 		addItem(view, ds->dataSourceIcon(), ds->label);
-
-		i++;
 	}
 }
 

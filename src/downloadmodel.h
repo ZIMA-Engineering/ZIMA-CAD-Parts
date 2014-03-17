@@ -76,7 +76,7 @@ private slots:
 
 private:
 	QList<File*> queue;
-	QHash<TransferHandlerType, TransferHandler*> m_handlers;
+	QMultiHash<TransferHandlerType, TransferHandler*> m_handlers;
 	bool m_downloading;
 
 };

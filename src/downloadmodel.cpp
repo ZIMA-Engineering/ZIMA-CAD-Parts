@@ -159,7 +159,7 @@ bool DownloadModel::isDownloading() const
 
 void DownloadModel::registerHandler(DownloadModel::TransferHandlerType type, TransferHandler *handler)
 {
-	m_handlers[type] = handler;
+	m_handlers.insert(type, handler);
 }
 
 void DownloadModel::enqueue(File *f)

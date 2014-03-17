@@ -90,7 +90,6 @@ private:
 
 	// Models
 	DownloadModel *downloadModel;
-	ServersModel *serversModel;
 
 	// History
 	QList<QModelIndex> history;

@@ -16,7 +16,8 @@ class ServersWidget : public QToolBox
 	Q_OBJECT
 public:
 	explicit ServersWidget(QWidget *parent = 0);
-	void setModel(ServersModel *model);
+	//void setModel(ServersModel *model);
+    void setDataSources(QList<BaseDataSource*> datasources);
 
 	QModelIndex currentIndex();
 
@@ -32,14 +33,14 @@ public slots:
 	void setCurrentIndex(const QModelIndex & index);
 
 private:
-	ServersModel *m_model;
+	//ServersModel *m_model;
+    QList<ServersModel*> m_models;
 	QList<QTreeView*> m_views;
 
 	QSignalMapper *m_signalMapper;
 	QStringList m_zimaUtils;
 
 private slots:
-	void setup();
 	void dirTreeContextMenu(QPoint point);
 	void spawnZimaUtilityOnDir(int i);
 	// handle current widget change

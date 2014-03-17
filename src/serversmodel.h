@@ -38,7 +38,7 @@ class ServersModel : public QAbstractItemModel, public TransferHandler
 	Q_OBJECT
 
 public:
-	ServersModel(QObject *parent = 0);
+	ServersModel(BaseDataSource *ds, QObject *parent = 0);
 	~ServersModel();
 
 	bool canFetchMore(const QModelIndex &parent) const;
@@ -56,10 +56,10 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	//---
 	void setDownloadQueue(DownloadModel *queue);
-	void setServerData(QList<BaseDataSource*>);
-	QList<BaseDataSource*> serversData() {
-		return servers;
-	}
+//	void setServerData(QList<BaseDataSource*>);
+//	QList<BaseDataSource*> serversData() {
+//		return servers;
+//	}
 	QString translateDataSourceNameToPath(QString name);
 	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
 	bool hasErrors(BaseDataSource::Operation op);
@@ -78,8 +78,10 @@ public slots:
 	void resumeDownload();
 	void uncheckAll(Item *item = 0);
 	void deleteDownloadQueue();
+#if 0
 	void saveQueue(QSettings *settings);
 	int loadQueue(QSettings *settings);
+#endif
 	void retranslateMetadata(Item *item = 0);
 	void abort();
 	void descentTo(QString path, Item *item = 0);
@@ -95,8 +97,8 @@ protected slots:
 
 private:
 	QIcon dirIcon, serverIcon;
-	QList<BaseDataSource*> servers;
-	Item *rootItem;
+	BaseDataSource* m_datasource;
+	Item *m_rootItem;
 	Item *m_lastTechSpecRequest;
 	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];
 	int dsDeleted;

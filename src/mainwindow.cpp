@@ -136,22 +136,23 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
 
-	serversModel = new ServersModel(this);
-	serversModel->setServerData(servers);
-	serversModel->retranslateMetadata();
-	ui->serversWidget->setModel(serversModel);
+//	serversModel = new ServersModel(this);
+//	serversModel->setServerData(servers);
+//	serversModel->retranslateMetadata();
+//	ui->serversWidget->setModel(serversModel);
+    ui->serversWidget->setDataSources(servers);
 
-	connect(serversModel, SIGNAL(loadingItem(Item*)), this, SLOT(loadingItem(Item*)));
-	connect(serversModel, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(itemLoaded(const QModelIndex&)));
-	connect(serversModel, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(partsIndexLoaded(const QModelIndex&)));
-	connect(serversModel, SIGNAL(allItemsLoaded()), this, SLOT(allItemsLoaded()));
-	connect(serversModel, SIGNAL(techSpecAvailable(QUrl)), this, SLOT(loadTechSpec(QUrl)));
-	connect(serversModel, SIGNAL(statusUpdated(QString)), this, SLOT(updateStatus(QString)));
-	connect(serversModel, SIGNAL(autoDescentProgress(QModelIndex)), this, SLOT(autoDescentProgress(QModelIndex)));
-	connect(serversModel, SIGNAL(autoDescentCompleted(QModelIndex)), this, SLOT(autoDescendComplete(QModelIndex)));
-	connect(serversModel, SIGNAL(autoDescentNotFound()), this, SLOT(autoDescentNotFound()));
-	connect(serversModel, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SLOT(techSpecsIndexOverwrite(Item*)));
-	connect(serversModel, SIGNAL(partsIndexAlreadyExists(Item*)), this, SLOT(partsIndexOverwrite(Item*)));
+//	connect(serversModel, SIGNAL(loadingItem(Item*)), this, SLOT(loadingItem(Item*)));
+//	connect(serversModel, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(itemLoaded(const QModelIndex&)));
+//	connect(serversModel, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(partsIndexLoaded(const QModelIndex&)));
+//	connect(serversModel, SIGNAL(allItemsLoaded()), this, SLOT(allItemsLoaded()));
+//	connect(serversModel, SIGNAL(techSpecAvailable(QUrl)), this, SLOT(loadTechSpec(QUrl)));
+//	connect(serversModel, SIGNAL(statusUpdated(QString)), this, SLOT(updateStatus(QString)));
+//	connect(serversModel, SIGNAL(autoDescentProgress(QModelIndex)), this, SLOT(autoDescentProgress(QModelIndex)));
+//	connect(serversModel, SIGNAL(autoDescentCompleted(QModelIndex)), this, SLOT(autoDescendComplete(QModelIndex)));
+//	connect(serversModel, SIGNAL(autoDescentNotFound()), this, SLOT(autoDescentNotFound()));
+//	connect(serversModel, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SLOT(techSpecsIndexOverwrite(Item*)));
+//	connect(serversModel, SIGNAL(partsIndexAlreadyExists(Item*)), this, SLOT(partsIndexOverwrite(Item*)));
 
 	connect(fm, SIGNAL(requestColumnResize()), this, SLOT(treeExpandedOrCollaped()));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), fm, SLOT(setThumbWidth(int)));
@@ -223,24 +224,29 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->tree->setModel(proxy);
 
-	connect(serversModel, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
-	connect(serversModel, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
-	connect(serversModel, SIGNAL(filesDeleted()), this, SLOT(filesDeleted()));
+#warning "TODO/FIXME serversModel"
+//	connect(serversModel, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
+	connect(ui->serversWidget, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
+	connect(ui->serversWidget, SIGNAL(filesDeleted()), this, SLOT(filesDeleted()));
 
 	downloadModel = new DownloadModel(this);
 
 	connect(ui->deleteQueueBtn, SIGNAL(clicked()), downloadModel, SLOT(clear()));
 
-	downloadModel->registerHandler(DownloadModel::ServersModel, serversModel);
+#warning "TODO/FIXME serversModel"
+//	downloadModel->registerHandler(DownloadModel::ServersModel, serversModel);
 	downloadModel->registerHandler(DownloadModel::TechSpec, ui->techSpec);
 
 	ui->downloadTreeView->setModel(downloadModel);
 	ui->downloadTreeView->setItemDelegate(new DownloadDelegate(this));
 
-	serversModel->setDownloadQueue(downloadModel);
-
+#warning "TODO/FIXME serversModel"
+//	serversModel->setDownloadQueue(downloadModel);
+#warning "TODO/FIXME: server model"
+#if 0
 	if (serversModel->loadQueue(settings) )
 		ui->startStopDownloadBtn->setText(tr("Resume"));
+#endif
 
 	currentServer = 0;
 
@@ -322,8 +328,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	        this, SLOT(previewInProductView(QModelIndex)));
 	connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
 	        this, SLOT(tree_doubleClicked(QModelIndex)));
-	connect(serversModel, SIGNAL(fileDownloaded(File*)),
-	        productView, SLOT(fileDownloaded(File*)));
+#warning "TODO/FIXME serversModel"
+//	connect(serversModel, SIGNAL(fileDownloaded(File*)),
+//	        productView, SLOT(fileDownloaded(File*)));
 
 	if( useSplash )
 	{
@@ -428,7 +435,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	settings->setValue("state", saveState());
 	settings->setValue("geometry", saveGeometry());
 
-	serversModel->saveQueue(settings);
+#warning "TODO/FIXME: saveQueue"
+	//serversModel->saveQueue(settings);
 
 	qDeleteAll(servers);
 
@@ -437,8 +445,9 @@ void MainWindow::closeEvent(QCloseEvent *e)
 
 void MainWindow::downloadButton()
 {
-	serversModel->downloadFiles( ui->editDir->text() );
-	serversModel->uncheckAll();
+#warning "TODO/FIXME serversModel"
+//	serversModel->downloadFiles( ui->editDir->text() );
+//	serversModel->uncheckAll();
 
 	ui->tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
 
@@ -477,7 +486,7 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 		QList<BaseDataSource*> oldServers = servers;
 
 		servers = settingsDlg->getDatasources();
-		serversModel->setServerData(servers);
+//		serversModel->setServerData(servers);
 
 		qDeleteAll(oldServers);
 
@@ -520,8 +529,9 @@ void MainWindow::updateClicked()
 
 	fm->prepareForUpdate();
 
-	serversModel->refresh(i);
-	serversModel->requestTechSpecs(i);
+#warning "TODO/FIXME serversModel"
+//	serversModel->refresh(i);
+//	serversModel->requestTechSpecs(i);
 }
 
 void MainWindow::deleteSelectedParts()
@@ -532,8 +542,9 @@ void MainWindow::deleteSelectedParts()
 	                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
 	        ==  QMessageBox::Yes)
 	{
-		serversModel->deleteFiles();
-		serversModel->uncheckAll();
+#warning "TODO/FIXME serversModel"
+//		serversModel->deleteFiles();
+//		serversModel->uncheckAll();
 	}
 }
 
@@ -554,7 +565,8 @@ void MainWindow::serverSelected(const QModelIndex &i)
 	if (i.internalPointer())
 	{
 		Item* item = static_cast<Item*>(i.internalPointer());
-		serversModel->loadItem(item);
+#warning "TODO/FIXME serversModel"
+//		serversModel->loadItem(item);
 	}
 }
 
@@ -583,12 +595,15 @@ void MainWindow::allItemsLoaded()
 
 void MainWindow::loadTechSpec(QUrl url)
 {
+#warning "TODO/FIXME serversModel"
+#if 0
 	Item *it = serversModel->lastTechSpecRequest();
 
 	if(it)
 		ui->techSpec->setRootPath(it->server->pathToDataRoot());
 
 	ui->techSpec->load(url);
+#endif
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -696,6 +711,8 @@ void MainWindow::rebuildFilters()
 
 void MainWindow::filesDeleted()
 {
+#warning "TODO/FIXME serversModel"
+#if 0
 	if (serversModel->hasErrors(BaseDataSource::Delete))
 	{
 		ErrorDialog *dlg = new ErrorDialog(this);
@@ -723,6 +740,7 @@ void MainWindow::filesDeleted()
 
 		ui->tree->reset();
 	}
+#endif
 }
 
 void MainWindow::selectDirTreePath()
@@ -756,7 +774,8 @@ void MainWindow::changeLanguage(int lang)
 
 	currentMetadataLang = langs[lang];
 
-	serversModel->retranslateMetadata();
+#warning "TODO/FIXME serversModel"
+//	serversModel->retranslateMetadata();
 
 	viewHidePartsIndex();
 }
@@ -806,6 +825,8 @@ void MainWindow::updatePartsUrlBar(QUrl url)
 
 void MainWindow::setPartsIndex(const QModelIndex &index)
 {
+    if (!index.isValid())
+        return;
 	qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
 
 	fm->setRootIndex(index);
@@ -883,7 +904,8 @@ void MainWindow::viewHidePartsIndex(Item *item)
 void MainWindow::descentTo()
 {
 	autoDescentPath = QDir::cleanPath(ui->dirTreePathLineEdit->text()).trimmed();
-	serversModel->descentTo( autoDescentPath );
+#warning "TODO/FIXME serversModel"
+//	serversModel->descentTo( autoDescentPath );
 }
 
 void MainWindow::autoDescentProgress(const QModelIndex &index)
@@ -900,7 +922,8 @@ void MainWindow::autoDescendComplete(const QModelIndex &index)
 {
 	ui->serversWidget->expand(index);
 	setPartsIndex(index);
-	serversModel->requestTechSpecs(index);
+#warning "TODO/FIXME serversModel"
+//	serversModel->requestTechSpecs(index);
 	trackHistory(index);
 }
 
@@ -909,7 +932,8 @@ void MainWindow::autoDescentNotFound()
 	if(lastFoundIndex.isValid())
 	{
 		setPartsIndex(lastFoundIndex);
-		serversModel->requestTechSpecs(lastFoundIndex);
+#warning "TODO/FIXME serversModel"
+//		serversModel->requestTechSpecs(lastFoundIndex);
 	}
 
 	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(autoDescentPath));
@@ -924,8 +948,9 @@ void MainWindow::assignUrlToDirectory(bool overwrite)
 {
 	Item *it = fm->getRootItem();
 
-	if(it)
-		serversModel->assignTechSpecUrlToItem(urlBar->text(), it, overwrite);
+#warning "TODO/FIXME serversModel"
+//	if(it)
+//		serversModel->assignTechSpecUrlToItem(urlBar->text(), it, overwrite);
 }
 
 void MainWindow::techSpecsIndexOverwrite(Item *item)
@@ -939,8 +964,9 @@ void MainWindow::assignPartsIndexUrlToDirectory(bool overwrite)
 {
 	Item *it = fm->getRootItem();
 
-	if(it)
-		serversModel->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, overwrite);
+#warning "TODO/FIXME serversModel"
+//	if(it)
+//		serversModel->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, overwrite);
 }
 
 void MainWindow::partsIndexOverwrite(Item *item)
@@ -952,6 +978,8 @@ void MainWindow::partsIndexOverwrite(Item *item)
 
 void MainWindow::openDirTreePath()
 {
+#warning "TODO/FIXME serversModel"
+#if 0
 	QString path = ui->dirTreePathLineEdit->text();
 	QStringList parts = path.split('/');
 	QString dataRoot;
@@ -964,6 +992,7 @@ void MainWindow::openDirTreePath()
 
 	parts.removeFirst();
 	QDesktopServices::openUrl(QUrl::fromLocalFile(dataRoot + "/" + parts.join("/")));
+#endif
 }
 
 void MainWindow::loadSettings()
@@ -1083,6 +1112,8 @@ void MainWindow::saveFilters()
 
 void MainWindow::setWorkingDirectory()
 {
+#warning "TODO/FIXME MainWindow::setWorkingDirectory"
+#if 0
 	Item *it = static_cast<Item*>(ui->serversWidget->currentIndex().internalPointer());
 
 	settings->setValue("HomeDir", it->server->name() + it->pathRelativeToDataSource());
@@ -1091,6 +1122,7 @@ void MainWindow::setWorkingDirectory()
 	ui->techSpec->setDownloadDirectory(it->path);
 
 	ui->editDir->setText(it->path);
+#endif
 }
 
 void MainWindow::goToWorkingDirectory()
@@ -1099,8 +1131,8 @@ void MainWindow::goToWorkingDirectory()
 
 	if(autoDescentPath.isEmpty())
 		return;
-
-	serversModel->descentTo(autoDescentPath);
+#warning "TODO/FIXME serversModel"
+//	serversModel->descentTo(autoDescentPath);
 }
 
 void MainWindow::trackHistory(const QModelIndex &index)
@@ -1132,7 +1164,8 @@ void MainWindow::historyBack()
 	Item *item = static_cast<Item*>(index.internalPointer());
 
 	ui->serversWidget->setCurrentIndex(index);
-	serversModel->requestTechSpecs(item);
+#warning "TODO/FIXME serversModel"
+//	serversModel->requestTechSpecs(item);
 	fm->setRootIndex(index);
 
 	ui->treeBackButton->setEnabled( !(historyCurrentIndex == 0) );
@@ -1147,7 +1180,8 @@ void MainWindow::historyForward()
 	Item *item = static_cast<Item*>(index.internalPointer());
 
 	ui->serversWidget->setCurrentIndex(index);
-	serversModel->requestTechSpecs(item);
+#warning "TODO/FIXME serversModel"
+//	serversModel->requestTechSpecs(item);
 	fm->setRootIndex(index);
 
 	ui->treeForwardButton->setEnabled( !(historyCurrentIndex == historySize-1) );
