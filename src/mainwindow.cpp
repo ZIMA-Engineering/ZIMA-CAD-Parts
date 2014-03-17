@@ -43,6 +43,8 @@
 #include "errordialog.h"
 #include "filefilters/extensionfilter.h"
 #include "filefilters/versionfilter.h"
+#include "extensions/productview/productview.h"
+
 
 QList<FilterGroup> MainWindow::filterGroups;
 QSettings * MainWindow::settings;
@@ -55,8 +57,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  historyCurrentIndex(-1),
 	  historySize(0),
 	  techSpecToolBar(0),
-	  lastPartsIndexItem(0),
-	  productView(0)
+	  lastPartsIndexItem(0)
 {
 	downloading = false;
 
@@ -312,7 +313,17 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	addAction(act);
 
-	showOrHideProductView();
+
+	productView = new ProductView(ui->tabWidget);
+
+	connect(ui->tree, SIGNAL(activated(QModelIndex)),
+	        this, SLOT(previewInProductView(QModelIndex)));
+	connect(ui->tree, SIGNAL(clicked(QModelIndex)),
+	        this, SLOT(previewInProductView(QModelIndex)));
+	connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
+	        this, SLOT(tree_doubleClicked(QModelIndex)));
+	connect(serversModel, SIGNAL(fileDownloaded(File*)),
+	        productView, SLOT(fileDownloaded(File*)));
 
 	if( useSplash )
 	{
@@ -495,8 +506,6 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 		ui->techSpec->loadAboutPage();
 
 		allItemsLoaded();
-
-		showOrHideProductView();
 	}
 
 	delete settingsDlg;
@@ -1160,36 +1169,8 @@ QString MainWindow::getCurrentMetadataLanguageCode()
 	return currentMetadataLang;
 }
 
-void MainWindow::showOrHideProductView()
-{
-	if(settings->value("Extensions/ProductView/Enabled", false).toBool())
-	{
-		if(!productView)
-		{
-			productView = new ProductView(ui->tabWidget);
-			//ui->tabWidget->addTab(productView, tr("ProductView"));
-
-			connect(ui->tree, SIGNAL(activated(QModelIndex)),
-			        this, SLOT(previewInProductView(QModelIndex)));
-			connect(ui->tree, SIGNAL(clicked(QModelIndex)),
-			        this, SLOT(previewInProductView(QModelIndex)));
-			connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
-			        this, SLOT(tree_doubleClicked(QModelIndex)));
-			connect(serversModel, SIGNAL(fileDownloaded(File*)),
-			        productView, SLOT(fileDownloaded(File*)));
-		}
-	} else if (productView)
-	{
-		productView->deleteLater();
-		productView = 0;
-	}
-}
-
 void MainWindow::previewInProductView(const QModelIndex &index)
 {
-	if(!productView)
-		return;
-
 	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->tree->model())->mapToSource(index);
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
@@ -1200,8 +1181,7 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 		return;
 	}
 
-	if (!productView->expectFile(f))
-		return;
+	productView->expectFile(f);
 
 	// local files are not copied - just open the original
 	// remote datasources are cached in ~/.cache/... or something similar

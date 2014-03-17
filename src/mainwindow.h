@@ -41,7 +41,6 @@
 #include "filefiltermodel.h"
 #include "filefilters/filtergroup.h"
 
-#include "extensions/productview/productview.h"
 
 namespace Ui
 {
@@ -51,6 +50,7 @@ class MainWindowClass;
 class QFtp;
 class FtpDataSource;
 class DownloadModel;
+class ProductView;
 
 class MainWindow : public QMainWindow
 {
@@ -118,8 +118,6 @@ private:
 	ProductView *productView;
 
 	bool s_developerMode;
-
-	void showOrHideProductView();
 
 	void loadExtensions();
 	void setupDeveloperMode();
