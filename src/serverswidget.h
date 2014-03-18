@@ -17,12 +17,16 @@ class ServersWidget : public QToolBox
 public:
 	explicit ServersWidget(QWidget *parent = 0);
 	//void setModel(ServersModel *model);
-    void setDataSources(QList<BaseDataSource*> datasources);
+	void setDataSources(QList<BaseDataSource*> datasources);
 
 	QModelIndex currentIndex();
 
 signals:
+	void statusUpdated(const QString &message);
 	void showSettings(SettingsDialog::Section);
+	void partsIndexAlreadyExists(Item *i);
+	void itemLoaded(const QModelIndex&);
+	void techSpecsIndexAlreadyExists(Item *i);
 	void clicked(const QModelIndex&);
 	void activated(const QModelIndex&);
 	// emit newly selected tree view root item to MainWindow to load toplevel files into part view
@@ -34,7 +38,7 @@ public slots:
 
 private:
 	//ServersModel *m_model;
-    QList<ServersModel*> m_models;
+	QList<ServersModel*> m_models;
 	QList<QTreeView*> m_views;
 
 	QSignalMapper *m_signalMapper;
@@ -45,6 +49,9 @@ private slots:
 	void spawnZimaUtilityOnDir(int i);
 	// handle current widget change
 	void this_currentChanged(int i);
+
+	void loadingItem(Item *i);
+	void allItemsLoaded();
 };
 
 #endif // SERVERSWIDGET_H

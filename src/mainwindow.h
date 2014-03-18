@@ -118,7 +118,6 @@ private:
 
 	bool s_developerMode;
 
-	void loadExtensions();
 	void setupDeveloperMode();
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
@@ -131,11 +130,8 @@ public slots:
 	void deleteSelectedParts();
 	void searchClicked();
 	void serverSelected(const QModelIndex&);
-	void updateStatus(QString);
+	void updateStatus(const QString &message);
 	void treeExpandedOrCollaped();
-	void loadingItem(Item *item);
-	void itemLoaded(const QModelIndex&);
-	void allItemsLoaded();
 	void loadTechSpec(QUrl url);
 	void errorOccured(QString error);
 	void filesDownloaded();

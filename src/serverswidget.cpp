@@ -39,15 +39,26 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 		removeItem(i);
 	}
 	qDeleteAll(m_views);
-    qDeleteAll(m_models);
+	qDeleteAll(m_models);
 	m_views.clear();
-    m_models.clear();
+	m_models.clear();
 
 	// now setup all item==group again
 	foreach(BaseDataSource *ds, datasources)
 	{
-        ServersModel *model = new ServersModel(ds, this);
-        model->retranslateMetadata();
+		ServersModel *model = new ServersModel(ds, this);
+		model->retranslateMetadata();
+		connect(model, SIGNAL(loadingItem(Item*)),
+		        this, SLOT(loadingItem(Item*)));
+		connect(model, SIGNAL(allItemsLoaded()),
+		        this, SLOT(allItemsLoaded()));
+		connect(model, SIGNAL(partsIndexAlreadyExists(Item*)),
+		        this, SIGNAL(partsIndexAlreadyExists(Item*)));
+		connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
+		        this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
+		connect(model, SIGNAL(itemLoaded(const QModelIndex&)),
+		        this, SLOT(itemLoaded(const QModelIndex&)));
+
 
 		QTreeView *view = new QTreeView(this);
 		view->header()->close();
@@ -147,4 +158,14 @@ void ServersWidget::this_currentChanged(int i)
 	QTreeView *w = qobject_cast<QTreeView*>(widget(i));
 
 	emit groupChanged(w->rootIndex());
+}
+
+void ServersWidget::loadingItem(Item *i)
+{
+	emit statusUpdated(tr("Loading %1...").arg(i->getLabel()));
+}
+
+void ServersWidget::allItemsLoaded()
+{
+	emit statusUpdated(tr("All items loaded."));
 }

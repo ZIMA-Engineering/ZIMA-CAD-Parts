@@ -136,23 +136,21 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
 
-//	serversModel = new ServersModel(this);
-//	serversModel->setServerData(servers);
-//	serversModel->retranslateMetadata();
-//	ui->serversWidget->setModel(serversModel);
-    ui->serversWidget->setDataSources(servers);
+	ui->serversWidget->setDataSources(servers);
 
-//	connect(serversModel, SIGNAL(loadingItem(Item*)), this, SLOT(loadingItem(Item*)));
-//	connect(serversModel, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(itemLoaded(const QModelIndex&)));
-//	connect(serversModel, SIGNAL(itemLoaded(const QModelIndex&)), this, SLOT(partsIndexLoaded(const QModelIndex&)));
-//	connect(serversModel, SIGNAL(allItemsLoaded()), this, SLOT(allItemsLoaded()));
+	connect(ui->serversWidget, SIGNAL(itemLoaded(const QModelIndex&)),
+	        this, SLOT(partsIndexLoaded(const QModelIndex&)));
 //	connect(serversModel, SIGNAL(techSpecAvailable(QUrl)), this, SLOT(loadTechSpec(QUrl)));
-//	connect(serversModel, SIGNAL(statusUpdated(QString)), this, SLOT(updateStatus(QString)));
+	// status bar - use this one
+	connect(ui->serversWidget, SIGNAL(statusUpdated(QString)),
+	        this, SLOT(updateStatus(QString)));
 //	connect(serversModel, SIGNAL(autoDescentProgress(QModelIndex)), this, SLOT(autoDescentProgress(QModelIndex)));
 //	connect(serversModel, SIGNAL(autoDescentCompleted(QModelIndex)), this, SLOT(autoDescendComplete(QModelIndex)));
 //	connect(serversModel, SIGNAL(autoDescentNotFound()), this, SLOT(autoDescentNotFound()));
-//	connect(serversModel, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SLOT(techSpecsIndexOverwrite(Item*)));
-//	connect(serversModel, SIGNAL(partsIndexAlreadyExists(Item*)), this, SLOT(partsIndexOverwrite(Item*)));
+	connect(ui->serversWidget, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
+	        this, SLOT(techSpecsIndexOverwrite(Item*)));
+	connect(ui->serversWidget, SIGNAL(partsIndexAlreadyExists(Item*)),
+	        this, SLOT(partsIndexOverwrite(Item*)));
 
 	connect(fm, SIGNAL(requestColumnResize()), this, SLOT(treeExpandedOrCollaped()));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), fm, SLOT(setThumbWidth(int)));
@@ -345,20 +343,6 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-void MainWindow::loadExtensions()
-{
-//	for(int i = 0; i < EXTENSIONS_COUNT; i++)
-//	{
-//		switch(i)
-//		{
-//		case PTC_PRODUCT_VIEWER:
-//			break;
-//		default:
-//			continue;
-//		}
-//	}
-}
-
 void MainWindow::setupDeveloperMode()
 {
 	bool developer = settings->value("Developer/Enabled", false).toBool();
@@ -514,7 +498,7 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 
 		ui->techSpec->loadAboutPage();
 
-		allItemsLoaded();
+		// allItemsLoaded(); 	statusDir->setText(tr("All items loaded."));
 	}
 
 	delete settingsDlg;
@@ -570,28 +554,11 @@ void MainWindow::serverSelected(const QModelIndex &i)
 	}
 }
 
-void MainWindow::updateStatus(QString str)
+void MainWindow::updateStatus(const QString &message)
 {
-	statusDir->setText(str);
+	statusDir->setText(message);
 }
 
-void MainWindow::loadingItem(Item *item)
-{
-	statusDir->setText(tr("Loading %1...").arg(item->getLabel()));
-}
-
-void MainWindow::itemLoaded(const QModelIndex &index)
-{
-	Q_UNUSED(index);
-//	ui->btnUpdate->setEnabled(true);
-
-//	setPartsIndex(index);
-}
-
-void MainWindow::allItemsLoaded()
-{
-	statusDir->setText(tr("All items loaded."));
-}
 
 void MainWindow::loadTechSpec(QUrl url)
 {
@@ -825,8 +792,8 @@ void MainWindow::updatePartsUrlBar(QUrl url)
 
 void MainWindow::setPartsIndex(const QModelIndex &index)
 {
-    if (!index.isValid())
-        return;
+	if (!index.isValid())
+		return;
 	qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
 
 	fm->setRootIndex(index);
@@ -955,9 +922,13 @@ void MainWindow::assignUrlToDirectory(bool overwrite)
 
 void MainWindow::techSpecsIndexOverwrite(Item *item)
 {
-	Q_UNUSED(item);
-	if(QMessageBox::warning(this, tr("Tech specs index already exists"), tr("Index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+	if (QMessageBox::warning(this,
+	                         tr("Tech specs index already exists"),
+	                         tr("Index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
+	                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+	{
 		assignUrlToDirectory(true);
+	}
 }
 
 void MainWindow::assignPartsIndexUrlToDirectory(bool overwrite)
@@ -971,9 +942,13 @@ void MainWindow::assignPartsIndexUrlToDirectory(bool overwrite)
 
 void MainWindow::partsIndexOverwrite(Item *item)
 {
-	Q_UNUSED(item);
-	if(QMessageBox::warning(this, tr("Parts index already exists"), tr("Parts index already exists, would you like to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+	if (QMessageBox::warning(this,
+	                         tr("Parts index already exists"),
+	                         tr("Parts index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
+	                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+	{
 		assignPartsIndexUrlToDirectory(true);
+	}
 }
 
 void MainWindow::openDirTreePath()
