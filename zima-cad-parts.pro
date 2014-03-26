@@ -130,7 +130,8 @@ OTHER_FILES += \
     data/zima-cad-parts.html \
     data/zima-cad-parts_cs_CZ.html \
     README \
-    data/extensions/productview/proeproductview.html
+    data/extensions/productview/proeproductview.html \
+    Doxyfile
 
 TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts
 
