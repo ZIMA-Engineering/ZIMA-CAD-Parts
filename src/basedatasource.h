@@ -117,7 +117,7 @@ signals:
 	void metadataInclude(Item *item, QString path);
 	void metadataIncludeCancelled(Item *item);
 	void metadataReady(Item*);
-	void errorOccured(QString);
+	void errorOccured(const QString &error);
 	void techSpecsIndexAlreadyExists(Item*);
 	void partsIndexAlreadyExists(Item*);
 	void fileError(BaseDataSource::Operation op, BaseDataSource::Error *err);

@@ -32,9 +32,12 @@ signals:
 	// emit newly selected tree view root item to MainWindow to load toplevel files into part view
 	void groupChanged(const QModelIndex&);
 
+    void errorOccured(const QString &error);
+
 public slots:
 	void expand(const QModelIndex & index);
 	void setCurrentIndex(const QModelIndex & index);
+    void requestTechSpecs(Item *item);
 
 private:
 	//ServersModel *m_model;

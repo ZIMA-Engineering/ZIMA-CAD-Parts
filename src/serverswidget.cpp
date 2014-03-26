@@ -47,6 +47,7 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 	foreach(BaseDataSource *ds, datasources)
 	{
 		ServersModel *model = new ServersModel(ds, this);
+        m_models.append(model);
 		model->retranslateMetadata();
 		connect(model, SIGNAL(loadingItem(Item*)),
 		        this, SLOT(loadingItem(Item*)));
@@ -58,6 +59,8 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 		        this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
 		connect(model, SIGNAL(itemLoaded(const QModelIndex&)),
 		        this, SIGNAL(itemLoaded(const QModelIndex&)));
+        connect(model, SIGNAL(errorOccured(QString)),
+                this, SIGNAL(errorOccured(QString)));
 
 
 		QTreeView *view = new QTreeView(this);
@@ -151,6 +154,22 @@ QModelIndex ServersWidget::currentIndex()
 void ServersWidget::setCurrentIndex(const QModelIndex &index)
 {
 	qobject_cast<QTreeView*>(currentWidget())->setCurrentIndex(index);
+}
+
+void ServersWidget::requestTechSpecs(Item *item)
+{
+    // try to find proper model for given item
+    foreach (ServersModel* i, m_models)
+    {
+        //qDebug() << "ds" << i->dataSource() << "it" << item->server << (i->dataSource() == item->server);
+        if (i->dataSource() == item->server)
+        {
+            i->requestTechSpecs(item);
+            return;
+        }
+    }
+
+    qWarning() << "ServersWidget::requestTechSpecs proper ServersModel not found";
 }
 
 void ServersWidget::this_currentChanged(int i)

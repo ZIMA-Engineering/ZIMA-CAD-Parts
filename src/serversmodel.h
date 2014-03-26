@@ -56,10 +56,9 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	//---
 	void setDownloadQueue(DownloadModel *queue);
-//	void setServerData(QList<BaseDataSource*>);
-//	QList<BaseDataSource*> serversData() {
-//		return servers;
-//	}
+
+    BaseDataSource* dataSource() { return m_datasource; }
+
 	QString translateDataSourceNameToPath(QString name);
 	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
 	bool hasErrors(BaseDataSource::Operation op);
@@ -124,7 +123,7 @@ signals:
 	void allItemsLoaded();
 	void techSpecAvailable(QUrl);
 	void statusUpdated(QString);
-	void errorOccured(QString);
+	void errorOccured(const QString &error);
 	void fileProgress(File*);
 	void fileDownloaded(File*);
 	void filesDownloaded();

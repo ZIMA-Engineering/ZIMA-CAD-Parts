@@ -78,7 +78,6 @@ private:
 	static QSettings           *settings;
 	QList<BaseDataSource*> servers;
 	QLabel              *statusState, *statusDir;
-	FtpDataSource           *currentServer;
 	FileModel *fm;
 	FileFilterModel *proxy;
 	QTranslator *translator;
@@ -133,7 +132,7 @@ public slots:
 	void updateStatus(const QString &message);
 	void treeExpandedOrCollaped();
 	void loadTechSpec(QUrl url);
-	void errorOccured(QString error);
+	void errorOccured(const QString &error);
 	void filesDownloaded();
 	void setFiltersDialog();
 	void rebuildFilters();

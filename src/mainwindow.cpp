@@ -217,8 +217,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->tree->setModel(proxy);
 
-#warning "TODO/FIXME serversModel"
-//	connect(serversModel, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
+	connect(ui->serversWidget, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(ui->serversWidget, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 	connect(ui->serversWidget, SIGNAL(filesDeleted()), this, SLOT(filesDeleted()));
 
@@ -240,8 +239,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	if (serversModel->loadQueue(settings) )
 		ui->startStopDownloadBtn->setText(tr("Resume"));
 #endif
-
-	currentServer = 0;
 
 	langs << "en_US" << "cs_CZ" << "de_DE" << "ru_RU";
 
@@ -502,7 +499,7 @@ void MainWindow::updateClicked()
 
 #warning "TODO/FIXME serversModel"
 //	serversModel->refresh(i);
-//	serversModel->requestTechSpecs(i);
+    ui->serversWidget->requestTechSpecs(i);
 }
 
 void MainWindow::deleteSelectedParts()
@@ -575,12 +572,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 	}
 }
 
-void MainWindow::errorOccured(QString error)
+void MainWindow::errorOccured(const QString &error)
 {
 	ui->serversWidget->setEnabled(true);
 	ui->btnUpdate->setEnabled(true);
 
-	updateStatus(tr("FTP error."));
+	updateStatus(tr("Error: %1").arg(error));
 	QMessageBox::warning(this, tr("FTP error"), error);
 }
 
@@ -861,8 +858,8 @@ void MainWindow::autoDescendComplete(const QModelIndex &index)
 {
 	ui->serversWidget->expand(index);
 	setPartsIndex(index);
-#warning "TODO/FIXME serversModel"
-//	serversModel->requestTechSpecs(index);
+    Item *item = static_cast<Item*>(index.internalPointer());
+    ui->serversWidget->requestTechSpecs(item);
 	trackHistory(index);
 }
 
@@ -871,8 +868,8 @@ void MainWindow::autoDescentNotFound()
 	if(lastFoundIndex.isValid())
 	{
 		setPartsIndex(lastFoundIndex);
-#warning "TODO/FIXME serversModel"
-//		serversModel->requestTechSpecs(lastFoundIndex);
+        Item *item = static_cast<Item*>(lastFoundIndex.internalPointer());
+        ui->serversWidget->requestTechSpecs(item);
 	}
 
 	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(autoDescentPath));
@@ -1040,24 +1037,21 @@ void MainWindow::saveFilters()
 
 void MainWindow::setWorkingDirectory()
 {
-#warning "TODO/FIXME MainWindow::setWorkingDirectory"
-#if 0
 	Item *it = static_cast<Item*>(ui->serversWidget->currentIndex().internalPointer());
 
-	settings->setValue("HomeDir", pathWithDataSource());
+	settings->setValue("HomeDir", it->pathWithDataSource());
 	settings->setValue("WorkingDir", it->path);
 
 	ui->techSpec->setDownloadDirectory(it->path);
 
 	ui->editDir->setText(it->path);
-#endif
 }
 
 void MainWindow::goToWorkingDirectory()
 {
 	autoDescentPath = settings->value("HomeDir").toString();
 
-	if(autoDescentPath.isEmpty())
+	if (autoDescentPath.isEmpty())
 		return;
 #warning "TODO/FIXME serversModel"
 //	serversModel->descentTo(autoDescentPath);
@@ -1092,8 +1086,7 @@ void MainWindow::historyBack()
 	Item *item = static_cast<Item*>(index.internalPointer());
 
 	ui->serversWidget->setCurrentIndex(index);
-#warning "TODO/FIXME serversModel"
-//	serversModel->requestTechSpecs(item);
+	ui->serversWidget->requestTechSpecs(item);
 	fm->setRootIndex(index);
 
 	ui->actionHistoryBack->setEnabled( !(historyCurrentIndex == 0) );
@@ -1106,8 +1099,7 @@ void MainWindow::historyForward()
 	Item *item = static_cast<Item*>(index.internalPointer());
 
 	ui->serversWidget->setCurrentIndex(index);
-#warning "TODO/FIXME serversModel"
-//	serversModel->requestTechSpecs(item);
+	ui->serversWidget->requestTechSpecs(item);
 	fm->setRootIndex(index);
 
 	ui->actionHistoryForward->setEnabled( !(historyCurrentIndex == historySize-1) );
