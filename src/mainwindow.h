@@ -141,7 +141,6 @@ public slots:
 	void resumeDownload();
 	void stopDownload();
 	void filesDeleted();
-	void selectDirTreePath();
 
 private slots:
 	void openWorkingDirectory();
@@ -153,7 +152,6 @@ private slots:
 	void viewHidePartsIndex(Item *item = 0);
 	void goToPartsIndexUrl();
 	void updatePartsUrlBar(QUrl url);
-	void descentTo();
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();
@@ -162,7 +160,6 @@ private slots:
 	void techSpecsIndexOverwrite(Item *item);
 	void assignPartsIndexUrlToDirectory(bool overwrite = false);
 	void partsIndexOverwrite(Item *item);
-	void openDirTreePath();
 	void loadSettings();
 	QList<BaseDataSource*> loadDataSources();
 	void saveSettings();

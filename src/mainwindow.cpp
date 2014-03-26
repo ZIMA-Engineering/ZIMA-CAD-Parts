@@ -78,10 +78,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->setupUi(this);
 
-	ui->dirTreePathGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
-
-	ui->treeBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
-	ui->treeForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
+	ui->actionHistoryBack->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
+	ui->actionHistoryForward->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
 
 	fm = new FileModel(this);
 
@@ -100,13 +98,10 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->serversWidget, SIGNAL(groupChanged(const QModelIndex&)),
 	        this, SLOT(setPartsIndex(const QModelIndex&)));
 
-	connect(ui->treeBackButton, SIGNAL(clicked()), this, SLOT(historyBack()));
-	connect(ui->treeForwardButton, SIGNAL(clicked()), this, SLOT(historyForward()));
+	connect(ui->actionHistoryBack, SIGNAL(triggered()), this, SLOT(historyBack()));
+	connect(ui->actionHistoryForward, SIGNAL(triggered()), this, SLOT(historyForward()));
 
-	connect(ui->goHomeDirButton, SIGNAL(clicked()), this, SLOT(goToWorkingDirectory()));
-	connect(ui->dirTreePathLineEdit, SIGNAL(returnPressed()), this, SLOT(descentTo()));
-	connect(ui->dirTreePathGoButton, SIGNAL(clicked()), this, SLOT(descentTo()));
-	connect(ui->dirTreePathOpenButton, SIGNAL(clicked()), this, SLOT(openDirTreePath()));
+	connect(ui->actionHome, SIGNAL(triggered()), this, SLOT(goToWorkingDirectory()));
 
 	statusDir = new QLabel(tr("Ready"), this);
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -279,8 +274,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(langButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(changeLanguage(int)));
 
 	// History
-	ui->treeBackButton->setEnabled(false);
-	ui->treeForwardButton->setEnabled(false);
+	ui->actionHistoryBack->setEnabled(false);
+	ui->actionHistoryForward->setEnabled(false);
 
 #ifdef Q_OS_MAC
 	QMenu *menu = new QMenu(this);
@@ -309,14 +304,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(act, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 	addAction(act);
-
-	act = new QAction(this);
-	act->setShortcut(QKeySequence("Ctrl+L"));
-
-	connect(act, SIGNAL(triggered()), this, SLOT(selectDirTreePath()));
-
-	addAction(act);
-
 
 	productView = new ProductView(ui->tabWidget);
 
@@ -493,8 +480,8 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 		historyCurrentIndex = -1;
 		historySize = 0;
 
-		ui->treeBackButton->setEnabled(false);
-		ui->treeForwardButton->setEnabled(false);
+		ui->actionHistoryBack->setEnabled(false);
+		ui->actionHistoryForward->setEnabled(false);
 
 		ui->techSpec->loadAboutPage();
 
@@ -710,12 +697,6 @@ void MainWindow::filesDeleted()
 #endif
 }
 
-void MainWindow::selectDirTreePath()
-{
-	ui->dirTreePathLineEdit->selectAll();
-	ui->dirTreePathLineEdit->setFocus();
-}
-
 void MainWindow::openWorkingDirectory()
 {
 	QString workingDir = ui->editDir->text();
@@ -807,8 +788,6 @@ void MainWindow::partsIndexLoaded(const QModelIndex &index)
 	if(it == fm->getRootItem())
 	{
 		viewHidePartsIndex(it);
-
-		ui->dirTreePathLineEdit->setText(it->server->name() + it->pathRelativeToDataSource());
 	}
 }
 
@@ -866,13 +845,6 @@ void MainWindow::viewHidePartsIndex(Item *item)
 		ui->partsWebView->show();
 
 	ui->partsWebView->load(partsIndex);
-}
-
-void MainWindow::descentTo()
-{
-	autoDescentPath = QDir::cleanPath(ui->dirTreePathLineEdit->text()).trimmed();
-#warning "TODO/FIXME serversModel"
-//	serversModel->descentTo( autoDescentPath );
 }
 
 void MainWindow::autoDescentProgress(const QModelIndex &index)
@@ -949,25 +921,6 @@ void MainWindow::partsIndexOverwrite(Item *item)
 	{
 		assignPartsIndexUrlToDirectory(true);
 	}
-}
-
-void MainWindow::openDirTreePath()
-{
-#warning "TODO/FIXME serversModel"
-#if 0
-	QString path = ui->dirTreePathLineEdit->text();
-	QStringList parts = path.split('/');
-	QString dataRoot;
-
-	if(parts.isEmpty() || (dataRoot = serversModel->translateDataSourceNameToPath(parts.first())).isEmpty())
-	{
-		QMessageBox::warning(this, tr("Not found"), tr("Path %1 does not exist.").arg(path));
-		return;
-	}
-
-	parts.removeFirst();
-	QDesktopServices::openUrl(QUrl::fromLocalFile(dataRoot + "/" + parts.join("/")));
-#endif
 }
 
 void MainWindow::loadSettings()
@@ -1091,7 +1044,7 @@ void MainWindow::setWorkingDirectory()
 #if 0
 	Item *it = static_cast<Item*>(ui->serversWidget->currentIndex().internalPointer());
 
-	settings->setValue("HomeDir", it->server->name() + it->pathRelativeToDataSource());
+	settings->setValue("HomeDir", pathWithDataSource());
 	settings->setValue("WorkingDir", it->path);
 
 	ui->techSpec->setDownloadDirectory(it->path);
@@ -1122,7 +1075,7 @@ void MainWindow::trackHistory(const QModelIndex &index)
 
 		historySize = history.size();
 
-		ui->treeForwardButton->setEnabled(false);
+		ui->actionHistoryForward->setEnabled(false);
 	}
 
 	history << index;
@@ -1130,7 +1083,7 @@ void MainWindow::trackHistory(const QModelIndex &index)
 	historySize++;
 
 	if(historyCurrentIndex > 0)
-		ui->treeBackButton->setEnabled(true);
+		ui->actionHistoryBack->setEnabled(true);
 }
 
 void MainWindow::historyBack()
@@ -1143,10 +1096,8 @@ void MainWindow::historyBack()
 //	serversModel->requestTechSpecs(item);
 	fm->setRootIndex(index);
 
-	ui->treeBackButton->setEnabled( !(historyCurrentIndex == 0) );
-	ui->treeForwardButton->setEnabled(true);
-
-	ui->dirTreePathLineEdit->setText(item->server->name() + item->pathRelativeToDataSource());
+	ui->actionHistoryBack->setEnabled( !(historyCurrentIndex == 0) );
+	ui->actionHistoryForward->setEnabled(true);
 }
 
 void MainWindow::historyForward()
@@ -1159,10 +1110,8 @@ void MainWindow::historyForward()
 //	serversModel->requestTechSpecs(item);
 	fm->setRootIndex(index);
 
-	ui->treeForwardButton->setEnabled( !(historyCurrentIndex == historySize-1) );
-	ui->treeBackButton->setEnabled(true);
-
-	ui->dirTreePathLineEdit->setText(item->server->name() + item->pathRelativeToDataSource());
+	ui->actionHistoryForward->setEnabled( !(historyCurrentIndex == historySize-1) );
+	ui->actionHistoryBack->setEnabled(true);
 }
 
 QString MainWindow::getCurrentLanguageCode()

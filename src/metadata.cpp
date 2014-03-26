@@ -185,7 +185,7 @@ void Metadata::provideInclude(Metadata *m, QString path)
 	} else {
 		qDebug() << "Include loaded" << m->getLabel();
 
-		QString path = QDir::cleanPath(m->m_item->server->name() + m->m_item->pathRelativeToDataSource());
+		QString path = QDir::cleanPath(m->m_item->pathWithDataSource());
 
 		QHashIterator<QString, Include> i(m_includeHash);
 		while(i.hasNext())
@@ -294,7 +294,7 @@ QString Metadata::buildIncludePath(QString raw)
 	if(raw.startsWith('/'))
 		ret = QDir::cleanPath(dsName + raw);
 	else
-		ret = QDir::cleanPath(dsName + m_item->pathRelativeToDataSource() + "/" + raw);
+		ret = QDir::cleanPath(dsName + m_item->server->getRelativePathForItem(m_item) + "/" + raw);
 
 	if(!ret.startsWith(dsName + "/"))
 		ret = dsName + "/" + ret;

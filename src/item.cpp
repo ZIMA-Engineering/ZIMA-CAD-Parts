@@ -355,9 +355,9 @@ QString Item::getLabel()
 	return name;
 }
 
-QString Item::pathRelativeToDataSource()
+QString Item::pathWithDataSource()
 {
-	return server->getRelativePathForItem(this);
+    server->name() + server->getRelativePathForItem(this);
 }
 
 void Item::addThumbnail(Thumbnail *thumb)

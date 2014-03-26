@@ -57,7 +57,7 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 		connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
 		        this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
 		connect(model, SIGNAL(itemLoaded(const QModelIndex&)),
-		        this, SLOT(itemLoaded(const QModelIndex&)));
+		        this, SIGNAL(itemLoaded(const QModelIndex&)));
 
 
 		QTreeView *view = new QTreeView(this);
