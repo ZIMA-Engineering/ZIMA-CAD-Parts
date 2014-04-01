@@ -59,6 +59,8 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 		        this, SIGNAL(itemLoaded(const QModelIndex&)));
         connect(model, SIGNAL(errorOccured(QString)),
                 this, SIGNAL(errorOccured(QString)));
+        connect(model, SIGNAL(filesDownloaded()),
+                this, SIGNAL(filesDownloaded()));
 
 
 		QTreeView *view = new QTreeView(this);

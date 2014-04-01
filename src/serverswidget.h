@@ -33,6 +33,7 @@ signals:
 	void groupChanged(const QModelIndex&);
 
     void errorOccured(const QString &error);
+    void filesDownloaded();
 
 public slots:
 	void expand(const QModelIndex & index);
