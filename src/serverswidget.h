@@ -3,12 +3,12 @@
 
 #include <QToolBox>
 #include <QPushButton>
+#include <QTreeView>
 
 #include "serversmodel.h"
 #include "settingsdialog.h"
 
 class QSignalMapper;
-class QTreeView;
 
 
 class ServersWidget : public QToolBox
@@ -40,9 +40,7 @@ public slots:
     void requestTechSpecs(Item *item);
 
 private:
-	//ServersModel *m_model;
-	QList<ServersModel*> m_models;
-	QList<QTreeView*> m_views;
+    QMap<ServersModel*, QTreeView*> m_modelViews;
 
 	QSignalMapper *m_signalMapper;
 	QStringList m_zimaUtils;

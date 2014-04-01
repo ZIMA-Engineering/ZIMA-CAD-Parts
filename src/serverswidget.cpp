@@ -38,16 +38,14 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 	{
 		removeItem(i);
 	}
-	qDeleteAll(m_views);
-	qDeleteAll(m_models);
-	m_views.clear();
-	m_models.clear();
+
+    qDeleteAll(m_modelViews);
+    m_modelViews.clear();
 
 	// now setup all item==group again
 	foreach(BaseDataSource *ds, datasources)
 	{
 		ServersModel *model = new ServersModel(ds, this);
-        m_models.append(model);
 		model->retranslateMetadata();
 		connect(model, SIGNAL(loadingItem(Item*)),
 		        this, SLOT(loadingItem(Item*)));
@@ -65,7 +63,9 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 
 		QTreeView *view = new QTreeView(this);
 		view->header()->close();
-		m_views.append(view);
+
+        m_modelViews[model] = view;
+
 		view->setModel(model);
 		view->setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -153,13 +153,27 @@ QModelIndex ServersWidget::currentIndex()
 
 void ServersWidget::setCurrentIndex(const QModelIndex &index)
 {
-	qobject_cast<QTreeView*>(currentWidget())->setCurrentIndex(index);
+    Item *item = static_cast<Item*>(index.internalPointer());
+
+    // try to find proper model for given item
+    foreach (ServersModel* i, m_modelViews.keys())
+    {
+        //qDebug() << "ds" << i->dataSource() << "it" << item->server << (i->dataSource() == item->server);
+        if (i->dataSource() == item->server)
+        {
+            setCurrentWidget(m_modelViews[i]);
+            m_modelViews[i]->setCurrentIndex(index);
+            return;
+        }
+    }
+
+    qWarning() << "ServersWidget::setCurrentIndex proper ServersModel not found";
 }
 
 void ServersWidget::requestTechSpecs(Item *item)
 {
     // try to find proper model for given item
-    foreach (ServersModel* i, m_models)
+    foreach (ServersModel* i, m_modelViews.keys())
     {
         //qDebug() << "ds" << i->dataSource() << "it" << item->server << (i->dataSource() == item->server);
         if (i->dataSource() == item->server)
