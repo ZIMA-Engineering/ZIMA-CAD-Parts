@@ -678,20 +678,6 @@ void ServersModel::descentTo(QString path, Item *item)
 	descent->descend();
 }
 
-void ServersModel::assignTechSpecUrlToItem(QString url, Item *item, bool overwrite)
-{
-	QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-
-	item->server->assignTechSpecUrlToItem(url, item, lang, overwrite);
-}
-
-void ServersModel::assignPartsIndexUrlToItem(QString url, Item *item, bool overwrite)
-{
-	QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-
-	item->server->assignPartsIndexUrlToItem(url, item, lang, overwrite);
-}
-
 QList<BaseDataSource::Error*> ServersModel::fileErrors(BaseDataSource::Operation op)
 {
 	return m_fileErrors[op];

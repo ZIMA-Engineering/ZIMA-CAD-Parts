@@ -84,8 +84,6 @@ public slots:
 	void retranslateMetadata(Item *item = 0);
 	void abort();
 	void descentTo(QString path, Item *item = 0);
-	void assignTechSpecUrlToItem(QString url, Item *item, bool overwrite = false);
-	void assignPartsIndexUrlToItem(QString url, Item *item, bool overwrite = false);
 	void catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
 
 protected:

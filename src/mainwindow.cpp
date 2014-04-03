@@ -310,9 +310,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	        this, SLOT(previewInProductView(QModelIndex)));
 	connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
 	        this, SLOT(tree_doubleClicked(QModelIndex)));
-#warning "TODO/FIXME serversModel"
-//	connect(serversModel, SIGNAL(fileDownloaded(File*)),
-//	        productView, SLOT(fileDownloaded(File*)));
+    connect(ui->serversWidget, SIGNAL(fileDownloaded(File*)),
+            productView, SLOT(fileDownloaded(File*)));
 
 	if( useSplash )
 	{
@@ -497,8 +496,7 @@ void MainWindow::updateClicked()
 
 	fm->prepareForUpdate();
 
-#warning "TODO/FIXME serversModel"
-//	serversModel->refresh(i);
+    ui->serversWidget->refresh(i);
     ui->serversWidget->requestTechSpecs(i);
 }
 
@@ -719,8 +717,7 @@ void MainWindow::changeLanguage(int lang)
 
 	currentMetadataLang = langs[lang];
 
-#warning "TODO/FIXME serversModel"
-//	serversModel->retranslateMetadata();
+    ui->serversWidget->retranslateMetadata();
 
 	viewHidePartsIndex();
 }
@@ -884,9 +881,11 @@ void MainWindow::assignUrlToDirectory(bool overwrite)
 {
 	Item *it = fm->getRootItem();
 
-#warning "TODO/FIXME serversModel"
-//	if(it)
-//		serversModel->assignTechSpecUrlToItem(urlBar->text(), it, overwrite);
+    if (!it)
+        return;
+
+    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+    it->server->assignTechSpecUrlToItem(urlBar->text(), it, lang, overwrite);
 }
 
 void MainWindow::techSpecsIndexOverwrite(Item *item)
@@ -904,9 +903,11 @@ void MainWindow::assignPartsIndexUrlToDirectory(bool overwrite)
 {
 	Item *it = fm->getRootItem();
 
-#warning "TODO/FIXME serversModel"
-//	if(it)
-//		serversModel->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, overwrite);
+    if (!it)
+        return;
+
+    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+    it->server->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, lang, overwrite);
 }
 
 void MainWindow::partsIndexOverwrite(Item *item)

@@ -61,6 +61,8 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
                 this, SIGNAL(errorOccured(QString)));
         connect(model, SIGNAL(filesDownloaded()),
                 this, SIGNAL(filesDownloaded()));
+        connect(model, SIGNAL(fileDownloaded(File*)),
+                this, SIGNAL(fileDownloaded(File*)));
 
 
 		QTreeView *view = new QTreeView(this);
@@ -85,6 +87,27 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 
 		addItem(view, ds->dataSourceIcon(), ds->label);
 	}
+}
+
+void ServersWidget::retranslateMetadata()
+{
+    foreach (ServersModel *i, m_modelViews.keys())
+    {
+        i->retranslateMetadata();
+    }
+}
+
+void ServersWidget::refresh(Item *item)
+{
+    // try to find proper model for given item
+    foreach (ServersModel* i, m_modelViews.keys())
+    {
+        if (i->dataSource() == item->server)
+        {
+            i->refresh(item);
+            return;
+        }
+    }
 }
 
 void ServersWidget::dirTreeContextMenu(QPoint point)

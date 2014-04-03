@@ -18,6 +18,9 @@ public:
 	explicit ServersWidget(QWidget *parent = 0);
 	//void setModel(ServersModel *model);
 	void setDataSources(QList<BaseDataSource*> datasources);
+    void retranslateMetadata();
+
+    void refresh(Item* item);
 
 	QModelIndex currentIndex();
 
@@ -34,6 +37,7 @@ signals:
 
     void errorOccured(const QString &error);
     void filesDownloaded();
+    void fileDownloaded(File*);
 
 public slots:
 	void expand(const QModelIndex & index);
