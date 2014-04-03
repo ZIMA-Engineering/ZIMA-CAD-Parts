@@ -569,7 +569,7 @@ void ServersModel::dataSourceFinishedDownloading()
 void ServersModel::dataSourceFinishedDeleting()
 {
 	if(++dsDeleted == m_rootItem->children.size())
-		emit filesDeleted();
+		emit filesDeleted(this);
 }
 
 void ServersModel::metadataReady(Item *item)

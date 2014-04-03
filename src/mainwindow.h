@@ -128,7 +128,6 @@ public slots:
 	void updateClicked();
 	void deleteSelectedParts();
 	void searchClicked();
-	void serverSelected(const QModelIndex&);
 	void updateStatus(const QString &message);
 	void treeExpandedOrCollaped();
 	void loadTechSpec(QUrl url);
@@ -139,7 +138,7 @@ public slots:
 	void toggleDownload();
 	void resumeDownload();
 	void stopDownload();
-	void filesDeleted();
+	void filesDeleted(ServersModel*);
 
 private slots:
 	void openWorkingDirectory();

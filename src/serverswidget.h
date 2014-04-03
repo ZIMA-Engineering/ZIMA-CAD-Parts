@@ -21,6 +21,8 @@ public:
     void retranslateMetadata();
 
     void refresh(Item* item);
+    void deleteFiles();
+    void uncheckAll();
 
 	QModelIndex currentIndex();
 
@@ -38,6 +40,7 @@ signals:
     void errorOccured(const QString &error);
     void filesDownloaded();
     void fileDownloaded(File*);
+    void filesDeleted(ServersModel*);
 
 public slots:
 	void expand(const QModelIndex & index);

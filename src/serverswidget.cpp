@@ -63,6 +63,8 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
                 this, SIGNAL(filesDownloaded()));
         connect(model, SIGNAL(fileDownloaded(File*)),
                 this, SIGNAL(fileDownloaded(File*)));
+        connect(model, SIGNAL(filesDeleted(ServersModel*)),
+                this, SIGNAL(filesDeleted(ServersModel*)));
 
 
 		QTreeView *view = new QTreeView(this);
@@ -108,6 +110,24 @@ void ServersWidget::refresh(Item *item)
             return;
         }
     }
+}
+
+void ServersWidget::deleteFiles()
+{
+    QTreeView *w = qobject_cast<QTreeView*>(currentWidget());
+    Q_ASSERT(w);
+    QList<ServersModel*> l = m_modelViews.keys(w);
+    Q_ASSERT(l.size());
+    l.at(0)->deleteFiles();
+}
+
+void ServersWidget::uncheckAll()
+{
+    QTreeView *w = qobject_cast<QTreeView*>(currentWidget());
+    Q_ASSERT(w);
+    QList<ServersModel*> l = m_modelViews.keys(w);
+    Q_ASSERT(l.size());
+    l.at(0)->uncheckAll();
 }
 
 void ServersWidget::dirTreeContextMenu(QPoint point)

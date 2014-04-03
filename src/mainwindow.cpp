@@ -219,7 +219,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(ui->serversWidget, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(ui->serversWidget, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
-	connect(ui->serversWidget, SIGNAL(filesDeleted()), this, SLOT(filesDeleted()));
+	connect(ui->serversWidget, SIGNAL(filesDeleted(ServersModel*)), this, SLOT(filesDeleted(ServersModel*)));
 
 	downloadModel = new DownloadModel(this);
 
@@ -414,7 +414,7 @@ void MainWindow::downloadButton()
 {
 #warning "TODO/FIXME serversModel"
 //	serversModel->downloadFiles( ui->editDir->text() );
-//	serversModel->uncheckAll();
+	ui->serversWidget->uncheckAll();
 
 	ui->tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
 
@@ -508,9 +508,8 @@ void MainWindow::deleteSelectedParts()
 	                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
 	        ==  QMessageBox::Yes)
 	{
-#warning "TODO/FIXME serversModel"
-//		serversModel->deleteFiles();
-//		serversModel->uncheckAll();
+		ui->serversWidget->deleteFiles();
+		ui->serversWidget->uncheckAll();
 	}
 }
 
@@ -524,16 +523,6 @@ void MainWindow::treeExpandedOrCollaped()
 	int columnCnt = ui->tree->model()->columnCount(QModelIndex());
 	for (int i = 0; i < columnCnt; i++)
 		ui->tree->resizeColumnToContents(i);
-}
-
-void MainWindow::serverSelected(const QModelIndex &i)
-{
-	if (i.internalPointer())
-	{
-		Item* item = static_cast<Item*>(i.internalPointer());
-#warning "TODO/FIXME serversModel"
-//		serversModel->loadItem(item);
-	}
 }
 
 void MainWindow::updateStatus(const QString &message)
@@ -658,30 +647,23 @@ void MainWindow::rebuildFilters()
 	proxy->setFilterRegExp(rx);
 }
 
-void MainWindow::filesDeleted()
+void MainWindow::filesDeleted(ServersModel* serversModel)
 {
-#warning "TODO/FIXME serversModel"
-#if 0
 	if (serversModel->hasErrors(BaseDataSource::Delete))
 	{
-		ErrorDialog *dlg = new ErrorDialog(this);
-
-		dlg->setError(tr("Unable to delete files:"));
+		ErrorDialog dlg;
+		dlg.setError(tr("Unable to delete files:"));
 
 		QString str = "<html><body><dl>";
-
 		foreach(BaseDataSource::Error *e, serversModel->fileErrors(BaseDataSource::Delete))
 		{
 			str += "<dt>" + e->file->path + ":</dt>";
 			str += "<dd>" + e->error + "</dd>";
 		}
-
 		str += "</dl></body></html>";
 
-		dlg->setText(str);
-
-		dlg->exec();
-
+		dlg.setText(str);
+		dlg.exec();
 	} else {
 		// FIXME: if the deletion should occur in another thread and take more time, it will
 		// be neccessary to check if the reset is needed (user might be viewing something entirely
@@ -689,7 +671,6 @@ void MainWindow::filesDeleted()
 
 		ui->tree->reset();
 	}
-#endif
 }
 
 void MainWindow::openWorkingDirectory()

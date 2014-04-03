@@ -131,7 +131,7 @@ signals:
 	void autoDescentNotFound();
 	void techSpecsIndexAlreadyExists(Item*);
 	void partsIndexAlreadyExists(Item*);
-	void filesDeleted();
+	void filesDeleted(ServersModel*);
 };
 
 #endif // SERVERSMODEL_H
