@@ -42,6 +42,11 @@ signals:
     void fileDownloaded(File*);
     void filesDeleted(ServersModel*);
 
+    void techSpecAvailable(const QUrl&);
+    void autoDescentProgress(const QModelIndex&);
+	void autoDescentComplete(const QModelIndex&);
+	void autoDescentNotFound();
+
 public slots:
 	void expand(const QModelIndex & index);
 	void setCurrentIndex(const QModelIndex & index);

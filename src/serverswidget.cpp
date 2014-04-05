@@ -65,6 +65,14 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
                 this, SIGNAL(fileDownloaded(File*)));
         connect(model, SIGNAL(filesDeleted(ServersModel*)),
                 this, SIGNAL(filesDeleted(ServersModel*)));
+        connect(model, SIGNAL(techSpecAvailable(QUrl)),
+                this, SIGNAL(techSpecAvailable(QUrl)));
+        connect(model, SIGNAL(autoDescentProgress(QModelIndex)),
+                this, SIGNAL(autoDescentProgress(QModelIndex)));
+        connect(model, SIGNAL(autoDescentCompleted(QModelIndex)),
+                this, SIGNAL(autoDescentComplete(QModelIndex)));
+        connect(model, SIGNAL(autoDescentNotFound()),
+                this, SIGNAL(autoDescentNotFound()));
 
 
 		QTreeView *view = new QTreeView(this);

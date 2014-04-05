@@ -135,13 +135,17 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(ui->serversWidget, SIGNAL(itemLoaded(const QModelIndex&)),
 	        this, SLOT(partsIndexLoaded(const QModelIndex&)));
-//	connect(serversModel, SIGNAL(techSpecAvailable(QUrl)), this, SLOT(loadTechSpec(QUrl)));
+	connect(ui->serversWidget, SIGNAL(techSpecAvailable(QUrl)),
+            this, SLOT(loadTechSpec(QUrl)));
 	// status bar - use this one
 	connect(ui->serversWidget, SIGNAL(statusUpdated(QString)),
 	        this, SLOT(updateStatus(QString)));
-//	connect(serversModel, SIGNAL(autoDescentProgress(QModelIndex)), this, SLOT(autoDescentProgress(QModelIndex)));
-//	connect(serversModel, SIGNAL(autoDescentCompleted(QModelIndex)), this, SLOT(autoDescendComplete(QModelIndex)));
-//	connect(serversModel, SIGNAL(autoDescentNotFound()), this, SLOT(autoDescentNotFound()));
+	connect(ui->serversWidget, SIGNAL(autoDescentProgress(QModelIndex)),
+            this, SLOT(autoDescentProgress(QModelIndex)));
+	connect(ui->serversWidget, SIGNAL(autoDescentComplete(QModelIndex)),
+            this, SLOT(autoDescendComplete(QModelIndex)));
+	connect(ui->serversWidget, SIGNAL(autoDescentNotFound()),
+            this, SLOT(autoDescentNotFound()));
 	connect(ui->serversWidget, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
 	        this, SLOT(techSpecsIndexOverwrite(Item*)));
 	connect(ui->serversWidget, SIGNAL(partsIndexAlreadyExists(Item*)),
