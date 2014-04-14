@@ -141,8 +141,10 @@ QList<File*> DownloadModel::files(DownloadModel::TransferHandlerType type)
 	QList<File*> tmp;
 
 	foreach(File *f, queue)
-	if(f->transferHandler == type)
-		tmp << f;
+    {
+        if (f->transferHandler == type)
+            tmp << f;
+    }
 
 	return tmp;
 }
@@ -200,8 +202,11 @@ void DownloadModel::clear()
 
 	stop();
 
-	foreach(TransferHandler *h, m_handlers)
-	h->clearQueue();
+    foreach(DownloadModel::TransferHandlerType key, m_handlers.uniqueKeys())
+    {
+        foreach (TransferHandler *h, m_handlers.values(key))
+            h->clearQueue();
+    }
 
 	queue.clear();
 
@@ -236,14 +241,20 @@ void DownloadModel::stop()
 {
 	m_downloading = false;
 
-	foreach(TransferHandler *h, m_handlers)
-	h->stopDownload();
+    foreach(DownloadModel::TransferHandlerType key, m_handlers.uniqueKeys())
+    {
+        foreach (TransferHandler *h, m_handlers.values(key))
+            h->stopDownload();
+    }
 }
 
 void DownloadModel::resume()
 {
 	m_downloading = true;
 
-	foreach(TransferHandler *h, m_handlers)
-	h->resumeDownload();
+    foreach(DownloadModel::TransferHandlerType key, m_handlers.uniqueKeys())
+    {
+        foreach (TransferHandler *h, m_handlers.values(key))
+            h->resumeDownload();
+    }
 }

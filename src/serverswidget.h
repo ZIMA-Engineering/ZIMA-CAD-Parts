@@ -26,6 +26,8 @@ public:
 
 	QModelIndex currentIndex();
 
+    void setDownloadModel(DownloadModel *model) { m_downloadModel = model; }
+
 signals:
 	void statusUpdated(const QString &message);
 	void showSettings(SettingsDialog::Section);
@@ -57,6 +59,7 @@ private:
 
 	QSignalMapper *m_signalMapper;
 	QStringList m_zimaUtils;
+    DownloadModel *m_downloadModel;
 
 private slots:
 	void dirTreeContextMenu(QPoint point);

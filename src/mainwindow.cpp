@@ -131,6 +131,11 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
 
+    downloadModel = new DownloadModel(this);
+    ui->serversWidget->setDownloadModel(downloadModel);
+    connect(ui->deleteQueueBtn, SIGNAL(clicked()), downloadModel, SLOT(clear()));
+    downloadModel->registerHandler(DownloadModel::TechSpec, ui->techSpec);
+
 	ui->serversWidget->setDataSources(servers);
 
 	connect(ui->serversWidget, SIGNAL(itemLoaded(const QModelIndex&)),
@@ -225,19 +230,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->serversWidget, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 	connect(ui->serversWidget, SIGNAL(filesDeleted(ServersModel*)), this, SLOT(filesDeleted(ServersModel*)));
 
-	downloadModel = new DownloadModel(this);
-
-	connect(ui->deleteQueueBtn, SIGNAL(clicked()), downloadModel, SLOT(clear()));
-
-#warning "TODO/FIXME serversModel"
-//	downloadModel->registerHandler(DownloadModel::ServersModel, serversModel);
-	downloadModel->registerHandler(DownloadModel::TechSpec, ui->techSpec);
-
 	ui->downloadTreeView->setModel(downloadModel);
 	ui->downloadTreeView->setItemDelegate(new DownloadDelegate(this));
 
-#warning "TODO/FIXME serversModel"
-//	serversModel->setDownloadQueue(downloadModel);
 #warning "TODO/FIXME: server model"
 #if 0
 	if (serversModel->loadQueue(settings) )

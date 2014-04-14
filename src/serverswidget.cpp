@@ -11,7 +11,8 @@
 
 
 ServersWidget::ServersWidget(QWidget *parent)
-	: QToolBox(parent)
+    : QToolBox(parent),
+      m_downloadModel(0)
 {
 	setStyleSheet("icon-size: 16px;");
 	m_signalMapper = new QSignalMapper(this);
@@ -33,6 +34,8 @@ void ServersWidget::setModel(ServersModel *model)
 
 void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 {
+    Q_ASSERT(m_downloadModel);
+
 	// firstly delete all stuff used. Remember "the reset"
 	for (int i = 0; i < count(); ++i)
 	{
@@ -74,6 +77,8 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
         connect(model, SIGNAL(autoDescentNotFound()),
                 this, SIGNAL(autoDescentNotFound()));
 
+        m_downloadModel->registerHandler(DownloadModel::ServersModel, model);
+        model->setDownloadQueue(m_downloadModel);
 
 		QTreeView *view = new QTreeView(this);
 		view->header()->close();
