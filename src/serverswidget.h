@@ -5,13 +5,15 @@
 #include <QPushButton>
 #include <QTreeView>
 
+#include "ui_serverswidget.h"
 #include "serversmodel.h"
 #include "settingsdialog.h"
 
 class QSignalMapper;
 
 
-class ServersWidget : public QToolBox
+
+class ServersWidget : public QWidget, public Ui::ServersWidget
 {
 	Q_OBJECT
 public:
@@ -26,12 +28,10 @@ public:
 
 	QModelIndex currentIndex();
 
-    void setDownloadModel(DownloadModel *model) { m_downloadModel = model; }
-
 signals:
 	void statusUpdated(const QString &message);
 	void showSettings(SettingsDialog::Section);
-	void partsIndexAlreadyExists(Item *i);
+
 	void itemLoaded(const QModelIndex&);
 	void techSpecsIndexAlreadyExists(Item *i);
 	void clicked(const QModelIndex&);
@@ -61,11 +61,13 @@ private:
 	QStringList m_zimaUtils;
     DownloadModel *m_downloadModel;
 
+    QList<BaseDataSource*> m_servers; // from settings
+
 private slots:
 	void dirTreeContextMenu(QPoint point);
 	void spawnZimaUtilityOnDir(int i);
 	// handle current widget change
-	void this_currentChanged(int i);
+    void serversToolBox_currentChanged(int i);
 
 	void loadingItem(Item *i);
 	void allItemsLoaded();

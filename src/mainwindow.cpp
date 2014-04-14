@@ -41,13 +41,12 @@
 #include "item.h"
 #include "zimautils.h"
 #include "errordialog.h"
+#include "utils.h"
 #include "filefilters/extensionfilter.h"
 #include "filefilters/versionfilter.h"
 #include "extensions/productview/productview.h"
 
 
-QList<FilterGroup> MainWindow::filterGroups;
-QSettings * MainWindow::settings;
 QString MainWindow::currentMetadataLang;
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
@@ -59,12 +58,10 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  techSpecToolBar(0),
 	  lastPartsIndexItem(0)
 {
-	downloading = false;
-
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
-	settings = new QSettings(this);
-	bool useSplash = settings->value("GUI/Splash/Enabled", true).toBool();
+    QSettings settings;
+    bool useSplash = settings.value("GUI/Splash/Enabled", true).toBool();
 	QSplashScreen *splash;
 
 	if( useSplash )
@@ -83,8 +80,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	fm = new FileModel(this);
 
-	fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
-	fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
+    fm->setThumbWidth( settings.value("GUI/ThumbWidth", 32).toInt() );
+    fm->setPreviewWidth( settings.value("GUI/PreviewWidth", 256).toInt() );
 
 	proxy = new FileFilterModel(this);
 	proxy->setSourceModel(fm);
@@ -109,39 +106,23 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	setupDeveloperMode();
 
-	servers = loadDataSources();
 	loadSettings();
 
-	restoreState(settings->value("state", QByteArray()).toByteArray());
-	restoreGeometry(settings->value("geometry", QByteArray()).toByteArray());
+    restoreState(settings.value("state", QByteArray()).toByteArray());
+    restoreGeometry(settings.value("geometry", QByteArray()).toByteArray());
 
-	connect(ui->btnDownload, SIGNAL(clicked()), this, SLOT(downloadButton()));
 	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(showSettings()));
 	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectoryDialog()));
 	connect(ui->openWorkDirButton, SIGNAL(clicked()), this, SLOT(openWorkingDirectory()));
-	connect(ui->btnUpdate, SIGNAL(clicked()), this, SLOT(updateClicked()));
-	connect(ui->btnDelete, SIGNAL(clicked()), this, SLOT(deleteSelectedParts()));
-	connect(ui->startStopDownloadBtn, SIGNAL(clicked()), this, SLOT(toggleDownload()));
 
-	ui->thumbnailSizeSlider->setValue(settings->value("GUI/ThumbWidth", 32).toInt());
-
-	connect(ui->filtersButton, SIGNAL(clicked()), this, SLOT(setFiltersDialog()));
 
 	QList<int> list;
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
 
-    downloadModel = new DownloadModel(this);
-    ui->serversWidget->setDownloadModel(downloadModel);
-    connect(ui->deleteQueueBtn, SIGNAL(clicked()), downloadModel, SLOT(clear()));
-    downloadModel->registerHandler(DownloadModel::TechSpec, ui->techSpec);
-
-	ui->serversWidget->setDataSources(servers);
 
 	connect(ui->serversWidget, SIGNAL(itemLoaded(const QModelIndex&)),
 	        this, SLOT(partsIndexLoaded(const QModelIndex&)));
-	connect(ui->serversWidget, SIGNAL(techSpecAvailable(QUrl)),
-            this, SLOT(loadTechSpec(QUrl)));
 	// status bar - use this one
 	connect(ui->serversWidget, SIGNAL(statusUpdated(QString)),
 	        this, SLOT(updateStatus(QString)));
@@ -153,85 +134,22 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
             this, SLOT(autoDescentNotFound()));
 	connect(ui->serversWidget, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
 	        this, SLOT(techSpecsIndexOverwrite(Item*)));
-	connect(ui->serversWidget, SIGNAL(partsIndexAlreadyExists(Item*)),
-	        this, SLOT(partsIndexOverwrite(Item*)));
 
 	connect(fm, SIGNAL(requestColumnResize()), this, SLOT(treeExpandedOrCollaped()));
-	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), fm, SLOT(setThumbWidth(int)));
-	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(adjustThumbColumnWidth(int)));
 
-	filterGroups << FilterGroup("ProE", "Pro/Engineer");
-	filterGroups.last()
-	        << new ExtensionFilter(File::PRT_PROE)
-	        << new ExtensionFilter(File::ASM)
-	        << new ExtensionFilter(File::DRW)
-	        << new ExtensionFilter(File::FRM)
-	        << new ExtensionFilter(File::NEU_PROE)
-	        << new VersionFilter();
-
-	filterGroups << FilterGroup("CATIA", "CATIA");
-	filterGroups.last()
-	        << new ExtensionFilter(File::CATPART)
-	        << new ExtensionFilter(File::CATPRODUCT)
-	        << new ExtensionFilter(File::CATDRAWING);
-
-	filterGroups << FilterGroup("NX", "NX (UGS)");
-	filterGroups.last()
-	        << new ExtensionFilter(File::PRT_NX);
-
-	filterGroups << FilterGroup("SolidWorks", "SolidWorks");
-	filterGroups.last().filters
-	        << new ExtensionFilter(File::SLDPRT)
-	        << new ExtensionFilter(File::SLDASM)
-	        << new ExtensionFilter(File::SLDDRW);
-
-	filterGroups << FilterGroup("SolidEdge", "Solid Edge");
-	filterGroups.last()
-	        << new ExtensionFilter(File::PAR)
-	        << new ExtensionFilter(File::PSM)
-	        << new ExtensionFilter(File::ASM)
-	        << new ExtensionFilter(File::DFT);
-
-	filterGroups << FilterGroup("Invertor", "INVERTOR");
-	filterGroups.last()
-	        << new ExtensionFilter(File::IPT)
-	        << new ExtensionFilter(File::IAM)
-	        << new ExtensionFilter(File::IDW);
-
-	filterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
-	filterGroups.last()
-	        << new ExtensionFilter(File::STEP)
-	        << new ExtensionFilter(File::IGES)
-	        << new ExtensionFilter(File::DWG)
-	        << new ExtensionFilter(File::DXF);
-
-	filterGroups << FilterGroup("NonCAD", "NonCAD");
-	filterGroups.last()
-	        << new ExtensionFilter(File::STL)
-	        << new ExtensionFilter(File::BLEND)
-	        << new ExtensionFilter(File::PDF)
-	        << new ExtensionFilter(File::OFFICE_BASE)
-	        << new ExtensionFilter(File::OFFICE_CALC)
-	        << new ExtensionFilter(File::OFFICE_DRAW)
-	        << new ExtensionFilter(File::OFFICE_IMPRESS)
-	        << new ExtensionFilter(File::OFFICE_PROJECT)
-	        << new ExtensionFilter(File::OFFICE_WRITER);
-
-	loadFilters();
+    Utils::setupFilterGroups();
 	rebuildFilters();
 
 	QList<int> partsSize;
 	partsSize << (int)(ui->tab->height()*0.40) << (int)(ui->tab->height()*0.60);
 	ui->partsSplitter->setSizes(partsSize);
 
-	ui->tree->setModel(proxy);
+    partsTreeView->setModel(proxy);
 
 	connect(ui->serversWidget, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(ui->serversWidget, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
 	connect(ui->serversWidget, SIGNAL(filesDeleted(ServersModel*)), this, SLOT(filesDeleted(ServersModel*)));
 
-	ui->downloadTreeView->setModel(downloadModel);
-	ui->downloadTreeView->setItemDelegate(new DownloadDelegate(this));
 
 #warning "TODO/FIXME: server model"
 #if 0
@@ -301,20 +219,20 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	addAction(act);
 
-	productView = new ProductView(ui->tabWidget);
+    m_productView = new ProductView(ui->tabWidget);
 
-	connect(ui->tree, SIGNAL(activated(QModelIndex)),
+    connect(partsTreeView, SIGNAL(activated(QModelIndex)),
 	        this, SLOT(previewInProductView(QModelIndex)));
-	connect(ui->tree, SIGNAL(clicked(QModelIndex)),
+    connect(partsTreeView, SIGNAL(clicked(QModelIndex)),
 	        this, SLOT(previewInProductView(QModelIndex)));
-	connect(ui->tree, SIGNAL(doubleClicked(QModelIndex)),
+    connect(partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
 	        this, SLOT(tree_doubleClicked(QModelIndex)));
     connect(ui->serversWidget, SIGNAL(fileDownloaded(File*)),
-            productView, SLOT(fileDownloaded(File*)));
+            m_productView, SLOT(fileDownloaded(File*)));
 
 	if( useSplash )
 	{
-		SleeperThread::msleep( settings->value("GUI/Splash/Duration", 1500).toInt() );
+        SleeperThread::msleep( settings.value("GUI/Splash/Duration", 1500).toInt() );
 
 		splash->finish(this);
 	}
@@ -327,8 +245,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupDeveloperMode()
 {
-	bool developer = settings->value("Developer/Enabled", false).toBool();
-	bool techSpecToolBarEnabled = developer && settings->value("Developer/TechSpecToolBar", true).toBool();
+    bool developer = settings.value("Developer/Enabled", false).toBool();
+    bool techSpecToolBarEnabled = developer && settings.value("Developer/TechSpecToolBar", true).toBool();
 
 	// Tech spec toolbar
 	if(techSpecToolBarEnabled && !techSpecToolBar)
@@ -398,8 +316,8 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-	settings->setValue("state", saveState());
-	settings->setValue("geometry", saveGeometry());
+    settings.setValue("state", saveState());
+    settings.setValue("geometry", saveGeometry());
 
 #warning "TODO/FIXME: saveQueue"
 	//serversModel->saveQueue(settings);
@@ -409,27 +327,13 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	QMainWindow::closeEvent(e);
 }
 
-void MainWindow::downloadButton()
-{
-#warning "TODO/FIXME serversModel"
-//	serversModel->downloadFiles( ui->editDir->text() );
-	ui->serversWidget->uncheckAll();
-
-	ui->tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
-
-	ui->downloadTreeView->resizeColumnToContents(0);
-	ui->downloadTreeView->resizeColumnToContents(2);
-
-	downloading = true;
-}
-
 void MainWindow::setWorkingDirectoryDialog()
 {
 	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set working directory"), ui->editDir->text());
 	if (!str.isEmpty())
 	{
-		settings->setValue("HomeDir", "");
-		settings->setValue("WorkingDir", str);
+        settings.setValue("HomeDir", "");
+        settings.setValue("WorkingDir", str);
 
 		ui->techSpec->setDownloadDirectory(str);
 		ui->editDir->setText(str);
@@ -438,7 +342,7 @@ void MainWindow::setWorkingDirectoryDialog()
 
 void MainWindow::showSettings(SettingsDialog::Section section)
 {
-	SettingsDialog *settingsDlg = new SettingsDialog(settings, loadDataSources(), &translator, this);
+    SettingsDialog *settingsDlg = new SettingsDialog(settings, Utils::loadDataSources(), &translator, this);
 	settingsDlg->setSection(section);
 
 	//settingsDlg->loadSettings(settings);
@@ -458,10 +362,10 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 
 		saveSettings();
 
-		fm->setThumbWidth( settings->value("GUI/ThumbWidth", 32).toInt() );
-		fm->setPreviewWidth( settings->value("GUI/PreviewWidth", 256).toInt() );
+        fm->setThumbWidth( settings.value("GUI/ThumbWidth", 32).toInt() );
+        fm->setPreviewWidth( settings.value("GUI/PreviewWidth", 256).toInt() );
 
-		ui->thumbnailSizeSlider->setValue(settings->value("GUI/ThumbWidth", 32).toInt());
+        ui->thumbnailSizeSlider->setValue(settings.value("GUI/ThumbWidth", 32).toInt());
 
 		setupDeveloperMode();
 
@@ -486,32 +390,6 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 	delete settingsDlg;
 }
 
-void MainWindow::updateClicked()
-{
-	Item* i = fm->getRootItem();
-
-	if( i == 0)
-		return;
-
-	fm->prepareForUpdate();
-
-    ui->serversWidget->refresh(i);
-    ui->serversWidget->requestTechSpecs(i);
-}
-
-void MainWindow::deleteSelectedParts()
-{
-	if( QMessageBox::question(this,
-	                          tr("Do you really want to delete selected parts?"),
-	                          tr("Do you really want to delete selected parts? This action is irreversible."),
-	                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
-	        ==  QMessageBox::Yes)
-	{
-		ui->serversWidget->deleteFiles();
-		ui->serversWidget->uncheckAll();
-	}
-}
-
 void MainWindow::searchClicked()
 {
 	QMessageBox::information(this, "ZimaParts", "Not yet implemented");
@@ -519,9 +397,9 @@ void MainWindow::searchClicked()
 
 void MainWindow::treeExpandedOrCollaped()
 {
-	int columnCnt = ui->tree->model()->columnCount(QModelIndex());
+    int columnCnt = partsTreeView->model()->columnCount(QModelIndex());
 	for (int i = 0; i < columnCnt; i++)
-		ui->tree->resizeColumnToContents(i);
+        partsTreeView->resizeColumnToContents(i);
 }
 
 void MainWindow::updateStatus(const QString &message)
@@ -529,19 +407,6 @@ void MainWindow::updateStatus(const QString &message)
 	statusDir->setText(message);
 }
 
-
-void MainWindow::loadTechSpec(QUrl url)
-{
-#warning "TODO/FIXME serversModel"
-#if 0
-	Item *it = serversModel->lastTechSpecRequest();
-
-	if(it)
-		ui->techSpec->setRootPath(it->server->pathToDataRoot());
-
-	ui->techSpec->load(url);
-#endif
-}
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
@@ -570,32 +435,6 @@ void MainWindow::errorOccured(const QString &error)
 void MainWindow::filesDownloaded()
 {
 	updateStatus(tr("Parts downloaded."));
-	downloading = false;
-}
-
-void MainWindow::resumeDownload()
-{
-	downloadModel->resume();
-	ui->startStopDownloadBtn->setText(tr("Stop"));
-	downloading = true;
-}
-
-void MainWindow::stopDownload()
-{
-	downloadModel->stop();
-	ui->startStopDownloadBtn->setText(tr("Resume"));
-	downloading = false;
-}
-
-void MainWindow::toggleDownload()
-{
-	if(downloadModel->isEmpty())
-		return;
-
-	if( downloadModel->isDownloading() )
-		stopDownload();
-	else
-		resumeDownload();
 }
 
 void MainWindow::setFiltersDialog()
@@ -668,7 +507,7 @@ void MainWindow::filesDeleted(ServersModel* serversModel)
 		// be neccessary to check if the reset is needed (user might be viewing something entirely
 		// different by the time it's finished).
 
-		ui->tree->reset();
+        partsTreeView->reset();
 	}
 }
 
@@ -852,11 +691,6 @@ void MainWindow::autoDescentNotFound()
 	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(autoDescentPath));
 }
 
-void MainWindow::adjustThumbColumnWidth(int width)
-{
-	ui->tree->setColumnWidth(1, width);
-}
-
 void MainWindow::assignUrlToDirectory(bool overwrite)
 {
 	Item *it = fm->getRootItem();
@@ -879,149 +713,49 @@ void MainWindow::techSpecsIndexOverwrite(Item *item)
 	}
 }
 
-void MainWindow::assignPartsIndexUrlToDirectory(bool overwrite)
-{
-	Item *it = fm->getRootItem();
-
-    if (!it)
-        return;
-
-    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-    it->server->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, lang, overwrite);
-}
-
-void MainWindow::partsIndexOverwrite(Item *item)
-{
-	if (QMessageBox::warning(this,
-	                         tr("Parts index already exists"),
-	                         tr("Parts index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
-	                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
-	{
-		assignPartsIndexUrlToDirectory(true);
-	}
-}
-
 void MainWindow::loadSettings()
 {
-	ui->editDir->setText(settings->value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
+    ui->editDir->setText(settings.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
 	ui->techSpec->setDownloadDirectory(ui->editDir->text());
-}
-
-QList<BaseDataSource*> MainWindow::loadDataSources()
-{
-	QString currentLang = getCurrentMetadataLanguageCode().left(2);
-	QList<BaseDataSource*> servers;
-
-	settings->beginGroup("DataSources");
-	foreach(QString str, settings->childGroups())
-	{
-		settings->beginGroup(str);
-
-		QString dataSourceType = settings->value("DataSourceType", "ftp").toString();
-
-		if( dataSourceType == "ftp" )
-		{
-			FtpDataSource *s = new FtpDataSource();
-			s->loadSettings(*settings);
-			servers.append(s);
-		} else if ( dataSourceType == "local" ) {
-			LocalDataSource *s = new LocalDataSource();
-			s->loadSettings(*settings);
-			servers.append(s);
-		}
-
-		settings->endGroup();
-	}
-	settings->endGroup();
-
-	return servers;
 }
 
 void MainWindow::saveSettings()
 {
-	int i = 0;
-	QString str;
-	settings->remove("DataSources");
-	settings->beginGroup("DataSources");
-	foreach(BaseDataSource *bs, servers)
-	{
-		settings->beginGroup(QString::number(i++));
-		switch( bs->dataSource )
-		{
-		case LOCAL: {
-			LocalDataSource *s = static_cast<LocalDataSource*>(bs);
+    Utils::saveDatasource(servers);
 
-			s->saveSettings(*settings);
-			break;
-		}
-		case FTP: {
-			FtpDataSource *s = static_cast<FtpDataSource*>(bs);
-
-			s->saveSettings(*settings);
-			break;
-		}
-		default:
-			break;
-		}
-
-		settings->endGroup();
-	}
-	settings->endGroup();
-
-	settings->setValue("WorkingDir", ui->editDir->text());
-	settings->sync();
+    settings.setValue("WorkingDir", ui->editDir->text());
+    settings.sync();
 }
 
-void MainWindow::loadFilters()
-{
-	settings->beginGroup("PartFilters");
-
-	int cnt = filterGroups.count();
-
-	for(int i = 0; i < cnt; i++)
-	{
-		settings->beginGroup(filterGroups[i].internalName);
-		filterGroups[i].enabled = settings->value("Enabled", true).toBool();
-
-		int filterCnt = filterGroups[i].filters.count();
-
-		for(int j = 0; j < filterCnt; j++)
-			filterGroups[i].filters[j]->load(settings);
-
-		settings->endGroup();
-	}
-
-	settings->endGroup();
-}
 
 void MainWindow::saveFilters()
 {
-	settings->beginGroup("PartFilters");
+    settings.beginGroup("PartFilters");
 
 	int cnt = filterGroups.count();
 
 	for(int i = 0; i < cnt; i++)
 	{
-		settings->beginGroup(filterGroups[i].internalName);
-		settings->setValue("Enabled", filterGroups[i].enabled);
+        settings.beginGroup(filterGroups[i].internalName);
+        settings.setValue("Enabled", filterGroups[i].enabled);
 
 		int filterCnt = filterGroups[i].filters.count();
 
 		for(int j = 0; j < filterCnt; j++)
 			filterGroups[i].filters[j]->save(settings);
 
-		settings->endGroup();
+        settings.endGroup();
 	}
 
-	settings->endGroup();
+    settings.endGroup();
 }
 
 void MainWindow::setWorkingDirectory()
 {
 	Item *it = static_cast<Item*>(ui->serversWidget->currentIndex().internalPointer());
 
-	settings->setValue("HomeDir", it->pathWithDataSource());
-	settings->setValue("WorkingDir", it->path);
+    settings.setValue("HomeDir", it->pathWithDataSource());
+    settings.setValue("WorkingDir", it->path);
 
 	ui->techSpec->setDownloadDirectory(it->path);
 
@@ -1030,7 +764,7 @@ void MainWindow::setWorkingDirectory()
 
 void MainWindow::goToWorkingDirectory()
 {
-	autoDescentPath = settings->value("HomeDir").toString();
+    autoDescentPath = settings.value("HomeDir").toString();
 
 	if (autoDescentPath.isEmpty())
 		return;
@@ -1089,7 +823,7 @@ void MainWindow::historyForward()
 
 QString MainWindow::getCurrentLanguageCode()
 {
-	QString lang = settings->value("Language").toString();
+    QString lang = settings.value("Language").toString();
 	return (lang.isEmpty() || lang == "detect") ? QLocale::system().name() : lang;
 }
 
@@ -1102,24 +836,24 @@ QString MainWindow::getCurrentMetadataLanguageCode()
 
 void MainWindow::previewInProductView(const QModelIndex &index)
 {
-	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->tree->model())->mapToSource(index);
+    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
-	if (!productView->canHandle(f->type))
+    if (!m_productView->canHandle(f->type))
 	{
-		productView->hide();
+        m_productView->hide();
 		return;
 	}
 
-	productView->expectFile(f);
+    m_productView->expectFile(f);
 
 	// local files are not copied - just open the original
 	// remote datasources are cached in ~/.cache/... or something similar
 	if (f->parentItem->server->dataSource == LOCAL)
 	{
 		f->cachePath = f->path;
-		productView->fileDownloaded(f);
+        m_productView->fileDownloaded(f);
 	}
 	else if (f->parentItem->server->dataSource == FTP)
 	{
@@ -1131,12 +865,11 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 		// simulate "real cache" hit. Use local copy of the file (if it exists)
 		if (QFile::exists(f->cachePath))
 		{
-			productView->fileDownloaded(f);
+            m_productView->fileDownloaded(f);
 		}
 		else
 		{
 			f->transferHandler = DownloadModel::ServersModel;
-			downloading = true;
 			f->parentItem->server->downloadFiles(QList<File*>() << f, pathForItem);
 		}
 	}
@@ -1145,14 +878,14 @@ void MainWindow::previewInProductView(const QModelIndex &index)
 		Q_ASSERT_X(0, "business logic error", "Unhandled dataSource type");
 	}
 
-	productView->show();
+    m_productView->show();
 	// keep focus on the main window - keyboard handling
 	activateWindow();
 }
 
 void MainWindow::tree_doubleClicked(const QModelIndex &index)
 {
-	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->tree->model())->mapToSource(index);
+    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
 
 	File *f = fm->getRootItem()->files.at(srcIndex.row());
 
@@ -1164,7 +897,7 @@ void MainWindow::tree_doubleClicked(const QModelIndex &index)
 	case File::FRM:
 	case File::NEU_PROE:
 	{
-		QString exe = settings->value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
+        QString exe = settings.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
 		qDebug() << "Starting ProE:" << exe << f->path << "; working dir" << ui->editDir->text();
 		bool ret = QProcess::startDetached(exe, QStringList() << f->path, ui->editDir->text());
 		if (!ret)

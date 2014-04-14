@@ -63,8 +63,6 @@ public:
 	static QString getCurrentLanguageCode();
 	static QString getCurrentMetadataLanguageCode();
 
-	static QList<FilterGroup> filterGroups;
-
 private:
 	enum Tabs {
 	    TECH_SPECS,
@@ -75,20 +73,15 @@ private:
 	};
 
 	Ui::MainWindowClass *ui;
-	static QSettings           *settings;
-	QList<BaseDataSource*> servers;
-	QLabel              *statusState, *statusDir;
-	FileModel *fm;
-	FileFilterModel *proxy;
-	QTranslator *translator;
-	bool downloading;
-	QButtonGroup *langButtonGroup;
-	static QString currentMetadataLang;
-	QStringList langs;
-	QList<QPushButton*> langFlags;
 
-	// Models
-	DownloadModel *downloadModel;
+    QLabel              *statusDir; // status bar
+    FileModel *fm; // TODO/FIXME: to refactoring
+    FileFilterModel *proxy; // TODO/FIXME: to refactoring
+    QTranslator *translator;// app ui
+
+    QButtonGroup *langButtonGroup; // toolbar
+    static QString currentMetadataLang; // lang handling
+    QStringList langs; // lang handling
 
 	// History
 	QList<QModelIndex> history;
@@ -113,11 +106,10 @@ private:
 	QDateTime lastPartsIndexModTime;
 	QModelIndex lastFoundIndex;
 
-	ProductView *productView;
+    ProductView *m_productView;
 
-	bool s_developerMode;
+    void setupDeveloperMode(); // WTF?
 
-	void setupDeveloperMode();
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 

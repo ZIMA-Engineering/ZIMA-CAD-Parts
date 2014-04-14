@@ -42,8 +42,8 @@ int main(int argc, char *argv[])
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
 
 	QTranslator translator;
-	QSettings *settings = new QSettings();
-	QString lang = settings->value("Language", "detect").toString();
+    QSettings settings;
+    QString lang = settings.value("Language", "detect").toString();
 
 	QString filename = "zima-cad-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
 	QStringList paths;
@@ -63,8 +63,6 @@ int main(int argc, char *argv[])
 			a.installTranslator(&translator);
 			break;
 		}
-
-	delete settings;
 
 	MainWindow w(&translator);
 	w.show();

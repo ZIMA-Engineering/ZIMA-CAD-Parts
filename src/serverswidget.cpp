@@ -1,5 +1,6 @@
 #include "serverswidget.h"
 #include "zimautils.h"
+#include "utils.h"
 
 #include <QSignalMapper>
 #include <QTreeView>
@@ -11,14 +12,36 @@
 
 
 ServersWidget::ServersWidget(QWidget *parent)
-    : QToolBox(parent),
-      m_downloadModel(0)
+    : QWidget(parent)
 {
-	setStyleSheet("icon-size: 16px;");
+    setupUi(this);
+
+    m_downloadModel = new DownloadModel(this);
+    connect(deleteQueueBtn, SIGNAL(clicked()), m_downloadModel, SLOT(clear()));
+    m_downloadModel->registerHandler(DownloadModel::TechSpec, techSpec);
+
+    serversToolBox->setStyleSheet("icon-size: 16px;");
 	m_signalMapper = new QSignalMapper(this);
 
+    m_servers = Utils::loadDataSources();
+
+    thumbnailSizeSlider->setValue(settings.value("GUI/ThumbWidth", 32).toInt());
+
+    downloadTreeView->setModel(m_downloadModel);
+    downloadTreeView->setItemDelegate(new DownloadDelegate(this));
+
 	connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(spawnZimaUtilityOnDir(int)));
-	connect(this, SIGNAL(currentChanged(int)), this, SLOT(this_currentChanged(int)));
+    connect(serversToolBox, SIGNAL(currentChanged(int)), this, SLOT(serversToolBox_currentChanged(int)));
+
+    connect(btnDownload, SIGNAL(clicked()), this, SLOT(downloadButton()));
+    connect(btnUpdate, SIGNAL(clicked()), this, SLOT(updateClicked()));
+    connect(btnDelete, SIGNAL(clicked()), this, SLOT(deleteSelectedParts()));
+    connect(startStopDownloadBtn, SIGNAL(clicked()), this, SLOT(toggleDownload()));
+
+    connect(filtersButton, SIGNAL(clicked()), this, SLOT(setFiltersDialog()));
+
+    connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), fm, SLOT(setThumbWidth(int)));
+    connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(adjustThumbColumnWidth(int)));
 }
 
 #if 0
@@ -50,12 +73,16 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 	{
 		ServersModel *model = new ServersModel(ds, this);
 		model->retranslateMetadata();
+
+        connect(model, SIGNAL(techSpecAvailable(QUrl)),
+                this, SLOT(loadTechSpec(QUrl)));
+
 		connect(model, SIGNAL(loadingItem(Item*)),
 		        this, SLOT(loadingItem(Item*)));
 		connect(model, SIGNAL(allItemsLoaded()),
 		        this, SLOT(allItemsLoaded()));
 		connect(model, SIGNAL(partsIndexAlreadyExists(Item*)),
-		        this, SIGNAL(partsIndexAlreadyExists(Item*)));
+                this, SIGNAL(partsIndexOverwrite(Item*)));
 		connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
 		        this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
 		connect(model, SIGNAL(itemLoaded(const QModelIndex&)),
@@ -244,7 +271,7 @@ void ServersWidget::requestTechSpecs(Item *item)
     qWarning() << "ServersWidget::requestTechSpecs proper ServersModel not found";
 }
 
-void ServersWidget::this_currentChanged(int i)
+void ServersWidget::serversToolBox_currentChanged(int i)
 {
 	QTreeView *w = qobject_cast<QTreeView*>(widget(i));
 
@@ -259,4 +286,106 @@ void ServersWidget::loadingItem(Item *i)
 void ServersWidget::allItemsLoaded()
 {
 	emit statusUpdated(tr("All items loaded."));
+}
+
+void ServersWidget::downloadButton()
+{
+#warning "TODO/FIXME serversModel"
+//	serversModel->downloadFiles( ui->editDir->text() );
+    serversWidget->uncheckAll(); //TODO/FIXME: maps
+
+    tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
+
+    downloadTreeView->resizeColumnToContents(0);
+    downloadTreeView->resizeColumnToContents(2);
+}
+
+void ServersWidget::updateClicked()
+{
+    Item* i = fm->getRootItem();
+
+    if( i == 0)
+        return;
+
+    fm->prepareForUpdate();
+
+    refresh(i);//TODO/FIXME: maps
+    requestTechSpecs(i);//TODO/FIXME: maps
+}
+
+void ServersWidget::deleteSelectedParts()
+{
+    if( QMessageBox::question(this,
+                              tr("Do you really want to delete selected parts?"),
+                              tr("Do you really want to delete selected parts? This action is irreversible."),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+            ==  QMessageBox::Yes)
+    {
+        deleteFiles(); //TODO/FIXME: maps
+        uncheckAll(); //TODO/FIXME: maps
+    }
+}
+
+void ServersWidget::toggleDownload()
+{
+    if (m_downloadModel->isEmpty())
+        return;
+
+    if (m_downloadModel->isDownloading())
+        stopDownload();
+    else
+        resumeDownload();
+}
+
+void ServersWidget::resumeDownload()
+{
+    downloadModel->resume();
+    startStopDownloadBtn->setText(tr("Stop"));
+}
+
+void ServersWidget::stopDownload()
+{
+    downloadModel->stop();
+    startStopDownloadBtn->setText(tr("Resume"));
+}
+
+void ServersWidget::loadTechSpec(QUrl url)
+{
+    // it *must* be ServersModel
+    ServersModel *model = qobject_cast<ServersModel*>(sender());
+    Q_ASSERT(model);
+
+    Item *it = model->lastTechSpecRequest();
+
+    if(it)
+        ui->techSpec->setRootPath(it->server->pathToDataRoot());
+
+    ui->techSpec->load(url);
+}
+
+void ServersWidget::adjustThumbColumnWidth(int width)
+{
+    partsTreeView->setColumnWidth(1, width);
+}
+
+void ServersWidget::assignPartsIndexUrlToDirectory(bool overwrite)
+{
+    Item *it = fm->getRootItem();
+
+    if (!it)
+        return;
+
+    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+    it->server->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, lang, overwrite);
+}
+
+void ServersWidget::partsIndexOverwrite(Item *item)
+{
+    if (QMessageBox::warning(this,
+                             tr("Parts index already exists"),
+                             tr("Parts index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
+                             QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+    {
+        assignPartsIndexUrlToDirectory(true);
+    }
 }

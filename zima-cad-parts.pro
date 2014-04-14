@@ -68,7 +68,8 @@ SOURCES += zima-cad-parts.cpp \
     libqdxf/src/spline.cpp \
     src/extensions/productview/pdfproductview.cpp \
     src/extensions/productview/failbackproductview.cpp \
-    src/serverswidget.cpp
+    src/serverswidget.cpp \
+    src/utils.cpp
 
 
 HEADERS += mainwindow.h \
@@ -108,7 +109,8 @@ HEADERS += mainwindow.h \
     libqdxf/src/spline.h \
     src/extensions/productview/pdfproductview.h \
     src/extensions/productview/failbackproductview.h \
-    src/serverswidget.h
+    src/serverswidget.h \
+    src/utils.h
 
 
 FORMS += mainwindow.ui \
@@ -120,7 +122,8 @@ FORMS += mainwindow.ui \
     src/extensions/productview/productview.ui \
     src/extensions/productview/dxfproductview.ui \
     src/extensions/productview/pdfproductview.ui \
-    src/extensions/productview/failbackproductview.ui
+    src/extensions/productview/failbackproductview.ui \
+    src/serverswidget.ui
 RESOURCES += zima-cad-parts.qrc
 
 OTHER_FILES += \
