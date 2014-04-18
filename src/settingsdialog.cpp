@@ -54,13 +54,14 @@ public:
 #define UNUSED_ROLE Qt::UserRole+2
 
 
-SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datasources, QTranslator **translator, QWidget *parent) :
+SettingsDialog::SettingsDialog(QList<BaseDataSource*> datasources, QTranslator **translator, QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SettingsDialog),
-	settings(settings),
 	translator(translator)
 {
 	m_ui->setupUi(this);
+
+    QSettings settings;
 
 	connect(m_ui->btnAdd, SIGNAL(clicked()), this, SLOT(addDataSource()));
 	connect(m_ui->editBtn, SIGNAL(clicked()), this, SLOT(editDataSource()));
@@ -75,14 +76,14 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 
 	setupDatasourceList(datasources);
 
-	m_ui->spinPicture->setValue( settings->value("GUI/ThumbWidth", 32).toInt() );
-	m_ui->previewWidthSpinBox->setValue( settings->value("GUI/PreviewWidth", 256).toInt() );
-	m_ui->languageComboBox->setCurrentIndex( langIndex( settings->value("Language", "detect").toString() ) );
-	m_ui->splashGroupBox->setChecked( settings->value("GUI/Splash/Enabled", true).toBool() );
-	m_ui->splashDurationSpinBox->setValue( settings->value("GUI/Splash/Duration", 1500).toInt() );
-	m_ui->developerModeGroupBox->setChecked( settings->value("Developer/Enabled", false).toBool() );
-	m_ui->techSpecToolBarCheckBox->setChecked( settings->value("Developer/TechSpecToolBar", true).toBool() );
-	m_ui->productViewEdit->setText(settings->value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
+    m_ui->spinPicture->setValue( settings.value("GUI/ThumbWidth", 32).toInt() );
+    m_ui->previewWidthSpinBox->setValue( settings.value("GUI/PreviewWidth", 256).toInt() );
+    m_ui->languageComboBox->setCurrentIndex( langIndex( settings.value("Language", "detect").toString() ) );
+    m_ui->splashGroupBox->setChecked( settings.value("GUI/Splash/Enabled", true).toBool() );
+    m_ui->splashDurationSpinBox->setValue( settings.value("GUI/Splash/Duration", 1500).toInt() );
+    m_ui->developerModeGroupBox->setChecked( settings.value("Developer/Enabled", false).toBool() );
+    m_ui->techSpecToolBarCheckBox->setChecked( settings.value("Developer/TechSpecToolBar", true).toBool() );
+    m_ui->productViewEdit->setText(settings.value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
 
 	connect(m_ui->proeButton, SIGNAL(clicked()),
 	        this, SLOT(proeButton_clicked()));
@@ -91,18 +92,18 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 
 	connect(zimaUtilSignalMapper, SIGNAL(mapped(int)), this, SLOT(setZimaUtilPath(int)));
 
-	settings->beginGroup("ExternalPrograms");
+    settings.beginGroup("ExternalPrograms");
 
 	for(int i = 0; i < ZimaUtils::ZimaUtilsCount; i++)
 	{
-		settings->beginGroup(ZimaUtils::internalNameForUtility(i));
+        settings.beginGroup(ZimaUtils::internalNameForUtility(i));
 
 		QToolButton *t = new QToolButton(this);
 		t->setText("...");
 
 		connect(t, SIGNAL(clicked()), zimaUtilSignalMapper, SLOT(map()));
 
-		zimaUtilLineEdits << new QLineEdit(settings->value("Executable").toString(), this);
+        zimaUtilLineEdits << new QLineEdit(settings.value("Executable").toString(), this);
 
 		m_ui->gridLayout->addWidget(new QLabel(ZimaUtils::labelForUtility(i), this), i, 0);
 		m_ui->gridLayout->addWidget(zimaUtilLineEdits.last(), i, 1);
@@ -110,14 +111,14 @@ SettingsDialog::SettingsDialog(QSettings *settings, QList<BaseDataSource*> datas
 
 		zimaUtilSignalMapper->setMapping(t, i);
 
-		settings->endGroup();
+        settings.endGroup();
 	}
 
-	settings->beginGroup("ProE");
-	m_ui->proeEdit->setText(settings->value("Executable", "proe.exe").toString());
-	settings->endGroup();
+    settings.beginGroup("ProE");
+    m_ui->proeEdit->setText(settings.value("Executable", "proe.exe").toString());
+    settings.endGroup();
 
-	settings->endGroup();
+    settings.endGroup();
 }
 
 SettingsDialog::~SettingsDialog()
@@ -148,17 +149,18 @@ void SettingsDialog::loadSettings(QSettings *settings)
 
 void SettingsDialog::saveSettings()
 {
-	settings->setValue("GUI/ThumbWidth", m_ui->spinPicture->value());
-	settings->setValue("GUI/PreviewWidth", m_ui->previewWidthSpinBox->value());
-	settings->setValue("GUI/Splash/Enabled", m_ui->splashGroupBox->isChecked());
-	settings->setValue("GUI/Splash/Duration", m_ui->splashDurationSpinBox->value());
-	settings->setValue("Developer/Enabled", m_ui->developerModeGroupBox->isChecked());
-	settings->setValue("Developer/TechSpecToolBar", m_ui->techSpecToolBarCheckBox->isChecked());
-	settings->setValue("Extensions/ProductView/Path", m_ui->productViewEdit->text());
+    QSettings settings;
+    settings.setValue("GUI/ThumbWidth", m_ui->spinPicture->value());
+    settings.setValue("GUI/PreviewWidth", m_ui->previewWidthSpinBox->value());
+    settings.setValue("GUI/Splash/Enabled", m_ui->splashGroupBox->isChecked());
+    settings.setValue("GUI/Splash/Duration", m_ui->splashDurationSpinBox->value());
+    settings.setValue("Developer/Enabled", m_ui->developerModeGroupBox->isChecked());
+    settings.setValue("Developer/TechSpecToolBar", m_ui->techSpecToolBarCheckBox->isChecked());
+    settings.setValue("Extensions/ProductView/Path", m_ui->productViewEdit->text());
 
 
 	QString lang = langIndexToName( m_ui->languageComboBox->currentIndex() );
-	if( lang != settings->value("Language").toString() )
+    if( lang != settings.value("Language").toString() )
 	{
 		qApp->removeTranslator(*translator);
 
@@ -184,22 +186,22 @@ void SettingsDialog::saveSettings()
 		}
 	}
 
-	settings->setValue("Language", lang);
+    settings.setValue("Language", lang);
 
-	settings->beginGroup("ExternalPrograms");
+    settings.beginGroup("ExternalPrograms");
 
 	for(int i = 0; i < ZimaUtils::ZimaUtilsCount; i++)
 	{
-		settings->beginGroup(ZimaUtils::internalNameForUtility(i));
-		settings->setValue("Executable", zimaUtilLineEdits[i]->text());
-		settings->endGroup();
+        settings.beginGroup(ZimaUtils::internalNameForUtility(i));
+        settings.setValue("Executable", zimaUtilLineEdits[i]->text());
+        settings.endGroup();
 	}
 
-	settings->beginGroup("ProE");
-	settings->setValue("Executable", m_ui->proeEdit->text());
-	settings->endGroup();
+    settings.beginGroup("ProE");
+    settings.setValue("Executable", m_ui->proeEdit->text());
+    settings.endGroup();
 
-	settings->endGroup();
+    settings.endGroup();
 }
 
 void SettingsDialog::addDataSource()

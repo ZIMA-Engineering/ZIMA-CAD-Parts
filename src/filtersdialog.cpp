@@ -26,6 +26,7 @@
 #include "filtersdialog.h"
 #include "ui_filtersdialog.h"
 #include "item.h"
+#include "utils.h"
 
 FiltersDialog::FiltersDialog(QWidget *parent) :
 	QDialog(parent),
@@ -33,11 +34,11 @@ FiltersDialog::FiltersDialog(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	int cnt = MainWindow::filterGroups.count();
+    int cnt = Utils::filterGroups.count();
 	for(int i = 0; i < cnt; i++)
 	{
-		ui->treeWidget->addTopLevelItem(MainWindow::filterGroups[i].widget());
-		ui->listWidget->addItem(MainWindow::filterGroups[i].label);
+        ui->treeWidget->addTopLevelItem(Utils::filterGroups[i].widget());
+        ui->listWidget->addItem(Utils::filterGroups[i].label);
 	}
 
 	ui->treeWidget->expandAll();
@@ -56,10 +57,10 @@ FiltersDialog::~FiltersDialog()
 
 void FiltersDialog::accept()
 {
-	int cnt = MainWindow::filterGroups.count();
+    int cnt = Utils::filterGroups.count();
 
 	for(int i = 0; i < cnt; i++)
-		MainWindow::filterGroups[i].apply();
+        Utils::filterGroups[i].apply();
 
 	QDialog::accept();
 }
@@ -67,7 +68,7 @@ void FiltersDialog::accept()
 void FiltersDialog::listWidget_currentRowChanged(int row)
 {
 	ui->listWidget->blockSignals(true);
-	ui->treeWidget->setCurrentItem(MainWindow::filterGroups[row].currentItem());
+    ui->treeWidget->setCurrentItem(Utils::filterGroups[row].currentItem());
 	ui->listWidget->blockSignals(false);
 }
 

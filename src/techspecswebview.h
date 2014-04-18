@@ -35,7 +35,6 @@ public:
 	explicit TechSpecsWebView(QWidget *parent = 0);
 	void setRootPath(QString path);
 	void setDownloadDirectory(QString path);
-	void setDownloadQueue(DownloadModel *queue);
 	void stopDownload();
 	void resumeDownload();
 	void clearQueue();
@@ -56,7 +55,7 @@ private slots:
 private:
 	QString m_rootPath;
 	QString m_dlDir;
-	DownloadModel *downloadQueue;
+    DownloadModel *m_downloadModel;
 	
 };
 

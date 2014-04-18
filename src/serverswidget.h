@@ -10,7 +10,7 @@
 #include "settingsdialog.h"
 
 class QSignalMapper;
-
+class ProductView;
 
 
 class ServersWidget : public QWidget, public Ui::ServersWidget
@@ -37,7 +37,7 @@ signals:
 	void clicked(const QModelIndex&);
 	void activated(const QModelIndex&);
 	// emit newly selected tree view root item to MainWindow to load toplevel files into part view
-	void groupChanged(const QModelIndex&);
+    //void groupChanged(const QModelIndex&);
 
     void errorOccured(const QString &error);
     void filesDownloaded();
@@ -59,7 +59,7 @@ private:
 
 	QSignalMapper *m_signalMapper;
 	QStringList m_zimaUtils;
-    DownloadModel *m_downloadModel;
+    ProductView *m_productView;
 
     QList<BaseDataSource*> m_servers; // from settings
 

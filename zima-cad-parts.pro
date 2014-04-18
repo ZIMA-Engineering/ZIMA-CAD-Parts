@@ -69,7 +69,8 @@ SOURCES += zima-cad-parts.cpp \
     src/extensions/productview/pdfproductview.cpp \
     src/extensions/productview/failbackproductview.cpp \
     src/serverswidget.cpp \
-    src/utils.cpp
+    src/utils.cpp \
+    src/servertabwidget.cpp
 
 
 HEADERS += mainwindow.h \
@@ -110,7 +111,8 @@ HEADERS += mainwindow.h \
     src/extensions/productview/pdfproductview.h \
     src/extensions/productview/failbackproductview.h \
     src/serverswidget.h \
-    src/utils.h
+    src/utils.h \
+    src/servertabwidget.h
 
 
 FORMS += mainwindow.ui \
@@ -123,7 +125,8 @@ FORMS += mainwindow.ui \
     src/extensions/productview/dxfproductview.ui \
     src/extensions/productview/pdfproductview.ui \
     src/extensions/productview/failbackproductview.ui \
-    src/serverswidget.ui
+    src/serverswidget.ui \
+    src/servertabwidget.ui
 RESOURCES += zima-cad-parts.qrc
 
 OTHER_FILES += \

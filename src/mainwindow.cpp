@@ -32,6 +32,7 @@
 #include <QDesktopServices>
 #include <QWebHistory>
 #include <QProcess>
+#include <QWebSettings>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -78,22 +79,10 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	ui->actionHistoryBack->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 	ui->actionHistoryForward->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
 
-	fm = new FileModel(this);
-
-    fm->setThumbWidth( settings.value("GUI/ThumbWidth", 32).toInt() );
-    fm->setPreviewWidth( settings.value("GUI/PreviewWidth", 256).toInt() );
-
-	proxy = new FileFilterModel(this);
-	proxy->setSourceModel(fm);
-
-	connect(ui->serversWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
-	connect(ui->serversWidget, SIGNAL(activated(const QModelIndex&)), this, SLOT(setPartsIndex(const QModelIndex&)));
 	connect(ui->serversWidget, SIGNAL(showSettings(SettingsDialog::Section)),
 	        this, SLOT(showSettings(SettingsDialog::Section)));
 	connect(ui->serversWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
 	connect(ui->serversWidget, SIGNAL(activated(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
-	connect(ui->serversWidget, SIGNAL(groupChanged(const QModelIndex&)),
-	        this, SLOT(setPartsIndex(const QModelIndex&)));
 
 	connect(ui->actionHistoryBack, SIGNAL(triggered()), this, SLOT(historyBack()));
 	connect(ui->actionHistoryForward, SIGNAL(triggered()), this, SLOT(historyForward()));
@@ -103,10 +92,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	statusDir = new QLabel(tr("Ready"), this);
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	statusBar()->addWidget(statusDir, 100);
-
-	setupDeveloperMode();
-
-	loadSettings();
 
     restoreState(settings.value("state", QByteArray()).toByteArray());
     restoreGeometry(settings.value("geometry", QByteArray()).toByteArray());
@@ -121,8 +106,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	ui->splitter->setSizes(list);
 
 
-	connect(ui->serversWidget, SIGNAL(itemLoaded(const QModelIndex&)),
-	        this, SLOT(partsIndexLoaded(const QModelIndex&)));
 	// status bar - use this one
 	connect(ui->serversWidget, SIGNAL(statusUpdated(QString)),
 	        this, SLOT(updateStatus(QString)));
@@ -135,16 +118,16 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->serversWidget, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
 	        this, SLOT(techSpecsIndexOverwrite(Item*)));
 
-	connect(fm, SIGNAL(requestColumnResize()), this, SLOT(treeExpandedOrCollaped()));
+
 
     Utils::setupFilterGroups();
-	rebuildFilters();
+#warning TODO/FIXME: rebuild filters
+//	rebuildFilters();
 
-	QList<int> partsSize;
-	partsSize << (int)(ui->tab->height()*0.40) << (int)(ui->tab->height()*0.60);
-	ui->partsSplitter->setSizes(partsSize);
-
-    partsTreeView->setModel(proxy);
+#warning TODO/FIXME: refactoring
+//	QList<int> partsSize;
+//	partsSize << (int)(ui->tab->height()*0.40) << (int)(ui->tab->height()*0.60);
+//	ui->partsSplitter->setSizes(partsSize);
 
 	connect(ui->serversWidget, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(ui->serversWidget, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
@@ -201,12 +184,11 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	menuBar()->addMenu(menu);
 #endif
 
+#warning TODO/FIXME: refactoring
 	// Make shortcut Ctrl+C or Cmd+C available
-	QAction *copyAction = ui->techSpec->pageAction(QWebPage::Copy);
-	copyAction->setShortcut(QKeySequence::Copy);
-	ui->techSpec->addAction(copyAction);
-
-	ui->techSpec->setDownloadQueue(downloadModel);
+//	QAction *copyAction = ui->techSpec->pageAction(QWebPage::Copy);
+//	copyAction->setShortcut(QKeySequence::Copy);
+//	ui->techSpec->addAction(copyAction);
 
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
@@ -218,17 +200,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(act, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 	addAction(act);
-
-    m_productView = new ProductView(ui->tabWidget);
-
-    connect(partsTreeView, SIGNAL(activated(QModelIndex)),
-	        this, SLOT(previewInProductView(QModelIndex)));
-    connect(partsTreeView, SIGNAL(clicked(QModelIndex)),
-	        this, SLOT(previewInProductView(QModelIndex)));
-    connect(partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
-	        this, SLOT(tree_doubleClicked(QModelIndex)));
-    connect(ui->serversWidget, SIGNAL(fileDownloaded(File*)),
-            m_productView, SLOT(fileDownloaded(File*)));
 
 	if( useSplash )
 	{
@@ -243,86 +214,27 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-void MainWindow::setupDeveloperMode()
-{
-    bool developer = settings.value("Developer/Enabled", false).toBool();
-    bool techSpecToolBarEnabled = developer && settings.value("Developer/TechSpecToolBar", true).toBool();
-
-	// Tech spec toolbar
-	if(techSpecToolBarEnabled && !techSpecToolBar)
-	{
-		techSpecToolBar = new QToolBar(this);
-
-		techSpecBackAction = techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->techSpec, SLOT(back()));
-		techSpecForwardAction = techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->techSpec, SLOT(forward()));
-		techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_BrowserReload), tr("Reload"), ui->techSpec, SLOT(reload()));
-
-		urlBar = new QLineEdit(this);
-
-		connect(urlBar, SIGNAL(returnPressed()), this, SLOT(goToUrl()));
-
-		techSpecToolBar->addWidget(urlBar);
-		techSpecToolBar->addAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Go"), this, SLOT(goToUrl()));
-
-		connect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
-
-		techSpecToolBar->addAction(QIcon(":/gfx/pin.png"), tr("Pin this URL to current directory in tree (write permission required)"), this, SLOT(assignUrlToDirectory()));
-
-		techSpecToolBar->setIconSize(QSize(20, 20));
-
-		static_cast<QVBoxLayout*>(ui->tabWidget->widget(TECH_SPECS)->layout())->insertWidget(0, techSpecToolBar);
-
-		// Parts web view toolbar
-		partsIndexToolBar = new QToolBar(this);
-		partsIndexUrlBar = new QLineEdit(this);
-
-		partsIndexToolBar->setIconSize(QSize(20, 20));
-
-		connect(partsIndexUrlBar, SIGNAL(returnPressed()), this, SLOT(goToPartsIndexUrl()));
-
-		partsIndexToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowLeft), tr("Back"), ui->partsWebView, SLOT(back()));
-		partsIndexToolBar->addAction(style()->standardIcon(QStyle::SP_ArrowRight), tr("Forward"), ui->partsWebView, SLOT(forward()));
-		partsIndexToolBar->addWidget(partsIndexUrlBar);
-		partsIndexToolBar->addAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Go"), this, SLOT(goToPartsIndexUrl()));
-
-		connect(ui->partsWebView, SIGNAL(urlChanged(QUrl)), this, SLOT(updatePartsUrlBar(QUrl)));
-
-		partsIndexToolBar->addAction(QIcon(":/gfx/pin.png"), tr("Pin this URL to current parts index (write permission required)"), this, SLOT(assignPartsIndexUrlToDirectory()));
-
-		static_cast<QVBoxLayout*>(ui->tabWidget->widget(PARTS)->layout())->insertWidget(0, partsIndexToolBar);
-	} else if(!techSpecToolBarEnabled && techSpecToolBar) {
-		techSpecToolBar->deleteLater();
-		urlBar->deleteLater();
-
-		partsIndexToolBar->deleteLater();
-		partsIndexUrlBar->deleteLater();
-
-		techSpecToolBar = 0;
-
-		disconnect(ui->techSpec, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
-		disconnect(ui->partsWebView, SIGNAL(urlChanged(QUrl)), this, SLOT(updatePartsUrlBar(QUrl)));
-	}
-}
-
 void MainWindow::changeEvent(QEvent *event)
 {
 	if (event->type() == QEvent::LanguageChange) {
 		ui->retranslateUi(this);
-
-		if( ui->techSpec->url().path().startsWith("/data/zima-cad-parts") )
-			ui->techSpec->loadAboutPage();
-	} else QMainWindow::changeEvent(event);
+    }
+    else
+        QMainWindow::changeEvent(event);
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
+    QSettings settings;
     settings.setValue("state", saveState());
     settings.setValue("geometry", saveGeometry());
+    settings.setValue("WorkingDir", ui->editDir->text());
+
+#warning TODO/FIXME: save servers
+    //Utils::saveDataSources(servers);
 
 #warning "TODO/FIXME: saveQueue"
 	//serversModel->saveQueue(settings);
-
-	qDeleteAll(servers);
 
 	QMainWindow::closeEvent(e);
 }
@@ -332,42 +244,54 @@ void MainWindow::setWorkingDirectoryDialog()
 	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set working directory"), ui->editDir->text());
 	if (!str.isEmpty())
 	{
+        QSettings settings;
         settings.setValue("HomeDir", "");
         settings.setValue("WorkingDir", str);
 
-		ui->techSpec->setDownloadDirectory(str);
+#warning TODO/FIXME: set download dir for serverswidget and servertabwidget
+//		ui->techSpec->setDownloadDirectory(str);
 		ui->editDir->setText(str);
 	}
 }
 
 void MainWindow::showSettings(SettingsDialog::Section section)
 {
-    SettingsDialog *settingsDlg = new SettingsDialog(settings, Utils::loadDataSources(), &translator, this);
-	settingsDlg->setSection(section);
+    SettingsDialog sd(Utils::loadDataSources(), &translator, this);
+    sd.setSection(section);
 
-	//settingsDlg->loadSettings(settings);
-	int result = settingsDlg->exec();
-
-	if (result == QDialog::Accepted)
+    if (sd.exec())
 	{
-		settingsDlg->saveSettings();
-		fm->setRootIndex(QModelIndex());
+        sd.saveSettings();
+        QSettings s;
+        s.setValue("WorkingDir", ui->editDir->text());
+        settingsChanged();
+    }
+}
 
-		QList<BaseDataSource*> oldServers = servers;
+void MainWindow::settingsChanged()
+{
+    QSettings s;
+    ui->editDir->setText(s.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
 
-		servers = settingsDlg->getDatasources();
+    const QMetaObject *mo;
+    foreach (QWidget *w, findChildren<QWidget*>())
+    {
+        mo = w->metaObject();
+        int settingsMethod = mo->indexOfMethod(QMetaObject::normalizedSignature("void settingsChanged()"));
+        if (settingsMethod == -1)
+        {
+            qDebug() << "META> 'settingsChanged() method not found for" << w->objectName();
+            continue;
+        }
+        mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
+    }
+
+
+#warning TODO/FIXME: reload data sources
+        //QList<BaseDataSource*> oldServers = servers;
+
+//		servers = settingsDlg->getDatasources();
 //		serversModel->setServerData(servers);
-
-		qDeleteAll(oldServers);
-
-		saveSettings();
-
-        fm->setThumbWidth( settings.value("GUI/ThumbWidth", 32).toInt() );
-        fm->setPreviewWidth( settings.value("GUI/PreviewWidth", 256).toInt() );
-
-        ui->thumbnailSizeSlider->setValue(settings.value("GUI/ThumbWidth", 32).toInt());
-
-		setupDeveloperMode();
 
 		int langIndex = SettingsDialog::langIndex(getCurrentLanguageCode()) - 1;
 
@@ -382,24 +306,12 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 		ui->actionHistoryBack->setEnabled(false);
 		ui->actionHistoryForward->setEnabled(false);
 
-		ui->techSpec->loadAboutPage();
-
 		// allItemsLoaded(); 	statusDir->setText(tr("All items loaded."));
-	}
-
-	delete settingsDlg;
 }
 
 void MainWindow::searchClicked()
 {
 	QMessageBox::information(this, "ZimaParts", "Not yet implemented");
-}
-
-void MainWindow::treeExpandedOrCollaped()
-{
-    int columnCnt = partsTreeView->model()->columnCount(QModelIndex());
-	for (int i = 0; i < columnCnt; i++)
-        partsTreeView->resizeColumnToContents(i);
 }
 
 void MainWindow::updateStatus(const QString &message)
@@ -425,8 +337,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::errorOccured(const QString &error)
 {
-	ui->serversWidget->setEnabled(true);
-	ui->btnUpdate->setEnabled(true);
+#warning TODO/FIXME: us it at all?
+    //ui->serversWidget->setEnabled(true);
+    //ui->btnUpdate->setEnabled(true);
 
 	updateStatus(tr("Error: %1").arg(error));
 	QMessageBox::warning(this, tr("FTP error"), error);
@@ -435,80 +348,6 @@ void MainWindow::errorOccured(const QString &error)
 void MainWindow::filesDownloaded()
 {
 	updateStatus(tr("Parts downloaded."));
-}
-
-void MainWindow::setFiltersDialog()
-{
-	FiltersDialog *dlg = new FiltersDialog(this);
-
-	if(dlg->exec() == QDialog::Accepted)
-	{
-		saveFilters();
-		rebuildFilters();
-	}
-}
-
-void MainWindow::rebuildFilters()
-{
-	QStringList expressions;
-
-	int cnt = filterGroups.count();
-
-	for(int i = 0; i < cnt; i++)
-	{
-		if(!filterGroups[i].enabled)
-			continue;
-
-		int filterCnt = filterGroups[i].filters.count();
-
-		for(int j = 0; j < filterCnt; j++)
-		{
-			switch(filterGroups[i].filters[j]->filterType())
-			{
-			case FileFilter::Extension:
-				if(filterGroups[i].filters[j]->enabled)
-					expressions << File::getRxForFileType(filterGroups[i].filters[j]->type);
-				break;
-
-			case FileFilter::Version:
-				proxy->setShowProeVersions(filterGroups[i].filters[j]->enabled);
-				break;
-			}
-
-
-		}
-	}
-
-	expressions.removeDuplicates();
-
-	QRegExp rx( "^" + expressions.join("|") + "$" );
-	proxy->setFilterRegExp(rx);
-}
-
-void MainWindow::filesDeleted(ServersModel* serversModel)
-{
-	if (serversModel->hasErrors(BaseDataSource::Delete))
-	{
-		ErrorDialog dlg;
-		dlg.setError(tr("Unable to delete files:"));
-
-		QString str = "<html><body><dl>";
-		foreach(BaseDataSource::Error *e, serversModel->fileErrors(BaseDataSource::Delete))
-		{
-			str += "<dt>" + e->file->path + ":</dt>";
-			str += "<dd>" + e->error + "</dd>";
-		}
-		str += "</dl></body></html>";
-
-		dlg.setText(str);
-		dlg.exec();
-	} else {
-		// FIXME: if the deletion should occur in another thread and take more time, it will
-		// be neccessary to check if the reset is needed (user might be viewing something entirely
-		// different by the time it's finished).
-
-        partsTreeView->reset();
-	}
 }
 
 void MainWindow::openWorkingDirectory()
@@ -541,71 +380,11 @@ void MainWindow::changeLanguage(int lang)
 	viewHidePartsIndex();
 }
 
-void MainWindow::goToUrl()
-{
-	QString str = urlBar->text();
-
-	if(urlBar->text() == "ZIMA-CAD-Parts:about")
-	{
-		ui->techSpec->loadAboutPage();
-		return;
-	}
-
-	ui->techSpec->setUrl(QUrl(str));
-}
-
-void MainWindow::updateUrlBar(QUrl url)
-{
-	techSpecBackAction->setEnabled(ui->techSpec->history()->canGoBack());
-	techSpecForwardAction->setEnabled(ui->techSpec->history()->canGoForward());
-
-	QString str = url.toString();
-
-	if(str == "about:blank")
-		return;
-
-	urlBar->setText(str);
-}
-
-void MainWindow::goToPartsIndexUrl()
-{
-	QString str = partsIndexUrlBar->text();
-
-	ui->partsWebView->load(QUrl(str));
-
-	if(ui->partsWebView->isHidden())
-		ui->partsWebView->show();
-}
-
-void MainWindow::updatePartsUrlBar(QUrl url)
-{
-	QString str = url.toString();
-
-	partsIndexUrlBar->setText(str);
-}
-
-void MainWindow::setPartsIndex(const QModelIndex &index)
-{
-	if (!index.isValid())
-		return;
-	qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
-
-	fm->setRootIndex(index);
-	partsIndexLoaded(index);
-}
-
-void MainWindow::partsIndexLoaded(const QModelIndex &index)
-{
-	Item *it = static_cast<Item*>(index.internalPointer());
-
-	if(it == fm->getRootItem())
-	{
-		viewHidePartsIndex(it);
-	}
-}
 
 void MainWindow::viewHidePartsIndex(Item *item)
 {
+#warning TODO/FIXME: refacoring
+#if 0
 	if(!item && !lastPartsIndexItem)
 		return;
 	else if(!item)
@@ -658,6 +437,7 @@ void MainWindow::viewHidePartsIndex(Item *item)
 		ui->partsWebView->show();
 
 	ui->partsWebView->load(partsIndex);
+#endif
 }
 
 void MainWindow::autoDescentProgress(const QModelIndex &index)
@@ -673,7 +453,8 @@ void MainWindow::autoDescentProgress(const QModelIndex &index)
 void MainWindow::autoDescendComplete(const QModelIndex &index)
 {
 	ui->serversWidget->expand(index);
-	setPartsIndex(index);
+#warning TODO/FIXME setPartsIndex
+    //setPartsIndex(index);
     Item *item = static_cast<Item*>(index.internalPointer());
     ui->serversWidget->requestTechSpecs(item);
 	trackHistory(index);
@@ -683,7 +464,8 @@ void MainWindow::autoDescentNotFound()
 {
 	if(lastFoundIndex.isValid())
 	{
-		setPartsIndex(lastFoundIndex);
+#warning TODO/FIXME setPartsIndex
+        //setPartsIndex(lastFoundIndex);
         Item *item = static_cast<Item*>(lastFoundIndex.internalPointer());
         ui->serversWidget->requestTechSpecs(item);
 	}
@@ -693,13 +475,13 @@ void MainWindow::autoDescentNotFound()
 
 void MainWindow::assignUrlToDirectory(bool overwrite)
 {
-	Item *it = fm->getRootItem();
+//    Item *it = fm->getRootItem();
 
-    if (!it)
-        return;
+//    if (!it)
+//        return;
 
-    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-    it->server->assignTechSpecUrlToItem(urlBar->text(), it, lang, overwrite);
+//    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+//    it->server->assignTechSpecUrlToItem(urlBar->text(), it, lang, overwrite);
 }
 
 void MainWindow::techSpecsIndexOverwrite(Item *item)
@@ -713,57 +495,9 @@ void MainWindow::techSpecsIndexOverwrite(Item *item)
 	}
 }
 
-void MainWindow::loadSettings()
-{
-    ui->editDir->setText(settings.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
-	ui->techSpec->setDownloadDirectory(ui->editDir->text());
-}
-
-void MainWindow::saveSettings()
-{
-    Utils::saveDatasource(servers);
-
-    settings.setValue("WorkingDir", ui->editDir->text());
-    settings.sync();
-}
-
-
-void MainWindow::saveFilters()
-{
-    settings.beginGroup("PartFilters");
-
-	int cnt = filterGroups.count();
-
-	for(int i = 0; i < cnt; i++)
-	{
-        settings.beginGroup(filterGroups[i].internalName);
-        settings.setValue("Enabled", filterGroups[i].enabled);
-
-		int filterCnt = filterGroups[i].filters.count();
-
-		for(int j = 0; j < filterCnt; j++)
-			filterGroups[i].filters[j]->save(settings);
-
-        settings.endGroup();
-	}
-
-    settings.endGroup();
-}
-
-void MainWindow::setWorkingDirectory()
-{
-	Item *it = static_cast<Item*>(ui->serversWidget->currentIndex().internalPointer());
-
-    settings.setValue("HomeDir", it->pathWithDataSource());
-    settings.setValue("WorkingDir", it->path);
-
-	ui->techSpec->setDownloadDirectory(it->path);
-
-	ui->editDir->setText(it->path);
-}
-
 void MainWindow::goToWorkingDirectory()
 {
+    QSettings settings;
     autoDescentPath = settings.value("HomeDir").toString();
 
 	if (autoDescentPath.isEmpty())
@@ -802,7 +536,8 @@ void MainWindow::historyBack()
 
 	ui->serversWidget->setCurrentIndex(index);
 	ui->serversWidget->requestTechSpecs(item);
-	fm->setRootIndex(index);
+#warning TODO/FIXME: file model
+//	fm->setRootIndex(index);
 
 	ui->actionHistoryBack->setEnabled( !(historyCurrentIndex == 0) );
 	ui->actionHistoryForward->setEnabled(true);
@@ -815,7 +550,8 @@ void MainWindow::historyForward()
 
 	ui->serversWidget->setCurrentIndex(index);
 	ui->serversWidget->requestTechSpecs(item);
-	fm->setRootIndex(index);
+#warning TODO/FIXME: file model
+//	fm->setRootIndex(index);
 
 	ui->actionHistoryForward->setEnabled( !(historyCurrentIndex == historySize-1) );
 	ui->actionHistoryBack->setEnabled(true);
@@ -823,6 +559,7 @@ void MainWindow::historyForward()
 
 QString MainWindow::getCurrentLanguageCode()
 {
+    QSettings settings;
     QString lang = settings.value("Language").toString();
 	return (lang.isEmpty() || lang == "detect") ? QLocale::system().name() : lang;
 }
@@ -832,81 +569,4 @@ QString MainWindow::getCurrentMetadataLanguageCode()
 	if(currentMetadataLang.isEmpty())
 		return getCurrentLanguageCode();
 	return currentMetadataLang;
-}
-
-void MainWindow::previewInProductView(const QModelIndex &index)
-{
-    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
-
-	File *f = fm->getRootItem()->files.at(srcIndex.row());
-
-    if (!m_productView->canHandle(f->type))
-	{
-        m_productView->hide();
-		return;
-	}
-
-    m_productView->expectFile(f);
-
-	// local files are not copied - just open the original
-	// remote datasources are cached in ~/.cache/... or something similar
-	if (f->parentItem->server->dataSource == LOCAL)
-	{
-		f->cachePath = f->path;
-        m_productView->fileDownloaded(f);
-	}
-	else if (f->parentItem->server->dataSource == FTP)
-	{
-		QString pathForItem(f->parentItem->server->getPathForItem(f->parentItem));
-		QDir d;
-		d.mkpath(pathForItem);
-
-		f->cachePath = pathForItem + "/" + f->name;
-		// simulate "real cache" hit. Use local copy of the file (if it exists)
-		if (QFile::exists(f->cachePath))
-		{
-            m_productView->fileDownloaded(f);
-		}
-		else
-		{
-			f->transferHandler = DownloadModel::ServersModel;
-			f->parentItem->server->downloadFiles(QList<File*>() << f, pathForItem);
-		}
-	}
-	else
-	{
-		Q_ASSERT_X(0, "business logic error", "Unhandled dataSource type");
-	}
-
-    m_productView->show();
-	// keep focus on the main window - keyboard handling
-	activateWindow();
-}
-
-void MainWindow::tree_doubleClicked(const QModelIndex &index)
-{
-    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
-
-	File *f = fm->getRootItem()->files.at(srcIndex.row());
-
-	switch (f->type)
-	{
-	case File::PRT_PROE:
-	case File::ASM:
-	case File::DRW:
-	case File::FRM:
-	case File::NEU_PROE:
-	{
-        QString exe = settings.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
-		qDebug() << "Starting ProE:" << exe << f->path << "; working dir" << ui->editDir->text();
-		bool ret = QProcess::startDetached(exe, QStringList() << f->path, ui->editDir->text());
-		if (!ret)
-			QMessageBox::information(this, tr("ProE Startup Error"),
-			                         tr("An error occured while ProE has been requested to start"),
-			                         QMessageBox::Ok);
-		break;
-	}
-	default:
-		QDesktopServices::openUrl(QUrl::fromLocalFile(f->path));
-	}
 }

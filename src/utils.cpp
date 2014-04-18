@@ -145,3 +145,26 @@ void Utils::setupFilterGroups()
 
     settings.endGroup();
 }
+
+void Utils::saveFilters()
+{
+    QSettings settings;
+    settings.beginGroup("PartFilters");
+
+    int cnt = filterGroups.count();
+
+    for(int i = 0; i < cnt; i++)
+    {
+        settings.beginGroup(filterGroups[i].internalName);
+        settings.setValue("Enabled", filterGroups[i].enabled);
+
+        int filterCnt = filterGroups[i].filters.count();
+
+        for(int j = 0; j < filterCnt; j++)
+            filterGroups[i].filters[j]->save(settings);
+
+        settings.endGroup();
+    }
+
+    settings.endGroup();
+}

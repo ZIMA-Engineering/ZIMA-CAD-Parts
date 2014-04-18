@@ -34,6 +34,8 @@
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
 	QWebView(parent)
 {
+    m_downloadModel = new DownloadModel(this, this);
+
 	loadAboutPage();
 
 	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
@@ -53,14 +55,9 @@ void TechSpecsWebView::setDownloadDirectory(QString path)
 	m_dlDir = path;
 }
 
-void TechSpecsWebView::setDownloadQueue(DownloadModel *queue)
-{
-	downloadQueue = queue;
-}
-
 void TechSpecsWebView::stopDownload()
 {
-	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
+    QList<File*> tmp = m_downloadModel->files();
 
 	foreach(File *f, tmp)
 	f->transfer->cancel();
@@ -68,7 +65,7 @@ void TechSpecsWebView::stopDownload()
 
 void TechSpecsWebView::resumeDownload()
 {
-	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
+    QList<File*> tmp = m_downloadModel->files();
 
 	foreach(File *f, tmp)
 	downloadFile(page()->networkAccessManager()->get(QNetworkRequest(f->path)), f);
@@ -77,7 +74,7 @@ void TechSpecsWebView::resumeDownload()
 
 void TechSpecsWebView::clearQueue()
 {
-	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
+    QList<File*> tmp = m_downloadModel->files();
 
 	foreach(File *f, tmp)
 	delete f->transfer;
@@ -200,5 +197,5 @@ void TechSpecsWebView::downloadFile(QNetworkReply *reply, File *f)
 		f->size = reply->rawHeader("Content-Length").toULongLong();
 
 	if(f->transfer->initiate() && isNew)
-		downloadQueue->enqueue(f);
+        m_downloadModel->enqueue(f);
 }

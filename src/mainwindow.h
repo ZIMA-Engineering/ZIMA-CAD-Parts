@@ -39,18 +39,12 @@
 #include "filemodel.h"
 #include "zima-cad-parts.h"
 #include "filefiltermodel.h"
-#include "filefilters/filtergroup.h"
 
 
 namespace Ui
 {
 class MainWindowClass;
 }
-
-class QFtp;
-class FtpDataSource;
-class DownloadModel;
-class ProductView;
 
 class MainWindow : public QMainWindow
 {
@@ -75,8 +69,6 @@ private:
 	Ui::MainWindowClass *ui;
 
     QLabel              *statusDir; // status bar
-    FileModel *fm; // TODO/FIXME: to refactoring
-    FileFilterModel *proxy; // TODO/FIXME: to refactoring
     QTranslator *translator;// app ui
 
     QButtonGroup *langButtonGroup; // toolbar
@@ -106,12 +98,12 @@ private:
 	QDateTime lastPartsIndexModTime;
 	QModelIndex lastFoundIndex;
 
-    ProductView *m_productView;
-
     void setupDeveloperMode(); // WTF?
 
-	void changeEvent(QEvent *event);
+    void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
+
+    void settingsChanged();
 
 public slots:
 	void downloadButton();
@@ -126,7 +118,6 @@ public slots:
 	void errorOccured(const QString &error);
 	void filesDownloaded();
 	void setFiltersDialog();
-	void rebuildFilters();
 	void toggleDownload();
 	void resumeDownload();
 	void stopDownload();
@@ -137,8 +128,6 @@ private slots:
 	void changeLanguage(int lang);
 	void goToUrl();
 	void updateUrlBar(QUrl url);
-	void setPartsIndex(const QModelIndex &index);
-	void partsIndexLoaded(const QModelIndex &index);
 	void viewHidePartsIndex(Item *item = 0);
 	void goToPartsIndexUrl();
 	void updatePartsUrlBar(QUrl url);
@@ -148,13 +137,11 @@ private slots:
 	void adjustThumbColumnWidth(int width);
 	void assignUrlToDirectory(bool overwrite = false);
 	void techSpecsIndexOverwrite(Item *item);
-	void assignPartsIndexUrlToDirectory(bool overwrite = false);
 	void partsIndexOverwrite(Item *item);
 	void loadSettings();
 	QList<BaseDataSource*> loadDataSources();
 	void saveSettings();
 	void loadFilters();
-	void saveFilters();
 	void setWorkingDirectory();
 	void goToWorkingDirectory();
 	void trackHistory(const QModelIndex &index);

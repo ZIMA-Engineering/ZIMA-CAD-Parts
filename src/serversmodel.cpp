@@ -33,6 +33,11 @@ ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
 	m_lastTechSpecRequest = 0;
 	m_datasource = ds;
 
+    m_downloadModel = new DownloadModel(this, this);
+
+    connect(this, SIGNAL(fileProgress(File*)), m_downloadModel, SLOT(fileChanged(File*)));
+    connect(this, SIGNAL(fileDownloaded(File*)), m_downloadModel, SLOT(fileDownloaded(File*)));
+
 	m_rootItem = new Item();
     m_rootItem->children.clear();
 	m_rootItem->name = ds->label;
@@ -259,14 +264,6 @@ Qt::ItemFlags ServersModel::flags(const QModelIndex &index) const
 	return QAbstractItemModel::flags(index);
 }
 
-void ServersModel::setDownloadQueue(DownloadModel *queue)
-{
-	downloadQueue = queue;
-
-	connect(this, SIGNAL(fileProgress(File*)), queue, SLOT(fileChanged(File*)));
-	connect(this, SIGNAL(fileDownloaded(File*)), queue, SLOT(fileDownloaded(File*)));
-}
-
 QString ServersModel::translateDataSourceNameToPath(QString name)
 {
 	if (m_datasource->name() == name)
@@ -413,7 +410,7 @@ void ServersModel::downloadFiles(QString dir)
 		foreach(File *f, tmp)
 		f->transferHandler = DownloadModel::ServersModel;
 
-		downloadQueue->enqueue(tmp);
+        m_downloadModel->enqueue(tmp);
 
 		if( tmp.count() > 0 )
 			i->server->downloadFiles(tmp, dir);
@@ -452,7 +449,7 @@ void ServersModel::clear()
 
 void ServersModel::deleteDownloadQueue()
 {
-	downloadQueue->clear();
+    m_downloadModel->clear();
 
 	foreach(Item *i, m_rootItem->children)
         i->server->deleteDownloadQueue();
@@ -562,14 +559,14 @@ void ServersModel::retranslateMetadata(Item *item)
 
 void ServersModel::dataSourceFinishedDownloading()
 {
-	if( downloadQueue->isEmpty() )
+    if( m_downloadModel->isEmpty() )
 		emit filesDownloaded();
 }
 
 void ServersModel::dataSourceFinishedDeleting()
 {
 	if(++dsDeleted == m_rootItem->children.size())
-		emit filesDeleted(this);
+        emit filesDeleted();
 }
 
 void ServersModel::metadataReady(Item *item)

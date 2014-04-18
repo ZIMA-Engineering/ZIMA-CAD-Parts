@@ -121,7 +121,7 @@ struct File
 	int version;
 	bool newestVersion;
 	DataTransfer *transfer;
-	DownloadModel::TransferHandlerType transferHandler;
+    DownloadModel::TransferHandlerType transferHandler;
 
 private:
 	QPixmap m_icon;

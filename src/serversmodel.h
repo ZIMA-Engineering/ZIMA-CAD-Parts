@@ -54,8 +54,6 @@ public:
 	QModelIndex parent(const QModelIndex &index) const;
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
-	//---
-	void setDownloadQueue(DownloadModel *queue);
 
     BaseDataSource* dataSource() { return m_datasource; }
 
@@ -101,7 +99,7 @@ private:
 	int dsDeleted;
 	QList<TreeAutoDescent*> autoDescents;
 	QHash<TreeAutoDescent*, Item*> metadataIncludeHash;
-	DownloadModel *downloadQueue;
+    DownloadModel *m_downloadModel;
 
 private slots:
 	void dataSourceFinishedDownloading();
@@ -131,7 +129,7 @@ signals:
 	void autoDescentNotFound();
 	void techSpecsIndexAlreadyExists(Item*);
 	void partsIndexAlreadyExists(Item*);
-	void filesDeleted(ServersModel*);
+    void filesDeleted();
 };
 
 #endif // SERVERSMODEL_H

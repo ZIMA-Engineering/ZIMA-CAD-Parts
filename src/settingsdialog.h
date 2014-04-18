@@ -60,7 +60,7 @@ public:
 	    CZECH
 	};
 
-	explicit SettingsDialog(QSettings *settings, QList<BaseDataSource*> datasources, QTranslator **translator, QWidget *parent = 0);
+    explicit SettingsDialog(QList<BaseDataSource*> datasources, QTranslator **translator, QWidget *parent = 0);
 	virtual ~SettingsDialog();
 
 	void setSection(Section s);
@@ -89,7 +89,6 @@ private slots:
 
 private:
 	Ui::SettingsDialog  *m_ui;
-	QSettings *settings;
 	QTranslator **translator;
 	QSignalMapper *zimaUtilSignalMapper;
 	QList<QLineEdit*> zimaUtilLineEdits;

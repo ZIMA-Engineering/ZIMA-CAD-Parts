@@ -16,9 +16,9 @@ ServersWidget::ServersWidget(QWidget *parent)
 {
     setupUi(this);
 
-    m_downloadModel = new DownloadModel(this);
     connect(deleteQueueBtn, SIGNAL(clicked()), m_downloadModel, SLOT(clear()));
-    m_downloadModel->registerHandler(DownloadModel::TechSpec, techSpec);
+
+    m_productView = new ProductView(tabWidget);
 
     serversToolBox->setStyleSheet("icon-size: 16px;");
 	m_signalMapper = new QSignalMapper(this);
@@ -42,6 +42,15 @@ ServersWidget::ServersWidget(QWidget *parent)
 
     connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), fm, SLOT(setThumbWidth(int)));
     connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(adjustThumbColumnWidth(int)));
+
+    connect(ui->serversWidget, SIGNAL(fileDownloaded(File*)),
+            m_productView, SLOT(fileDownloaded(File*)));
+    connect(partsTreeView, SIGNAL(activated(QModelIndex)),
+            this, SLOT(previewInProductView(QModelIndex)));
+    connect(partsTreeView, SIGNAL(clicked(QModelIndex)),
+            this, SLOT(previewInProductView(QModelIndex)));
+    connect(partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(tree_doubleClicked(QModelIndex)));
 }
 
 #if 0
@@ -85,16 +94,13 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
                 this, SIGNAL(partsIndexOverwrite(Item*)));
 		connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
 		        this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
-		connect(model, SIGNAL(itemLoaded(const QModelIndex&)),
-		        this, SIGNAL(itemLoaded(const QModelIndex&)));
+
         connect(model, SIGNAL(errorOccured(QString)),
                 this, SIGNAL(errorOccured(QString)));
         connect(model, SIGNAL(filesDownloaded()),
                 this, SIGNAL(filesDownloaded()));
         connect(model, SIGNAL(fileDownloaded(File*)),
                 this, SIGNAL(fileDownloaded(File*)));
-        connect(model, SIGNAL(filesDeleted(ServersModel*)),
-                this, SIGNAL(filesDeleted(ServersModel*)));
         connect(model, SIGNAL(techSpecAvailable(QUrl)),
                 this, SIGNAL(techSpecAvailable(QUrl)));
         connect(model, SIGNAL(autoDescentProgress(QModelIndex)),
@@ -120,9 +126,9 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 		connect(view, SIGNAL(activated(const QModelIndex&)),
 		        model, SLOT(requestTechSpecs(const QModelIndex&)));
 		connect(view, SIGNAL(clicked(const QModelIndex&)),
-		        this, SIGNAL(clicked(const QModelIndex&)));
+                tabWidget, SLOT(setPartsIndex(const QModelIndex&)));
 		connect(view, SIGNAL(activated(const QModelIndex&)),
-		        this, SIGNAL(activated(const QModelIndex&)));
+                this, SLOT(setPartsIndex(const QModelIndex&)));
 
 		connect(view, SIGNAL(customContextMenuRequested(QPoint)),
 		        this, SLOT(dirTreeContextMenu(QPoint)));
@@ -275,7 +281,8 @@ void ServersWidget::serversToolBox_currentChanged(int i)
 {
 	QTreeView *w = qobject_cast<QTreeView*>(widget(i));
 
-	emit groupChanged(w->rootIndex());
+    //emit groupChanged(w->rootIndex());
+    tabWidet->setPartsIndex(w->rootIndex());
 }
 
 void ServersWidget::loadingItem(Item *i)
@@ -370,13 +377,13 @@ void ServersWidget::adjustThumbColumnWidth(int width)
 
 void ServersWidget::assignPartsIndexUrlToDirectory(bool overwrite)
 {
-    Item *it = fm->getRootItem();
+//    Item *it = fm->getRootItem();
 
-    if (!it)
-        return;
+//    if (!it)
+//        return;
 
-    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-    it->server->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, lang, overwrite);
+//    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+//    it->server->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, lang, overwrite);
 }
 
 void ServersWidget::partsIndexOverwrite(Item *item)
@@ -387,5 +394,107 @@ void ServersWidget::partsIndexOverwrite(Item *item)
                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
         assignPartsIndexUrlToDirectory(true);
+    }
+}
+
+void ServersWidget::previewInProductView(const QModelIndex &index)
+{
+    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
+
+    File *f = fm->getRootItem()->files.at(srcIndex.row());
+
+    if (!m_productView->canHandle(f->type))
+    {
+        m_productView->hide();
+        return;
+    }
+
+    m_productView->expectFile(f);
+
+    // local files are not copied - just open the original
+    // remote datasources are cached in ~/.cache/... or something similar
+    if (f->parentItem->server->dataSource == LOCAL)
+    {
+        f->cachePath = f->path;
+        m_productView->fileDownloaded(f);
+    }
+    else if (f->parentItem->server->dataSource == FTP)
+    {
+        QString pathForItem(f->parentItem->server->getPathForItem(f->parentItem));
+        QDir d;
+        d.mkpath(pathForItem);
+
+        f->cachePath = pathForItem + "/" + f->name;
+        // simulate "real cache" hit. Use local copy of the file (if it exists)
+        if (QFile::exists(f->cachePath))
+        {
+            m_productView->fileDownloaded(f);
+        }
+        else
+        {
+            f->transferHandler = DownloadModel::ServersModel;
+            f->parentItem->server->downloadFiles(QList<File*>() << f, pathForItem);
+        }
+    }
+    else
+    {
+        Q_ASSERT_X(0, "business logic error", "Unhandled dataSource type");
+    }
+
+    m_productView->show();
+    // keep focus on the main window - keyboard handling
+    activateWindow();
+}
+
+#warning TODO/FIXME: rename tree_doubleClicked regarding GUI vs signal
+void ServersWidget::tree_doubleClicked(const QModelIndex &index)
+{
+    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
+
+    File *f = fm->getRootItem()->files.at(srcIndex.row());
+
+    switch (f->type)
+    {
+    case File::PRT_PROE:
+    case File::ASM:
+    case File::DRW:
+    case File::FRM:
+    case File::NEU_PROE:
+    {
+        QString exe = settings.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
+        qDebug() << "Starting ProE:" << exe << f->path << "; working dir" << ui->editDir->text();
+        bool ret = QProcess::startDetached(exe, QStringList() << f->path, ui->editDir->text());
+        if (!ret)
+            QMessageBox::information(this, tr("ProE Startup Error"),
+                                     tr("An error occured while ProE has been requested to start"),
+                                     QMessageBox::Ok);
+        break;
+    }
+    default:
+        QDesktopServices::openUrl(QUrl::fromLocalFile(f->path));
+    }
+}
+
+void ServersWidget::setWorkingDirectory()
+{
+    QSettings settings;
+    Item *it = static_cast<Item*>(ui->serversWidget->currentIndex().internalPointer());
+
+    settings.setValue("HomeDir", it->pathWithDataSource());
+    settings.setValue("WorkingDir", it->path);
+
+    ui->techSpec->setDownloadDirectory(it->path);
+
+    ui->editDir->setText(it->path);
+}
+
+void ServersWidget::setFiltersDialog()
+{
+    FiltersDialog *dlg = new FiltersDialog(this);
+
+    if(dlg->exec() == QDialog::Accepted)
+    {
+        Utils::saveFilters();
+        rebuildFilters();
     }
 }

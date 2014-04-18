@@ -26,6 +26,7 @@
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QVBoxLayout>
+#include <QTreeWidgetItem>
 
 #include "mainwindow.h"
 

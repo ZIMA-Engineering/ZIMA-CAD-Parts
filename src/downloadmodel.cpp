@@ -49,9 +49,10 @@ void DownloadDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
 		QItemDelegate::paint(painter, option, index);
 }
 
-DownloadModel::DownloadModel(QObject *parent) :
+DownloadModel::DownloadModel(TransferHandler *handler, QObject *parent) :
 	QAbstractItemModel(parent),
-	m_downloading(false)
+    m_downloading(false),
+    m_handler(handler)
 {
 }
 
@@ -133,17 +134,13 @@ QVariant DownloadModel::headerData (int section, Qt::Orientation orientation, in
 	return "unknown data";
 }
 
-QList<File*> DownloadModel::files(DownloadModel::TransferHandlerType type)
+QList<File*> DownloadModel::files()
 {
-	if(type == None)
-		return queue;
-
 	QList<File*> tmp;
 
 	foreach(File *f, queue)
     {
-        if (f->transferHandler == type)
-            tmp << f;
+        tmp << f;
     }
 
 	return tmp;
@@ -157,11 +154,6 @@ bool DownloadModel::isEmpty() const
 bool DownloadModel::isDownloading() const
 {
 	return m_downloading;
-}
-
-void DownloadModel::registerHandler(DownloadModel::TransferHandlerType type, TransferHandler *handler)
-{
-	m_handlers.insert(type, handler);
 }
 
 void DownloadModel::enqueue(File *f)
@@ -199,17 +191,9 @@ void DownloadModel::enqueue(QList<File *> list)
 void DownloadModel::clear()
 {
 	beginRemoveRows(QModelIndex(), 0, queue.count() - 1);
-
 	stop();
-
-    foreach(DownloadModel::TransferHandlerType key, m_handlers.uniqueKeys())
-    {
-        foreach (TransferHandler *h, m_handlers.values(key))
-            h->clearQueue();
-    }
-
+    m_handler->clearQueue();
 	queue.clear();
-
 	endRemoveRows();
 }
 
@@ -240,21 +224,11 @@ void DownloadModel::fileDownloaded(File *file)
 void DownloadModel::stop()
 {
 	m_downloading = false;
-
-    foreach(DownloadModel::TransferHandlerType key, m_handlers.uniqueKeys())
-    {
-        foreach (TransferHandler *h, m_handlers.values(key))
-            h->stopDownload();
-    }
+    m_handler->stopDownload();
 }
 
 void DownloadModel::resume()
 {
 	m_downloading = true;
-
-    foreach(DownloadModel::TransferHandlerType key, m_handlers.uniqueKeys())
-    {
-        foreach (TransferHandler *h, m_handlers.values(key))
-            h->resumeDownload();
-    }
+    m_handler->resumeDownload();
 }
