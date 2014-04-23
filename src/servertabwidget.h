@@ -7,6 +7,7 @@
 
 class FileModel;
 class FileFilterModel;
+class ProductView;
 
 
 namespace Ui {
@@ -33,6 +34,7 @@ private:
     FileModel *m_fileModel;
     FileFilterModel *m_proxyFileModel;
     ServersModel *m_serversModel;
+    ProductView *m_productView;
 
 private slots:
     void techSpecUrlLineEdit_returnPressed();
@@ -43,6 +45,9 @@ private slots:
     void partsIndexPinButton_clicked();
 
     void fileModel_requestColumnResize();
+
+    void previewInProductView(const QModelIndex &index);
+    void tree_doubleClicked(const QModelIndex &index);
 };
 
 #endif // SERVERTABWIDGET_H

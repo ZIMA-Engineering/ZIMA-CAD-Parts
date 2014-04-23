@@ -106,22 +106,16 @@ private:
     void settingsChanged();
 
 public slots:
-	void downloadButton();
 	void setWorkingDirectoryDialog();
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
-	void updateClicked();
-	void deleteSelectedParts();
 	void searchClicked();
 	void updateStatus(const QString &message);
 	void treeExpandedOrCollaped();
 	void loadTechSpec(QUrl url);
 	void errorOccured(const QString &error);
 	void filesDownloaded();
-	void setFiltersDialog();
-	void toggleDownload();
 	void resumeDownload();
 	void stopDownload();
-	void filesDeleted(ServersModel*);
 
 private slots:
 	void openWorkingDirectory();
@@ -134,7 +128,6 @@ private slots:
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();
-	void adjustThumbColumnWidth(int width);
 	void assignUrlToDirectory(bool overwrite = false);
 	void techSpecsIndexOverwrite(Item *item);
 	void partsIndexOverwrite(Item *item);
@@ -147,9 +140,6 @@ private slots:
 	void trackHistory(const QModelIndex &index);
 	void historyBack();
 	void historyForward();
-
-	void previewInProductView(const QModelIndex &index);
-	void tree_doubleClicked(const QModelIndex &index);
 };
 
 class SleeperThread : public QThread

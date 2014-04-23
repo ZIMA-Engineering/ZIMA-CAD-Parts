@@ -8,6 +8,11 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_productView = new ProductView(tabWidget);
+
+    ui->downloadTreeView->setModel(m_serversModel->downloadModel());
+    ui->downloadTreeView->setItemDelegate(new DownloadDelegate(this));
+
     ui->techSpecBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
     ui->techSpecForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
     ui->techSpecReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
@@ -61,6 +66,33 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
             this, SLOT(filesDeleted()));
     connect(m_serversModel, SIGNAL(itemLoaded(const QModelIndex&)),
             this, SLOT(partsIndexLoaded(const QModelIndex&)));
+
+    connect(ui->deleteQueueBtn, SIGNAL(clicked()),
+            m_serversModel->downloadModel(), SLOT(clear()));
+
+    connect(ui->btnDownload, SIGNAL(clicked()),
+            this, SLOT(downloadButton()));
+    connect(ui->btnUpdate, SIGNAL(clicked()),
+            this, SLOT(updateClicked()));
+    connect(ui->btnDelete, SIGNAL(clicked()),
+            this, SLOT(deleteSelectedParts()));
+    connect(ui->startStopDownloadBtn, SIGNAL(clicked()),
+            this, SLOT(toggleDownload()));
+    connect(ui->filtersButton, SIGNAL(clicked()),
+            this, SLOT(setFiltersDialog()));
+    connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
+            m_fileModel, SLOT(setThumbWidth(int)));
+    connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
+            this, SLOT(adjustThumbColumnWidth(int)));
+
+    connect(m_serversModel, SIGNAL(fileDownloaded(File*)),
+            m_productView, SLOT(fileDownloaded(File*)));
+    connect(ui->partsTreeView, SIGNAL(activated(QModelIndex)),
+            this, SLOT(previewInProductView(QModelIndex)));
+    connect(ui->partsTreeView, SIGNAL(clicked(QModelIndex)),
+            this, SLOT(previewInProductView(QModelIndex)));
+    connect(ui->partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(tree_doubleClicked(QModelIndex)));
 
     settingsChanged();
 }
@@ -267,5 +299,160 @@ void ServerTabWidget::partsIndexLoaded(const QModelIndex &index)
     if (it == m_fileModel->getRootItem())
     {
         viewHidePartsIndex(it);
+    }
+}
+
+void ServerTabWidget::downloadButton()
+{
+#warning "TODO/FIXME serversModel"
+//	serversModel->downloadFiles( ui->editDir->text() );
+    m_serversModel->uncheckAll(); //TODO/FIXME: maps
+
+    ui->tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
+
+    ui->downloadTreeView->resizeColumnToContents(0);
+    ui->downloadTreeView->resizeColumnToContents(2);
+}
+
+void ServerTabWidget::updateClicked()
+{
+    Item* i = m_fileModel->getRootItem();
+
+    if (i == 0)
+        return;
+
+    m_fileModel->prepareForUpdate();
+
+    m_serversModel->refresh(i);//TODO/FIXME: maps
+    requestTechSpecs(i);//TODO/FIXME: maps
+}
+
+void ServerTabWidget::deleteSelectedParts()
+{
+    if( QMessageBox::question(this,
+                              tr("Do you really want to delete selected parts?"),
+                              tr("Do you really want to delete selected parts? This action is irreversible."),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+            ==  QMessageBox::Yes)
+    {
+        m_serversModel->deleteFiles(); //TODO/FIXME: maps
+        m_serversModel->uncheckAll(); //TODO/FIXME: maps
+    }
+}
+
+void ServerTabWidget::toggleDownload()
+{
+    if (m_serversModel->downloadModel()->isEmpty())
+        return;
+
+    if (m_serversModel->downloadModel()->isDownloading())
+        stopDownload();
+    else
+        resumeDownload();
+}
+
+void ServerTabWidget::resumeDownload()
+{
+    m_serversModel->downloadModel()->resume();
+    startStopDownloadBtn->setText(tr("Stop"));
+}
+
+void ServerTabWidget::stopDownload()
+{
+    m_serversModel->downloadModel()->stop();
+    startStopDownloadBtn->setText(tr("Resume"));
+}
+
+void ServerTabWidget::setFiltersDialog()
+{
+    FiltersDialog dlg;
+
+    if (dlg.exec())
+    {
+        Utils::saveFilters();
+        Utils::rebuildFilters();
+    }
+}
+
+void ServerTabWidget::adjustThumbColumnWidth(int width)
+{
+    ui->partsTreeView->setColumnWidth(1, width);
+}
+
+void ServerTabWidget::previewInProductView(const QModelIndex &index)
+{
+    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
+
+    File *f = fm->getRootItem()->files.at(srcIndex.row());
+
+    if (!m_productView->canHandle(f->type))
+    {
+        m_productView->hide();
+        return;
+    }
+
+    m_productView->expectFile(f);
+
+    // local files are not copied - just open the original
+    // remote datasources are cached in ~/.cache/... or something similar
+    if (f->parentItem->server->dataSource == LOCAL)
+    {
+        f->cachePath = f->path;
+        m_productView->fileDownloaded(f);
+    }
+    else if (f->parentItem->server->dataSource == FTP)
+    {
+        QString pathForItem(f->parentItem->server->getPathForItem(f->parentItem));
+        QDir d;
+        d.mkpath(pathForItem);
+
+        f->cachePath = pathForItem + "/" + f->name;
+        // simulate "real cache" hit. Use local copy of the file (if it exists)
+        if (QFile::exists(f->cachePath))
+        {
+            m_productView->fileDownloaded(f);
+        }
+        else
+        {
+            f->transferHandler = DownloadModel::ServersModel;
+            f->parentItem->server->downloadFiles(QList<File*>() << f, pathForItem);
+        }
+    }
+    else
+    {
+        Q_ASSERT_X(0, "business logic error", "Unhandled dataSource type");
+    }
+
+    m_productView->show();
+    // keep focus on the main window - keyboard handling
+    activateWindow();
+}
+
+#warning TODO/FIXME: rename tree_doubleClicked regarding GUI vs signal
+void ServerTabWidget::tree_doubleClicked(const QModelIndex &index)
+{
+    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
+
+    File *f = fm->getRootItem()->files.at(srcIndex.row());
+
+    switch (f->type)
+    {
+    case File::PRT_PROE:
+    case File::ASM:
+    case File::DRW:
+    case File::FRM:
+    case File::NEU_PROE:
+    {
+        QString exe = settings.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
+        qDebug() << "Starting ProE:" << exe << f->path << "; working dir" << ui->editDir->text();
+        bool ret = QProcess::startDetached(exe, QStringList() << f->path, ui->editDir->text());
+        if (!ret)
+            QMessageBox::information(this, tr("ProE Startup Error"),
+                                     tr("An error occured while ProE has been requested to start"),
+                                     QMessageBox::Ok);
+        break;
+    }
+    default:
+        QDesktopServices::openUrl(QUrl::fromLocalFile(f->path));
     }
 }

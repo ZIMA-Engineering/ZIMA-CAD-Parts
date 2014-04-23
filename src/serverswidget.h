@@ -8,9 +8,26 @@
 #include "ui_serverswidget.h"
 #include "serversmodel.h"
 #include "settingsdialog.h"
+#include "servertabwidget.h"
 
 class QSignalMapper;
-class ProductView;
+
+
+class ServersWidgetMap
+{
+public:
+    ~ServersWidgetMap()
+    {
+        view->deleteLater();
+        model->deleteLater();
+        tab->deleteLater();
+    }
+
+    int index;
+    ServersModel *model;
+    QTreeView *view;
+    ServerTabWidget *tab;
+};
 
 
 class ServersWidget : public QWidget, public Ui::ServersWidget
@@ -42,7 +59,6 @@ signals:
     void errorOccured(const QString &error);
     void filesDownloaded();
     void fileDownloaded(File*);
-    void filesDeleted(ServersModel*);
 
     void techSpecAvailable(const QUrl&);
     void autoDescentProgress(const QModelIndex&);
@@ -55,11 +71,10 @@ public slots:
     void requestTechSpecs(Item *item);
 
 private:
-    QMap<ServersModel*, QTreeView*> m_modelViews;
+    QList<ServersWidgetMap*> m_map;
 
 	QSignalMapper *m_signalMapper;
 	QStringList m_zimaUtils;
-    ProductView *m_productView;
 
     QList<BaseDataSource*> m_servers; // from settings
 

@@ -130,8 +130,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 //	ui->partsSplitter->setSizes(partsSize);
 
 	connect(ui->serversWidget, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
-	connect(ui->serversWidget, SIGNAL(filesDownloaded()), this, SLOT(filesDownloaded()));
-	connect(ui->serversWidget, SIGNAL(filesDeleted(ServersModel*)), this, SLOT(filesDeleted(ServersModel*)));
 
 
 #warning "TODO/FIXME: server model"
@@ -325,10 +323,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 	switch( event->key() )
 	{
 	case Qt::Key_F5:
-		updateClicked();
+#warning TODO/FIXME: connect it
+//        ui->serversWidget->updateContent();
 		break;
 	case Qt::Key_Escape:
-		stopDownload();
+#warning TODO/FIXME: connect it
+//        ui->serversWidget->stopDownload();
 		updateStatus(tr("Aborted."));
 
 		break;
