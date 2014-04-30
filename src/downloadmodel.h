@@ -24,7 +24,6 @@
 #include <QAbstractItemModel>
 #include <QItemDelegate>
 #include <QList>
-#include <QSettings>
 
 class DataTransfer;
 class TransferHandler;

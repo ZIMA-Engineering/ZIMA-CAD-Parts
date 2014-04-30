@@ -53,8 +53,8 @@ public slots:
 	virtual void downloadFiles(QList<File*> files, QString dir) = 0;
 	virtual void downloadFile(File* file) = 0;
 	virtual void abort() = 0;
-	virtual void loadSettings(QSettings& settings);
-	void saveSettings(QSettings& settings);
+    virtual void loadSettings(QSettings* settings);
+    void saveSettings(QSettings* settings);
 protected:
 	void loadItemLogo(Item *item);
 	void checkAndSendTechSpecUrl(Item *item);

@@ -118,26 +118,26 @@ QString BaseRemoteDataSource::name()
 	return remoteHost;
 }
 
-void BaseRemoteDataSource::loadSettings(QSettings& settings)
+void BaseRemoteDataSource::loadSettings(QSettings* settings)
 {
 	BaseDataSource::loadSettings(settings);
 
-	remoteHost = settings.value("Host", "localhost").toString();
-	remotePort = settings.value("Port", "21").toInt();
-	remoteBaseDir = settings.value("BaseDir", "/").toString();
-	remoteLogin = settings.value("Login", "").toString();
-	remotePassword = settings.value("Password", "").toString();
+    remoteHost = settings->value("Host", "localhost").toString();
+    remotePort = settings->value("Port", "21").toInt();
+    remoteBaseDir = settings->value("BaseDir", "/").toString();
+    remoteLogin = settings->value("Login", "").toString();
+    remotePassword = settings->value("Password", "").toString();
 }
 
-void BaseRemoteDataSource::saveSettings(QSettings& settings)
+void BaseRemoteDataSource::saveSettings(QSettings* settings)
 {
 	BaseDataSource::saveSettings(settings);
 
-	settings.setValue("Host", remoteHost);
-	settings.setValue("Port", remotePort);
-	settings.setValue("BaseDir", remoteBaseDir);
-	settings.setValue("Login", remoteLogin);
-	settings.setValue("Password", remotePassword);
+    settings->setValue("Host", remoteHost);
+    settings->setValue("Port", remotePort);
+    settings->setValue("BaseDir", remoteBaseDir);
+    settings->setValue("Login", remoteLogin);
+    settings->setValue("Password", remotePassword);
 }
 
 QString BaseRemoteDataSource::cacheDirPath()

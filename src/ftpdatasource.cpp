@@ -759,18 +759,18 @@ void FtpDataSource::abort()
 	techSpecListId = -1;
 }
 
-void FtpDataSource::loadSettings(QSettings &settings)
+void FtpDataSource::loadSettings(QSettings *settings)
 {
 	BaseRemoteDataSource::loadSettings(settings);
 
-	ftpPassiveMode = settings.value("PassiveMode", true).toBool();
+    ftpPassiveMode = settings->value("PassiveMode", true).toBool();
 }
 
-void FtpDataSource::saveSettings(QSettings &settings)
+void FtpDataSource::saveSettings(QSettings *settings)
 {
 	BaseRemoteDataSource::saveSettings(settings);
 
-	settings.setValue("PassiveMode", ftpPassiveMode);
+    settings->setValue("PassiveMode", ftpPassiveMode);
 }
 
 void FtpDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)

@@ -43,9 +43,7 @@
 #include "zimautils.h"
 #include "errordialog.h"
 #include "utils.h"
-#include "filefilters/extensionfilter.h"
-#include "filefilters/versionfilter.h"
-#include "extensions/productview/productview.h"
+#include "settings.h"
 
 
 QString MainWindow::currentMetadataLang;
@@ -56,7 +54,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  translator(translator),
 	  historyCurrentIndex(-1),
 	  historySize(0),
-	  techSpecToolBar(0),
 	  lastPartsIndexItem(0)
 {
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
@@ -223,16 +220,17 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    QSettings settings;
-    settings.setValue("state", saveState());
-    settings.setValue("geometry", saveGeometry());
-    settings.setValue("WorkingDir", ui->editDir->text());
+    Settings::get()->MainWindowState = saveState();
+    Settings::get()->MainWindowGeometry = saveGeometry();
+    Settings::get()->WorkingDir = ui->editDir->text();
 
 #warning TODO/FIXME: save servers
     //Utils::saveDataSources(servers);
 
 #warning "TODO/FIXME: saveQueue"
 	//serversModel->saveQueue(settings);
+
+    Settings::get()->save();
 
 	QMainWindow::closeEvent(e);
 }
@@ -242,9 +240,8 @@ void MainWindow::setWorkingDirectoryDialog()
 	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set working directory"), ui->editDir->text());
 	if (!str.isEmpty())
 	{
-        QSettings settings;
-        settings.setValue("HomeDir", "");
-        settings.setValue("WorkingDir", str);
+        Settings::get()->HomeDir = "";
+        Settings::get()->WorkingDir = str;
 
 #warning TODO/FIXME: set download dir for serverswidget and servertabwidget
 //		ui->techSpec->setDownloadDirectory(str);
@@ -259,17 +256,14 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 
     if (sd.exec())
 	{
-        sd.saveSettings();
-        QSettings s;
-        s.setValue("WorkingDir", ui->editDir->text());
+        Settings::get()->WorkingDir = ui->editDir->text();
         settingsChanged();
     }
 }
 
 void MainWindow::settingsChanged()
 {
-    QSettings s;
-    ui->editDir->setText(s.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
+    ui->editDir->setText(Settings::get()->WorkingDir);
 
     const QMetaObject *mo;
     foreach (QWidget *w, findChildren<QWidget*>())
@@ -456,7 +450,7 @@ void MainWindow::autoDescendComplete(const QModelIndex &index)
 #warning TODO/FIXME setPartsIndex
     //setPartsIndex(index);
     Item *item = static_cast<Item*>(index.internalPointer());
-    ui->serversWidget->requestTechSpecs(item);
+#warning    ui->serversWidget->requestTechSpecs(item);
 	trackHistory(index);
 }
 
@@ -467,7 +461,7 @@ void MainWindow::autoDescentNotFound()
 #warning TODO/FIXME setPartsIndex
         //setPartsIndex(lastFoundIndex);
         Item *item = static_cast<Item*>(lastFoundIndex.internalPointer());
-        ui->serversWidget->requestTechSpecs(item);
+#warning   ui->serversWidget->requestTechSpecs(item);
 	}
 
 	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(autoDescentPath));
@@ -497,8 +491,7 @@ void MainWindow::techSpecsIndexOverwrite(Item *item)
 
 void MainWindow::goToWorkingDirectory()
 {
-    QSettings settings;
-    autoDescentPath = settings.value("HomeDir").toString();
+    autoDescentPath = Settings::get()->HomeDir;
 
 	if (autoDescentPath.isEmpty())
 		return;
@@ -535,7 +528,7 @@ void MainWindow::historyBack()
 	Item *item = static_cast<Item*>(index.internalPointer());
 
 	ui->serversWidget->setCurrentIndex(index);
-	ui->serversWidget->requestTechSpecs(item);
+#warning	ui->serversWidget->requestTechSpecs(item);
 #warning TODO/FIXME: file model
 //	fm->setRootIndex(index);
 
@@ -549,7 +542,7 @@ void MainWindow::historyForward()
 	Item *item = static_cast<Item*>(index.internalPointer());
 
 	ui->serversWidget->setCurrentIndex(index);
-	ui->serversWidget->requestTechSpecs(item);
+#warning	ui->serversWidget->requestTechSpecs(item);
 #warning TODO/FIXME: file model
 //	fm->setRootIndex(index);
 

@@ -61,8 +61,11 @@ public:
 	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
 	bool hasErrors(BaseDataSource::Operation op);
 	Item *lastTechSpecRequest();
+    Item *rootItem() { return m_rootItem; }
 	void stopDownload();
 	void clearQueue();
+
+    DownloadModel* downloadModel() { return m_downloadModel; }
 
 public slots:
 	void refresh(Item* item);

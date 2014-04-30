@@ -27,7 +27,6 @@
 #include <QList>
 #include <QVariant>
 #include <QDateTime>
-#include <QSettings>
 
 #include "basedatasource.h"
 #include "metadata.h"

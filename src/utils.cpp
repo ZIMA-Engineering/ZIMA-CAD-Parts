@@ -1,4 +1,9 @@
 #include "utils.h"
+#include "ftpdatasource.h"
+#include "localdatasource.h"
+#include "filefilters/extensionfilter.h"
+#include "filefilters/versionfilter.h"
+
 
 QList<FilterGroup> Utils::filterGroups;
 
@@ -18,11 +23,11 @@ QList<BaseDataSource*> Utils::loadDataSources()
         if( dataSourceType == "ftp" )
         {
             FtpDataSource *s = new FtpDataSource();
-            s->loadSettings(*settings);
+            s->loadSettings(&settings);
             servers.append(s);
         } else if ( dataSourceType == "local" ) {
             LocalDataSource *s = new LocalDataSource();
-            s->loadSettings(*settings);
+            s->loadSettings(&settings);
             servers.append(s);
         }
 
@@ -37,6 +42,7 @@ QList<BaseDataSource*> Utils::loadDataSources()
 void Utils::saveDataSources(const QList<BaseDataSource*> &data)
 {
     int i = 0;
+    QSettings settings;
 
     settings.remove("DataSources");
     settings.beginGroup("DataSources");
@@ -48,13 +54,13 @@ void Utils::saveDataSources(const QList<BaseDataSource*> &data)
         case LOCAL: {
             LocalDataSource *s = static_cast<LocalDataSource*>(bs);
 
-            s->saveSettings(*settings);
+            s->saveSettings(&settings);
             break;
         }
         case FTP: {
             FtpDataSource *s = static_cast<FtpDataSource*>(bs);
 
-            s->saveSettings(*settings);
+            s->saveSettings(&settings);
             break;
         }
         default:
@@ -138,7 +144,7 @@ void Utils::setupFilterGroups()
         int filterCnt = filterGroups[i].filters.count();
 
         for(int j = 0; j < filterCnt; j++)
-            filterGroups[i].filters[j]->load(settings);
+            filterGroups[i].filters[j]->load(&settings);
 
         settings.endGroup();
     }
@@ -161,7 +167,7 @@ void Utils::saveFilters()
         int filterCnt = filterGroups[i].filters.count();
 
         for(int j = 0; j < filterCnt; j++)
-            filterGroups[i].filters[j]->save(settings);
+            filterGroups[i].filters[j]->save(&settings);
 
         settings.endGroup();
     }

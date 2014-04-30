@@ -1,6 +1,5 @@
 #include "zimautils.h"
-
-#include <QSettings>
+#include "settings.h"
 
 
 QString ZimaUtils::internalNameForUtility(int util)
@@ -49,19 +48,5 @@ QString ZimaUtils::labelForUtility(ZimaUtility util)
 
 QStringList ZimaUtils::paths()
 {
-	QStringList ret;
-
-	QSettings s;
-	s.beginGroup("ExternalPrograms");
-
-	for(int i = 0; i < ZimaUtils::ZimaUtilsCount; i++)
-	{
-		s.beginGroup(ZimaUtils::internalNameForUtility(i));
-		ret << s.value("Executable").toString();
-		s.endGroup();
-	}
-
-	s.endGroup();
-
-	return ret;
+    return Settings::get()->ExternalPrograms.values();
 }

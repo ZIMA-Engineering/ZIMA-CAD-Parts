@@ -22,7 +22,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QSettings>
 #include <QModelIndex>
 #include <QLabel>
 #include <QUrl>
@@ -58,14 +57,6 @@ public:
 	static QString getCurrentMetadataLanguageCode();
 
 private:
-	enum Tabs {
-	    TECH_SPECS,
-	    PARTS,
-	    DOWNLOADS,
-//		PRODUCT_VIEW,
-	    TABS_COUNT
-	};
-
 	Ui::MainWindowClass *ui;
 
     QLabel              *statusDir; // status bar
@@ -79,18 +70,6 @@ private:
 	QList<QModelIndex> history;
 	int historyCurrentIndex;
 	int historySize;
-
-	// Tech spec toolbar
-	QToolBar *techSpecToolBar;
-	QAction *techSpecBackAction;
-	QAction *techSpecForwardAction;
-	QLineEdit *urlBar;
-
-	// Parts index toolbar
-	QToolBar *partsIndexToolBar;
-	QAction *partsIndexBackAction;
-	QAction *partsIndexForwardAction;
-	QLineEdit *partsIndexUrlBar;
 
 	QString autoDescentPath;
 	Item *lastPartsIndexItem;
@@ -111,7 +90,6 @@ public slots:
 	void searchClicked();
 	void updateStatus(const QString &message);
 	void treeExpandedOrCollaped();
-	void loadTechSpec(QUrl url);
 	void errorOccured(const QString &error);
 	void filesDownloaded();
 	void resumeDownload();
@@ -130,12 +108,10 @@ private slots:
 	void autoDescentNotFound();
 	void assignUrlToDirectory(bool overwrite = false);
 	void techSpecsIndexOverwrite(Item *item);
-	void partsIndexOverwrite(Item *item);
 	void loadSettings();
 	QList<BaseDataSource*> loadDataSources();
 	void saveSettings();
 	void loadFilters();
-	void setWorkingDirectory();
 	void goToWorkingDirectory();
 	void trackHistory(const QModelIndex &index);
 	void historyBack();

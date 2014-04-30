@@ -22,7 +22,7 @@ ServersWidget::ServersWidget(QWidget *parent)
     m_servers = Utils::loadDataSources();
 
 	connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(spawnZimaUtilityOnDir(int)));
-    connect(serversToolBox, SIGNAL(currentChanged(int)), this, SLOT(serversToolBox_currentChanged(int)));
+    connect(serversToolBox, SIGNAL(currentChanged(int)), stackedWidget, SLOT(setCurrentIndex(int)));
 }
 
 void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
@@ -50,15 +50,10 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 
         mapItem->model = model;
 
-        connect(model, SIGNAL(techSpecAvailable(QUrl)),
-                this, SLOT(loadTechSpec(QUrl)));
-
 		connect(model, SIGNAL(loadingItem(Item*)),
 		        this, SLOT(loadingItem(Item*)));
 		connect(model, SIGNAL(allItemsLoaded()),
 		        this, SLOT(allItemsLoaded()));
-		connect(model, SIGNAL(partsIndexAlreadyExists(Item*)),
-                this, SIGNAL(partsIndexOverwrite(Item*)));
 		connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
 		        this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
 
@@ -97,9 +92,9 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 		connect(view, SIGNAL(activated(const QModelIndex&)),
 		        model, SLOT(requestTechSpecs(const QModelIndex&)));
 		connect(view, SIGNAL(clicked(const QModelIndex&)),
-                tabWidget, SLOT(setPartsIndex(const QModelIndex&)));
+                stackedWidget, SLOT(setPartsIndex(const QModelIndex&)));
 		connect(view, SIGNAL(activated(const QModelIndex&)),
-                this, SLOT(setPartsIndex(const QModelIndex&)));
+                stackedWidget, SLOT(setPartsIndex(const QModelIndex&)));
 
 		connect(view, SIGNAL(customContextMenuRequested(QPoint)),
 		        this, SLOT(dirTreeContextMenu(QPoint)));
@@ -109,9 +104,9 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 
 void ServersWidget::retranslateMetadata()
 {
-    foreach (ServersModel *i, m_modelViews.keys())
+    foreach (ServersWidgetMap *i, m_map)
     {
-        i->retranslateMetadata();
+        i->model->retranslateMetadata();
     }
 }
 
@@ -129,15 +124,12 @@ void ServersWidget::dirTreeContextMenu(QPoint point)
 
 	QMenu *menu = new QMenu(this);
 
-	menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
-	menu->addSeparator();
-
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), "Clean with ZIMA-PTC-Cleaner", m_signalMapper, SLOT(map())), ZimaUtils::ZimaPtcCleaner);
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), "Sync with ZIMA-CAD-Sync", m_signalMapper, SLOT(map())), ZimaUtils::ZimaCadSync);
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), "Convert postscript to PDF with ZIMA-PS2PDF", m_signalMapper, SLOT(map())), ZimaUtils::ZimaPs2Pdf);
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-STEP-Edit.png"), "Edit step files with ZIMA-STEP-Edit", m_signalMapper, SLOT(map())), ZimaUtils::ZimaStepEdit);
 
-	menu->exec(currentWidget()->mapToGlobal(point));
+    menu->exec(serversToolBox->currentWidget()->mapToGlobal(point));
 	menu->deleteLater();
 }
 
@@ -173,55 +165,12 @@ void ServersWidget::spawnZimaUtilityOnDir(int i)
 
 void ServersWidget::expand(const QModelIndex & index)
 {
-	qobject_cast<QTreeView*>(currentWidget())->expand(index);
+    qobject_cast<QTreeView*>(serversToolBox->currentWidget())->expand(index);
 }
 
 QModelIndex ServersWidget::currentIndex()
 {
-	return qobject_cast<QTreeView*>(currentWidget())->currentIndex();
-}
-
-void ServersWidget::setCurrentIndex(const QModelIndex &index)
-{
-    Item *item = static_cast<Item*>(index.internalPointer());
-
-    // try to find proper model for given item
-    foreach (ServersModel* i, m_modelViews.keys())
-    {
-        //qDebug() << "ds" << i->dataSource() << "it" << item->server << (i->dataSource() == item->server);
-        if (i->dataSource() == item->server)
-        {
-            setCurrentWidget(m_modelViews[i]);
-            m_modelViews[i]->setCurrentIndex(index);
-            return;
-        }
-    }
-
-    qWarning() << "ServersWidget::setCurrentIndex proper ServersModel not found";
-}
-
-void ServersWidget::requestTechSpecs(Item *item)
-{
-    // try to find proper model for given item
-    foreach (ServersModel* i, m_modelViews.keys())
-    {
-        //qDebug() << "ds" << i->dataSource() << "it" << item->server << (i->dataSource() == item->server);
-        if (i->dataSource() == item->server)
-        {
-            i->requestTechSpecs(item);
-            return;
-        }
-    }
-
-    qWarning() << "ServersWidget::requestTechSpecs proper ServersModel not found";
-}
-
-void ServersWidget::serversToolBox_currentChanged(int i)
-{
-	QTreeView *w = qobject_cast<QTreeView*>(widget(i));
-
-    //emit groupChanged(w->rootIndex());
-    tabWidet->setPartsIndex(w->rootIndex());
+    return qobject_cast<QTreeView*>(serversToolBox->currentWidget())->currentIndex();
 }
 
 void ServersWidget::loadingItem(Item *i)
@@ -233,53 +182,3 @@ void ServersWidget::allItemsLoaded()
 {
 	emit statusUpdated(tr("All items loaded."));
 }
-
-void ServersWidget::loadTechSpec(QUrl url)
-{
-    // it *must* be ServersModel
-    ServersModel *model = qobject_cast<ServersModel*>(sender());
-    Q_ASSERT(model);
-
-    Item *it = model->lastTechSpecRequest();
-
-    if(it)
-        ui->techSpec->setRootPath(it->server->pathToDataRoot());
-
-    ui->techSpec->load(url);
-}
-
-void ServersWidget::assignPartsIndexUrlToDirectory(bool overwrite)
-{
-//    Item *it = fm->getRootItem();
-
-//    if (!it)
-//        return;
-
-//    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-//    it->server->assignPartsIndexUrlToItem(partsIndexUrlBar->text(), it, lang, overwrite);
-}
-
-void ServersWidget::partsIndexOverwrite(Item *item)
-{
-    if (QMessageBox::warning(this,
-                             tr("Parts index already exists"),
-                             tr("Parts index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
-                             QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
-    {
-        assignPartsIndexUrlToDirectory(true);
-    }
-}
-
-void ServersWidget::setWorkingDirectory()
-{
-    QSettings settings;
-    Item *it = static_cast<Item*>(ui->serversWidget->currentIndex().internalPointer());
-
-    settings.setValue("HomeDir", it->pathWithDataSource());
-    settings.setValue("WorkingDir", it->path);
-
-    ui->techSpec->setDownloadDirectory(it->path);
-
-    ui->editDir->setText(it->path);
-}
-

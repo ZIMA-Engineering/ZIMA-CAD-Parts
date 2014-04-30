@@ -22,8 +22,8 @@
 #define METADATA_H
 
 #include <QObject>
-#include <QSettings>
 #include <QStringList>
+#include <QSettings>
 
 class Item;
 

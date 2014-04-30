@@ -25,6 +25,7 @@ SOURCES += zima-cad-parts.cpp \
     localdatasource.cpp \
     addeditdatasource.cpp \
     downloadmodel.cpp \
+    src/settings.cpp \
     src/extensions/productview/productview.cpp \
     src/filtersdialog.cpp \
     src/metadata.cpp \
@@ -84,6 +85,7 @@ HEADERS += mainwindow.h \
     localdatasource.h \
     addeditdatasource.h \
     downloadmodel.h \
+    src/settings.h \
     src/extensions/productview/productview.h \
     src/filtersdialog.h \
     src/metadata.h \

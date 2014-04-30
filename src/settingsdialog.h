@@ -22,7 +22,6 @@
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
-#include <QSettings>
 #include <QMultiHash>
 #include <QTranslator>
 #include <QSignalMapper>

@@ -68,7 +68,6 @@ signals:
 public slots:
 	void expand(const QModelIndex & index);
 	void setCurrentIndex(const QModelIndex & index);
-    void requestTechSpecs(Item *item);
 
 private:
     QList<ServersWidgetMap*> m_map;

@@ -143,15 +143,15 @@ void BaseDataSource::retranslate(QString lang)
 		currentMetadataLang = lang;
 }
 
-void BaseDataSource::loadSettings(QSettings& settings)
+void BaseDataSource::loadSettings(QSettings* settings)
 {
-	label = settings.value("Label").toString();
+    label = settings->value("Label").toString();
 }
 
-void BaseDataSource::saveSettings(QSettings& settings)
+void BaseDataSource::saveSettings(QSettings* settings)
 {
-	settings.setValue("DataSourceType", internalName());
-	settings.setValue("Label", label);
+    settings->setValue("DataSourceType", internalName());
+    settings->setValue("Label", label);
 }
 
 void BaseDataSource::createMetadata(Item *item)

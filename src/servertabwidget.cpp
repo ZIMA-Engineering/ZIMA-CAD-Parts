@@ -1,5 +1,21 @@
+#include <QDir>
+#include <QWebHistory>
+#include <QtDebug>
+#include <QMessageBox>
+#include <QProcess>
+#include <QDesktopServices>
+
 #include "servertabwidget.h"
 #include "ui_servertabwidget.h"
+#include "filemodel.h"
+#include "filefiltermodel.h"
+#include "mainwindow.h"
+#include "utils.h"
+#include "errordialog.h"
+#include "settings.h"
+#include "filtersdialog.h"
+#include "extensions/productview/productview.h"
+
 
 ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
     QWidget(parent),
@@ -8,7 +24,7 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_productView = new ProductView(tabWidget);
+    m_productView = new ProductView(this);
 
     ui->downloadTreeView->setModel(m_serversModel->downloadModel());
     ui->downloadTreeView->setItemDelegate(new DownloadDelegate(this));
@@ -57,7 +73,7 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 
     m_proxyFileModel = new FileFilterModel(this);
     m_proxyFileModel->setSourceModel(m_fileModel);
-    ui->partsTreeView->setModel(proxy);
+    ui->partsTreeView->setModel(m_proxyFileModel);
 
     connect(m_fileModel, SIGNAL(requestColumnResize()),
             this, SLOT(fileModel_requestColumnResize()));
@@ -66,6 +82,10 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
             this, SLOT(filesDeleted()));
     connect(m_serversModel, SIGNAL(itemLoaded(const QModelIndex&)),
             this, SLOT(partsIndexLoaded(const QModelIndex&)));
+    connect(m_serversModel, SIGNAL(techSpecAvailable(QUrl)),
+            this, SLOT(loadTechSpec(QUrl)));
+    connect(m_serversModel, SIGNAL(partsIndexAlreadyExists(Item*)),
+            this, SIGNAL(partsIndexOverwrite(Item*)));
 
     connect(ui->deleteQueueBtn, SIGNAL(clicked()),
             m_serversModel->downloadModel(), SLOT(clear()));
@@ -93,6 +113,7 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
             this, SLOT(previewInProductView(QModelIndex)));
     connect(ui->partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(tree_doubleClicked(QModelIndex)));
+
 
     settingsChanged();
 }
@@ -131,7 +152,7 @@ void ServerTabWidget::settingsChanged()
     m_fileModel->setThumbWidth( s.value("GUI/ThumbWidth", 32).toInt() );
     m_fileModel->setPreviewWidth( s.value("GUI/PreviewWidth", 256).toInt() );
 
-    ui->thumbnailSizeSlider->setValue(settings.value("GUI/ThumbWidth", 32).toInt());
+    ui->thumbnailSizeSlider->setValue(s.value("GUI/ThumbWidth", 32).toInt());
 }
 
 void ServerTabWidget::techSpecUrlLineEdit_returnPressed()
@@ -153,13 +174,13 @@ void ServerTabWidget::techSpecGoButton_clicked()
 
 void ServerTabWidget::techSpecPinButton_clicked()
 {
-    Item *it = fm->getRootItem();
+    Item *it = m_fileModel->getRootItem();
 
     if (!it)
         return;
 
     QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-    it->server->assignTechSpecUrlToItem(ui->techSpecUrlLineEdit->text(), it, lang, overwrite);
+    it->server->assignTechSpecUrlToItem(ui->techSpecUrlLineEdit->text(), it, lang, true);
 }
 
 void ServerTabWidget::partsIndexUrlLineEdit_returnPressed()
@@ -179,13 +200,13 @@ void ServerTabWidget::partsIndexGoButton_clicked()
 
 void ServerTabWidget::partsIndexPinButton_clicked()
 {
-    Item *it = fm->getRootItem();
+    Item *it = m_fileModel->getRootItem();
 
     if (!it)
         return;
 
     QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-    it->server->assignPartsIndexUrlToItem(ui->partsIndexUrlLineEdit->text(), it, lang, overwrite);
+    it->server->assignPartsIndexUrlToItem(ui->partsIndexUrlLineEdit->text(), it, lang, true);
 }
 
 void ServerTabWidget::techSpec_urlChanged(const QUrl &url)
@@ -218,6 +239,8 @@ void ServerTabWidget::fileModel_requestColumnResize()
 
 void ServerTabWidget::rebuildFilters()
 {
+#warning TODO/FIXME: maybe to Utils
+#if 0
     QStringList expressions;
 
     int cnt = Utils::filterGroups.count();
@@ -239,18 +262,17 @@ void ServerTabWidget::rebuildFilters()
                 break;
 
             case FileFilter::Version:
-                proxy->setShowProeVersions(filterGroups[i].filters[j]->enabled);
+                m_proxyFileModel->setShowProeVersions(filterGroups[i].filters[j]->enabled);
                 break;
             }
-
-
         }
     }
 
     expressions.removeDuplicates();
 
     QRegExp rx( "^" + expressions.join("|") + "$" );
-    proxy->setFilterRegExp(rx);
+    m_proxyFileModel->setFilterRegExp(rx);
+#endif
 }
 
 void ServerTabWidget::filesDeleted()
@@ -261,7 +283,7 @@ void ServerTabWidget::filesDeleted()
         dlg.setError(tr("Unable to delete files:"));
 
         QString str = "<html><body><dl>";
-        foreach(BaseDataSource::Error *e, serversModel->fileErrors(BaseDataSource::Delete))
+        foreach(BaseDataSource::Error *e, m_serversModel->fileErrors(BaseDataSource::Delete))
         {
             str += "<dt>" + e->file->path + ":</dt>";
             str += "<dd>" + e->error + "</dd>";
@@ -298,17 +320,17 @@ void ServerTabWidget::partsIndexLoaded(const QModelIndex &index)
 
     if (it == m_fileModel->getRootItem())
     {
-        viewHidePartsIndex(it);
+#warning TODO/FIXME: refacoring
+        //viewHidePartsIndex(it);
     }
 }
 
 void ServerTabWidget::downloadButton()
 {
-#warning "TODO/FIXME serversModel"
-//	serversModel->downloadFiles( ui->editDir->text() );
+    m_serversModel->downloadFiles(Settings::get()->WorkingDir);
     m_serversModel->uncheckAll(); //TODO/FIXME: maps
 
-    ui->tabWidget->setCurrentIndex(MainWindow::DOWNLOADS);
+    ui->tabWidget->setCurrentIndex(DOWNLOADS);
 
     ui->downloadTreeView->resizeColumnToContents(0);
     ui->downloadTreeView->resizeColumnToContents(2);
@@ -324,7 +346,7 @@ void ServerTabWidget::updateClicked()
     m_fileModel->prepareForUpdate();
 
     m_serversModel->refresh(i);//TODO/FIXME: maps
-    requestTechSpecs(i);//TODO/FIXME: maps
+    m_serversModel->requestTechSpecs(i);//TODO/FIXME: maps
 }
 
 void ServerTabWidget::deleteSelectedParts()
@@ -354,13 +376,13 @@ void ServerTabWidget::toggleDownload()
 void ServerTabWidget::resumeDownload()
 {
     m_serversModel->downloadModel()->resume();
-    startStopDownloadBtn->setText(tr("Stop"));
+    ui->startStopDownloadBtn->setText(tr("Stop"));
 }
 
 void ServerTabWidget::stopDownload()
 {
     m_serversModel->downloadModel()->stop();
-    startStopDownloadBtn->setText(tr("Resume"));
+    ui->startStopDownloadBtn->setText(tr("Resume"));
 }
 
 void ServerTabWidget::setFiltersDialog()
@@ -370,7 +392,7 @@ void ServerTabWidget::setFiltersDialog()
     if (dlg.exec())
     {
         Utils::saveFilters();
-        Utils::rebuildFilters();
+#warning        Utils::rebuildFilters();
     }
 }
 
@@ -381,9 +403,9 @@ void ServerTabWidget::adjustThumbColumnWidth(int width)
 
 void ServerTabWidget::previewInProductView(const QModelIndex &index)
 {
-    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
+    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->partsTreeView->model())->mapToSource(index);
 
-    File *f = fm->getRootItem()->files.at(srcIndex.row());
+    File *f = m_fileModel->getRootItem()->files.at(srcIndex.row());
 
     if (!m_productView->canHandle(f->type))
     {
@@ -431,9 +453,9 @@ void ServerTabWidget::previewInProductView(const QModelIndex &index)
 #warning TODO/FIXME: rename tree_doubleClicked regarding GUI vs signal
 void ServerTabWidget::tree_doubleClicked(const QModelIndex &index)
 {
-    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(partsTreeView->model())->mapToSource(index);
+    QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->partsTreeView->model())->mapToSource(index);
 
-    File *f = fm->getRootItem()->files.at(srcIndex.row());
+    File *f = m_fileModel->getRootItem()->files.at(srcIndex.row());
 
     switch (f->type)
     {
@@ -443,9 +465,10 @@ void ServerTabWidget::tree_doubleClicked(const QModelIndex &index)
     case File::FRM:
     case File::NEU_PROE:
     {
+        QSettings settings;
         QString exe = settings.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
-        qDebug() << "Starting ProE:" << exe << f->path << "; working dir" << ui->editDir->text();
-        bool ret = QProcess::startDetached(exe, QStringList() << f->path, ui->editDir->text());
+        qDebug() << "Starting ProE:" << exe << f->path << "; working dir" << Settings::get()->WorkingDir;
+        bool ret = QProcess::startDetached(exe, QStringList() << f->path, Settings::get()->WorkingDir);
         if (!ret)
             QMessageBox::information(this, tr("ProE Startup Error"),
                                      tr("An error occured while ProE has been requested to start"),
@@ -456,3 +479,37 @@ void ServerTabWidget::tree_doubleClicked(const QModelIndex &index)
         QDesktopServices::openUrl(QUrl::fromLocalFile(f->path));
     }
 }
+
+void ServerTabWidget::loadTechSpec(const QUrl &url)
+{
+    Item *it = m_serversModel->lastTechSpecRequest();
+
+    if(it)
+        ui->techSpec->setRootPath(it->server->pathToDataRoot());
+
+    ui->techSpec->load(url);
+}
+
+void ServerTabWidget::partsIndexOverwrite(Item *item)
+{
+    if (QMessageBox::warning(this,
+                             tr("Parts index already exists"),
+                             tr("Parts index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
+                             QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
+    {
+        return;
+    }
+
+    Item *it = m_fileModel->getRootItem();
+
+    if (!it)
+        return;
+
+    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+    m_serversModel->dataSource()->assignPartsIndexUrlToItem(ui->partsIndexUrlLineEdit->text(), it, lang, true);
+}
+
+//void ServerTabWidget::setCurrentIndex(int i)
+//{
+//    setPartsIndex(m_serversModel->rootItem());
+//}
