@@ -70,7 +70,6 @@ SOURCES += zima-cad-parts.cpp \
     src/extensions/productview/pdfproductview.cpp \
     src/extensions/productview/failbackproductview.cpp \
     src/serverswidget.cpp \
-    src/utils.cpp \
     src/servertabwidget.cpp
 
 
@@ -113,7 +112,6 @@ HEADERS += mainwindow.h \
     src/extensions/productview/pdfproductview.h \
     src/extensions/productview/failbackproductview.h \
     src/serverswidget.h \
-    src/utils.h \
     src/servertabwidget.h
 
 

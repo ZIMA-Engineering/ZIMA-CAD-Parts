@@ -36,7 +36,7 @@ class ServersWidget : public QWidget, public Ui::ServersWidget
 public:
 	explicit ServersWidget(QWidget *parent = 0);
 	//void setModel(ServersModel *model);
-	void setDataSources(QList<BaseDataSource*> datasources);
+
     void retranslateMetadata();
 
     void refresh(Item* item);
@@ -67,7 +67,7 @@ signals:
 
 public slots:
 	void expand(const QModelIndex & index);
-	void setCurrentIndex(const QModelIndex & index);
+    void settingsChanged();
 
 private:
     QList<ServersWidgetMap*> m_map;
@@ -75,13 +75,9 @@ private:
 	QSignalMapper *m_signalMapper;
 	QStringList m_zimaUtils;
 
-    QList<BaseDataSource*> m_servers; // from settings
-
 private slots:
 	void dirTreeContextMenu(QPoint point);
 	void spawnZimaUtilityOnDir(int i);
-	// handle current widget change
-    void serversToolBox_currentChanged(int i);
 
 	void loadingItem(Item *i);
 	void allItemsLoaded();

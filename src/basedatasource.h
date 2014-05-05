@@ -46,6 +46,8 @@ enum DataSources {
 	UNDEFINED
 };
 
+
+
 class BaseDataSource : public QObject
 {
 	Q_OBJECT
@@ -123,5 +125,8 @@ signals:
 	void fileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
 	void filesDeleted();
 };
+
+
+typedef QList<BaseDataSource*> DataSourceList;
 
 #endif // BASEDATASOURCE_H

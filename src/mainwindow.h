@@ -89,29 +89,18 @@ public slots:
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
 	void searchClicked();
 	void updateStatus(const QString &message);
-	void treeExpandedOrCollaped();
 	void errorOccured(const QString &error);
 	void filesDownloaded();
-	void resumeDownload();
-	void stopDownload();
 
 private slots:
 	void openWorkingDirectory();
 	void changeLanguage(int lang);
-	void goToUrl();
-	void updateUrlBar(QUrl url);
 	void viewHidePartsIndex(Item *item = 0);
-	void goToPartsIndexUrl();
-	void updatePartsUrlBar(QUrl url);
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();
 	void assignUrlToDirectory(bool overwrite = false);
 	void techSpecsIndexOverwrite(Item *item);
-	void loadSettings();
-	QList<BaseDataSource*> loadDataSources();
-	void saveSettings();
-	void loadFilters();
 	void goToWorkingDirectory();
 	void trackHistory(const QModelIndex &index);
 	void historyBack();

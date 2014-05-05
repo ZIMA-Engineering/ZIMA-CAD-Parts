@@ -10,7 +10,6 @@
 #include "filemodel.h"
 #include "filefiltermodel.h"
 #include "mainwindow.h"
-#include "utils.h"
 #include "errordialog.h"
 #include "settings.h"
 #include "filtersdialog.h"
@@ -138,21 +137,18 @@ void ServerTabWidget::changeEvent(QEvent *e)
 
 void ServerTabWidget::settingsChanged()
 {
-    QSettings s;
-    bool developer = s.value("Developer/Enabled", false).toBool();
-    bool techSpecToolBarEnabled = developer && s.value("Developer/TechSpecToolBar", true).toBool();
-
-    ui->techSpecDeveloperWidget->setVisible(techSpecToolBarEnabled);
-    ui->partsIndexDeveloperWidget->setVisible(developer);
+    ui->techSpecDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled
+                                            && Settings::get()->DeveloperTechSpecToolBar);
+    ui->partsIndexDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled);
 
     ui->techSpec->loadAboutPage();
-    ui->techSpec->setDownloadDirectory(s.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString());
+    ui->techSpec->setDownloadDirectory(Settings::get()->WorkingDir);
 
     m_fileModel->setRootIndex(QModelIndex());
-    m_fileModel->setThumbWidth( s.value("GUI/ThumbWidth", 32).toInt() );
-    m_fileModel->setPreviewWidth( s.value("GUI/PreviewWidth", 256).toInt() );
+    m_fileModel->setThumbWidth(Settings::get()->GUIThumbWidth);
+    m_fileModel->setPreviewWidth(Settings::get()->GUIPreviewWidth);
 
-    ui->thumbnailSizeSlider->setValue(s.value("GUI/ThumbWidth", 32).toInt());
+    ui->thumbnailSizeSlider->setValue(Settings::get()->GUIThumbWidth);
 }
 
 void ServerTabWidget::techSpecUrlLineEdit_returnPressed()
@@ -239,30 +235,28 @@ void ServerTabWidget::fileModel_requestColumnResize()
 
 void ServerTabWidget::rebuildFilters()
 {
-#warning TODO/FIXME: maybe to Utils
-#if 0
     QStringList expressions;
 
-    int cnt = Utils::filterGroups.count();
+    int cnt = Settings::get()->FilterGroups.count();
 
     for(int i = 0; i < cnt; i++)
     {
-        if(!filterGroups[i].enabled)
+        if (!Settings::get()->FilterGroups[i].enabled)
             continue;
 
-        int filterCnt = filterGroups[i].filters.count();
+        int filterCnt = Settings::get()->FilterGroups[i].filters.count();
 
         for(int j = 0; j < filterCnt; j++)
         {
-            switch(filterGroups[i].filters[j]->filterType())
+            switch(Settings::get()->FilterGroups[i].filters[j]->filterType())
             {
             case FileFilter::Extension:
-                if(filterGroups[i].filters[j]->enabled)
-                    expressions << File::getRxForFileType(filterGroups[i].filters[j]->type);
+                if(Settings::get()->FilterGroups[i].filters[j]->enabled)
+                    expressions << File::getRxForFileType(Settings::get()->FilterGroups[i].filters[j]->type);
                 break;
 
             case FileFilter::Version:
-                m_proxyFileModel->setShowProeVersions(filterGroups[i].filters[j]->enabled);
+                m_proxyFileModel->setShowProeVersions(Settings::get()->FilterGroups[i].filters[j]->enabled);
                 break;
             }
         }
@@ -272,7 +266,6 @@ void ServerTabWidget::rebuildFilters()
 
     QRegExp rx( "^" + expressions.join("|") + "$" );
     m_proxyFileModel->setFilterRegExp(rx);
-#endif
 }
 
 void ServerTabWidget::filesDeleted()
@@ -391,8 +384,7 @@ void ServerTabWidget::setFiltersDialog()
 
     if (dlg.exec())
     {
-        Utils::saveFilters();
-#warning        Utils::rebuildFilters();
+        rebuildFilters();
     }
 }
 
@@ -465,8 +457,7 @@ void ServerTabWidget::tree_doubleClicked(const QModelIndex &index)
     case File::FRM:
     case File::NEU_PROE:
     {
-        QSettings settings;
-        QString exe = settings.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
+        QString exe = Settings::get()->ProeExecutable;
         qDebug() << "Starting ProE:" << exe << f->path << "; working dir" << Settings::get()->WorkingDir;
         bool ret = QProcess::startDetached(exe, QStringList() << f->path, Settings::get()->WorkingDir);
         if (!ret)

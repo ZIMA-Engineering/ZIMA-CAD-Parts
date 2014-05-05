@@ -42,7 +42,6 @@
 #include "item.h"
 #include "zimautils.h"
 #include "errordialog.h"
-#include "utils.h"
 #include "settings.h"
 
 
@@ -58,9 +57,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 {
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
-    QSettings settings;
-    bool useSplash = settings.value("GUI/Splash/Enabled", true).toBool();
-	QSplashScreen *splash;
+    bool useSplash = Settings::get()->GUISplashEnabled;
+    QSplashScreen *splash = 0;
 
 	if( useSplash )
 	{
@@ -90,8 +88,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	statusBar()->addWidget(statusDir, 100);
 
-    restoreState(settings.value("state", QByteArray()).toByteArray());
-    restoreGeometry(settings.value("geometry", QByteArray()).toByteArray());
+    restoreState(Settings::get()->MainWindowState);
+    restoreGeometry(Settings::get()->MainWindowGeometry);
 
 	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(showSettings()));
 	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectoryDialog()));
@@ -116,10 +114,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	        this, SLOT(techSpecsIndexOverwrite(Item*)));
 
 
-
-    Utils::setupFilterGroups();
-#warning TODO/FIXME: rebuild filters
-//	rebuildFilters();
 
 #warning TODO/FIXME: refactoring
 //	QList<int> partsSize;
@@ -198,8 +192,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	if( useSplash )
 	{
-        SleeperThread::msleep( settings.value("GUI/Splash/Duration", 1500).toInt() );
-
+        SleeperThread::msleep(Settings::get()->GUISplashDuration);
 		splash->finish(this);
 	}
 }
@@ -223,9 +216,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
     Settings::get()->MainWindowState = saveState();
     Settings::get()->MainWindowGeometry = saveGeometry();
     Settings::get()->WorkingDir = ui->editDir->text();
-
-#warning TODO/FIXME: save servers
-    //Utils::saveDataSources(servers);
 
 #warning "TODO/FIXME: saveQueue"
 	//serversModel->saveQueue(settings);
@@ -251,7 +241,7 @@ void MainWindow::setWorkingDirectoryDialog()
 
 void MainWindow::showSettings(SettingsDialog::Section section)
 {
-    SettingsDialog sd(Utils::loadDataSources(), &translator, this);
+    SettingsDialog sd(&translator, this);
     sd.setSection(section);
 
     if (sd.exec())
@@ -297,8 +287,6 @@ void MainWindow::settingsChanged()
 
 		ui->actionHistoryBack->setEnabled(false);
 		ui->actionHistoryForward->setEnabled(false);
-
-		// allItemsLoaded(); 	statusDir->setText(tr("All items loaded."));
 }
 
 void MainWindow::searchClicked()
@@ -527,7 +515,7 @@ void MainWindow::historyBack()
 	const QModelIndex index = history[--historyCurrentIndex];
 	Item *item = static_cast<Item*>(index.internalPointer());
 
-	ui->serversWidget->setCurrentIndex(index);
+#warning	ui->serversWidget->setCurrentIndex(index);
 #warning	ui->serversWidget->requestTechSpecs(item);
 #warning TODO/FIXME: file model
 //	fm->setRootIndex(index);
@@ -541,7 +529,7 @@ void MainWindow::historyForward()
 	const QModelIndex index = history[++historyCurrentIndex];
 	Item *item = static_cast<Item*>(index.internalPointer());
 
-	ui->serversWidget->setCurrentIndex(index);
+#warning	ui->serversWidget->setCurrentIndex(index);
 #warning	ui->serversWidget->requestTechSpecs(item);
 #warning TODO/FIXME: file model
 //	fm->setRootIndex(index);
@@ -552,8 +540,7 @@ void MainWindow::historyForward()
 
 QString MainWindow::getCurrentLanguageCode()
 {
-    QSettings settings;
-    QString lang = settings.value("Language").toString();
+    QString lang = Settings::get()->Language;
 	return (lang.isEmpty() || lang == "detect") ? QLocale::system().name() : lang;
 }
 

@@ -1,4 +1,5 @@
 #include "proeproductview.h"
+#include "../../settings.h"
 #include "../../zima-cad-parts.h"
 
 #include <QTextStream>
@@ -42,11 +43,10 @@ bool ProEProductView::handle(File *f)
 	QTextStream stream(&pv);
 	QString html = stream.readAll();
 
-	QSettings settings;
 	html.replace("%VERSION%", VERSION);
 	html.replace("%FILE_NAME%", f->name);
 	html.replace("%FILE_PATH%", f->cachePath);
-	html.replace("%PRODUCTVIEW_PATH%", settings.value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
+    html.replace("%PRODUCTVIEW_PATH%", Settings::get()->ExtensionsProductViewPath);
 
 	QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->name + ".html");
 

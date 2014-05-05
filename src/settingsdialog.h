@@ -59,19 +59,17 @@ public:
 	    CZECH
 	};
 
-    explicit SettingsDialog(QList<BaseDataSource*> datasources, QTranslator **translator, QWidget *parent = 0);
+    explicit SettingsDialog(QTranslator **translator, QWidget *parent = 0);
 	virtual ~SettingsDialog();
 
 	void setSection(Section s);
-	void loadSettings(QSettings*);
-	void saveSettings();
 
-	QList<BaseDataSource*> getDatasources();
 	static QString langIndexToName(int lang);
 	static int langIndex(QString lang);
 
 protected:
 	virtual void changeEvent(QEvent *e);
+    virtual void accept();
 
 private slots:
 	void addDataSource();
@@ -80,8 +78,6 @@ private slots:
 	void datasourceUpButton_clicked();
 	void datasourceDownButton_clicked();
 	void pruneCache(QString path = QString());
-//	void changingText();
-//	void changingPassive();
 	void setZimaUtilPath(int util);
 	void proeButton_clicked();
 	void productViewButton_clicked();
@@ -92,7 +88,7 @@ private:
 	QSignalMapper *zimaUtilSignalMapper;
 	QList<QLineEdit*> zimaUtilLineEdits;
 
-	void setupDatasourceList(QList<BaseDataSource*> datasources);
+    void setupDatasourceList();
 };
 
 #endif // SETTINGSDIALOG_H

@@ -1,6 +1,6 @@
 #include "serverswidget.h"
 #include "zimautils.h"
-#include "utils.h"
+#include "settings.h"
 
 #include <QSignalMapper>
 #include <QTreeView>
@@ -19,14 +19,15 @@ ServersWidget::ServersWidget(QWidget *parent)
     serversToolBox->setStyleSheet("icon-size: 16px;");
 	m_signalMapper = new QSignalMapper(this);
 
-    m_servers = Utils::loadDataSources();
+    settingsChanged();
 
 	connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(spawnZimaUtilityOnDir(int)));
     connect(serversToolBox, SIGNAL(currentChanged(int)), stackedWidget, SLOT(setCurrentIndex(int)));
 }
 
-void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
+void ServersWidget::settingsChanged()
 {
+    // Datasources
 	// firstly delete all stuff used. Remember "the reset"
     foreach (ServersWidgetMap* i, m_map)
     {
@@ -39,7 +40,7 @@ void ServersWidget::setDataSources(QList<BaseDataSource*> datasources)
 
 	// now setup all item==group again
     int ix = 0;
-	foreach(BaseDataSource *ds, datasources)
+    foreach(BaseDataSource *ds, Settings::get()->DataSources)
 	{
         ServersWidgetMap *mapItem = new ServersWidgetMap();
         mapItem->index = ix;

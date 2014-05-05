@@ -19,7 +19,7 @@
 */
 
 #include "productview.h"
-
+#include "../../settings.h"
 
 #include "ui_productview.h"
 #include "proeproductview.h"
@@ -75,9 +75,8 @@ void ProductView::hideEvent(QHideEvent * e)
 
 void ProductView::showEvent(QShowEvent *e)
 {
-	QSettings s;
-	restoreGeometry(s.value("Extensions/ProductView/geometry").toByteArray());
-	QPoint pt = s.value("Extensions/ProductView/position").toPoint();
+    restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
+    QPoint pt = Settings::get()->ExtensionsProductViewPosition;
 	if (!pt.isNull())
 		move(pt);
 
@@ -86,9 +85,8 @@ void ProductView::showEvent(QShowEvent *e)
 
 void ProductView::saveSettings()
 {
-	QSettings s;
-	s.setValue("Extensions/ProductView/geometry", saveGeometry());
-	s.setValue("Extensions/ProductView/position", pos());
+    Settings::get()->ExtensionsProductViewGeometry = saveGeometry();
+    Settings::get()->ExtensionsProductViewPosition = pos();
 }
 
 

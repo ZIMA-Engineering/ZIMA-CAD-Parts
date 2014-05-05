@@ -2,6 +2,8 @@
 #define SETTINGS_H
 
 #include <QHash>
+#include "basedatasource.h"
+#include "filefilters/filtergroup.h"
 
 
 class Settings
@@ -20,6 +22,22 @@ public:
     QByteArray MainWindowState;
     QByteArray MainWindowGeometry;
 
+    int GUIThumbWidth;
+    int GUIPreviewWidth;
+    bool GUISplashEnabled;
+    int GUISplashDuration;
+    bool DeveloperEnabled;
+    bool DeveloperTechSpecToolBar;
+
+    QString ExtensionsProductViewPath;
+    QByteArray ExtensionsProductViewGeometry;
+    QPoint ExtensionsProductViewPosition;
+
+    QString ProeExecutable;
+
+    DataSourceList DataSources;
+    QList<FilterGroup> FilterGroups;
+
 private:
     // Singleton handling
     static Settings *m_instance;
@@ -29,6 +47,10 @@ private:
     ~Settings();
 
     void load();
+    void loadDataSources();
+    void saveDataSources();
+    void setupFilterGroups();
+    void saveFilters();
 };
 
 #endif // SETTINGS_H
