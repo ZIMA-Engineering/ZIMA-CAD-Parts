@@ -24,7 +24,6 @@
 #include <QDebug>
 #include <QDir>
 #include <QTemporaryFile>
-#include <QSettings>
 
 FtpDataSource::FtpDataSource() :
 	BaseRemoteDataSource()
@@ -582,42 +581,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 
 		if(partPicTasks.isEmpty() && techSpecFiles.isEmpty())
 			ftpListItemInQueue();
-	}/* else if (partTasks.contains(id)) //finished downloading a .db file
-	{
-		dbFilesQueued--;
-		if (!error)
-		{
-			//create a temporary file to load data from the .db file from server
-			QTemporaryFile tf;
-			tf.open();
-			tf.write(ftp->readAll());
-			tf.seek(0);
-			QSettings settings(tf.fileName(), QSettings::IniFormat);
-			tf.close();
-
-			Item *p = partTasks[id];
-			partTasks.remove(id);
-
-			p->setNotEmpty();
-//			loadFile(p, settings);
-
-			emit statusUpdated("Got " + p->name);
-			qDebug() << "Got " << p->name;
-			emit partDownloaded(p);
-		}
-
-		if (ftpListId == -1 && dbFilesQueued <= 0)
-		{
-			qDebug() << "All done";
-			//emit allPartsDownloaded();
-		}
-
-	} */else if (fileTasks.contains(id)) //actual file downloaded
-	{
-
-		//else
-		//	downloadFile(filesToDownload.first());
-	}
+    }
 }
 
 void FtpDataSource::checkLoadedItem()
@@ -757,20 +721,6 @@ void FtpDataSource::abort()
 
 	ftpListId = -1;
 	techSpecListId = -1;
-}
-
-void FtpDataSource::loadSettings(QSettings *settings)
-{
-	BaseRemoteDataSource::loadSettings(settings);
-
-    ftpPassiveMode = settings->value("PassiveMode", true).toBool();
-}
-
-void FtpDataSource::saveSettings(QSettings *settings)
-{
-	BaseRemoteDataSource::saveSettings(settings);
-
-    settings->setValue("PassiveMode", ftpPassiveMode);
 }
 
 void FtpDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)

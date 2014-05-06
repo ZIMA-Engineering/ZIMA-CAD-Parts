@@ -117,17 +117,28 @@ void Settings::loadDataSources()
         settings.beginGroup(str);
 
         QString dataSourceType = settings.value("DataSourceType", "ftp").toString();
+        BaseDataSource *ds = 0;
 
         if( dataSourceType == "ftp" )
         {
-            FtpDataSource *s = new FtpDataSource();
-            s->loadSettings(&settings);
-            DataSources.append(s);
+            FtpDataSource *ftpds = new FtpDataSource();
+            ds = ftpds;
+
+            ftpds->remoteHost = settings.value("Host", "localhost").toString();
+            ftpds->remotePort = settings.value("Port", "21").toInt();
+            ftpds->remoteBaseDir = settings.value("BaseDir", "/").toString();
+            ftpds->remoteLogin = settings.value("Login", "").toString();
+            ftpds->remotePassword = settings.value("Password", "").toString();
+            ftpds->ftpPassiveMode = settings.value("PassiveMode", true).toBool();
+
         } else if ( dataSourceType == "local" ) {
-            LocalDataSource *s = new LocalDataSource();
-            s->loadSettings(&settings);
-            DataSources.append(s);
+            LocalDataSource *locds = new LocalDataSource();
+            ds = locds;
+            locds->localPath = settings.value("Path", "").toString();
         }
+
+        ds->label = settings.value("Label").toString();
+        DataSources.append(ds);
 
         settings.endGroup();
     }
@@ -142,19 +153,28 @@ void Settings::saveDataSources()
 
     settings.remove("DataSources");
     settings.beginGroup("DataSources");
-    foreach(BaseDataSource *bs, DataSources)
+    foreach(BaseDataSource *ds, DataSources)
     {
         settings.beginGroup(QString::number(i++));
-        switch( bs->dataSource )
+
+        settings.setValue("Label", ds->label);
+        settings.setValue("DataSourceType", ds->internalName());
+
+        switch( ds->dataSource )
         {
         case LOCAL: {
-            LocalDataSource *s = static_cast<LocalDataSource*>(bs);
-            s->saveSettings(&settings);
+            LocalDataSource *locds = static_cast<LocalDataSource*>(ds);
+            settings.setValue("Path", locds->localPath);
             break;
         }
         case FTP: {
-            FtpDataSource *s = static_cast<FtpDataSource*>(bs);
-            s->saveSettings(&settings);
+            FtpDataSource *ftpds = static_cast<FtpDataSource*>(ds);
+            settings.setValue("Host", ftpds->remoteHost);
+            settings.setValue("Port", ftpds->remotePort);
+            settings.setValue("BaseDir", ftpds->remoteBaseDir);
+            settings.setValue("Login", ftpds->remoteLogin);
+            settings.setValue("Password", ftpds->remotePassword);
+            settings.setValue("PassiveMode", ftpds->ftpPassiveMode);
             break;
         }
         default:

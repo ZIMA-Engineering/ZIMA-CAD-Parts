@@ -308,20 +308,6 @@ void LocalDataSource::abort()
 	copier->terminate();
 }
 
-void LocalDataSource::loadSettings(QSettings* settings)
-{
-	BaseDataSource::loadSettings(settings);
-
-    localPath = settings->value("Path", "").toString();
-}
-
-void LocalDataSource::saveSettings(QSettings* settings)
-{
-	BaseDataSource::saveSettings(settings);
-
-    settings->setValue("Path", localPath);
-}
-
 void LocalDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
 {
 	QByteArray htmlIndex = QString("<html>\n"
