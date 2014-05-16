@@ -87,15 +87,16 @@ void ServersWidget::settingsChanged()
 
 		view->setModel(model);
 		view->setContextMenuPolicy(Qt::CustomContextMenu);
+//        model->requestTechSpecs(model->rootItem());
 
 		connect(view, SIGNAL(clicked(const QModelIndex&)),
 		        model, SLOT(requestTechSpecs(const QModelIndex&)));
 		connect(view, SIGNAL(activated(const QModelIndex&)),
 		        model, SLOT(requestTechSpecs(const QModelIndex&)));
 		connect(view, SIGNAL(clicked(const QModelIndex&)),
-                stackedWidget, SLOT(setPartsIndex(const QModelIndex&)));
+                tab, SLOT(setPartsIndex(const QModelIndex&)));
 		connect(view, SIGNAL(activated(const QModelIndex&)),
-                stackedWidget, SLOT(setPartsIndex(const QModelIndex&)));
+                tab, SLOT(setPartsIndex(const QModelIndex&)));
 
 		connect(view, SIGNAL(customContextMenuRequested(QPoint)),
 		        this, SLOT(dirTreeContextMenu(QPoint)));

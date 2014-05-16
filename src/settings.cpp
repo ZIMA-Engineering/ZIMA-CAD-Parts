@@ -126,7 +126,7 @@ void Settings::loadDataSources()
 
             ftpds->remoteHost = settings.value("Host", "localhost").toString();
             ftpds->remotePort = settings.value("Port", "21").toInt();
-            ftpds->remoteBaseDir = settings.value("BaseDir", "/").toString();
+            //ftpds->remoteBaseDir = settings.value("BaseDir", "/").toString();
             ftpds->remoteLogin = settings.value("Login", "").toString();
             ftpds->remotePassword = settings.value("Password", "").toString();
             ftpds->ftpPassiveMode = settings.value("PassiveMode", true).toBool();
@@ -171,7 +171,7 @@ void Settings::saveDataSources()
             FtpDataSource *ftpds = static_cast<FtpDataSource*>(ds);
             settings.setValue("Host", ftpds->remoteHost);
             settings.setValue("Port", ftpds->remotePort);
-            settings.setValue("BaseDir", ftpds->remoteBaseDir);
+            //settings.setValue("BaseDir", ftpds->remoteBaseDir);
             settings.setValue("Login", ftpds->remoteLogin);
             settings.setValue("Password", ftpds->remotePassword);
             settings.setValue("PassiveMode", ftpds->ftpPassiveMode);

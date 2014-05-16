@@ -84,7 +84,7 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
     connect(m_serversModel, SIGNAL(techSpecAvailable(QUrl)),
             this, SLOT(loadTechSpec(QUrl)));
     connect(m_serversModel, SIGNAL(partsIndexAlreadyExists(Item*)),
-            this, SIGNAL(partsIndexOverwrite(Item*)));
+            this, SLOT(partsIndexOverwrite(Item*)));
 
     connect(ui->deleteQueueBtn, SIGNAL(clicked()),
             m_serversModel->downloadModel(), SLOT(clear()));
@@ -296,6 +296,7 @@ void ServerTabWidget::filesDeleted()
 
 void ServerTabWidget::setPartsIndex(const QModelIndex &index)
 {
+    qDebug() << "Set parts index init:" << index.isValid();
     if (!index.isValid())
         return;
     qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
@@ -306,6 +307,7 @@ void ServerTabWidget::setPartsIndex(const QModelIndex &index)
 
 void ServerTabWidget::partsIndexLoaded(const QModelIndex &index)
 {
+    qDebug() << "ServerTabWidget::partsIndexLoaded" << index.isValid();
     if (!index.isValid())
         return;
 

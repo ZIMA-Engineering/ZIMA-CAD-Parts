@@ -24,6 +24,7 @@ public:
 
 public slots:
     void settingsChanged();
+    void setPartsIndex(const QModelIndex &index);
 
 protected:
     void changeEvent(QEvent *event);
@@ -45,7 +46,6 @@ private:
     ProductView *m_productView;
 
     void rebuildFilters();
-    void setPartsIndex(const QModelIndex &index);
 
 private slots:
     void techSpecUrlLineEdit_returnPressed();

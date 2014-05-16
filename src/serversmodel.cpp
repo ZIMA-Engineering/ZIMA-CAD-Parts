@@ -326,6 +326,7 @@ void ServersModel::refresh(Item* item)
 
 void ServersModel::requestTechSpecs(const QModelIndex &index)
 {
+    qDebug() << "RTS" << 1 << index.isValid();
 	if(!index.isValid())
 		return;
 
@@ -334,6 +335,7 @@ void ServersModel::requestTechSpecs(const QModelIndex &index)
 
 void ServersModel::requestTechSpecs(Item *item)
 {
+    qDebug() << "RTS" << 2 << item;
 	item->server->sendTechSpecUrl(item);
 
 	m_lastTechSpecRequest = item;
