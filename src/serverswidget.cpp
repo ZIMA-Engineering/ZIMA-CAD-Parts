@@ -100,7 +100,6 @@ void ServersWidget::settingsChanged()
 
 		connect(view, SIGNAL(customContextMenuRequested(QPoint)),
 		        this, SLOT(dirTreeContextMenu(QPoint)));
-
 	}
 }
 

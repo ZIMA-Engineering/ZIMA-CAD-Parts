@@ -69,6 +69,7 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
             this, SLOT(partsWebView_urlChanged(QUrl)));
 
     m_fileModel = new FileModel(this);
+    m_fileModel->setRootIndex(m_serversModel->rootItem());
 
     m_proxyFileModel = new FileFilterModel(this);
     m_proxyFileModel->setSourceModel(m_fileModel);
@@ -112,7 +113,6 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
             this, SLOT(previewInProductView(QModelIndex)));
     connect(ui->partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(tree_doubleClicked(QModelIndex)));
-
 
     settingsChanged();
 }

@@ -81,7 +81,7 @@ ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
 	ds->loadRootItem(m_rootItem);
     loadItem(m_rootItem);
 
-	reset();
+    //reset();
 }
 
 ServersModel::~ServersModel()
@@ -356,20 +356,6 @@ void ServersModel::loadItem(Item* item)
 		//qDebug() << "Item" << item->name << "has not yet loaded children - go on";
 	}
 
-//	if( item->children.size() > 0 || item->files.size() > 0 )
-//	{
-//		item->server->sendTechSpecUrl(item);
-//		allPartsDownloaded(item);
-//		return;
-//	}
-
-	// FIXME: may be missing when commented... we'll see
-//	item->server->ftpData->changeSettings(item->server->address,
-//				item->server->port,
-//				item->server->passiveMode,
-//				item->server->login,
-//				item->server->password,
-//				item->server->baseDir);
     Q_ASSERT(item);
     Q_ASSERT(item->server);
 	item->server->loadDirectory(item);
