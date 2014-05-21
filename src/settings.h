@@ -38,6 +38,10 @@ public:
     DataSourceList DataSources;
     QList<FilterGroup> FilterGroups;
 
+    QRegExp filtersRegex;
+    bool ShowProeVersions;
+    void recalculateFilters();
+
 private:
     // Singleton handling
     static Settings *m_instance;

@@ -80,7 +80,7 @@
      <x>0</x>
      <y>0</y>
      <width>735</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -107,6 +107,7 @@
    <addaction name="actionHistoryBack"/>
    <addaction name="actionHistoryForward"/>
    <addaction name="separator"/>
+   <addaction name="actionFilters"/>
   </widget>
   <action name="actionSettings">
    <property name="icon">
@@ -134,6 +135,11 @@
   <action name="actionHistoryForward">
    <property name="text">
     <string>historyForward</string>
+   </property>
+  </action>
+  <action name="actionFilters">
+   <property name="text">
+    <string>Filters</string>
    </property>
   </action>
  </widget>

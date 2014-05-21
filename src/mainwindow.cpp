@@ -52,8 +52,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
 	  historyCurrentIndex(-1),
-	  historySize(0),
-	  lastPartsIndexItem(0)
+      historySize(0)
 {
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
@@ -83,6 +82,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->actionHistoryForward, SIGNAL(triggered()), this, SLOT(historyForward()));
 
 	connect(ui->actionHome, SIGNAL(triggered()), this, SLOT(goToWorkingDirectory()));
+
+    connect(ui->actionFilters, SIGNAL(triggered()),
+            this, SLOT(setFiltersDialog()));
 
 	statusDir = new QLabel(tr("Ready"), this);
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -254,6 +256,7 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 void MainWindow::settingsChanged()
 {
     ui->editDir->setText(Settings::get()->WorkingDir);
+    Settings::get()->recalculateFilters();
 
     const QMetaObject *mo;
     foreach (QWidget *w, findChildren<QWidget*>())
@@ -359,67 +362,7 @@ void MainWindow::changeLanguage(int lang)
 
     ui->serversWidget->retranslateMetadata();
 
-	viewHidePartsIndex();
-}
-
-
-void MainWindow::viewHidePartsIndex(Item *item)
-{
-#warning TODO/FIXME: refacoring
-#if 0
-	if(!item && !lastPartsIndexItem)
-		return;
-	else if(!item)
-		item = lastPartsIndexItem;
-
-	QStringList filters;
-	filters << "index-parts_??.html" << "index-parts_??.htm" << "index-parts.html" << "index-parts.htm";
-
-	QDir dir(item->server->getTechSpecPathForItem(item));
-	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
-
-	if(indexes.isEmpty())
-	{
-		ui->partsWebView->setHtml("");
-		ui->partsWebView->hide();
-		lastPartsIndex = QUrl();
-		lastPartsIndexItem = 0;
-		return;
-	}
-
-	QString selectedIndex = indexes.first();
-	indexes.removeFirst();
-
-	foreach(QString index, indexes)
-	{
-		QString prefix = index.section('.', 0, 0);
-
-		if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == getCurrentMetadataLanguageCode().left(2))
-			selectedIndex = index;
-	}
-
-	QUrl partsIndex = QUrl::fromLocalFile(dir.path() + "/" + selectedIndex);
-	QDateTime modTime = QFileInfo(dir.path() + "/" + selectedIndex).lastModified();
-
-	if(partsIndex == lastPartsIndex)
-	{
-		if(modTime > lastPartsIndexModTime)
-			lastPartsIndexModTime = modTime;
-		else if(ui->partsWebView->isHidden()) {
-			ui->partsWebView->show();
-			return;
-		}
-	} else {
-		lastPartsIndex = partsIndex;
-		lastPartsIndexModTime = modTime;
-		lastPartsIndexItem = item;
-	}
-
-	if(ui->partsWebView->isHidden())
-		ui->partsWebView->show();
-
-	ui->partsWebView->load(partsIndex);
-#endif
+#warning TODO/FIXME	viewHidePartsIndex();
 }
 
 void MainWindow::autoDescentProgress(const QModelIndex &index)
@@ -549,4 +492,14 @@ QString MainWindow::getCurrentMetadataLanguageCode()
 	if(currentMetadataLang.isEmpty())
 		return getCurrentLanguageCode();
 	return currentMetadataLang;
+}
+
+void MainWindow::setFiltersDialog()
+{
+    FiltersDialog dlg;
+
+    if (dlg.exec())
+    {
+        settingsChanged();
+    }
 }

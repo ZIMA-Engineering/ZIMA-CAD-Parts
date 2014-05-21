@@ -19,7 +19,9 @@
 ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ServerTabWidget),
-    m_serversModel(serversModel)
+    m_serversModel(serversModel),
+    lastPartsIndexItem(0)
+
 {
     ui->setupUi(this);
 
@@ -70,6 +72,7 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 
     m_fileModel = new FileModel(this);
     m_fileModel->setRootIndex(m_serversModel->rootItem());
+    viewHidePartsIndex(m_serversModel->rootItem());
 
     m_proxyFileModel = new FileFilterModel(this);
     m_proxyFileModel->setSourceModel(m_fileModel);
@@ -98,8 +101,6 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
             this, SLOT(deleteSelectedParts()));
     connect(ui->startStopDownloadBtn, SIGNAL(clicked()),
             this, SLOT(toggleDownload()));
-    connect(ui->filtersButton, SIGNAL(clicked()),
-            this, SLOT(setFiltersDialog()));
     connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
             m_fileModel, SLOT(setThumbWidth(int)));
     connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
@@ -112,7 +113,7 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
     connect(ui->partsTreeView, SIGNAL(clicked(QModelIndex)),
             this, SLOT(previewInProductView(QModelIndex)));
     connect(ui->partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
-            this, SLOT(tree_doubleClicked(QModelIndex)));
+            this, SLOT(partsTreeView_doubleClicked(QModelIndex)));
 
     settingsChanged();
 }
@@ -147,6 +148,9 @@ void ServerTabWidget::settingsChanged()
     m_fileModel->setRootIndex(QModelIndex());
     m_fileModel->setThumbWidth(Settings::get()->GUIThumbWidth);
     m_fileModel->setPreviewWidth(Settings::get()->GUIPreviewWidth);
+
+    m_proxyFileModel->setFilterRegExp(Settings::get()->filtersRegex);
+    m_proxyFileModel->setShowProeVersions(Settings::get()->ShowProeVersions);
 
     ui->thumbnailSizeSlider->setValue(Settings::get()->GUIThumbWidth);
 }
@@ -233,41 +237,6 @@ void ServerTabWidget::fileModel_requestColumnResize()
         ui->partsTreeView->resizeColumnToContents(i);
 }
 
-void ServerTabWidget::rebuildFilters()
-{
-    QStringList expressions;
-
-    int cnt = Settings::get()->FilterGroups.count();
-
-    for(int i = 0; i < cnt; i++)
-    {
-        if (!Settings::get()->FilterGroups[i].enabled)
-            continue;
-
-        int filterCnt = Settings::get()->FilterGroups[i].filters.count();
-
-        for(int j = 0; j < filterCnt; j++)
-        {
-            switch(Settings::get()->FilterGroups[i].filters[j]->filterType())
-            {
-            case FileFilter::Extension:
-                if(Settings::get()->FilterGroups[i].filters[j]->enabled)
-                    expressions << File::getRxForFileType(Settings::get()->FilterGroups[i].filters[j]->type);
-                break;
-
-            case FileFilter::Version:
-                m_proxyFileModel->setShowProeVersions(Settings::get()->FilterGroups[i].filters[j]->enabled);
-                break;
-            }
-        }
-    }
-
-    expressions.removeDuplicates();
-
-    QRegExp rx( "^" + expressions.join("|") + "$" );
-    m_proxyFileModel->setFilterRegExp(rx);
-}
-
 void ServerTabWidget::filesDeleted()
 {
     if (m_serversModel->hasErrors(BaseDataSource::Delete))
@@ -315,9 +284,64 @@ void ServerTabWidget::partsIndexLoaded(const QModelIndex &index)
 
     if (it == m_fileModel->getRootItem())
     {
-#warning TODO/FIXME: refacoring
-        //viewHidePartsIndex(it);
+        viewHidePartsIndex(it);
     }
+}
+
+void ServerTabWidget::viewHidePartsIndex(Item *item)
+{
+    if(!item && !lastPartsIndexItem)
+        return;
+    else if(!item)
+        item = lastPartsIndexItem;
+
+    QStringList filters;
+    filters << "index-parts_??.html" << "index-parts_??.htm" << "index-parts.html" << "index-parts.htm";
+
+    QDir dir(item->server->getTechSpecPathForItem(item));
+    QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
+
+    if(indexes.isEmpty())
+    {
+        ui->partsWebView->setHtml("");
+        ui->partsWebView->hide();
+        lastPartsIndex = QUrl();
+        lastPartsIndexItem = 0;
+        return;
+    }
+
+    QString selectedIndex = indexes.first();
+    indexes.removeFirst();
+
+    foreach(QString index, indexes)
+    {
+        QString prefix = index.section('.', 0, 0);
+
+        if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == MainWindow::getCurrentMetadataLanguageCode().left(2))
+            selectedIndex = index;
+    }
+
+    QUrl partsIndex = QUrl::fromLocalFile(dir.path() + "/" + selectedIndex);
+    QDateTime modTime = QFileInfo(dir.path() + "/" + selectedIndex).lastModified();
+
+    if(partsIndex == lastPartsIndex)
+    {
+        if(modTime > lastPartsIndexModTime)
+            lastPartsIndexModTime = modTime;
+        else if(ui->partsWebView->isHidden()) {
+            ui->partsWebView->show();
+            return;
+        }
+    } else {
+        lastPartsIndex = partsIndex;
+        lastPartsIndexModTime = modTime;
+        lastPartsIndexItem = item;
+    }
+
+    if(ui->partsWebView->isHidden())
+        ui->partsWebView->show();
+
+    ui->partsWebView->load(partsIndex);
 }
 
 void ServerTabWidget::downloadButton()
@@ -380,16 +404,6 @@ void ServerTabWidget::stopDownload()
     ui->startStopDownloadBtn->setText(tr("Resume"));
 }
 
-void ServerTabWidget::setFiltersDialog()
-{
-    FiltersDialog dlg;
-
-    if (dlg.exec())
-    {
-        rebuildFilters();
-    }
-}
-
 void ServerTabWidget::adjustThumbColumnWidth(int width)
 {
     ui->partsTreeView->setColumnWidth(1, width);
@@ -444,8 +458,7 @@ void ServerTabWidget::previewInProductView(const QModelIndex &index)
     activateWindow();
 }
 
-#warning TODO/FIXME: rename tree_doubleClicked regarding GUI vs signal
-void ServerTabWidget::tree_doubleClicked(const QModelIndex &index)
+void ServerTabWidget::partsTreeView_doubleClicked(const QModelIndex &index)
 {
     QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->partsTreeView->model())->mapToSource(index);
 
@@ -501,8 +514,3 @@ void ServerTabWidget::partsIndexOverwrite(Item *item)
     QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
     m_serversModel->dataSource()->assignPartsIndexUrlToItem(ui->partsIndexUrlLineEdit->text(), it, lang, true);
 }
-
-//void ServerTabWidget::setCurrentIndex(int i)
-//{
-//    setPartsIndex(m_serversModel->rootItem());
-//}

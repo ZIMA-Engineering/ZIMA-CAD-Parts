@@ -264,6 +264,8 @@ void Settings::setupFilterGroups()
     }
 
     settings.endGroup();
+
+    recalculateFilters();
 }
 
 void Settings::saveFilters()
@@ -287,4 +289,38 @@ void Settings::saveFilters()
     }
 
     settings.endGroup();
+}
+
+void Settings::recalculateFilters()
+{
+    QStringList expressions;
+
+    int cnt = FilterGroups.count();
+
+    for(int i = 0; i < cnt; i++)
+    {
+        if (!FilterGroups[i].enabled)
+            continue;
+
+        int filterCnt = FilterGroups[i].filters.count();
+
+        for(int j = 0; j < filterCnt; j++)
+        {
+            switch(FilterGroups[i].filters[j]->filterType())
+            {
+            case FileFilter::Extension:
+                if(FilterGroups[i].filters[j]->enabled)
+                    expressions << File::getRxForFileType(FilterGroups[i].filters[j]->type);
+                break;
+
+            case FileFilter::Version:
+                ShowProeVersions = FilterGroups[i].filters[j]->enabled;
+                break;
+            }
+        }
+    }
+
+    expressions.removeDuplicates();
+
+    filtersRegex = QRegExp( "^" + expressions.join("|") + "$" );
 }

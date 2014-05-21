@@ -45,7 +45,11 @@ private:
     ServersModel *m_serversModel;
     ProductView *m_productView;
 
-    void rebuildFilters();
+    Item *lastPartsIndexItem;
+    QUrl lastPartsIndex;
+    QDateTime lastPartsIndexModTime;
+
+    void viewHidePartsIndex(Item *item);
 
 private slots:
     void techSpecUrlLineEdit_returnPressed();
@@ -60,7 +64,7 @@ private slots:
     void partsWebView_urlChanged(const QUrl &url);
 
     void previewInProductView(const QModelIndex &index);
-    void tree_doubleClicked(const QModelIndex &index);
+    void partsTreeView_doubleClicked(const QModelIndex &index);
 
     void filesDeleted();
     void downloadButton();
@@ -71,7 +75,6 @@ private slots:
     void toggleDownload();
     void resumeDownload();
     void stopDownload();
-    void setFiltersDialog();
     void adjustThumbColumnWidth(int width);
     void loadTechSpec(const QUrl &url);
     void partsIndexOverwrite(Item *item);

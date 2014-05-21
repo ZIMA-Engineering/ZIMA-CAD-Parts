@@ -72,9 +72,6 @@ private:
 	int historySize;
 
 	QString autoDescentPath;
-	Item *lastPartsIndexItem;
-	QUrl lastPartsIndex;
-	QDateTime lastPartsIndexModTime;
 	QModelIndex lastFoundIndex;
 
     void setupDeveloperMode(); // WTF?
@@ -95,7 +92,6 @@ public slots:
 private slots:
 	void openWorkingDirectory();
 	void changeLanguage(int lang);
-	void viewHidePartsIndex(Item *item = 0);
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();
@@ -105,6 +101,8 @@ private slots:
 	void trackHistory(const QModelIndex &index);
 	void historyBack();
 	void historyForward();
+    void setFiltersDialog();
+
 };
 
 class SleeperThread : public QThread
