@@ -52,8 +52,8 @@ class MainWindow : public QMainWindow
 public:
 	MainWindow(QTranslator *translator, QWidget *parent = 0);
 	~MainWindow();
-	void keyPressEvent(QKeyEvent *event);
-	static QString getCurrentLanguageCode();
+
+    static QString getCurrentLanguageCode();
 	static QString getCurrentMetadataLanguageCode();
 
 private:
@@ -95,8 +95,6 @@ private slots:
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();
-	void assignUrlToDirectory(bool overwrite = false);
-	void techSpecsIndexOverwrite(Item *item);
 	void goToWorkingDirectory();
 	void trackHistory(const QModelIndex &index);
 	void historyBack();

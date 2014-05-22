@@ -112,15 +112,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
             this, SLOT(autoDescendComplete(QModelIndex)));
 	connect(ui->serversWidget, SIGNAL(autoDescentNotFound()),
             this, SLOT(autoDescentNotFound()));
-	connect(ui->serversWidget, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
-	        this, SLOT(techSpecsIndexOverwrite(Item*)));
-
-
-
-#warning TODO/FIXME: refactoring
-//	QList<int> partsSize;
-//	partsSize << (int)(ui->tab->height()*0.40) << (int)(ui->tab->height()*0.60);
-//	ui->partsSplitter->setSizes(partsSize);
 
 	connect(ui->serversWidget, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 
@@ -220,7 +211,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
     Settings::get()->WorkingDir = ui->editDir->text();
 
 #warning "TODO/FIXME: saveQueue"
-	//serversModel->saveQueue(settings);
+    //serversModel->saveQueue(settings);
 
     Settings::get()->save();
 
@@ -234,10 +225,9 @@ void MainWindow::setWorkingDirectoryDialog()
 	{
         Settings::get()->HomeDir = "";
         Settings::get()->WorkingDir = str;
-
-#warning TODO/FIXME: set download dir for serverswidget and servertabwidget
-//		ui->techSpec->setDownloadDirectory(str);
 		ui->editDir->setText(str);
+
+        settingsChanged();
 	}
 }
 
@@ -302,30 +292,8 @@ void MainWindow::updateStatus(const QString &message)
 	statusDir->setText(message);
 }
 
-
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-	switch( event->key() )
-	{
-	case Qt::Key_F5:
-#warning TODO/FIXME: connect it
-//        ui->serversWidget->updateContent();
-		break;
-	case Qt::Key_Escape:
-#warning TODO/FIXME: connect it
-//        ui->serversWidget->stopDownload();
-		updateStatus(tr("Aborted."));
-
-		break;
-	}
-}
-
 void MainWindow::errorOccured(const QString &error)
 {
-#warning TODO/FIXME: us it at all?
-    //ui->serversWidget->setEnabled(true);
-    //ui->btnUpdate->setEnabled(true);
-
 	updateStatus(tr("Error: %1").arg(error));
 	QMessageBox::warning(this, tr("FTP error"), error);
 }
@@ -361,8 +329,6 @@ void MainWindow::changeLanguage(int lang)
 	currentMetadataLang = langs[lang];
 
     ui->serversWidget->retranslateMetadata();
-
-#warning TODO/FIXME	viewHidePartsIndex();
 }
 
 void MainWindow::autoDescentProgress(const QModelIndex &index)
@@ -378,10 +344,7 @@ void MainWindow::autoDescentProgress(const QModelIndex &index)
 void MainWindow::autoDescendComplete(const QModelIndex &index)
 {
 	ui->serversWidget->expand(index);
-#warning TODO/FIXME setPartsIndex
-    //setPartsIndex(index);
-    Item *item = static_cast<Item*>(index.internalPointer());
-#warning    ui->serversWidget->requestTechSpecs(item);
+    ui->serversWidget->setModelindex(index);
 	trackHistory(index);
 }
 
@@ -389,35 +352,10 @@ void MainWindow::autoDescentNotFound()
 {
 	if(lastFoundIndex.isValid())
 	{
-#warning TODO/FIXME setPartsIndex
-        //setPartsIndex(lastFoundIndex);
-        Item *item = static_cast<Item*>(lastFoundIndex.internalPointer());
-#warning   ui->serversWidget->requestTechSpecs(item);
+        ui->serversWidget->setModelindex(lastFoundIndex);
 	}
 
 	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(autoDescentPath));
-}
-
-void MainWindow::assignUrlToDirectory(bool overwrite)
-{
-//    Item *it = fm->getRootItem();
-
-//    if (!it)
-//        return;
-
-//    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
-//    it->server->assignTechSpecUrlToItem(urlBar->text(), it, lang, overwrite);
-}
-
-void MainWindow::techSpecsIndexOverwrite(Item *item)
-{
-	if (QMessageBox::warning(this,
-	                         tr("Tech specs index already exists"),
-	                         tr("Index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
-	                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
-	{
-		assignUrlToDirectory(true);
-	}
 }
 
 void MainWindow::goToWorkingDirectory()
@@ -456,13 +394,7 @@ void MainWindow::trackHistory(const QModelIndex &index)
 void MainWindow::historyBack()
 {
 	const QModelIndex index = history[--historyCurrentIndex];
-	Item *item = static_cast<Item*>(index.internalPointer());
-
-#warning	ui->serversWidget->setCurrentIndex(index);
-#warning	ui->serversWidget->requestTechSpecs(item);
-#warning TODO/FIXME: file model
-//	fm->setRootIndex(index);
-
+    ui->serversWidget->setModelindex(index);
 	ui->actionHistoryBack->setEnabled( !(historyCurrentIndex == 0) );
 	ui->actionHistoryForward->setEnabled(true);
 }
@@ -470,13 +402,7 @@ void MainWindow::historyBack()
 void MainWindow::historyForward()
 {
 	const QModelIndex index = history[++historyCurrentIndex];
-	Item *item = static_cast<Item*>(index.internalPointer());
-
-#warning	ui->serversWidget->setCurrentIndex(index);
-#warning	ui->serversWidget->requestTechSpecs(item);
-#warning TODO/FIXME: file model
-//	fm->setRootIndex(index);
-
+    ui->serversWidget->setModelindex(index);
 	ui->actionHistoryForward->setEnabled( !(historyCurrentIndex == historySize-1) );
 	ui->actionHistoryBack->setEnabled(true);
 }

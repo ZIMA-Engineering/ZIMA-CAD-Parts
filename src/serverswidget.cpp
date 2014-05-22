@@ -55,8 +55,6 @@ void ServersWidget::settingsChanged()
 		        this, SLOT(loadingItem(Item*)));
 		connect(model, SIGNAL(allItemsLoaded()),
 		        this, SLOT(allItemsLoaded()));
-		connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
-		        this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
 
         connect(model, SIGNAL(errorOccured(QString)),
                 this, SIGNAL(errorOccured(QString)));
@@ -93,6 +91,12 @@ void ServersWidget::settingsChanged()
 		        model, SLOT(requestTechSpecs(const QModelIndex&)));
 		connect(view, SIGNAL(activated(const QModelIndex&)),
 		        model, SLOT(requestTechSpecs(const QModelIndex&)));
+        // track history
+        connect(view, SIGNAL(clicked(const QModelIndex&)),
+                this, SIGNAL(clicked(QModelIndex)));
+        // track history
+        connect(view, SIGNAL(activated(const QModelIndex&)),
+                this, SIGNAL(activated(const QModelIndex&)));
 		connect(view, SIGNAL(clicked(const QModelIndex&)),
                 tab, SLOT(setPartsIndex(const QModelIndex&)));
 		connect(view, SIGNAL(activated(const QModelIndex&)),
@@ -100,6 +104,9 @@ void ServersWidget::settingsChanged()
 
 		connect(view, SIGNAL(customContextMenuRequested(QPoint)),
 		        this, SLOT(dirTreeContextMenu(QPoint)));
+
+        connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
+                tab, SIGNAL(techSpecsIndexOverwrite(Item*)));
 	}
 }
 
@@ -182,4 +189,22 @@ void ServersWidget::loadingItem(Item *i)
 void ServersWidget::allItemsLoaded()
 {
 	emit statusUpdated(tr("All items loaded."));
+}
+
+void ServersWidget::setModelindex(const QModelIndex &index)
+{
+    Item *item = static_cast<Item*>(index.internalPointer());
+
+    foreach (ServersWidgetMap* i, m_map)
+    {
+        // just find appropriate objects for this item
+        if (i->model->dataSource() != item->server)
+            continue;
+
+        stackedWidget->setCurrentIndex(i->index);
+        i->model->requestTechSpecs(item);
+        i->view->setCurrentIndex(index);
+        i->tab->setPartsIndex(index);
+    }
+
 }

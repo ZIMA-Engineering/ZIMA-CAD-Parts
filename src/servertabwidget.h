@@ -25,6 +25,7 @@ public:
 public slots:
     void settingsChanged();
     void setPartsIndex(const QModelIndex &index);
+    void techSpecsIndexOverwrite(Item *item);
 
 protected:
     void changeEvent(QEvent *event);

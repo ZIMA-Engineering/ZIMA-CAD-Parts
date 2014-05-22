@@ -44,13 +44,13 @@ public:
     void uncheckAll();
 
 	QModelIndex currentIndex();
+    void setModelindex(const QModelIndex &index);
 
 signals:
 	void statusUpdated(const QString &message);
 	void showSettings(SettingsDialog::Section);
 
 	void itemLoaded(const QModelIndex&);
-	void techSpecsIndexAlreadyExists(Item *i);
 	void clicked(const QModelIndex&);
 	void activated(const QModelIndex&);
 	// emit newly selected tree view root item to MainWindow to load toplevel files into part view

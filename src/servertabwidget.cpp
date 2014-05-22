@@ -183,6 +183,17 @@ void ServerTabWidget::techSpecPinButton_clicked()
     it->server->assignTechSpecUrlToItem(ui->techSpecUrlLineEdit->text(), it, lang, true);
 }
 
+void ServerTabWidget::techSpecsIndexOverwrite(Item *item)
+{
+    if (QMessageBox::warning(this,
+                             tr("Tech specs index already exists"),
+                             tr("Index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
+                             QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+    {
+        techSpecPinButton_clicked();
+    }
+}
+
 void ServerTabWidget::partsIndexUrlLineEdit_returnPressed()
 {
     partsIndexGoButton_clicked();
