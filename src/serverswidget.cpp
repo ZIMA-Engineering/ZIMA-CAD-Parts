@@ -85,7 +85,6 @@ void ServersWidget::settingsChanged()
 
 		view->setModel(model);
 		view->setContextMenuPolicy(Qt::CustomContextMenu);
-//        model->requestTechSpecs(model->rootItem());
 
 		connect(view, SIGNAL(clicked(const QModelIndex&)),
 		        model, SLOT(requestTechSpecs(const QModelIndex&)));

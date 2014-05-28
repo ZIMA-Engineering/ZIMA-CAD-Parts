@@ -32,6 +32,8 @@ Metadata::Metadata(Item *item, QObject *parent)
 	  m_loadedIncludes(0),
 	  m_includedData(false)
 {
+    Q_ASSERT(item);
+    Q_ASSERT(m_item->server);
 	metadataFile = m_item->server->getPathForItem(m_item) + "/" + TECHSPEC_DIR + "/" + METADATA_FILE;
 
 	currentAppLang = MainWindow::getCurrentMetadataLanguageCode().left(2);

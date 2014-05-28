@@ -145,6 +145,8 @@ void BaseDataSource::retranslate(QString lang)
 
 void BaseDataSource::createMetadata(Item *item)
 {
+    Q_ASSERT(item);
+
 	item->metadata = new Metadata(item);
 
 	connect(item->metadata, SIGNAL(ready(Item*)), this, SIGNAL(metadataReady(Item*)));
