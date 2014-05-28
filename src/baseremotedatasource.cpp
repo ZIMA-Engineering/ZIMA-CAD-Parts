@@ -19,7 +19,6 @@
 */
 
 #include "baseremotedatasource.h"
-#include "mainwindow.h"
 
 #include <QDir>
 #include <QUrl>

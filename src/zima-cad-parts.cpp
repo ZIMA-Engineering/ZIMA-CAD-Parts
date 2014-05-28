@@ -41,9 +41,9 @@ int main(int argc, char *argv[])
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
 
 	QTranslator translator;
-    QString lang = Settings::get()->Language;
+    QString lang = Settings::get()->getCurrentLanguageCode();
 
-	QString filename = "zima-cad-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
+    QString filename = "zima-cad-parts_" + lang;
 	QStringList paths;
 
 	paths

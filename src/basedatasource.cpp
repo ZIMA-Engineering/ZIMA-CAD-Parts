@@ -22,7 +22,7 @@
 #include <QDir>
 #include <QDebug>
 #include "basedatasource.h"
-#include "mainwindow.h"
+#include "settings.h"
 
 BaseDataSource::BaseDataSource(QObject *parent) :
 	QObject(parent)
@@ -138,7 +138,7 @@ void BaseDataSource::sendTechSpecUrl(Item* item)
 void BaseDataSource::retranslate(QString lang)
 {
 	if(lang.isEmpty())
-		currentMetadataLang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+        currentMetadataLang = Settings::get()->getCurrentLanguageCode().left(2);
 	else
 		currentMetadataLang = lang;
 }

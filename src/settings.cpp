@@ -36,6 +36,7 @@ void Settings::load()
 {
     QSettings s;
 
+    Languages << "en_US" << "cs_CZ" << "de_DE" << "ru_RU";
     Language = s.value("Language", "detect").toString();
 
     // zima utils
@@ -321,4 +322,15 @@ void Settings::recalculateFilters()
     expressions.removeDuplicates();
 
     filtersRegex = QRegExp( "^" + expressions.join("|") + "$" );
+}
+
+QString Settings::getCurrentLanguageCode()
+{
+    QString lang = Settings::get()->Language;
+    return (lang.isEmpty() || lang == "detect") ? QLocale::system().name() : lang;
+}
+
+void Settings::setCurrentLanguageCode(const QString &lang)
+{
+    Language = lang;
 }

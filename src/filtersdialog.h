@@ -28,7 +28,6 @@
 #include <QVBoxLayout>
 #include <QTreeWidgetItem>
 
-#include "mainwindow.h"
 
 namespace Ui {
 class FiltersDialog;

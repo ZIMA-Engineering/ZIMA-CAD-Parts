@@ -45,8 +45,6 @@
 #include "settings.h"
 
 
-QString MainWindow::currentMetadataLang;
-
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
 	  ui(new Ui::MainWindowClass),
@@ -120,19 +118,18 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 		ui->startStopDownloadBtn->setText(tr("Resume"));
 #endif
 
-	langs << "en_US" << "cs_CZ" << "de_DE" << "ru_RU";
+    ui->toolBar->addSeparator();
 
-	int cnt = langs.count();
-	QString currentLang = getCurrentLanguageCode().left(2);
+    QString currentLang = Settings::get()->getCurrentLanguageCode().left(2);
 
 	langButtonGroup = new QButtonGroup(this);
 	langButtonGroup->setExclusive(true);
 
-	for(int i = 0; i < cnt; i++)
+    foreach (QString lang, Settings::get()->Languages)
 	{
-		QString lang = langs[i].left(2);
+        QString langCode = lang.left(2);
 
-		QPushButton *flag = new QPushButton(QIcon(QString(":/gfx/flags/%1.png").arg(lang)), "", this);
+        QPushButton *flag = new QPushButton(QIcon(QString(":/gfx/flags/%1.png").arg(langCode)), "", this);
 		flag->setFlat(true);
 		flag->setCheckable(true);
 		flag->setStyleSheet("width: 16px; height: 16px; margin: 0; padding: 1px;");
@@ -140,13 +137,12 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 		if(currentLang == lang)
 			flag->setChecked(true);
 
-		langButtonGroup->addButton(flag, i);
+        langButtonGroup->addButton(flag, Settings::get()->Languages.indexOf(lang));
 
 		ui->toolBar->addWidget(flag);
 	}
 
-	if (cnt)
-		ui->toolBar->addSeparator();
+    ui->toolBar->addSeparator();
 
 	connect(langButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(changeLanguage(int)));
 
@@ -230,7 +226,7 @@ void MainWindow::settingsChanged()
         mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
     }
 
-    int langIndex = SettingsDialog::langIndex(getCurrentLanguageCode()) - 1;
+    int langIndex = SettingsDialog::langIndex(Settings::get()->getCurrentLanguageCode()) - 1;
 
     langButtonGroup->button(langIndex)->setChecked(true);
     changeLanguage(langIndex);
@@ -284,10 +280,8 @@ void MainWindow::openWorkingDirectory()
 
 void MainWindow::changeLanguage(int lang)
 {
-	if(getCurrentMetadataLanguageCode() == langs[lang])
+    if (Settings::get()->getCurrentLanguageCode() == Settings::get()->Languages[lang])
 		return;
-
-	currentMetadataLang = langs[lang];
 
     ui->serversWidget->retranslateMetadata();
 }
@@ -364,19 +358,6 @@ void MainWindow::historyForward()
     ui->serversWidget->setModelindex(index);
 	ui->actionHistoryForward->setEnabled( !(historyCurrentIndex == historySize-1) );
 	ui->actionHistoryBack->setEnabled(true);
-}
-
-QString MainWindow::getCurrentLanguageCode()
-{
-    QString lang = Settings::get()->Language;
-	return (lang.isEmpty() || lang == "detect") ? QLocale::system().name() : lang;
-}
-
-QString MainWindow::getCurrentMetadataLanguageCode()
-{
-	if(currentMetadataLang.isEmpty())
-		return getCurrentLanguageCode();
-	return currentMetadataLang;
 }
 
 void MainWindow::setFiltersDialog()

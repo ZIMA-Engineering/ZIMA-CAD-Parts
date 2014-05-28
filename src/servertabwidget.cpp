@@ -9,7 +9,6 @@
 #include "ui_servertabwidget.h"
 #include "filemodel.h"
 #include "filefiltermodel.h"
-#include "mainwindow.h"
 #include "errordialog.h"
 #include "settings.h"
 #include "filtersdialog.h"
@@ -179,7 +178,7 @@ void ServerTabWidget::techSpecPinButton_clicked()
     if (!it)
         return;
 
-    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+    QString lang = Settings::get()->getCurrentLanguageCode().left(2);
     it->server->assignTechSpecUrlToItem(ui->techSpecUrlLineEdit->text(), it, lang, true);
 }
 
@@ -216,7 +215,7 @@ void ServerTabWidget::partsIndexPinButton_clicked()
     if (!it)
         return;
 
-    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+    QString lang = Settings::get()->getCurrentLanguageCode().left(2);
     it->server->assignPartsIndexUrlToItem(ui->partsIndexUrlLineEdit->text(), it, lang, true);
 }
 
@@ -328,7 +327,7 @@ void ServerTabWidget::viewHidePartsIndex(Item *item)
     {
         QString prefix = index.section('.', 0, 0);
 
-        if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == MainWindow::getCurrentMetadataLanguageCode().left(2))
+        if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == Settings::get()->getCurrentLanguageCode().left(2))
             selectedIndex = index;
     }
 
@@ -522,6 +521,6 @@ void ServerTabWidget::partsIndexOverwrite(Item *item)
     if (!it)
         return;
 
-    QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+    QString lang = Settings::get()->getCurrentLanguageCode().left(2);
     m_serversModel->dataSource()->assignPartsIndexUrlToItem(ui->partsIndexUrlLineEdit->text(), it, lang, true);
 }

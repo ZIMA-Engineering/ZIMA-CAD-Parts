@@ -77,7 +77,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 
     m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
     m_ui->previewWidthSpinBox->setValue(Settings::get()->GUIPreviewWidth);
-    m_ui->languageComboBox->setCurrentIndex(langIndex(Settings::get()->Language));
+    m_ui->languageComboBox->setCurrentIndex(langIndex(Settings::get()->getCurrentLanguageCode()));
     m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
     m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
     m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
@@ -149,7 +149,7 @@ void SettingsDialog::accept()
 
 
 	QString lang = langIndexToName( m_ui->languageComboBox->currentIndex() );
-    if (lang != Settings::get()->Language)
+    if (lang != Settings::get()->getCurrentLanguageCode())
 	{
 		qApp->removeTranslator(*translator);
 
@@ -175,7 +175,7 @@ void SettingsDialog::accept()
 		}
 	}
 
-    Settings::get()->Language = lang;
+    Settings::get()->setCurrentLanguageCode(lang);
 
     QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
     int i = 0;

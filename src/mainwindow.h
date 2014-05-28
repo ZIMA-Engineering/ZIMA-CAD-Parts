@@ -53,9 +53,6 @@ public:
 	MainWindow(QTranslator *translator, QWidget *parent = 0);
 	~MainWindow();
 
-    static QString getCurrentLanguageCode();
-	static QString getCurrentMetadataLanguageCode();
-
 private:
 	Ui::MainWindowClass *ui;
 
@@ -63,8 +60,6 @@ private:
     QTranslator *translator;// app ui
 
     QButtonGroup *langButtonGroup; // toolbar
-    static QString currentMetadataLang; // lang handling
-    QStringList langs; // lang handling
 
 	// History
 	QList<QModelIndex> history;

@@ -24,7 +24,7 @@
 #include "basedatasource.h"
 #include "baseremotedatasource.h"
 #include "localdatasource.h"
-#include "mainwindow.h"
+#include "settings.h"
 #include "downloadmodel.h"
 
 ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
@@ -518,7 +518,7 @@ int ServersModel::loadQueue(QSettings *settings)
 #endif
 void ServersModel::retranslateMetadata(Item *item)
 {
-	QString lang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+    QString lang = Settings::get()->getCurrentLanguageCode().left(2);
 	if (!item)
 	{
         item = m_rootItem;

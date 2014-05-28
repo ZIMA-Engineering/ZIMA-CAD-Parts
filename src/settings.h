@@ -12,11 +12,12 @@ public:
     static Settings *get();
 
     void save();
+    QString getCurrentLanguageCode();
+    void setCurrentLanguageCode(const QString &lang);
 
     // real settings
 
     QHash<QString,QString> ExternalPrograms;
-    QString Language;
     QString WorkingDir;
     QByteArray MainWindowState;
     QByteArray MainWindowGeometry;
@@ -41,7 +42,12 @@ public:
     bool ShowProeVersions;
     void recalculateFilters();
 
+    QStringList Languages;
+
 private:
+    // cannot access it directly. Use getCurrentLanguageCode()
+    QString Language;
+
     // Singleton handling
     static Settings *m_instance;
 

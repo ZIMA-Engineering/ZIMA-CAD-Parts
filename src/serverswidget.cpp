@@ -83,7 +83,7 @@ void ServersWidget::settingsChanged()
 
         m_map.append(mapItem);
 
-		view->setModel(model);
+        view->setModel(model);
 		view->setContextMenuPolicy(Qt::CustomContextMenu);
 
 		connect(view, SIGNAL(clicked(const QModelIndex&)),

@@ -26,7 +26,7 @@
 
 #include "localdatasource.h"
 #include "metadata.h"
-#include "mainwindow.h"
+
 
 LocalCopier::LocalCopier(QList<File*> files) :
 	files(files)

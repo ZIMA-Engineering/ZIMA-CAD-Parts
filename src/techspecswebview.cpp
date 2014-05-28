@@ -27,9 +27,11 @@
 #include <QRegExp>
 #include <QDebug>
 
-#include "mainwindow.h"
 #include "datatransfer.h"
 #include "downloadmodel.h"
+#include "settings.h"
+#include "zima-cad-parts.h"
+
 
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
 	QWebView(parent)
@@ -83,7 +85,7 @@ void TechSpecsWebView::clearQueue()
 void TechSpecsWebView::loadAboutPage()
 {
 	QString url = ":/data/zima-cad-parts%1.html";
-	QString localized = url.arg("_" + MainWindow::getCurrentLanguageCode());
+    QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
 	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
 
 	QFile f(filename);

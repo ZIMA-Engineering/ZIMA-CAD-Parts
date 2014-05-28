@@ -23,7 +23,7 @@
 #include <QDebug>
 
 #include "metadata.h"
-#include "mainwindow.h"
+#include "settings.h"
 #include "item.h"
 
 Metadata::Metadata(Item *item, QObject *parent)
@@ -36,7 +36,7 @@ Metadata::Metadata(Item *item, QObject *parent)
     Q_ASSERT(m_item->server);
 	metadataFile = m_item->server->getPathForItem(m_item) + "/" + TECHSPEC_DIR + "/" + METADATA_FILE;
 
-	currentAppLang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+    currentAppLang = Settings::get()->getCurrentLanguageCode().left(2);
 }
 
 Metadata::~Metadata()
@@ -165,7 +165,7 @@ void Metadata::refresh()
 void Metadata::retranslate(QString lang)
 {
 	if(lang.isEmpty())
-		currentAppLang = MainWindow::getCurrentMetadataLanguageCode().left(2);
+        currentAppLang = Settings::get()->getCurrentLanguageCode().left(2);
 	else
 		currentAppLang = lang;
 
