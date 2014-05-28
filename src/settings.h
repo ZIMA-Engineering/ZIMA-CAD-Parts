@@ -18,7 +18,6 @@ public:
     QHash<QString,QString> ExternalPrograms;
     QString Language;
     QString WorkingDir;
-    QString HomeDir;
     QByteArray MainWindowState;
     QByteArray MainWindowGeometry;
 

@@ -53,7 +53,6 @@ void Settings::load()
     MainWindowState = s.value("state").toByteArray();
     MainWindowGeometry = s.value("geometry").toByteArray();
     WorkingDir = s.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString();
-    HomeDir = s.value("HomeDir").toString();
 
     GUIThumbWidth = s.value("GUI/ThumbWidth", 32).toInt();
     GUIPreviewWidth = s.value("GUI/PreviewWidth", 256).toInt();
@@ -91,7 +90,6 @@ void Settings::save()
     s.setValue("state", MainWindowState);
     s.setValue("geometry", MainWindowGeometry);
     s.setValue("WorkingDir", WorkingDir);
-    s.setValue("HomeDir", HomeDir);
 
     s.setValue("GUIThumbWidth", GUIThumbWidth);
     s.setValue("GUIPreviewWidth", GUIPreviewWidth);

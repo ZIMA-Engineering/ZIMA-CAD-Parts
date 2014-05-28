@@ -71,7 +71,6 @@ private:
 	int historyCurrentIndex;
 	int historySize;
 
-	QString autoDescentPath;
 	QModelIndex lastFoundIndex;
 
     void setupDeveloperMode(); // WTF?

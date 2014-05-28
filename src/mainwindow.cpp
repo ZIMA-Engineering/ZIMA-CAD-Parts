@@ -97,11 +97,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectoryDialog()));
 	connect(ui->openWorkDirButton, SIGNAL(clicked()), this, SLOT(openWorkingDirectory()));
 
-
 	QList<int> list;
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
-
 
 	// status bar - use this one
 	connect(ui->serversWidget, SIGNAL(statusUpdated(QString)),
@@ -152,36 +150,12 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(langButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(changeLanguage(int)));
 
-	// History
-	ui->actionHistoryBack->setEnabled(false);
-	ui->actionHistoryForward->setEnabled(false);
-
-#ifdef Q_OS_MAC
-	QMenu *menu = new QMenu(this);
-	QAction *settingsAction = new QAction(tr("Preferences"), this);
-	settingsAction->setMenuRole(QAction::PreferencesRole);
-	connect(settingsAction, SIGNAL(triggered()), this, SLOT(showSettings()));
-
-	menu->addAction(settingsAction);
-	menuBar()->addMenu(menu);
-#endif
-
-#warning TODO/FIXME: refactoring
-	// Make shortcut Ctrl+C or Cmd+C available
-//	QAction *copyAction = ui->techSpec->pageAction(QWebPage::Copy);
-//	copyAction->setShortcut(QKeySequence::Copy);
-//	ui->techSpec->addAction(copyAction);
+    connect(ui->action_Preferences, SIGNAL(triggered()), this, SLOT(showSettings()));
 
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
+    settingsChanged();
 	goToWorkingDirectory();
-
-	QAction *act = new QAction(this);
-	act->setShortcut(QKeySequence("Ctrl+Q"));
-
-	connect(act, SIGNAL(triggered()), qApp, SLOT(quit()));
-
-	addAction(act);
 
 	if( useSplash )
 	{
@@ -208,7 +182,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
 {
     Settings::get()->MainWindowState = saveState();
     Settings::get()->MainWindowGeometry = saveGeometry();
-    Settings::get()->WorkingDir = ui->editDir->text();
 
 #warning "TODO/FIXME: saveQueue"
     //serversModel->saveQueue(settings);
@@ -220,13 +193,12 @@ void MainWindow::closeEvent(QCloseEvent *e)
 
 void MainWindow::setWorkingDirectoryDialog()
 {
-	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set working directory"), ui->editDir->text());
+    QString str = QFileDialog::getExistingDirectory(this,
+                                                    tr("ZIMA-CAD-Parts - set working directory"),
+                                                    Settings::get()->WorkingDir);
 	if (!str.isEmpty())
 	{
-        Settings::get()->HomeDir = "";
         Settings::get()->WorkingDir = str;
-		ui->editDir->setText(str);
-
         settingsChanged();
 	}
 }
@@ -237,15 +209,12 @@ void MainWindow::showSettings(SettingsDialog::Section section)
     sd.setSection(section);
 
     if (sd.exec())
-	{
-        Settings::get()->WorkingDir = ui->editDir->text();
         settingsChanged();
-    }
 }
 
 void MainWindow::settingsChanged()
 {
-    ui->editDir->setText(Settings::get()->WorkingDir);
+    ui->workingDirectoryEdit->setText(Settings::get()->WorkingDir);
     Settings::get()->recalculateFilters();
 
     const QMetaObject *mo;
@@ -261,25 +230,18 @@ void MainWindow::settingsChanged()
         mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
     }
 
+    int langIndex = SettingsDialog::langIndex(getCurrentLanguageCode()) - 1;
 
-#warning TODO/FIXME: reload data sources
-        //QList<BaseDataSource*> oldServers = servers;
+    langButtonGroup->button(langIndex)->setChecked(true);
+    changeLanguage(langIndex);
 
-//		servers = settingsDlg->getDatasources();
-//		serversModel->setServerData(servers);
+    // Prune tree history
+    history.clear();
+    historyCurrentIndex = -1;
+    historySize = 0;
 
-		int langIndex = SettingsDialog::langIndex(getCurrentLanguageCode()) - 1;
-
-		langButtonGroup->button(langIndex)->setChecked(true);
-		changeLanguage(langIndex);
-
-		// Prune tree history
-		history.clear();
-		historyCurrentIndex = -1;
-		historySize = 0;
-
-		ui->actionHistoryBack->setEnabled(false);
-		ui->actionHistoryForward->setEnabled(false);
+    ui->actionHistoryBack->setEnabled(false);
+    ui->actionHistoryForward->setEnabled(false);
 }
 
 void MainWindow::searchClicked()
@@ -305,20 +267,19 @@ void MainWindow::filesDownloaded()
 
 void MainWindow::openWorkingDirectory()
 {
-	QString workingDir = ui->editDir->text();
-
-	if(!QFile::exists(workingDir))
+    if(!QFile::exists(Settings::get()->WorkingDir))
 	{
 		QDir dir;
 
-		if(!dir.mkpath(workingDir))
+        if(!dir.mkpath(Settings::get()->WorkingDir))
 		{
-			QMessageBox::warning(this, tr("Unable to create working directory"), tr("Unable to create working directory: %1").arg(workingDir));
+            QMessageBox::warning(this, tr("Unable to create working directory"),
+                                 tr("Unable to create working directory: %1").arg(Settings::get()->WorkingDir));
 			return;
 		}
 	}
 
-	QDesktopServices::openUrl(QUrl::fromLocalFile(workingDir));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Settings::get()->WorkingDir));
 }
 
 void MainWindow::changeLanguage(int lang)
@@ -355,17 +316,15 @@ void MainWindow::autoDescentNotFound()
         ui->serversWidget->setModelindex(lastFoundIndex);
 	}
 
-	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(autoDescentPath));
+    QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(Settings::get()->WorkingDir));
 }
 
 void MainWindow::goToWorkingDirectory()
 {
-    autoDescentPath = Settings::get()->HomeDir;
-
-	if (autoDescentPath.isEmpty())
+    if (Settings::get()->WorkingDir.isEmpty())
 		return;
 #warning "TODO/FIXME serversModel"
-//	serversModel->descentTo(autoDescentPath);
+//	serversModel->descentTo(Settings::get()->WorkingDir);
 }
 
 void MainWindow::trackHistory(const QModelIndex &index)
