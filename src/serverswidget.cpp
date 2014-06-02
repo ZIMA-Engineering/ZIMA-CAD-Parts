@@ -131,6 +131,9 @@ void ServersWidget::dirTreeContextMenu(QPoint point)
 
 	QMenu *menu = new QMenu(this);
 
+    menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
+    menu->addSeparator();
+
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), "Clean with ZIMA-PTC-Cleaner", m_signalMapper, SLOT(map())), ZimaUtils::ZimaPtcCleaner);
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), "Sync with ZIMA-CAD-Sync", m_signalMapper, SLOT(map())), ZimaUtils::ZimaCadSync);
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), "Convert postscript to PDF with ZIMA-PS2PDF", m_signalMapper, SLOT(map())), ZimaUtils::ZimaPs2Pdf);
@@ -206,4 +209,30 @@ void ServersWidget::setModelindex(const QModelIndex &index)
         i->tab->setPartsIndex(index);
     }
 
+}
+
+void ServersWidget::goToWorkingDirectory()
+{
+    foreach (ServersWidgetMap* i, m_map)
+    {
+        //Item *it = static_cast<Item*>(i->view->currentIndex().internalPointer());
+        //if (!it)
+        //    it = i->model->rootItem();
+        if (!i->model->dataSource()->homeDir.isEmpty())
+            i->model->descentTo(i->model->dataSource()->homeDir);
+        else
+        {
+            Item *it = i->model->rootItem();
+            i->model->descentTo(it->pathWithDataSource());
+        }
+    }
+}
+
+void ServersWidget::setWorkingDirectory()
+{
+    QTreeView *view = m_map[serversToolBox->currentIndex()]->view;
+    Item *it = static_cast<Item*>(view->currentIndex().internalPointer());
+    if (!it)
+        return;
+    m_map[serversToolBox->currentIndex()]->model->dataSource()->homeDir = it->pathWithDataSource();
 }

@@ -79,7 +79,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->actionHistoryBack, SIGNAL(triggered()), this, SLOT(historyBack()));
 	connect(ui->actionHistoryForward, SIGNAL(triggered()), this, SLOT(historyForward()));
 
-	connect(ui->actionHome, SIGNAL(triggered()), this, SLOT(goToWorkingDirectory()));
+    connect(ui->actionHome, SIGNAL(triggered()),
+            ui->serversWidget, SLOT(goToWorkingDirectory()));
 
     connect(ui->actionFilters, SIGNAL(triggered()),
             this, SLOT(setFiltersDialog()));
@@ -151,7 +152,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
     settingsChanged();
-	goToWorkingDirectory();
+    ui->serversWidget->goToWorkingDirectory();
 
 	if( useSplash )
 	{
@@ -311,14 +312,6 @@ void MainWindow::autoDescentNotFound()
 	}
 
     QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(Settings::get()->WorkingDir));
-}
-
-void MainWindow::goToWorkingDirectory()
-{
-    if (Settings::get()->WorkingDir.isEmpty())
-		return;
-#warning "TODO/FIXME serversModel"
-//	serversModel->descentTo(Settings::get()->WorkingDir);
 }
 
 void MainWindow::trackHistory(const QModelIndex &index)

@@ -137,6 +137,7 @@ void Settings::loadDataSources()
         }
 
         ds->label = settings.value("Label").toString();
+        ds->homeDir = settings.value("HomeDir").toString();
         DataSources.append(ds);
 
         settings.endGroup();
@@ -157,6 +158,7 @@ void Settings::saveDataSources()
         settings.beginGroup(QString::number(i++));
 
         settings.setValue("Label", ds->label);
+        settings.setValue("HomeDir", ds->homeDir);
         settings.setValue("DataSourceType", ds->internalName());
 
         switch( ds->dataSource )

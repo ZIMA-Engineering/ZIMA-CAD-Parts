@@ -89,7 +89,6 @@ private slots:
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();
-	void goToWorkingDirectory();
 	void trackHistory(const QModelIndex &index);
 	void historyBack();
 	void historyForward();

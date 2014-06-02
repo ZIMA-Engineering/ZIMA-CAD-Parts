@@ -63,11 +63,12 @@ signals:
     void techSpecAvailable(const QUrl&);
     void autoDescentProgress(const QModelIndex&);
 	void autoDescentComplete(const QModelIndex&);
-	void autoDescentNotFound();
+    void autoDescentNotFound();
 
 public slots:
 	void expand(const QModelIndex & index);
     void settingsChanged();
+    void goToWorkingDirectory();
 
 private:
     QList<ServersWidgetMap*> m_map;
@@ -81,6 +82,7 @@ private slots:
 
 	void loadingItem(Item *i);
 	void allItemsLoaded();
+    void setWorkingDirectory();
 };
 
 #endif // SERVERSWIDGET_H
