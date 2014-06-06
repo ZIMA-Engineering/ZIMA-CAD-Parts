@@ -48,7 +48,6 @@ void ServersWidget::settingsChanged()
         int ix = 0;
         foreach(BaseDataSource *ds, Settings::get()->DataSources)
         {
-            qDebug() << "DSDSSDDSDS" << ds->name();
             ServersWidgetMap *mapItem = new ServersWidgetMap();
             mapItem->index = ix;
             ix++;
@@ -222,9 +221,6 @@ void ServersWidget::goToWorkingDirectory()
 {
     foreach (ServersWidgetMap* i, m_map)
     {
-        //Item *it = static_cast<Item*>(i->view->currentIndex().internalPointer());
-        //if (!it)
-        //    it = i->model->rootItem();
         if (!i->model->dataSource()->homeDir.isEmpty())
             i->model->descentTo(i->model->dataSource()->homeDir);
         else
