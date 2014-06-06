@@ -221,7 +221,7 @@ void MainWindow::settingsChanged()
         int settingsMethod = mo->indexOfMethod(QMetaObject::normalizedSignature("void settingsChanged()"));
         if (settingsMethod == -1)
         {
-            qDebug() << "META> 'settingsChanged() method not found for" << w->objectName();
+//            qDebug() << "META> 'settingsChanged() method not found for" << w->objectName();
             continue;
         }
         mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
@@ -290,8 +290,6 @@ void MainWindow::changeLanguage(int lang)
 void MainWindow::autoDescentProgress(const QModelIndex &index)
 {
 	Item *item = static_cast<Item*>(index.internalPointer());
-
-	qDebug() << "Progress expand" << index << item->name << item->parent->name;
 
 	lastFoundIndex = index;
 	ui->serversWidget->expand(index);

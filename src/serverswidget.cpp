@@ -105,7 +105,7 @@ void ServersWidget::settingsChanged()
 		        this, SLOT(dirTreeContextMenu(QPoint)));
 
         connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
-                tab, SIGNAL(techSpecsIndexOverwrite(Item*)));
+                tab, SLOT(techSpecsIndexOverwrite(Item*)));
 	}
 }
 
@@ -122,11 +122,6 @@ void ServersWidget::dirTreeContextMenu(QPoint point)
 	QModelIndex i = currentIndex();
 
 	if (!i.isValid())
-		return;
-
-	Item *it = static_cast<Item*>(i.internalPointer());
-
-	if (it->server->dataSource != LOCAL)
 		return;
 
 	QMenu *menu = new QMenu(this);

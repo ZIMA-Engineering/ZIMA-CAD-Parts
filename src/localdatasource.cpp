@@ -149,14 +149,14 @@ QString LocalDataSource::name()
 
 void LocalDataSource::loadDirectory(Item* item)
 {
-    qDebug() << "LocalDataSource::loadDirectory" << item->children << item->files;
+//    qDebug() << "LocalDataSource::loadDirectory" << item->children << item->files;
 	if(!item->children.isEmpty() || !item->files.isEmpty())
 	{
 		emit itemLoaded(item);
 		return;
 	}
 
-    qDebug() << "LocalDataSource::loadDirectory" << item->path;
+//    qDebug() << "LocalDataSource::loadDirectory" << item->path;
 	QDir dir(item->path);
 	QFileInfoList entries = dir.entryInfoList( QDir::AllEntries | QDir::NoDotAndDotDot );
 
@@ -164,7 +164,7 @@ void LocalDataSource::loadDirectory(Item* item)
 
 	for(int i = 0; i < cnt; i++)
 	{
-        qDebug() << "LocalDataSource::loadDirectory" << entries[i].fileName();
+//        qDebug() << "LocalDataSource::loadDirectory" << entries[i].fileName();
 		if( entries[i].isDir() )
 		{
 			if( entries[i].fileName() == TECHSPEC_DIR )
@@ -251,7 +251,7 @@ void LocalDataSource::loadDirectory(Item* item)
 	assignThumbnailsToFiles(item);
 	determineFileVersions(item);
 
-    qDebug() << "LocalDataSource::loadDirectory" << "itemLoaded";
+//    qDebug() << "LocalDataSource::loadDirectory" << "itemLoaded";
 	emit itemLoaded(item);
 }
 
