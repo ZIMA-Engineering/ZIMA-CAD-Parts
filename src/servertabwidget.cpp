@@ -114,7 +114,7 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
     connect(ui->partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(partsTreeView_doubleClicked(QModelIndex)));
 
-    settingsChanged();
+    // Note: called from MainWindow settingsChanged();
 }
 
 ServerTabWidget::~ServerTabWidget()
@@ -275,10 +275,10 @@ void ServerTabWidget::filesDeleted()
 
 void ServerTabWidget::setPartsIndex(const QModelIndex &index)
 {
-    qDebug() << "Set parts index init:" << index.isValid();
+    //qDebug() << "Set parts index init:" << index.isValid();
     if (!index.isValid())
         return;
-    qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
+    //qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
 
     m_fileModel->setRootIndex(index);
     partsIndexLoaded(index);
@@ -286,7 +286,7 @@ void ServerTabWidget::setPartsIndex(const QModelIndex &index)
 
 void ServerTabWidget::partsIndexLoaded(const QModelIndex &index)
 {
-    qDebug() << "ServerTabWidget::partsIndexLoaded" << index.isValid();
+    //qDebug() << "ServerTabWidget::partsIndexLoaded" << index.isValid();
     if (!index.isValid())
         return;
 

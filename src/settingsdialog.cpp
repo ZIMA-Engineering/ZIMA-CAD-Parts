@@ -189,14 +189,23 @@ void SettingsDialog::accept()
     Settings::get()->ProeExecutable = m_ui->proeEdit->text();
 
     // datasources
-    qDeleteAll(Settings::get()->DataSources);
-    Settings::get()->DataSources.clear();
+    DataSourceList newDSList;
     for (int i = 0; i < m_ui->datasourceList->count(); ++i)
     {
         QListWidgetItem *item = m_ui->datasourceList->item(i);
-        Settings::get()->DataSources << PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
+        newDSList << PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
     }
 
+    if (newDSList != Settings::get()->DataSources)
+    {
+        // Note: do not delete datasources here. It will be handled in ServersWidget::settingsChanged()
+        //qDeleteAll(Settings::get()->DataSources);
+        Settings::get()->DataSources.clear();
+        Settings::get()->DataSources = newDSList;
+        Settings::get()->DataSourcesNeedsUpdate = true;
+    }
+
+    QDialog::accept();
 }
 
 void SettingsDialog::addDataSource()

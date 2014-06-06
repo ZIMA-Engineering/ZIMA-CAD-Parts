@@ -19,7 +19,7 @@ ServersWidget::ServersWidget(QWidget *parent)
     serversToolBox->setStyleSheet("icon-size: 16px;");
 	m_signalMapper = new QSignalMapper(this);
 
-    settingsChanged();
+    // Note: called from MainWindow settingsChanged();
 
 	connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(spawnZimaUtilityOnDir(int)));
     connect(serversToolBox, SIGNAL(currentChanged(int)), stackedWidget, SLOT(setCurrentIndex(int)));
@@ -27,86 +27,98 @@ ServersWidget::ServersWidget(QWidget *parent)
 
 void ServersWidget::settingsChanged()
 {
-    // Datasources
-	// firstly delete all stuff used. Remember "the reset"
-    foreach (ServersWidgetMap* i, m_map)
+    if (Settings::get()->DataSourcesNeedsUpdate)
     {
-        serversToolBox->removeItem(i->index);
-        stackedWidget->removeWidget(i->tab);
-    }
+        Settings::get()->DataSourcesNeedsUpdate = false;
 
-    qDeleteAll(m_map);
-    m_map.clear();
+        // Datasources
+        // firstly delete all stuff used. Remember "the reset"
+        foreach (ServersWidgetMap* i, m_map)
+        {
+            serversToolBox->removeItem(i->index);
+            stackedWidget->removeWidget(i->tab);
+            i->model->deleteLater();
+        }
 
-	// now setup all item==group again
-    int ix = 0;
-    foreach(BaseDataSource *ds, Settings::get()->DataSources)
-	{
-        ServersWidgetMap *mapItem = new ServersWidgetMap();
-        mapItem->index = ix;
-        ix++;
+        qApp->processEvents();
+        qDeleteAll(m_map);
+        m_map.clear();
 
-		ServersModel *model = new ServersModel(ds, this);
-		model->retranslateMetadata();
+        // now setup all item==group again
+        int ix = 0;
+        foreach(BaseDataSource *ds, Settings::get()->DataSources)
+        {
+            qDebug() << "DSDSSDDSDS" << ds->name();
+            ServersWidgetMap *mapItem = new ServersWidgetMap();
+            mapItem->index = ix;
+            ix++;
 
-        mapItem->model = model;
+            ServersModel *model = new ServersModel(ds, this);
+            model->retranslateMetadata();
 
-		connect(model, SIGNAL(loadingItem(Item*)),
-		        this, SLOT(loadingItem(Item*)));
-		connect(model, SIGNAL(allItemsLoaded()),
-		        this, SLOT(allItemsLoaded()));
+            mapItem->model = model;
 
-        connect(model, SIGNAL(errorOccured(QString)),
-                this, SIGNAL(errorOccured(QString)));
-        connect(model, SIGNAL(filesDownloaded()),
-                this, SIGNAL(filesDownloaded()));
-        connect(model, SIGNAL(fileDownloaded(File*)),
-                this, SIGNAL(fileDownloaded(File*)));
-        connect(model, SIGNAL(techSpecAvailable(QUrl)),
-                this, SIGNAL(techSpecAvailable(QUrl)));
-        connect(model, SIGNAL(autoDescentProgress(QModelIndex)),
-                this, SIGNAL(autoDescentProgress(QModelIndex)));
-        connect(model, SIGNAL(autoDescentCompleted(QModelIndex)),
-                this, SIGNAL(autoDescentComplete(QModelIndex)));
-        connect(model, SIGNAL(autoDescentNotFound()),
-                this, SIGNAL(autoDescentNotFound()));
+            connect(model, SIGNAL(loadingItem(Item*)),
+                    this, SLOT(loadingItem(Item*)));
+            connect(model, SIGNAL(allItemsLoaded()),
+                    this, SLOT(allItemsLoaded()));
 
-		QTreeView *view = new QTreeView(this);
-		view->header()->close();
-        serversToolBox->addItem(view, ds->dataSourceIcon(), ds->label);
+            connect(model, SIGNAL(errorOccured(QString)),
+                    this, SIGNAL(errorOccured(QString)));
+            connect(model, SIGNAL(filesDownloaded()),
+                    this, SIGNAL(filesDownloaded()));
+            connect(model, SIGNAL(fileDownloaded(File*)),
+                    this, SIGNAL(fileDownloaded(File*)));
+            connect(model, SIGNAL(techSpecAvailable(QUrl)),
+                    this, SIGNAL(techSpecAvailable(QUrl)));
+            connect(model, SIGNAL(autoDescentProgress(QModelIndex)),
+                    this, SIGNAL(autoDescentProgress(QModelIndex)));
+            connect(model, SIGNAL(autoDescentCompleted(QModelIndex)),
+                    this, SIGNAL(autoDescentComplete(QModelIndex)));
+            connect(model, SIGNAL(autoDescentNotFound()),
+                    this, SIGNAL(autoDescentNotFound()));
 
-        mapItem->view = view;
+            QTreeView *view = new QTreeView(this);
+            view->header()->close();
+            serversToolBox->addItem(view, ds->dataSourceIcon(), ds->label);
 
-        ServerTabWidget *tab = new ServerTabWidget(model, this);
-        mapItem->tab = tab;
-        stackedWidget->addWidget(tab);
+            mapItem->view = view;
 
-        m_map.append(mapItem);
+            ServerTabWidget *tab = new ServerTabWidget(model, this);
+            mapItem->tab = tab;
+            stackedWidget->addWidget(tab);
 
-        view->setModel(model);
-		view->setContextMenuPolicy(Qt::CustomContextMenu);
+            m_map.append(mapItem);
 
-		connect(view, SIGNAL(clicked(const QModelIndex&)),
-		        model, SLOT(requestTechSpecs(const QModelIndex&)));
-		connect(view, SIGNAL(activated(const QModelIndex&)),
-		        model, SLOT(requestTechSpecs(const QModelIndex&)));
-        // track history
-        connect(view, SIGNAL(clicked(const QModelIndex&)),
-                this, SIGNAL(clicked(QModelIndex)));
-        // track history
-        connect(view, SIGNAL(activated(const QModelIndex&)),
-                this, SIGNAL(activated(const QModelIndex&)));
-		connect(view, SIGNAL(clicked(const QModelIndex&)),
-                tab, SLOT(setPartsIndex(const QModelIndex&)));
-		connect(view, SIGNAL(activated(const QModelIndex&)),
-                tab, SLOT(setPartsIndex(const QModelIndex&)));
+            view->setModel(model);
+            view->setContextMenuPolicy(Qt::CustomContextMenu);
 
-		connect(view, SIGNAL(customContextMenuRequested(QPoint)),
-		        this, SLOT(dirTreeContextMenu(QPoint)));
+            connect(view, SIGNAL(clicked(const QModelIndex&)),
+                    model, SLOT(requestTechSpecs(const QModelIndex&)));
+            connect(view, SIGNAL(activated(const QModelIndex&)),
+                    model, SLOT(requestTechSpecs(const QModelIndex&)));
+            // track history
+            connect(view, SIGNAL(clicked(const QModelIndex&)),
+                    this, SIGNAL(clicked(QModelIndex)));
+            // track history
+            connect(view, SIGNAL(activated(const QModelIndex&)),
+                    this, SIGNAL(activated(const QModelIndex&)));
+            connect(view, SIGNAL(clicked(const QModelIndex&)),
+                    tab, SLOT(setPartsIndex(const QModelIndex&)));
+            connect(view, SIGNAL(activated(const QModelIndex&)),
+                    tab, SLOT(setPartsIndex(const QModelIndex&)));
 
-        connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
-                tab, SLOT(techSpecsIndexOverwrite(Item*)));
-	}
+            connect(view, SIGNAL(customContextMenuRequested(QPoint)),
+                    this, SLOT(dirTreeContextMenu(QPoint)));
+
+            connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
+                    tab, SLOT(techSpecsIndexOverwrite(Item*)));
+        }
+
+    } // Settings::get()->DataSourcesNeedsUpdate
+
+    foreach (ServersWidgetMap* i, m_map)
+        i->tab->settingsChanged();
 }
 
 void ServersWidget::retranslateMetadata()

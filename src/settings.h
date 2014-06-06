@@ -35,6 +35,7 @@ public:
 
     QString ProeExecutable;
 
+    bool DataSourcesNeedsUpdate;
     DataSourceList DataSources;
     QList<FilterGroup> FilterGroups;
 

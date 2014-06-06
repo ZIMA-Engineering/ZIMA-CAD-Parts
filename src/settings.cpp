@@ -36,6 +36,8 @@ void Settings::load()
 {
     QSettings s;
 
+    DataSourcesNeedsUpdate = true;
+
     Languages << "en_US" << "cs_CZ" << "de_DE" << "ru_RU";
     Language = s.value("Language", "detect").toString();
 

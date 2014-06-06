@@ -214,18 +214,26 @@ void MainWindow::settingsChanged()
     ui->workingDirectoryEdit->setText(Settings::get()->WorkingDir);
     Settings::get()->recalculateFilters();
 
+#if 0
+    // it crashes sometimes...
     const QMetaObject *mo;
     foreach (QWidget *w, findChildren<QWidget*>())
     {
         mo = w->metaObject();
-        int settingsMethod = mo->indexOfMethod(QMetaObject::normalizedSignature("void settingsChanged()"));
+        int settingsMethod = mo->indexOfMethod(QMetaObject::normalizedSignature("settingsChanged()"));
         if (settingsMethod == -1)
         {
-//            qDebug() << "META> 'settingsChanged() method not found for" << w->objectName();
+            qDebug() << "META> 'settingsChanged() method not found for" << w->objectName();
             continue;
         }
-        mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
+        else
+        {
+            qDebug() << "META> 'settingsChanged() method YES found for" << w->objectName();
+            mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
+        }
     }
+#endif
+    ui->serversWidget->settingsChanged();
 
     int langIndex = SettingsDialog::langIndex(Settings::get()->getCurrentLanguageCode()) - 1;
 
@@ -289,8 +297,6 @@ void MainWindow::changeLanguage(int lang)
 
 void MainWindow::autoDescentProgress(const QModelIndex &index)
 {
-	Item *item = static_cast<Item*>(index.internalPointer());
-
 	lastFoundIndex = index;
 	ui->serversWidget->expand(index);
 }
