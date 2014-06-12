@@ -23,7 +23,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <property name="minimumSize">
@@ -45,44 +45,37 @@
        <item>
         <widget class="QWidget" name="techSpecDeveloperWidget" native="true">
          <layout class="QGridLayout" name="gridLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="2">
-           <widget class="QPushButton" name="techSpecReloadButton">
-            <property name="text">
-             <string>Reload</string>
-            </property>
-           </widget>
+           <widget class="QPushButton" name="techSpecReloadButton"/>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="techSpecForwardButton">
-            <property name="text">
-             <string>Forward</string>
-            </property>
-           </widget>
+           <widget class="QPushButton" name="techSpecForwardButton"/>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="techSpecGoButton">
-            <property name="text">
-             <string>Go</string>
-            </property>
-           </widget>
+           <widget class="QPushButton" name="techSpecGoButton"/>
           </item>
           <item row="0" column="3">
            <widget class="QLineEdit" name="techSpecUrlLineEdit"/>
           </item>
           <item row="0" column="0">
-           <widget class="QPushButton" name="techSpecBackButton">
-            <property name="text">
-             <string>Back</string>
-            </property>
-           </widget>
+           <widget class="QPushButton" name="techSpecBackButton"/>
           </item>
           <item row="0" column="5">
            <widget class="QPushButton" name="techSpecPinButton">
             <property name="toolTip">
              <string>Pin this URL to current directory in tree (write permission required)</string>
-            </property>
-            <property name="text">
-             <string>Pin</string>
             </property>
             <property name="icon">
              <iconset resource="../zima-cad-parts.qrc">
@@ -127,42 +120,35 @@
        <item>
         <widget class="QWidget" name="partsIndexDeveloperWidget" native="true">
          <layout class="QGridLayout" name="gridLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
-           <widget class="QPushButton" name="partsIndexBackButton">
-            <property name="text">
-             <string>Back</string>
-            </property>
-           </widget>
+           <widget class="QPushButton" name="partsIndexBackButton"/>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="partsIndexForwardButton">
-            <property name="text">
-             <string>Forward</string>
-            </property>
-           </widget>
+           <widget class="QPushButton" name="partsIndexForwardButton"/>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="partsIndexReloadButton">
-            <property name="text">
-             <string>Reload</string>
-            </property>
-           </widget>
+           <widget class="QPushButton" name="partsIndexReloadButton"/>
           </item>
           <item row="0" column="3">
            <widget class="QLineEdit" name="partsIndexUrlLineEdit"/>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="partsIndexGoButton">
-            <property name="text">
-             <string>Go</string>
-            </property>
-           </widget>
+           <widget class="QPushButton" name="partsIndexGoButton"/>
           </item>
           <item row="0" column="5">
            <widget class="QPushButton" name="partsIndexPinButton">
-            <property name="text">
-             <string>Pin</string>
-            </property>
             <property name="icon">
              <iconset resource="../zima-cad-parts.qrc">
               <normaloff>:/gfx/pin.png</normaloff>:/gfx/pin.png</iconset>

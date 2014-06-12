@@ -74,12 +74,14 @@ void ServersWidget::settingsChanged()
                     this, SIGNAL(autoDescentProgress(QModelIndex)));
             connect(model, SIGNAL(autoDescentCompleted(QModelIndex)),
                     this, SIGNAL(autoDescentComplete(QModelIndex)));
-            connect(model, SIGNAL(autoDescentNotFound()),
-                    this, SIGNAL(autoDescentNotFound()));
+#warning "TODO/FIXME: autoDescentNotFound for implicit 'set home' "
+//            connect(model, SIGNAL(autoDescentNotFound()),
+//                    this, SIGNAL(autoDescentNotFound()));
 
             QTreeView *view = new QTreeView(this);
             view->header()->close();
-            serversToolBox->addItem(view, ds->dataSourceIcon(), ds->label);
+            //serversToolBox->addItem(view, ds->dataSourceIcon(), ds->label);
+            serversToolBox->addItem(view, ds->itemIcon(model->rootItem()), ds->label);
 
             mapItem->view = view;
 
@@ -137,8 +139,11 @@ void ServersWidget::dirTreeContextMenu(QPoint point)
 
 	QMenu *menu = new QMenu(this);
 
-    menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
-    menu->addSeparator();
+    if (m_map[serversToolBox->currentIndex()]->model->dataSource()->dataSource == LOCAL)
+    {
+        menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
+        menu->addSeparator();
+    }
 
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), "Clean with ZIMA-PTC-Cleaner", m_signalMapper, SLOT(map())), ZimaUtils::ZimaPtcCleaner);
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), "Sync with ZIMA-CAD-Sync", m_signalMapper, SLOT(map())), ZimaUtils::ZimaCadSync);
@@ -221,13 +226,7 @@ void ServersWidget::goToWorkingDirectory()
 {
     foreach (ServersWidgetMap* i, m_map)
     {
-        if (!i->model->dataSource()->homeDir.isEmpty())
-            i->model->descentTo(i->model->dataSource()->homeDir);
-        else
-        {
-            Item *it = i->model->rootItem();
-            i->model->descentTo(it->pathWithDataSource());
-        }
+        i->model->descentTo(Settings::get()->WorkingDir);
     }
 }
 
@@ -237,5 +236,6 @@ void ServersWidget::setWorkingDirectory()
     Item *it = static_cast<Item*>(view->currentIndex().internalPointer());
     if (!it)
         return;
-    m_map[serversToolBox->currentIndex()]->model->dataSource()->homeDir = it->pathWithDataSource();
+    Settings::get()->WorkingDir = it->pathWithDataSource();
+    emit workingDirChanged();
 }

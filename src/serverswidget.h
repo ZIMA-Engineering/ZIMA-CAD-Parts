@@ -65,6 +65,8 @@ signals:
 	void autoDescentComplete(const QModelIndex&);
     void autoDescentNotFound();
 
+    void workingDirChanged();
+
 public slots:
 	void expand(const QModelIndex & index);
     void settingsChanged();

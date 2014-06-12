@@ -77,7 +77,6 @@ public:
 
 	Item    *rootItem;
 	QString label;
-    QString homeDir;
 	DataSources dataSource;
 public slots:
 	virtual void loadRootItem(Item *item) = 0;

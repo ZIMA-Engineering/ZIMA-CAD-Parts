@@ -73,8 +73,6 @@ private:
     void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
-    void settingsChanged();
-
 public slots:
 	void setWorkingDirectoryDialog();
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
@@ -84,6 +82,7 @@ public slots:
 	void filesDownloaded();
 
 private slots:
+    void settingsChanged();
 	void openWorkingDirectory();
 	void changeLanguage(int lang);
 	void autoDescentProgress(const QModelIndex &index);

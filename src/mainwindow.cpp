@@ -68,6 +68,13 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->setupUi(this);
 
+#ifdef Q_WS_WIN
+    // do not display menu bar for now on WIndows. It contains only one "File" item now.
+    // On th eother side it's mandatory to allow user to quit the app in some
+    // X11 window manager (and mac)
+    ui->menuBar->hide();
+#endif
+
 	ui->actionHistoryBack->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 	ui->actionHistoryForward->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
 
@@ -92,7 +99,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     restoreState(Settings::get()->MainWindowState);
     restoreGeometry(Settings::get()->MainWindowGeometry);
 
-	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(showSettings()));
 	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectoryDialog()));
 	connect(ui->openWorkDirButton, SIGNAL(clicked()), this, SLOT(openWorkingDirectory()));
 
@@ -111,6 +117,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
             this, SLOT(autoDescentNotFound()));
 
 	connect(ui->serversWidget, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
+    connect(ui->serversWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
 
 #warning "TODO/FIXME: server model"
@@ -147,6 +154,12 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(langButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(changeLanguage(int)));
 
+    // HACK: move settings actions to the right of the window
+    QWidget* empty = new QWidget();
+    empty->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+    ui->toolBar->addWidget(empty);
+
+    ui->toolBar->addAction(ui->action_Preferences);
     connect(ui->action_Preferences, SIGNAL(triggered()), this, SLOT(showSettings()));
 
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
