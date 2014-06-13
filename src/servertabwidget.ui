@@ -23,7 +23,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <property name="minimumSize">
@@ -179,6 +179,13 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QPushButton" name="filterButton">
+           <property name="text">
+            <string>Filters...</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">

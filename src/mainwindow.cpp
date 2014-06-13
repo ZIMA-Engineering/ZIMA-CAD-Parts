@@ -89,9 +89,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     connect(ui->actionHome, SIGNAL(triggered()),
             ui->serversWidget, SLOT(goToWorkingDirectory()));
 
-    connect(ui->actionFilters, SIGNAL(triggered()),
-            this, SLOT(setFiltersDialog()));
-
 	statusDir = new QLabel(tr("Ready"), this);
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	statusBar()->addWidget(statusDir, 100);
@@ -368,14 +365,4 @@ void MainWindow::historyForward()
     ui->serversWidget->setModelindex(index);
 	ui->actionHistoryForward->setEnabled( !(historyCurrentIndex == historySize-1) );
 	ui->actionHistoryBack->setEnabled(true);
-}
-
-void MainWindow::setFiltersDialog()
-{
-    FiltersDialog dlg;
-
-    if (dlg.exec())
-    {
-        settingsChanged();
-    }
 }

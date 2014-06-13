@@ -114,7 +114,9 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
     connect(ui->partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(partsTreeView_doubleClicked(QModelIndex)));
 
-    // Note: called from MainWindow settingsChanged();
+#warning "TODO/FIXME: icon for the button to save space"
+    connect(ui->filterButton, SIGNAL(clicked()),
+            this, SLOT(setFiltersDialog()));
 }
 
 ServerTabWidget::~ServerTabWidget()
@@ -523,4 +525,14 @@ void ServerTabWidget::partsIndexOverwrite(Item *item)
 
     QString lang = Settings::get()->getCurrentLanguageCode().left(2);
     m_serversModel->dataSource()->assignPartsIndexUrlToItem(ui->partsIndexUrlLineEdit->text(), it, lang, true);
+}
+
+void ServerTabWidget::setFiltersDialog()
+{
+    FiltersDialog dlg;
+
+    if (dlg.exec())
+    {
+        emit changeSettings();
+    }
 }

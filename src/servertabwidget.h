@@ -27,6 +27,9 @@ public slots:
     void setPartsIndex(const QModelIndex &index);
     void techSpecsIndexOverwrite(Item *item);
 
+signals:
+    void changeSettings();
+
 protected:
     void changeEvent(QEvent *event);
     
@@ -79,6 +82,8 @@ private slots:
     void adjustThumbColumnWidth(int width);
     void loadTechSpec(const QUrl &url);
     void partsIndexOverwrite(Item *item);
+
+    void setFiltersDialog();
 };
 
 #endif // SERVERTABWIDGET_H

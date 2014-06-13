@@ -91,8 +91,6 @@ private slots:
 	void trackHistory(const QModelIndex &index);
 	void historyBack();
 	void historyForward();
-    void setFiltersDialog();
-
 };
 
 class SleeperThread : public QThread
