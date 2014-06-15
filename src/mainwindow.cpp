@@ -123,8 +123,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 		ui->startStopDownloadBtn->setText(tr("Resume"));
 #endif
 
-    ui->toolBar->addSeparator();
-
     QString currentLang = Settings::get()->getCurrentLanguageCode().left(2);
 
 	langButtonGroup = new QButtonGroup(this);
