@@ -336,3 +336,26 @@ void Settings::setCurrentLanguageCode(const QString &lang)
 {
     Language = lang;
 }
+
+int Settings::langIndex(const QString &lang)
+{
+    if( lang.startsWith("en_") )
+        return ENGLISH;
+    else if( lang == "cs_CZ" )
+        return CZECH;
+    else
+        return DETECT;
+}
+
+QString Settings::langIndexToName(int lang)
+{
+    switch(lang)
+    {
+    case ENGLISH:
+        return "en_US";
+    case CZECH:
+        return "cs_CZ";
+    default:
+        return "detect";
+    }
+}

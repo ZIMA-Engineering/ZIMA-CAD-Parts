@@ -86,6 +86,7 @@ public slots:
 	int loadQueue(QSettings *settings);
 #endif
 	void retranslateMetadata(Item *item = 0);
+    void retranslateMetadata(int languageIndex);
 	void abort();
 	void descentTo(QString path, Item *item = 0);
 	void catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err);

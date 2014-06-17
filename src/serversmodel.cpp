@@ -246,6 +246,8 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 		if(!item->logo.isNull())
 			return QSize(item->logo.width(), item->logo.height());
 		break;
+    case Qt::ToolTipRole:
+        return item->pathWithDataSource();
 	default:
 		;
 	}
@@ -542,6 +544,15 @@ void ServersModel::retranslateMetadata(Item *item)
 
 		retranslateMetadata(i);
 	}
+}
+
+void ServersModel::retranslateMetadata(int languageIndex)
+{
+    qDebug() << "LANGGGGGGGGGG";
+    if (Settings::get()->getCurrentLanguageCode() == Settings::get()->Languages[languageIndex])
+        return;
+    qDebug() << "LANGGGGGGGGGG 111";
+    retranslateMetadata();
 }
 
 void ServersModel::dataSourceFinishedDownloading()

@@ -53,19 +53,10 @@ public:
 	    SectionCount
 	};
 
-	enum Languages {
-	    DETECT=0,
-	    ENGLISH,
-	    CZECH
-	};
-
     explicit SettingsDialog(QTranslator **translator, QWidget *parent = 0);
 	virtual ~SettingsDialog();
 
 	void setSection(Section s);
-
-	static QString langIndexToName(int lang);
-	static int langIndex(QString lang);
 
 protected:
 	virtual void changeEvent(QEvent *e);

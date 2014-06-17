@@ -70,7 +70,8 @@ SOURCES += zima-cad-parts.cpp \
     src/extensions/productview/pdfproductview.cpp \
     src/extensions/productview/failbackproductview.cpp \
     src/serverswidget.cpp \
-    src/servertabwidget.cpp
+    src/servertabwidget.cpp \
+    src/languageflagswidget.cpp
 
 
 HEADERS += mainwindow.h \
@@ -112,7 +113,8 @@ HEADERS += mainwindow.h \
     src/extensions/productview/pdfproductview.h \
     src/extensions/productview/failbackproductview.h \
     src/serverswidget.h \
-    src/servertabwidget.h
+    src/servertabwidget.h \
+    src/languageflagswidget.h
 
 
 FORMS += mainwindow.ui \

@@ -77,7 +77,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 
     m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
     m_ui->previewWidthSpinBox->setValue(Settings::get()->GUIPreviewWidth);
-    m_ui->languageComboBox->setCurrentIndex(langIndex(Settings::get()->getCurrentLanguageCode()));
+    m_ui->languageComboBox->setCurrentIndex(Settings::get()->langIndex(Settings::get()->getCurrentLanguageCode()));
     m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
     m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
     m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
@@ -148,7 +148,7 @@ void SettingsDialog::accept()
     Settings::get()->ExtensionsProductViewPath = m_ui->productViewEdit->text();
 
 
-	QString lang = langIndexToName( m_ui->languageComboBox->currentIndex() );
+    QString lang = Settings::get()->langIndexToName( m_ui->languageComboBox->currentIndex() );
     if (lang != Settings::get()->getCurrentLanguageCode())
 	{
 		qApp->removeTranslator(*translator);
@@ -356,29 +356,6 @@ void SettingsDialog::setupDatasourceList()
 
 	m_ui->datasourceList->setCurrentRow(0);
 	m_ui->datasourceList->setFocus();
-}
-
-int SettingsDialog::langIndex(QString lang)
-{
-	if( lang.startsWith("en_") )
-		return ENGLISH;
-	else if( lang == "cs_CZ" )
-		return CZECH;
-	else
-		return DETECT;
-}
-
-QString SettingsDialog::langIndexToName(int lang)
-{
-	switch(lang)
-	{
-	case ENGLISH:
-		return "en_US";
-	case CZECH:
-		return "cs_CZ";
-	default:
-		return "detect";
-	}
 }
 
 void SettingsDialog::pruneCache(QString path)

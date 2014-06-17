@@ -9,6 +9,12 @@
 class Settings
 {
 public:
+    enum Languages {
+        DETECT=0,
+        ENGLISH,
+        CZECH
+    };
+
     static Settings *get();
 
     void save();
@@ -44,6 +50,9 @@ public:
     void recalculateFilters();
 
     QStringList Languages;
+
+    int langIndex(const QString &lang);
+    QString langIndexToName(int lang);
 
 private:
     // cannot access it directly. Use getCurrentLanguageCode()

@@ -59,8 +59,6 @@ private:
     QLabel              *statusDir; // status bar
     QTranslator *translator;// app ui
 
-    QButtonGroup *langButtonGroup; // toolbar
-
 	// History
 	QList<QModelIndex> history;
 	int historyCurrentIndex;
@@ -84,7 +82,6 @@ public slots:
 private slots:
     void settingsChanged();
 	void openWorkingDirectory();
-	void changeLanguage(int lang);
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();

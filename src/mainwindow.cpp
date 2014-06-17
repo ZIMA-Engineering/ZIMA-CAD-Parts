@@ -123,37 +123,12 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 		ui->startStopDownloadBtn->setText(tr("Resume"));
 #endif
 
-    QString currentLang = Settings::get()->getCurrentLanguageCode().left(2);
-
-	langButtonGroup = new QButtonGroup(this);
-	langButtonGroup->setExclusive(true);
-
-    foreach (QString lang, Settings::get()->Languages)
-	{
-        QString langCode = lang.left(2);
-
-        QPushButton *flag = new QPushButton(QIcon(QString(":/gfx/flags/%1.png").arg(langCode)), "", this);
-		flag->setFlat(true);
-		flag->setCheckable(true);
-		flag->setStyleSheet("width: 16px; height: 16px; margin: 0; padding: 1px;");
-
-		if(currentLang == lang)
-			flag->setChecked(true);
-
-        langButtonGroup->addButton(flag, Settings::get()->Languages.indexOf(lang));
-
-		ui->toolBar->addWidget(flag);
-	}
-
-    ui->toolBar->addSeparator();
-
-	connect(langButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(changeLanguage(int)));
-
     // HACK: move settings actions to the right of the window
     QWidget* empty = new QWidget();
     empty->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
     ui->toolBar->addWidget(empty);
 
+    ui->toolBar->addSeparator();
     ui->toolBar->addAction(ui->action_Preferences);
     connect(ui->action_Preferences, SIGNAL(triggered()), this, SLOT(showSettings()));
 
@@ -243,11 +218,6 @@ void MainWindow::settingsChanged()
 #endif
     ui->serversWidget->settingsChanged();
 
-    int langIndex = SettingsDialog::langIndex(Settings::get()->getCurrentLanguageCode()) - 1;
-
-    langButtonGroup->button(langIndex)->setChecked(true);
-    changeLanguage(langIndex);
-
     // Prune tree history
     history.clear();
     historyCurrentIndex = -1;
@@ -293,14 +263,6 @@ void MainWindow::openWorkingDirectory()
 	}
 
     QDesktopServices::openUrl(QUrl::fromLocalFile(Settings::get()->WorkingDir));
-}
-
-void MainWindow::changeLanguage(int lang)
-{
-    if (Settings::get()->getCurrentLanguageCode() == Settings::get()->Languages[lang])
-		return;
-
-    ui->serversWidget->retranslateMetadata();
 }
 
 void MainWindow::autoDescentProgress(const QModelIndex &index)
