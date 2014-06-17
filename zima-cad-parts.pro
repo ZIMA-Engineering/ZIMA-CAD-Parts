@@ -71,7 +71,12 @@ SOURCES += zima-cad-parts.cpp \
     src/extensions/productview/failbackproductview.cpp \
     src/serverswidget.cpp \
     src/servertabwidget.cpp \
-    src/languageflagswidget.cpp
+    src/languageflagswidget.cpp \
+    src/extensions/navbar/navbar.cpp \
+    src/extensions/navbar/navbarheader.cpp \
+    src/extensions/navbar/navbaroptionsdialog.cpp \
+    src/extensions/navbar/navbarpagelistwidget.cpp \
+    src/extensions/navbar/navbarsplitter.cpp
 
 
 HEADERS += mainwindow.h \
@@ -114,7 +119,13 @@ HEADERS += mainwindow.h \
     src/extensions/productview/failbackproductview.h \
     src/serverswidget.h \
     src/servertabwidget.h \
-    src/languageflagswidget.h
+    src/languageflagswidget.h \
+    src/extensions/navbar/navbar.h \
+    src/extensions/navbar/navbarheader.h \
+    src/extensions/navbar/navbaroptionsdialog.h \
+    src/extensions/navbar/navbarpage.h \
+    src/extensions/navbar/navbarpagelistwidget.h \
+    src/extensions/navbar/navbarsplitter.h
 
 
 FORMS += mainwindow.ui \
@@ -128,8 +139,10 @@ FORMS += mainwindow.ui \
     src/extensions/productview/pdfproductview.ui \
     src/extensions/productview/failbackproductview.ui \
     src/serverswidget.ui \
-    src/servertabwidget.ui
-RESOURCES += zima-cad-parts.qrc
+    src/servertabwidget.ui \
+    src/extensions/navbar/navbaroptionsdialog.ui
+RESOURCES += zima-cad-parts.qrc \
+    src/extensions/navbar/navbar.qrc
 
 OTHER_FILES += \
     zima-cad-parts.rc \
@@ -139,7 +152,30 @@ OTHER_FILES += \
     data/zima-cad-parts_cs_CZ.html \
     README \
     data/extensions/productview/proeproductview.html \
-    Doxyfile
+    Doxyfile \
+    src/extensions/navbar/styles/downarrowblue.png \
+    src/extensions/navbar/styles/sizegrip2003blue.png \
+    src/extensions/navbar/styles/sizegrip2003gray.png \
+    src/extensions/navbar/styles/sizegrip2003green.png \
+    src/extensions/navbar/styles/sizegrip2003silver.png \
+    src/extensions/navbar/styles/sizegrip2007black.png \
+    src/extensions/navbar/styles/sizegrip2007blue.png \
+    src/extensions/navbar/styles/sizegrip2007silver.png \
+    src/extensions/navbar/styles/splitter2003blue.png \
+    src/extensions/navbar/styles/splitter2003gray.png \
+    src/extensions/navbar/styles/splitter2003green.png \
+    src/extensions/navbar/styles/splitter2003silver.png \
+    src/extensions/navbar/styles/splitter2007black.png \
+    src/extensions/navbar/styles/splitter2007blue.png \
+    src/extensions/navbar/styles/splitter2007silver.png \
+    src/extensions/navbar/styles/office2003blue.css \
+    src/extensions/navbar/styles/office2003gray.css \
+    src/extensions/navbar/styles/office2003green.css \
+    src/extensions/navbar/styles/office2003silver.css \
+    src/extensions/navbar/styles/office2007black.css \
+    src/extensions/navbar/styles/office2007blue.css \
+    src/extensions/navbar/styles/office2007silver.css \
+    src/extensions/navbar/COPYING
 
 TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts
 

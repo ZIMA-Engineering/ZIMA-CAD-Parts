@@ -17,6 +17,8 @@ ServersWidget::ServersWidget(QWidget *parent)
     setupUi(this);
 
     serversToolBox->setStyleSheet("icon-size: 16px;");
+    serversToolBox->setStyleSheet(NavBar::loadStyle(":/styles/office2003gray.css"));
+
 	m_signalMapper = new QSignalMapper(this);
 
     // Note: called from MainWindow settingsChanged();
@@ -35,7 +37,7 @@ void ServersWidget::settingsChanged()
         // firstly delete all stuff used. Remember "the reset"
         foreach (ServersWidgetMap* i, m_map)
         {
-            serversToolBox->removeItem(i->index);
+            serversToolBox->removePage(i->index);
             stackedWidget->removeWidget(i->tab);
             i->model->deleteLater();
         }
@@ -81,7 +83,8 @@ void ServersWidget::settingsChanged()
             QTreeView *view = new QTreeView(this);
             view->header()->close();
             //serversToolBox->addItem(view, ds->dataSourceIcon(), ds->label);
-            serversToolBox->addItem(view, ds->itemIcon(model->rootItem()), ds->label);
+            //serversToolBox->addItem(view, ds->itemIcon(model->rootItem()), ds->label);
+            serversToolBox->addPage(view, ds->label, ds->itemIcon(model->rootItem()));
 
             mapItem->view = view;
 
@@ -117,6 +120,8 @@ void ServersWidget::settingsChanged()
             connect(model, SIGNAL(techSpecsIndexAlreadyExists(Item*)),
                     tab, SLOT(techSpecsIndexOverwrite(Item*)));
         }
+
+        serversToolBox->setVisibleRows(m_map.size());
 
     } // Settings::get()->DataSourcesNeedsUpdate
 
