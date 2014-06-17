@@ -68,6 +68,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->setupUi(this);
 
+    connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
 #ifdef Q_WS_WIN
     // do not display menu bar for now on WIndows. It contains only one "File" item now.
     // On th eother side it's mandatory to allow user to quit the app in some

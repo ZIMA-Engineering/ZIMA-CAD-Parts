@@ -548,10 +548,7 @@ void ServersModel::retranslateMetadata(Item *item)
 
 void ServersModel::retranslateMetadata(int languageIndex)
 {
-    qDebug() << "LANGGGGGGGGGG";
-    if (Settings::get()->getCurrentLanguageCode() == Settings::get()->Languages[languageIndex])
-        return;
-    qDebug() << "LANGGGGGGGGGG 111";
+    Settings::get()->setCurrentLanguageCode(Settings::get()->Languages[languageIndex]);
     retranslateMetadata();
 }
 

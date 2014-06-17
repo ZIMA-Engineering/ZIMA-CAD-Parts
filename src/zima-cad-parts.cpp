@@ -35,7 +35,20 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationName("ZIMA-CAD-Parts");
 
 	QApplication a(argc, argv);
-
+#if 0
+    qApp->setStyleSheet("QToolBox::tab {"
+                        "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+                        "                           stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,"
+                        "                           stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);"
+                        "border: 1px solid black;"
+                        "border-radius: 5px;"
+                        "xcolor: darkgray;"
+                        "}"
+                        "QToolBox::tab:selected { /* italicize selected tabs */"
+                        "xfont: italic;"
+                        "xcolor: white;"
+                        "}");
+#endif
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("utf8"));
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
