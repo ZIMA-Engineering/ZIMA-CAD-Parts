@@ -55,6 +55,10 @@ void Settings::load()
 
     MainWindowState = s.value("state").toByteArray();
     MainWindowGeometry = s.value("geometry").toByteArray();
+
+    foreach (QVariant i, s.value("Server/SplitterSizes").toList())
+        ServersSplitterSizes << i.toInt();
+
     WorkingDir = s.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString();
 
     GUIThumbWidth = s.value("GUI/ThumbWidth", 32).toInt();
@@ -71,7 +75,7 @@ void Settings::load()
     loadDataSources();
     setupFilterGroups();
 }
-
+#include <QtDebug>
 void Settings::save()
 {
     QSettings s;
@@ -92,6 +96,14 @@ void Settings::save()
 
     s.setValue("state", MainWindowState);
     s.setValue("geometry", MainWindowGeometry);
+
+    QVariantList l;
+    foreach (int i, ServersSplitterSizes)
+    {
+        l << i;
+    }
+    s.setValue("Server/SplitterSizes", l);
+
     s.setValue("WorkingDir", WorkingDir);
 
     s.setValue("GUIThumbWidth", GUIThumbWidth);

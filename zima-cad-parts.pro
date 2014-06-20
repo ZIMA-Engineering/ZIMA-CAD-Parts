@@ -76,7 +76,8 @@ SOURCES += zima-cad-parts.cpp \
     src/extensions/navbar/navbarheader.cpp \
     src/extensions/navbar/navbaroptionsdialog.cpp \
     src/extensions/navbar/navbarpagelistwidget.cpp \
-    src/extensions/navbar/navbarsplitter.cpp
+    src/extensions/navbar/navbarsplitter.cpp \
+    src/workingdirwidget.cpp
 
 
 HEADERS += mainwindow.h \
@@ -125,7 +126,8 @@ HEADERS += mainwindow.h \
     src/extensions/navbar/navbaroptionsdialog.h \
     src/extensions/navbar/navbarpage.h \
     src/extensions/navbar/navbarpagelistwidget.h \
-    src/extensions/navbar/navbarsplitter.h
+    src/extensions/navbar/navbarsplitter.h \
+    src/workingdirwidget.h
 
 
 FORMS += mainwindow.ui \
@@ -140,7 +142,8 @@ FORMS += mainwindow.ui \
     src/extensions/productview/failbackproductview.ui \
     src/serverswidget.ui \
     src/servertabwidget.ui \
-    src/extensions/navbar/navbaroptionsdialog.ui
+    src/extensions/navbar/navbaroptionsdialog.ui \
+    src/workingdirwidget.ui
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc
 

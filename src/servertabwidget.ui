@@ -27,27 +27,6 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Location:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="locationLineEdit">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="LanguageFlagsWidget" name="flagsWidget" native="true"/>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -354,12 +333,6 @@
    <class>TechSpecsWebView</class>
    <extends>QWebView</extends>
    <header>src/techspecswebview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>LanguageFlagsWidget</class>
-   <extends>QWidget</extends>
-   <header>src/languageflagswidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

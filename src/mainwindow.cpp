@@ -20,7 +20,6 @@
 
 #include <QApplication>
 #include <QLocale>
-#include <QFileDialog>
 #include <QMessageBox>
 #include <QSplashScreen>
 #include <QPixmap>
@@ -29,7 +28,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include <QDesktopServices>
 #include <QWebHistory>
 #include <QProcess>
 #include <QWebSettings>
@@ -43,6 +41,8 @@
 #include "zimautils.h"
 #include "errordialog.h"
 #include "settings.h"
+#include "languageflagswidget.h"
+#include "workingdirwidget.h"
 
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
@@ -98,9 +98,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     restoreState(Settings::get()->MainWindowState);
     restoreGeometry(Settings::get()->MainWindowGeometry);
 
-	connect(ui->btnBrowse, SIGNAL(clicked()), this, SLOT(setWorkingDirectoryDialog()));
-	connect(ui->openWorkDirButton, SIGNAL(clicked()), this, SLOT(openWorkingDirectory()));
-
 	QList<int> list;
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
@@ -125,10 +122,15 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 		ui->startStopDownloadBtn->setText(tr("Resume"));
 #endif
 
-    // HACK: move settings actions to the right of the window
-    QWidget* empty = new QWidget();
-    empty->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-    ui->toolBar->addWidget(empty);
+    m_wdirWidget = new WorkingDirWidget(this);
+    ui->toolBar->addWidget(m_wdirWidget);
+
+    ui->toolBar->addSeparator();
+
+    LanguageFlagsWidget *flagsWidget = new LanguageFlagsWidget(this);
+    ui->toolBar->addWidget(flagsWidget);
+    connect(flagsWidget, SIGNAL(changeLanguage(int)),
+            ui->serversWidget, SLOT(retranslateMetadata(int)));
 
     ui->toolBar->addSeparator();
     ui->toolBar->addAction(ui->action_Preferences);
@@ -168,21 +170,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 #warning "TODO/FIXME: saveQueue"
     //serversModel->saveQueue(settings);
 
-    Settings::get()->save();
-
 	QMainWindow::closeEvent(e);
-}
-
-void MainWindow::setWorkingDirectoryDialog()
-{
-    QString str = QFileDialog::getExistingDirectory(this,
-                                                    tr("ZIMA-CAD-Parts - set working directory"),
-                                                    Settings::get()->WorkingDir);
-	if (!str.isEmpty())
-	{
-        Settings::get()->WorkingDir = str;
-        settingsChanged();
-	}
 }
 
 void MainWindow::showSettings(SettingsDialog::Section section)
@@ -196,7 +184,6 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 
 void MainWindow::settingsChanged()
 {
-    ui->workingDirectoryEdit->setText(Settings::get()->WorkingDir);
     Settings::get()->recalculateFilters();
 
 #if 0
@@ -219,6 +206,7 @@ void MainWindow::settingsChanged()
     }
 #endif
     ui->serversWidget->settingsChanged();
+    m_wdirWidget->settingsChanged();
 
     // Prune tree history
     history.clear();
@@ -248,23 +236,6 @@ void MainWindow::errorOccured(const QString &error)
 void MainWindow::filesDownloaded()
 {
 	updateStatus(tr("Parts downloaded."));
-}
-
-void MainWindow::openWorkingDirectory()
-{
-    if(!QFile::exists(Settings::get()->WorkingDir))
-	{
-		QDir dir;
-
-        if(!dir.mkpath(Settings::get()->WorkingDir))
-		{
-            QMessageBox::warning(this, tr("Unable to create working directory"),
-                                 tr("Unable to create working directory: %1").arg(Settings::get()->WorkingDir));
-			return;
-		}
-	}
-
-    QDesktopServices::openUrl(QUrl::fromLocalFile(Settings::get()->WorkingDir));
 }
 
 void MainWindow::autoDescentProgress(const QModelIndex &index)

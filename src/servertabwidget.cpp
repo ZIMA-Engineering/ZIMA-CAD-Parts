@@ -117,9 +117,6 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 #warning "TODO/FIXME: icon for the button to save space"
     connect(ui->filterButton, SIGNAL(clicked()),
             this, SLOT(setFiltersDialog()));
-
-    connect(ui->flagsWidget, SIGNAL(changeLanguage(int)),
-            m_serversModel, SLOT(retranslateMetadata(int)));
 }
 
 ServerTabWidget::~ServerTabWidget()
@@ -286,7 +283,6 @@ void ServerTabWidget::setPartsIndex(const QModelIndex &index)
     //qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
 
     m_fileModel->setRootIndex(index);
-    ui->locationLineEdit->setText(static_cast<Item*>(index.internalPointer())->pathWithDataSource());
     partsIndexLoaded(index);
 }
 

@@ -546,12 +546,6 @@ void ServersModel::retranslateMetadata(Item *item)
 	}
 }
 
-void ServersModel::retranslateMetadata(int languageIndex)
-{
-    Settings::get()->setCurrentLanguageCode(Settings::get()->Languages[languageIndex]);
-    retranslateMetadata();
-}
-
 void ServersModel::dataSourceFinishedDownloading()
 {
     if( m_downloadModel->isEmpty() )

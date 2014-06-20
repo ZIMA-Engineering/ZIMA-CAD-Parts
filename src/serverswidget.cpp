@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QProcess>
+#include <QDesktopServices>
 #include <QtDebug>
 
 
@@ -16,15 +17,20 @@ ServersWidget::ServersWidget(QWidget *parent)
 {
     setupUi(this);
 
-    serversToolBox->setStyleSheet("icon-size: 16px;");
     serversToolBox->setStyleSheet(NavBar::loadStyle(":/styles/office2003gray.css"));
 
 	m_signalMapper = new QSignalMapper(this);
 
-    // Note: called from MainWindow settingsChanged();
+    splitter->setSizes(Settings::get()->ServersSplitterSizes);
 
 	connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(spawnZimaUtilityOnDir(int)));
     connect(serversToolBox, SIGNAL(currentChanged(int)), stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(splitter, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)));
+}
+
+void ServersWidget::splitterMoved(int, int)
+{
+    Settings::get()->ServersSplitterSizes = splitter->sizes();
 }
 
 void ServersWidget::settingsChanged()
@@ -146,11 +152,14 @@ void ServersWidget::dirTreeContextMenu(QPoint point)
 
 	QMenu *menu = new QMenu(this);
 
+    menu->addAction(style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open"), this, SLOT(indexOpenPath()));
+
     if (m_map[serversToolBox->currentIndex()]->model->dataSource()->dataSource == LOCAL)
     {
         menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
-        menu->addSeparator();
     }
+
+    menu->addSeparator();
 
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), "Clean with ZIMA-PTC-Cleaner", m_signalMapper, SLOT(map())), ZimaUtils::ZimaPtcCleaner);
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), "Sync with ZIMA-CAD-Sync", m_signalMapper, SLOT(map())), ZimaUtils::ZimaCadSync);
@@ -181,8 +190,6 @@ void ServersWidget::spawnZimaUtilityOnDir(int i)
 		emit showSettings(SettingsDialog::ExternalPrograms);
 		return;
 	}
-
-	qDebug() << "Spawn" << label;
 
 	QStringList args;
 
@@ -237,6 +244,15 @@ void ServersWidget::goToWorkingDirectory()
     }
 }
 
+void ServersWidget::retranslateMetadata(int langIndex)
+{
+    Settings::get()->setCurrentLanguageCode(Settings::get()->Languages[langIndex]);
+    foreach (ServersWidgetMap* i, m_map)
+    {
+        i->model->retranslateMetadata();
+    }
+}
+
 void ServersWidget::setWorkingDirectory()
 {
     QTreeView *view = m_map[serversToolBox->currentIndex()]->view;
@@ -245,4 +261,18 @@ void ServersWidget::setWorkingDirectory()
         return;
     Settings::get()->WorkingDir = it->pathWithDataSource();
     emit workingDirChanged();
+}
+
+void ServersWidget::indexOpenPath()
+{
+    QModelIndex index = currentIndex();
+    if (!index.isValid())
+        return;
+
+    Item *i = static_cast<Item*>(index.internalPointer());
+    QString path = i->server->getPathForItem(i);// pathWithDataSource();
+
+    // Warning: it opens local file, even for remote datasources
+#warning it opens local file, even for remote datasources
+    QDesktopServices::openUrl(QUrl::fromLocalFile(path));
 }

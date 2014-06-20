@@ -28,6 +28,8 @@ public:
     QByteArray MainWindowState;
     QByteArray MainWindowGeometry;
 
+    QList<int> ServersSplitterSizes;
+
     int GUIThumbWidth;
     int GUIPreviewWidth;
     bool GUISplashEnabled;

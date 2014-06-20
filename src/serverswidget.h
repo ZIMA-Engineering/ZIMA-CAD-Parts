@@ -71,6 +71,7 @@ public slots:
 	void expand(const QModelIndex & index);
     void settingsChanged();
     void goToWorkingDirectory();
+    void retranslateMetadata(int langIndex);
 
 private:
     QList<ServersWidgetMap*> m_map;
@@ -85,6 +86,8 @@ private slots:
 	void loadingItem(Item *i);
 	void allItemsLoaded();
     void setWorkingDirectory();
+    void indexOpenPath();
+    void splitterMoved(int, int);
 };
 
 #endif // SERVERSWIDGET_H

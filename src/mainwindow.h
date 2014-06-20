@@ -39,6 +39,7 @@
 #include "zima-cad-parts.h"
 #include "filefiltermodel.h"
 
+class WorkingDirWidget;
 
 namespace Ui
 {
@@ -58,6 +59,7 @@ private:
 
     QLabel              *statusDir; // status bar
     QTranslator *translator;// app ui
+    WorkingDirWidget *m_wdirWidget;
 
 	// History
 	QList<QModelIndex> history;
@@ -72,7 +74,6 @@ private:
 	void closeEvent(QCloseEvent*);
 
 public slots:
-	void setWorkingDirectoryDialog();
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
 	void searchClicked();
 	void updateStatus(const QString &message);
@@ -81,7 +82,6 @@ public slots:
 
 private slots:
     void settingsChanged();
-	void openWorkingDirectory();
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();
