@@ -75,8 +75,8 @@ void ProductView::hideEvent(QHideEvent * e)
 
 void ProductView::showEvent(QShowEvent *e)
 {
-    restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
-    QPoint pt = Settings::get()->ExtensionsProductViewPosition;
+	restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
+	QPoint pt = Settings::get()->ExtensionsProductViewPosition;
 	if (!pt.isNull())
 		move(pt);
 
@@ -85,8 +85,8 @@ void ProductView::showEvent(QShowEvent *e)
 
 void ProductView::saveSettings()
 {
-    Settings::get()->ExtensionsProductViewGeometry = saveGeometry();
-    Settings::get()->ExtensionsProductViewPosition = pos();
+	Settings::get()->ExtensionsProductViewGeometry = saveGeometry();
+	Settings::get()->ExtensionsProductViewPosition = pos();
 }
 
 

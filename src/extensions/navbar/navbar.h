@@ -1,4 +1,4 @@
-﻿#ifndef NAVBAR_H
+#ifndef NAVBAR_H
 #define NAVBAR_H
 
 #include <QStackedWidget>

@@ -16,17 +16,17 @@ class QSignalMapper;
 class ServersWidgetMap
 {
 public:
-    ~ServersWidgetMap()
-    {
-        view->deleteLater();
-        model->deleteLater();
-        tab->deleteLater();
-    }
+	~ServersWidgetMap()
+	{
+		view->deleteLater();
+		model->deleteLater();
+		tab->deleteLater();
+	}
 
-    int index;
-    ServersModel *model;
-    QTreeView *view;
-    ServerTabWidget *tab;
+	int index;
+	ServersModel *model;
+	QTreeView *view;
+	ServerTabWidget *tab;
 };
 
 
@@ -37,14 +37,14 @@ public:
 	explicit ServersWidget(QWidget *parent = 0);
 	//void setModel(ServersModel *model);
 
-    void retranslateMetadata();
+	void retranslateMetadata();
 
-    void refresh(Item* item);
-    void deleteFiles();
-    void uncheckAll();
+	void refresh(Item* item);
+	void deleteFiles();
+	void uncheckAll();
 
 	QModelIndex currentIndex();
-    void setModelindex(const QModelIndex &index);
+	void setModelindex(const QModelIndex &index);
 
 signals:
 	void statusUpdated(const QString &message);
@@ -54,27 +54,27 @@ signals:
 	void clicked(const QModelIndex&);
 	void activated(const QModelIndex&);
 	// emit newly selected tree view root item to MainWindow to load toplevel files into part view
-    //void groupChanged(const QModelIndex&);
+	//void groupChanged(const QModelIndex&);
 
-    void errorOccured(const QString &error);
-    void filesDownloaded();
-    void fileDownloaded(File*);
+	void errorOccured(const QString &error);
+	void filesDownloaded();
+	void fileDownloaded(File*);
 
-    void techSpecAvailable(const QUrl&);
-    void autoDescentProgress(const QModelIndex&);
+	void techSpecAvailable(const QUrl&);
+	void autoDescentProgress(const QModelIndex&);
 	void autoDescentComplete(const QModelIndex&);
-    void autoDescentNotFound();
+	void autoDescentNotFound();
 
-    void workingDirChanged();
+	void workingDirChanged();
 
 public slots:
 	void expand(const QModelIndex & index);
-    void settingsChanged();
-    void goToWorkingDirectory();
-    void retranslateMetadata(int langIndex);
+	void settingsChanged();
+	void goToWorkingDirectory();
+	void retranslateMetadata(int langIndex);
 
 private:
-    QList<ServersWidgetMap*> m_map;
+	QList<ServersWidgetMap*> m_map;
 
 	QSignalMapper *m_signalMapper;
 	QStringList m_zimaUtils;
@@ -85,9 +85,9 @@ private slots:
 
 	void loadingItem(Item *i);
 	void allItemsLoaded();
-    void setWorkingDirectory();
-    void indexOpenPath();
-    void splitterMoved(int, int);
+	void setWorkingDirectory();
+	void indexOpenPath();
+	void splitterMoved(int, int);
 };
 
 #endif // SERVERSWIDGET_H

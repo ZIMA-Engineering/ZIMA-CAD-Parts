@@ -12,12 +12,12 @@ public:
 	explicit TreeAutoDescent(ServersModel *sm, Item *root, QString path, QObject *parent = 0);
 	bool waitsFor(Item *item) const;
 	QString path();
-	
+
 signals:
 	void progress(TreeAutoDescent *descent, Item *item);
 	void completed(TreeAutoDescent *descent, Item *item);
 	void notFound(TreeAutoDescent *descent);
-	
+
 public slots:
 	void descend();
 	void continueDescent(bool loaded = false);
@@ -30,7 +30,7 @@ private:
 	Item *m_currentItem;
 	BaseDataSource *m_ds;
 	Item *m_done;
-	
+
 };
 
 #endif // TREEAUTODESCENT_H

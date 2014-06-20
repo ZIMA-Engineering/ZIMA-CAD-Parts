@@ -1,4 +1,4 @@
-﻿#include <QStylePainter>
+#include <QStylePainter>
 #include <QStyleOptionButton>
 #include <QFontMetrics>
 #include "navbarheader.h"

@@ -46,7 +46,7 @@ public:
 		None
 	};
 
-    explicit DownloadModel(TransferHandler *handler, QObject *parent = 0);
+	explicit DownloadModel(TransferHandler *handler, QObject *parent = 0);
 
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -54,7 +54,7 @@ public:
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-    QList<File*> files();
+	QList<File*> files();
 	bool isEmpty() const;
 	bool isDownloading() const;
 
@@ -75,7 +75,7 @@ private slots:
 private:
 	QList<File*> queue;
 	bool m_downloading;
-    TransferHandler *m_handler;
+	TransferHandler *m_handler;
 };
 
 #endif // DOWNLOADMODEL_H

@@ -138,14 +138,14 @@ void BaseDataSource::sendTechSpecUrl(Item* item)
 void BaseDataSource::retranslate(QString lang)
 {
 	if(lang.isEmpty())
-        currentMetadataLang = Settings::get()->getCurrentLanguageCode().left(2);
+		currentMetadataLang = Settings::get()->getCurrentLanguageCode().left(2);
 	else
 		currentMetadataLang = lang;
 }
 
 void BaseDataSource::createMetadata(Item *item)
 {
-    Q_ASSERT(item);
+	Q_ASSERT(item);
 
 	item->metadata = new Metadata(item);
 

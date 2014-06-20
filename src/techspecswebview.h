@@ -38,9 +38,9 @@ public:
 	void stopDownload();
 	void resumeDownload();
 	void clearQueue();
-	
+
 signals:
-	
+
 public slots:
 	void loadAboutPage();
 
@@ -55,8 +55,8 @@ private slots:
 private:
 	QString m_rootPath;
 	QString m_dlDir;
-    DownloadModel *m_downloadModel;
-	
+	DownloadModel *m_downloadModel;
+
 };
 
 #endif // TECHSPECSWEBVIEW_H

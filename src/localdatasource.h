@@ -26,7 +26,7 @@
 
 class LocalCopier : public QThread
 {
-Q_OBJECT
+	Q_OBJECT
 public:
 	LocalCopier(QList<File*> files = QList<File*>());
 	LocalCopier(File* file);

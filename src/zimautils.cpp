@@ -48,5 +48,5 @@ QString ZimaUtils::labelForUtility(ZimaUtility util)
 
 QStringList ZimaUtils::paths()
 {
-    return Settings::get()->ExternalPrograms.values();
+	return Settings::get()->ExternalPrograms.values();
 }

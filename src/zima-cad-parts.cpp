@@ -41,32 +41,32 @@ int main(int argc, char *argv[])
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
 
 	QTranslator translator;
-    QString lang = Settings::get()->getCurrentLanguageCode();
+	QString lang = Settings::get()->getCurrentLanguageCode();
 
-    QString filename = "zima-cad-parts_" + lang;
+	QString filename = "zima-cad-parts_" + lang;
 	QStringList paths;
 
 	paths
-			<< filename
-			<< ("locale/" + filename)
-			<< (":/" + filename);
+	        << filename
+	        << ("locale/" + filename)
+	        << (":/" + filename);
 
 #ifdef Q_OS_MAC
 	paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
 #endif
 
 	foreach(QString path, paths)
-		if( translator.load(path) )
-		{
-			a.installTranslator(&translator);
-			break;
-		}
+	if( translator.load(path) )
+	{
+		a.installTranslator(&translator);
+		break;
+	}
 
 	MainWindow w(&translator);
 	w.show();
 
-    int ret = a.exec();
+	int ret = a.exec();
 
-    Settings::get()->save();
-    return ret;
+	Settings::get()->save();
+	return ret;
 }

@@ -61,7 +61,7 @@ public:
 		File *file;
 		QString error;
 
-		Error(File *f, QString s) : file(f), error(s){}
+		Error(File *f, QString s) : file(f), error(s) {}
 	};
 
 	explicit BaseDataSource(QObject *parent = 0);

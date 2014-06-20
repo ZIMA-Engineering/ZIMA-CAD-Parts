@@ -13,8 +13,8 @@ class FileFilter
 {
 public:
 	enum FileFilters {
-	    Extension,
-	    Version
+		Extension,
+		Version
 	};
 
 	FileFilter(File::FileTypes type);

@@ -50,7 +50,7 @@ private:
 	void refill();
 
 	Ui::AddEditDataSource *ui;
-    DataSourceList dataSources;
+	DataSourceList dataSources;
 	BaseDataSource *lastDataSource;
 private slots:
 	void openFileDialog();

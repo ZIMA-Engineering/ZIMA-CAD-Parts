@@ -73,16 +73,16 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	connect(m_ui->productViewButton, SIGNAL(clicked()),
 	        this, SLOT(productViewButton_clicked()));
 
-    setupDatasourceList();
+	setupDatasourceList();
 
-    m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
-    m_ui->previewWidthSpinBox->setValue(Settings::get()->GUIPreviewWidth);
-    m_ui->languageComboBox->setCurrentIndex(Settings::get()->langIndex(Settings::get()->getCurrentLanguageCode()));
-    m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
-    m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
-    m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
-    m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperTechSpecToolBar);
-    m_ui->productViewEdit->setText(Settings::get()->ExtensionsProductViewPath);
+	m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
+	m_ui->previewWidthSpinBox->setValue(Settings::get()->GUIPreviewWidth);
+	m_ui->languageComboBox->setCurrentIndex(Settings::get()->langIndex(Settings::get()->getCurrentLanguageCode()));
+	m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
+	m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
+	m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
+	m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperTechSpecToolBar);
+	m_ui->productViewEdit->setText(Settings::get()->ExtensionsProductViewPath);
 
 	connect(m_ui->proeButton, SIGNAL(clicked()),
 	        this, SLOT(proeButton_clicked()));
@@ -91,28 +91,28 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 
 	connect(zimaUtilSignalMapper, SIGNAL(mapped(int)), this, SLOT(setZimaUtilPath(int)));
 
-    QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
-    int i = 0;
-    while (it.hasNext())
-    {
-        it.next();
+	QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
+	int i = 0;
+	while (it.hasNext())
+	{
+		it.next();
 
 		QToolButton *t = new QToolButton(this);
 		t->setText("...");
 
 		connect(t, SIGNAL(clicked()), zimaUtilSignalMapper, SLOT(map()));
 
-        zimaUtilLineEdits << new QLineEdit(it.value(), this);
+		zimaUtilLineEdits << new QLineEdit(it.value(), this);
 
-        m_ui->gridLayout->addWidget(new QLabel(it.key(), this), i, 0);
+		m_ui->gridLayout->addWidget(new QLabel(it.key(), this), i, 0);
 		m_ui->gridLayout->addWidget(zimaUtilLineEdits.last(), i, 1);
 		m_ui->gridLayout->addWidget(t, i, 2);
 
 		zimaUtilSignalMapper->setMapping(t, i);
-        ++i;
+		++i;
 	}
 
-    m_ui->proeEdit->setText(Settings::get()->ProeExecutable);
+	m_ui->proeEdit->setText(Settings::get()->ProeExecutable);
 
 }
 
@@ -139,17 +139,17 @@ void SettingsDialog::setSection(SettingsDialog::Section s)
 
 void SettingsDialog::accept()
 {
-    Settings::get()->GUIThumbWidth = m_ui->spinPicture->value();
-    Settings::get()->GUIPreviewWidth = m_ui->previewWidthSpinBox->value();
-    Settings::get()->GUISplashEnabled = m_ui->splashGroupBox->isChecked();
-    Settings::get()->GUISplashDuration = m_ui->splashDurationSpinBox->value();
-    Settings::get()->DeveloperEnabled = m_ui->developerModeGroupBox->isChecked();
-    Settings::get()->DeveloperTechSpecToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
-    Settings::get()->ExtensionsProductViewPath = m_ui->productViewEdit->text();
+	Settings::get()->GUIThumbWidth = m_ui->spinPicture->value();
+	Settings::get()->GUIPreviewWidth = m_ui->previewWidthSpinBox->value();
+	Settings::get()->GUISplashEnabled = m_ui->splashGroupBox->isChecked();
+	Settings::get()->GUISplashDuration = m_ui->splashDurationSpinBox->value();
+	Settings::get()->DeveloperEnabled = m_ui->developerModeGroupBox->isChecked();
+	Settings::get()->DeveloperTechSpecToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
+	Settings::get()->ExtensionsProductViewPath = m_ui->productViewEdit->text();
 
 
-    QString lang = Settings::get()->langIndexToName( m_ui->languageComboBox->currentIndex() );
-    if (lang != Settings::get()->getCurrentLanguageCode())
+	QString lang = Settings::get()->langIndexToName( m_ui->languageComboBox->currentIndex() );
+	if (lang != Settings::get()->getCurrentLanguageCode())
 	{
 		qApp->removeTranslator(*translator);
 
@@ -175,37 +175,37 @@ void SettingsDialog::accept()
 		}
 	}
 
-    Settings::get()->setCurrentLanguageCode(lang);
+	Settings::get()->setCurrentLanguageCode(lang);
 
-    QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
-    int i = 0;
-    while (it.hasNext())
-    {
-        it.next();
-        Settings::get()->ExternalPrograms[it.key()] = zimaUtilLineEdits[i]->text();
-        ++i;
+	QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
+	int i = 0;
+	while (it.hasNext())
+	{
+		it.next();
+		Settings::get()->ExternalPrograms[it.key()] = zimaUtilLineEdits[i]->text();
+		++i;
 	}
 
-    Settings::get()->ProeExecutable = m_ui->proeEdit->text();
+	Settings::get()->ProeExecutable = m_ui->proeEdit->text();
 
-    // datasources
-    DataSourceList newDSList;
-    for (int i = 0; i < m_ui->datasourceList->count(); ++i)
-    {
-        QListWidgetItem *item = m_ui->datasourceList->item(i);
-        newDSList << PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
-    }
+	// datasources
+	DataSourceList newDSList;
+	for (int i = 0; i < m_ui->datasourceList->count(); ++i)
+	{
+		QListWidgetItem *item = m_ui->datasourceList->item(i);
+		newDSList << PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
+	}
 
-    if (newDSList != Settings::get()->DataSources)
-    {
-        // Note: do not delete datasources here. It will be handled in ServersWidget::settingsChanged()
-        //qDeleteAll(Settings::get()->DataSources);
-        Settings::get()->DataSources.clear();
-        Settings::get()->DataSources = newDSList;
-        Settings::get()->DataSourcesNeedsUpdate = true;
-    }
+	if (newDSList != Settings::get()->DataSources)
+	{
+		// Note: do not delete datasources here. It will be handled in ServersWidget::settingsChanged()
+		//qDeleteAll(Settings::get()->DataSources);
+		Settings::get()->DataSources.clear();
+		Settings::get()->DataSources = newDSList;
+		Settings::get()->DataSourcesNeedsUpdate = true;
+	}
 
-    QDialog::accept();
+	QDialog::accept();
 }
 
 void SettingsDialog::addDataSource()
@@ -343,10 +343,10 @@ void SettingsDialog::datasourceDownButton_clicked()
 void SettingsDialog::setupDatasourceList()
 {
 	m_ui->datasourceList->clear();
-    if (Settings::get()->DataSources.isEmpty())
+	if (Settings::get()->DataSources.isEmpty())
 		return;
 
-    foreach(BaseDataSource *s, Settings::get()->DataSources)
+	foreach(BaseDataSource *s, Settings::get()->DataSources)
 	{
 		QListWidgetItem *i = new QListWidgetItem(s->dataSourceIcon(), s->label);
 		i->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(s));

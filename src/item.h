@@ -41,48 +41,48 @@ class DataTransfer;
 struct File
 {
 	enum FileTypes {
-	    // Pro/e
-	    PRT_PROE=0,
-	    ASM,
-	    DRW,
-	    FRM,
-	    NEU_PROE,
-	    // CATIA
-	    CATPART,
-	    CATPRODUCT,
-	    CATDRAWING,
-	    // NX
-	    PRT_NX,
-	    // SolidWorks
-	    SLDPRT,
-	    SLDASM,
-	    SLDDRW,
-	    // Solid Edge
-	    PAR,
-	    PSM,
+		// Pro/e
+		PRT_PROE=0,
+		ASM,
+		DRW,
+		FRM,
+		NEU_PROE,
+		// CATIA
+		CATPART,
+		CATPRODUCT,
+		CATDRAWING,
+		// NX
+		PRT_NX,
+		// SolidWorks
+		SLDPRT,
+		SLDASM,
+		SLDDRW,
+		// Solid Edge
+		PAR,
+		PSM,
 //		ASM,
-	    DFT,
-	    // Inventor
-	    IPT,
-	    IAM,
-	    IDW,
-	    // CAD NEUTRAL
-	    STEP,
-	    IGES,
-	    DWG,
-	    DXF,
-	    // NonCAD
-	    STL,
-	    BLEND,
-	    PDF,
-	    OFFICE_WRITER,
-	    OFFICE_CALC,
-	    OFFICE_IMPRESS,
-	    OFFICE_DRAW,
-	    OFFICE_PROJECT,
-	    OFFICE_BASE,
-	    TYPES_COUNT,
-	    UNDEFINED
+		DFT,
+		// Inventor
+		IPT,
+		IAM,
+		IDW,
+		// CAD NEUTRAL
+		STEP,
+		IGES,
+		DWG,
+		DXF,
+		// NonCAD
+		STL,
+		BLEND,
+		PDF,
+		OFFICE_WRITER,
+		OFFICE_CALC,
+		OFFICE_IMPRESS,
+		OFFICE_DRAW,
+		OFFICE_PROJECT,
+		OFFICE_BASE,
+		TYPES_COUNT,
+		UNDEFINED
 	};
 
 	File():thumbnail(0),openFtpFile(0),isChecked(false),type(UNDEFINED),bytesDone(0),version(0),newestVersion(false),transfer(0) {}
@@ -120,7 +120,7 @@ struct File
 	int version;
 	bool newestVersion;
 	DataTransfer *transfer;
-    DownloadModel::TransferHandlerType transferHandler;
+	DownloadModel::TransferHandlerType transferHandler;
 
 private:
 	QPixmap m_icon;

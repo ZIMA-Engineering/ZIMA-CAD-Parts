@@ -9,11 +9,11 @@ class ZimaUtils
 {
 public:
 	enum ZimaUtility {
-	    ZimaPtcCleaner,
-	    ZimaCadSync,
-	    ZimaPs2Pdf,
-	    ZimaStepEdit,
-	    ZimaUtilsCount
+		ZimaPtcCleaner,
+		ZimaCadSync,
+		ZimaPs2Pdf,
+		ZimaStepEdit,
+		ZimaUtilsCount
 	};
 
 	static QString internalNameForUtility(int util);

@@ -194,11 +194,11 @@ Qt::ItemFlags FileModel::flags(const QModelIndex &index) const
 
 void FileModel::setRootIndex(const QModelIndex &index)
 {
-    if ( !index.isValid() )
-    {
-        return;
-    }
-    setRootIndex(static_cast<Item*>(index.internalPointer()));
+	if ( !index.isValid() )
+	{
+		return;
+	}
+	setRootIndex(static_cast<Item*>(index.internalPointer()));
 }
 
 void FileModel::setRootIndex(Item *item)
@@ -213,7 +213,7 @@ void FileModel::setRootIndex(Item *item)
 			disconnect(rootItem->metadata, SIGNAL(retranslated()), this, SLOT(metadataRetranslated()));
 	}
 
-    if (!item)
+	if (!item)
 	{
 		rootItem = 0;
 		formalRootItem = 0;
@@ -222,7 +222,7 @@ void FileModel::setRootIndex(Item *item)
 	}
 
 	//emit layoutAboutToBeChanged();
-    rootItem = item;
+	rootItem = item;
 	connect(rootItem->server, SIGNAL(thumbnailLoaded(File*)), this, SLOT(thumbnailDownloaded(File*)));
 	connect(rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(initMetadata(Item*)));
 	connect(rootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(itemLoaded(Item*)));

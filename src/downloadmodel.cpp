@@ -51,8 +51,8 @@ void DownloadDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
 
 DownloadModel::DownloadModel(TransferHandler *handler, QObject *parent) :
 	QAbstractItemModel(parent),
-    m_downloading(false),
-    m_handler(handler)
+	m_downloading(false),
+	m_handler(handler)
 {
 }
 
@@ -139,9 +139,9 @@ QList<File*> DownloadModel::files()
 	QList<File*> tmp;
 
 	foreach(File *f, queue)
-    {
-        tmp << f;
-    }
+	{
+		tmp << f;
+	}
 
 	return tmp;
 }
@@ -192,7 +192,7 @@ void DownloadModel::clear()
 {
 	beginRemoveRows(QModelIndex(), 0, queue.count() - 1);
 	stop();
-    m_handler->clearQueue();
+	m_handler->clearQueue();
 	queue.clear();
 	endRemoveRows();
 }
@@ -208,8 +208,8 @@ void DownloadModel::fileDownloaded(File *file)
 {
 	int i = queue.indexOf(file);
 
-    if (i != -1)
-    {
+	if (i != -1)
+	{
 		beginRemoveRows(QModelIndex(), i, i);
 
 		File *f = queue.takeAt(i);
@@ -224,11 +224,11 @@ void DownloadModel::fileDownloaded(File *file)
 void DownloadModel::stop()
 {
 	m_downloading = false;
-    m_handler->stopDownload();
+	m_handler->stopDownload();
 }
 
 void DownloadModel::resume()
 {
 	m_downloading = true;
-    m_handler->resumeDownload();
+	m_handler->resumeDownload();
 }

@@ -36,7 +36,7 @@
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
 	QWebView(parent)
 {
-    m_downloadModel = new DownloadModel(this, this);
+	m_downloadModel = new DownloadModel(this, this);
 
 	loadAboutPage();
 
@@ -59,7 +59,7 @@ void TechSpecsWebView::setDownloadDirectory(QString path)
 
 void TechSpecsWebView::stopDownload()
 {
-    QList<File*> tmp = m_downloadModel->files();
+	QList<File*> tmp = m_downloadModel->files();
 
 	foreach(File *f, tmp)
 	f->transfer->cancel();
@@ -67,7 +67,7 @@ void TechSpecsWebView::stopDownload()
 
 void TechSpecsWebView::resumeDownload()
 {
-    QList<File*> tmp = m_downloadModel->files();
+	QList<File*> tmp = m_downloadModel->files();
 
 	foreach(File *f, tmp)
 	downloadFile(page()->networkAccessManager()->get(QNetworkRequest(f->path)), f);
@@ -76,7 +76,7 @@ void TechSpecsWebView::resumeDownload()
 
 void TechSpecsWebView::clearQueue()
 {
-    QList<File*> tmp = m_downloadModel->files();
+	QList<File*> tmp = m_downloadModel->files();
 
 	foreach(File *f, tmp)
 	delete f->transfer;
@@ -85,7 +85,7 @@ void TechSpecsWebView::clearQueue()
 void TechSpecsWebView::loadAboutPage()
 {
 	QString url = ":/data/zima-cad-parts%1.html";
-    QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
+	QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
 	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
 
 	QFile f(filename);
@@ -199,5 +199,5 @@ void TechSpecsWebView::downloadFile(QNetworkReply *reply, File *f)
 		f->size = reply->rawHeader("Content-Length").toULongLong();
 
 	if(f->transfer->initiate() && isNew)
-        m_downloadModel->enqueue(f);
+		m_downloadModel->enqueue(f);
 }

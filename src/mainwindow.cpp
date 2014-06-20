@@ -50,12 +50,12 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
 	  historyCurrentIndex(-1),
-      historySize(0)
+	  historySize(0)
 {
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
-    bool useSplash = Settings::get()->GUISplashEnabled;
-    QSplashScreen *splash = 0;
+	bool useSplash = Settings::get()->GUISplashEnabled;
+	QSplashScreen *splash = 0;
 
 	if( useSplash )
 	{
@@ -68,13 +68,13 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->setupUi(this);
 
-    connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+	connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 #ifdef Q_WS_WIN
-    // do not display menu bar for now on WIndows. It contains only one "File" item now.
-    // On th eother side it's mandatory to allow user to quit the app in some
-    // X11 window manager (and mac)
-    ui->menuBar->hide();
+	// do not display menu bar for now on WIndows. It contains only one "File" item now.
+	// On th eother side it's mandatory to allow user to quit the app in some
+	// X11 window manager (and mac)
+	ui->menuBar->hide();
 #endif
 
 	ui->actionHistoryBack->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
@@ -88,15 +88,15 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->actionHistoryBack, SIGNAL(triggered()), this, SLOT(historyBack()));
 	connect(ui->actionHistoryForward, SIGNAL(triggered()), this, SLOT(historyForward()));
 
-    connect(ui->actionHome, SIGNAL(triggered()),
-            ui->serversWidget, SLOT(goToWorkingDirectory()));
+	connect(ui->actionHome, SIGNAL(triggered()),
+	        ui->serversWidget, SLOT(goToWorkingDirectory()));
 
 	statusDir = new QLabel(tr("Ready"), this);
 	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	statusBar()->addWidget(statusDir, 100);
 
-    restoreState(Settings::get()->MainWindowState);
-    restoreGeometry(Settings::get()->MainWindowGeometry);
+	restoreState(Settings::get()->MainWindowState);
+	restoreGeometry(Settings::get()->MainWindowGeometry);
 
 	QList<int> list;
 	list << (int)(width()*0.25) << (int)(width()*0.75);
@@ -106,14 +106,14 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->serversWidget, SIGNAL(statusUpdated(QString)),
 	        this, SLOT(updateStatus(QString)));
 	connect(ui->serversWidget, SIGNAL(autoDescentProgress(QModelIndex)),
-            this, SLOT(autoDescentProgress(QModelIndex)));
+	        this, SLOT(autoDescentProgress(QModelIndex)));
 	connect(ui->serversWidget, SIGNAL(autoDescentComplete(QModelIndex)),
-            this, SLOT(autoDescendComplete(QModelIndex)));
+	        this, SLOT(autoDescendComplete(QModelIndex)));
 	connect(ui->serversWidget, SIGNAL(autoDescentNotFound()),
-            this, SLOT(autoDescentNotFound()));
+	        this, SLOT(autoDescentNotFound()));
 
 	connect(ui->serversWidget, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
-    connect(ui->serversWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
+	connect(ui->serversWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
 
 #warning "TODO/FIXME: server model"
@@ -122,28 +122,28 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 		ui->startStopDownloadBtn->setText(tr("Resume"));
 #endif
 
-    m_wdirWidget = new WorkingDirWidget(this);
-    ui->toolBar->addWidget(m_wdirWidget);
+	m_wdirWidget = new WorkingDirWidget(this);
+	ui->toolBar->addWidget(m_wdirWidget);
 
-    ui->toolBar->addSeparator();
+	ui->toolBar->addSeparator();
 
-    LanguageFlagsWidget *flagsWidget = new LanguageFlagsWidget(this);
-    ui->toolBar->addWidget(flagsWidget);
-    connect(flagsWidget, SIGNAL(changeLanguage(int)),
-            ui->serversWidget, SLOT(retranslateMetadata(int)));
+	LanguageFlagsWidget *flagsWidget = new LanguageFlagsWidget(this);
+	ui->toolBar->addWidget(flagsWidget);
+	connect(flagsWidget, SIGNAL(changeLanguage(int)),
+	        ui->serversWidget, SLOT(retranslateMetadata(int)));
 
-    ui->toolBar->addSeparator();
-    ui->toolBar->addAction(ui->action_Preferences);
-    connect(ui->action_Preferences, SIGNAL(triggered()), this, SLOT(showSettings()));
+	ui->toolBar->addSeparator();
+	ui->toolBar->addAction(ui->action_Preferences);
+	connect(ui->action_Preferences, SIGNAL(triggered()), this, SLOT(showSettings()));
 
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
-    settingsChanged();
-    ui->serversWidget->goToWorkingDirectory();
+	settingsChanged();
+	ui->serversWidget->goToWorkingDirectory();
 
 	if( useSplash )
 	{
-        SleeperThread::msleep(Settings::get()->GUISplashDuration);
+		SleeperThread::msleep(Settings::get()->GUISplashDuration);
 		splash->finish(this);
 	}
 }
@@ -157,64 +157,64 @@ void MainWindow::changeEvent(QEvent *event)
 {
 	if (event->type() == QEvent::LanguageChange) {
 		ui->retranslateUi(this);
-    }
-    else
-        QMainWindow::changeEvent(event);
+	}
+	else
+		QMainWindow::changeEvent(event);
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    Settings::get()->MainWindowState = saveState();
-    Settings::get()->MainWindowGeometry = saveGeometry();
+	Settings::get()->MainWindowState = saveState();
+	Settings::get()->MainWindowGeometry = saveGeometry();
 
 #warning "TODO/FIXME: saveQueue"
-    //serversModel->saveQueue(settings);
+	//serversModel->saveQueue(settings);
 
 	QMainWindow::closeEvent(e);
 }
 
 void MainWindow::showSettings(SettingsDialog::Section section)
 {
-    SettingsDialog sd(&translator, this);
-    sd.setSection(section);
+	SettingsDialog sd(&translator, this);
+	sd.setSection(section);
 
-    if (sd.exec())
-        settingsChanged();
+	if (sd.exec())
+		settingsChanged();
 }
 
 void MainWindow::settingsChanged()
 {
-    Settings::get()->recalculateFilters();
+	Settings::get()->recalculateFilters();
 
 #if 0
-    // it crashes sometimes...
-    const QMetaObject *mo;
-    foreach (QWidget *w, findChildren<QWidget*>())
-    {
-        mo = w->metaObject();
-        int settingsMethod = mo->indexOfMethod(QMetaObject::normalizedSignature("settingsChanged()"));
-        if (settingsMethod == -1)
-        {
-            qDebug() << "META> 'settingsChanged() method not found for" << w->objectName();
-            continue;
-        }
-        else
-        {
-            qDebug() << "META> 'settingsChanged() method YES found for" << w->objectName();
-            mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
-        }
-    }
+	// it crashes sometimes...
+	const QMetaObject *mo;
+	foreach (QWidget *w, findChildren<QWidget*>())
+	{
+		mo = w->metaObject();
+		int settingsMethod = mo->indexOfMethod(QMetaObject::normalizedSignature("settingsChanged()"));
+		if (settingsMethod == -1)
+		{
+			qDebug() << "META> 'settingsChanged() method not found for" << w->objectName();
+			continue;
+		}
+		else
+		{
+			qDebug() << "META> 'settingsChanged() method YES found for" << w->objectName();
+			mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
+		}
+	}
 #endif
-    ui->serversWidget->settingsChanged();
-    m_wdirWidget->settingsChanged();
+	ui->serversWidget->settingsChanged();
+	m_wdirWidget->settingsChanged();
 
-    // Prune tree history
-    history.clear();
-    historyCurrentIndex = -1;
-    historySize = 0;
+	// Prune tree history
+	history.clear();
+	historyCurrentIndex = -1;
+	historySize = 0;
 
-    ui->actionHistoryBack->setEnabled(false);
-    ui->actionHistoryForward->setEnabled(false);
+	ui->actionHistoryBack->setEnabled(false);
+	ui->actionHistoryForward->setEnabled(false);
 }
 
 void MainWindow::searchClicked()
@@ -247,7 +247,7 @@ void MainWindow::autoDescentProgress(const QModelIndex &index)
 void MainWindow::autoDescendComplete(const QModelIndex &index)
 {
 	ui->serversWidget->expand(index);
-    ui->serversWidget->setModelindex(index);
+	ui->serversWidget->setModelindex(index);
 	trackHistory(index);
 }
 
@@ -255,10 +255,10 @@ void MainWindow::autoDescentNotFound()
 {
 	if(lastFoundIndex.isValid())
 	{
-        ui->serversWidget->setModelindex(lastFoundIndex);
+		ui->serversWidget->setModelindex(lastFoundIndex);
 	}
 
-    QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(Settings::get()->WorkingDir));
+	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(Settings::get()->WorkingDir));
 }
 
 void MainWindow::trackHistory(const QModelIndex &index)
@@ -287,7 +287,7 @@ void MainWindow::trackHistory(const QModelIndex &index)
 void MainWindow::historyBack()
 {
 	const QModelIndex index = history[--historyCurrentIndex];
-    ui->serversWidget->setModelindex(index);
+	ui->serversWidget->setModelindex(index);
 	ui->actionHistoryBack->setEnabled( !(historyCurrentIndex == 0) );
 	ui->actionHistoryForward->setEnabled(true);
 }
@@ -295,7 +295,7 @@ void MainWindow::historyBack()
 void MainWindow::historyForward()
 {
 	const QModelIndex index = history[++historyCurrentIndex];
-    ui->serversWidget->setModelindex(index);
+	ui->serversWidget->setModelindex(index);
 	ui->actionHistoryForward->setEnabled( !(historyCurrentIndex == historySize-1) );
 	ui->actionHistoryBack->setEnabled(true);
 }

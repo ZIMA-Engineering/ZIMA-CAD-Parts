@@ -33,62 +33,62 @@ ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
 	m_lastTechSpecRequest = 0;
 	m_datasource = ds;
 
-    m_downloadModel = new DownloadModel(this, this);
+	m_downloadModel = new DownloadModel(this, this);
 
-    connect(this, SIGNAL(fileProgress(File*)), m_downloadModel, SLOT(fileChanged(File*)));
-    connect(this, SIGNAL(fileDownloaded(File*)), m_downloadModel, SLOT(fileDownloaded(File*)));
+	connect(this, SIGNAL(fileProgress(File*)), m_downloadModel, SLOT(fileChanged(File*)));
+	connect(this, SIGNAL(fileDownloaded(File*)), m_downloadModel, SLOT(fileDownloaded(File*)));
 
-    m_rootItem = new Item();
+	m_rootItem = new Item();
 
-    m_dataSourcerootItem = new Item();
-    m_dataSourcerootItem->children.clear();
-    m_dataSourcerootItem->name = ds->label;
-    m_dataSourcerootItem->isServer = true;
-    m_dataSourcerootItem->server = ds;
-    m_dataSourcerootItem->server->rootItem = m_dataSourcerootItem;
-    m_rootItem->children.append(m_dataSourcerootItem);
-    connect(m_dataSourcerootItem->server, SIGNAL(loadingItem(Item*)), this, SIGNAL(loadingItem(Item*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(allItemsLoaded()), this, SIGNAL(allItemsLoaded()));
-    connect(m_dataSourcerootItem->server, SIGNAL(techSpecAvailable(QUrl)), this, SIGNAL(techSpecAvailable(QUrl)));
-    connect(m_dataSourcerootItem->server, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
-    connect(m_dataSourcerootItem->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
-    connect(m_dataSourcerootItem->server, SIGNAL(metadataInclude(Item*,QString)), this, SLOT(metadataInclude(Item*,QString)));
-    connect(m_dataSourcerootItem->server, SIGNAL(metadataIncludeCancelled(Item*)), this, SLOT(metadataIncludeCancel(Item*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(itemInserted(Item*)), this, SLOT(newItem(Item*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(updateAvailable(Item*)), this, SLOT(itemUpdated(Item*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
-    connect(m_dataSourcerootItem->server, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(partsIndexAlreadyExists(Item*)), this, SIGNAL(partsIndexAlreadyExists(Item*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(fileError(BaseDataSource::Operation,BaseDataSource::Error*)), this, SLOT(catchFileError(BaseDataSource::Operation,BaseDataSource::Error*)));
-    connect(m_dataSourcerootItem->server, SIGNAL(filesDeleted()), this, SLOT(dataSourceFinishedDeleting()));
+	m_dataSourcerootItem = new Item();
+	m_dataSourcerootItem->children.clear();
+	m_dataSourcerootItem->name = ds->label;
+	m_dataSourcerootItem->isServer = true;
+	m_dataSourcerootItem->server = ds;
+	m_dataSourcerootItem->server->rootItem = m_dataSourcerootItem;
+	m_rootItem->children.append(m_dataSourcerootItem);
+	connect(m_dataSourcerootItem->server, SIGNAL(loadingItem(Item*)), this, SIGNAL(loadingItem(Item*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(allItemsLoaded()), this, SIGNAL(allItemsLoaded()));
+	connect(m_dataSourcerootItem->server, SIGNAL(techSpecAvailable(QUrl)), this, SIGNAL(techSpecAvailable(QUrl)));
+	connect(m_dataSourcerootItem->server, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
+	connect(m_dataSourcerootItem->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
+	connect(m_dataSourcerootItem->server, SIGNAL(metadataInclude(Item*,QString)), this, SLOT(metadataInclude(Item*,QString)));
+	connect(m_dataSourcerootItem->server, SIGNAL(metadataIncludeCancelled(Item*)), this, SLOT(metadataIncludeCancel(Item*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(itemInserted(Item*)), this, SLOT(newItem(Item*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(updateAvailable(Item*)), this, SLOT(itemUpdated(Item*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
+	connect(m_dataSourcerootItem->server, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(partsIndexAlreadyExists(Item*)), this, SIGNAL(partsIndexAlreadyExists(Item*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(fileError(BaseDataSource::Operation,BaseDataSource::Error*)), this, SLOT(catchFileError(BaseDataSource::Operation,BaseDataSource::Error*)));
+	connect(m_dataSourcerootItem->server, SIGNAL(filesDeleted()), this, SLOT(dataSourceFinishedDeleting()));
 
-    switch( m_dataSourcerootItem->server->dataSource )
+	switch( m_dataSourcerootItem->server->dataSource )
 	{
 	case LOCAL: {
-        LocalDataSource *lds = static_cast<LocalDataSource*>(m_dataSourcerootItem->server);
-        m_dataSourcerootItem->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
+		LocalDataSource *lds = static_cast<LocalDataSource*>(m_dataSourcerootItem->server);
+		m_dataSourcerootItem->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
 		break;
 	}
 	case UNDEFINED:
 		// FIXME
 		break;
 	default:
-        BaseRemoteDataSource *rds = static_cast<BaseRemoteDataSource*>(m_dataSourcerootItem->server);
-        m_dataSourcerootItem->path = rds->remoteBaseDir.endsWith('/') ? rds->remoteBaseDir : rds->remoteBaseDir + "/";
+		BaseRemoteDataSource *rds = static_cast<BaseRemoteDataSource*>(m_dataSourcerootItem->server);
+		m_dataSourcerootItem->path = rds->remoteBaseDir.endsWith('/') ? rds->remoteBaseDir : rds->remoteBaseDir + "/";
 	}
 
-    ds->loadRootItem(m_dataSourcerootItem);
-    loadItem(m_dataSourcerootItem);
-    reset();
+	ds->loadRootItem(m_dataSourcerootItem);
+	loadItem(m_dataSourcerootItem);
+	reset();
 }
 
 ServersModel::~ServersModel()
 {
-    delete m_rootItem;
+	delete m_rootItem;
 
 	for(int i = 0; i < BaseDataSource::OperationCount; i++)
 		qDeleteAll(m_fileErrors[i]);
@@ -129,7 +129,7 @@ int ServersModel::rowCount(const QModelIndex &parent) const
 	if (!parent.isValid())
 	{
 		//qDebug() << "Not valid, returning" << rootItem->children.size();
-        return m_rootItem->children.size();
+		return m_rootItem->children.size();
 	}
 
 	Item* item = static_cast<Item*>(parent.internalPointer());
@@ -157,7 +157,7 @@ QModelIndex ServersModel::parent(const QModelIndex &index) const
 	//qDebug() << "parent";
 	//qDebug() << i->name;
 
-    if (parentItem == m_rootItem || !parentItem)
+	if (parentItem == m_rootItem || !parentItem)
 		return QModelIndex();
 
 	return createIndex(parentItem->row(), 0, parentItem);
@@ -175,7 +175,7 @@ QModelIndex ServersModel::index(int row, int column, const QModelIndex &parent) 
 	Item *parentItem;
 
 	if (!parent.isValid())
-        parentItem = m_rootItem;
+		parentItem = m_rootItem;
 	else
 		parentItem = static_cast<Item*>(parent.internalPointer());
 
@@ -246,8 +246,8 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 		if(!item->logo.isNull())
 			return QSize(item->logo.width(), item->logo.height());
 		break;
-    case Qt::ToolTipRole:
-        return item->pathWithDataSource();
+	case Qt::ToolTipRole:
+		return item->pathWithDataSource();
 	default:
 		;
 	}
@@ -358,8 +358,8 @@ void ServersModel::loadItem(Item* item)
 		//qDebug() << "Item" << item->name << "has not yet loaded children - go on";
 	}
 
-    Q_ASSERT(item);
-    Q_ASSERT(item->server);
+	Q_ASSERT(item);
+	Q_ASSERT(item->server);
 	item->server->loadDirectory(item);
 }
 
@@ -384,8 +384,8 @@ void ServersModel::deleteFiles()
 
 	dsDeleted = 0;
 
-    foreach(Item *i, m_rootItem->children)
-        i->server->deleteFiles(getCheckedFiles(i));
+	foreach(Item *i, m_rootItem->children)
+	i->server->deleteFiles(getCheckedFiles(i));
 }
 
 void ServersModel::downloadFiles(QString dir)
@@ -393,14 +393,14 @@ void ServersModel::downloadFiles(QString dir)
 	QDir d;
 	d.mkpath(dir);
 
-    foreach(Item *i, m_rootItem->children)
+	foreach(Item *i, m_rootItem->children)
 	{
 		QList<File*> tmp = getCheckedFiles(i);
 
 		foreach(File *f, tmp)
 		f->transferHandler = DownloadModel::ServersModel;
 
-        m_downloadModel->enqueue(tmp);
+		m_downloadModel->enqueue(tmp);
 
 		if( tmp.count() > 0 )
 			i->server->downloadFiles(tmp, dir);
@@ -409,20 +409,20 @@ void ServersModel::downloadFiles(QString dir)
 
 void ServersModel::resumeDownload()
 {
-    foreach(Item *i, m_rootItem->children)
-        i->server->resumeDownload();
+	foreach(Item *i, m_rootItem->children)
+	i->server->resumeDownload();
 }
 
 void ServersModel::uncheckAll(Item *item)
 {
 	if( item == 0 )
-        item = m_rootItem;
+		item = m_rootItem;
 
 	foreach(File* f, item->files)
-        f->isChecked = false;
+	f->isChecked = false;
 
 	foreach(Item *i, item->children)
-        uncheckAll(i);
+	uncheckAll(i);
 
 	//emit dataChanged( index(0, 0), index(rootItem->files.size(), 0) );
 }
@@ -439,10 +439,10 @@ void ServersModel::clear()
 
 void ServersModel::deleteDownloadQueue()
 {
-    m_downloadModel->clear();
+	m_downloadModel->clear();
 
-    foreach(Item *i, m_rootItem->children)
-        i->server->deleteDownloadQueue();
+	foreach(Item *i, m_rootItem->children)
+	i->server->deleteDownloadQueue();
 
 	emit queueChanged();
 }
@@ -520,10 +520,10 @@ int ServersModel::loadQueue(QSettings *settings)
 #endif
 void ServersModel::retranslateMetadata(Item *item)
 {
-    QString lang = Settings::get()->getCurrentLanguageCode().left(2);
+	QString lang = Settings::get()->getCurrentLanguageCode().left(2);
 	if (!item)
 	{
-        item = m_rootItem;
+		item = m_rootItem;
 
 		m_datasource->retranslate(lang);
 
@@ -548,14 +548,14 @@ void ServersModel::retranslateMetadata(Item *item)
 
 void ServersModel::dataSourceFinishedDownloading()
 {
-    if( m_downloadModel->isEmpty() )
+	if( m_downloadModel->isEmpty() )
 		emit filesDownloaded();
 }
 
 void ServersModel::dataSourceFinishedDeleting()
 {
-    if(++dsDeleted == m_rootItem->children.size())
-        emit filesDeleted();
+	if(++dsDeleted == m_rootItem->children.size())
+		emit filesDeleted();
 }
 
 void ServersModel::metadataReady(Item *item)
@@ -650,7 +650,7 @@ void ServersModel::descentTo(QString path, Item *item)
 	if(path.isEmpty())
 		return;
 
-    TreeAutoDescent *descent = new TreeAutoDescent(this, m_rootItem, path, this);
+	TreeAutoDescent *descent = new TreeAutoDescent(this, m_rootItem, path, this);
 
 	connect(descent, SIGNAL(progress(TreeAutoDescent*,Item*)), this, SLOT(forwardAutoDescentProgress(TreeAutoDescent*,Item*)));
 	connect(descent, SIGNAL(completed(TreeAutoDescent*,Item*)), this, SLOT(forwardAutoDescentCompleted(TreeAutoDescent*,Item*)));
@@ -686,8 +686,8 @@ void ServersModel::stopDownload()
 
 void ServersModel::clearQueue()
 {
-    foreach(Item *i, m_rootItem->children)
-        i->server->deleteDownloadQueue();
+	foreach(Item *i, m_rootItem->children)
+	i->server->deleteDownloadQueue();
 }
 
 void ServersModel::catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err)

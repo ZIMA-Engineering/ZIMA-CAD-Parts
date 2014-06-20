@@ -53,8 +53,8 @@ AddEditDataSource::~AddEditDataSource()
 	delete ui;
 
 	foreach(BaseDataSource *bs, dataSources)
-		if( bs != lastDataSource )
-			delete bs;
+	if( bs != lastDataSource )
+		delete bs;
 }
 
 BaseDataSource* AddEditDataSource::dataSource()

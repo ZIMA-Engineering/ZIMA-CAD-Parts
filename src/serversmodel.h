@@ -55,20 +55,26 @@ public:
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    BaseDataSource* dataSource() { return m_datasource; }
+	BaseDataSource* dataSource() {
+		return m_datasource;
+	}
 
 	QString translateDataSourceNameToPath(QString name);
 	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
 	bool hasErrors(BaseDataSource::Operation op);
 	Item *lastTechSpecRequest();
 
-    //! @returns datasource top level item (not the invisible model root)
-    Item *rootItem() { return m_dataSourcerootItem; }
+	//! @returns datasource top level item (not the invisible model root)
+	Item *rootItem() {
+		return m_dataSourcerootItem;
+	}
 
 	void stopDownload();
 	void clearQueue();
 
-    DownloadModel* downloadModel() { return m_downloadModel; }
+	DownloadModel* downloadModel() {
+		return m_downloadModel;
+	}
 
 public slots:
 	void refresh(Item* item);
@@ -99,14 +105,14 @@ protected slots:
 private:
 	QIcon dirIcon, serverIcon;
 	BaseDataSource* m_datasource;
-    Item *m_dataSourcerootItem;
-    Item *m_rootItem;
+	Item *m_dataSourcerootItem;
+	Item *m_rootItem;
 	Item *m_lastTechSpecRequest;
 	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];
 	int dsDeleted;
 	QList<TreeAutoDescent*> autoDescents;
 	QHash<TreeAutoDescent*, Item*> metadataIncludeHash;
-    DownloadModel *m_downloadModel;
+	DownloadModel *m_downloadModel;
 
 private slots:
 	void dataSourceFinishedDownloading();
@@ -136,7 +142,7 @@ signals:
 	void autoDescentNotFound();
 	void techSpecsIndexAlreadyExists(Item*);
 	void partsIndexAlreadyExists(Item*);
-    void filesDeleted();
+	void filesDeleted();
 };
 
 #endif // SERVERSMODEL_H

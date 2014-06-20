@@ -24,12 +24,12 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
 	File *f = item->files.at(source_row);
 
 	if(!f->version || (
-		   f->type != File::PRT_PROE
-		&& f->type != File::ASM
-		&& f->type != File::DRW
-		&& f->type != File::FRM
-		&& f->type != File::NEU_PROE)
-	)
+	            f->type != File::PRT_PROE
+	            && f->type != File::ASM
+	            && f->type != File::DRW
+	            && f->type != File::FRM
+	            && f->type != File::NEU_PROE)
+	  )
 		return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 
 	qDebug() << "File filter model does magic!" << source_row << f->name;

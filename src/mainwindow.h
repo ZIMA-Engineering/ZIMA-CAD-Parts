@@ -57,9 +57,9 @@ public:
 private:
 	Ui::MainWindowClass *ui;
 
-    QLabel              *statusDir; // status bar
-    QTranslator *translator;// app ui
-    WorkingDirWidget *m_wdirWidget;
+	QLabel              *statusDir; // status bar
+	QTranslator *translator;// app ui
+	WorkingDirWidget *m_wdirWidget;
 
 	// History
 	QList<QModelIndex> history;
@@ -68,9 +68,9 @@ private:
 
 	QModelIndex lastFoundIndex;
 
-    void setupDeveloperMode(); // WTF?
+	void setupDeveloperMode(); // WTF?
 
-    void changeEvent(QEvent *event);
+	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
 public slots:
@@ -81,7 +81,7 @@ public slots:
 	void filesDownloaded();
 
 private slots:
-    void settingsChanged();
+	void settingsChanged();
 	void autoDescentProgress(const QModelIndex &index);
 	void autoDescendComplete(const QModelIndex &index);
 	void autoDescentNotFound();

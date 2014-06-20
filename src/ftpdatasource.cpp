@@ -581,7 +581,7 @@ void FtpDataSource::ftpCommandFinished(int id, bool error)
 
 		if(partPicTasks.isEmpty() && techSpecFiles.isEmpty())
 			ftpListItemInQueue();
-    }
+	}
 }
 
 void FtpDataSource::checkLoadedItem()

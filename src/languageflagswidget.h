@@ -8,17 +8,17 @@ class QButtonGroup;
 
 class LanguageFlagsWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit LanguageFlagsWidget(QWidget *parent = 0);
+	explicit LanguageFlagsWidget(QWidget *parent = 0);
 
 signals:
-    void changeLanguage(int);
+	void changeLanguage(int);
 
 public slots:
 
 private:
-    QButtonGroup *m_buttons;
+	QButtonGroup *m_buttons;
 };
 
 #endif // LANGUAGEFLAGSWIDGET_H

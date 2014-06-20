@@ -32,11 +32,11 @@ Metadata::Metadata(Item *item, QObject *parent)
 	  m_loadedIncludes(0),
 	  m_includedData(false)
 {
-    Q_ASSERT(item);
-    Q_ASSERT(m_item->server);
+	Q_ASSERT(item);
+	Q_ASSERT(m_item->server);
 	metadataFile = m_item->server->getPathForItem(m_item) + "/" + TECHSPEC_DIR + "/" + METADATA_FILE;
 
-    currentAppLang = Settings::get()->getCurrentLanguageCode().left(2);
+	currentAppLang = Settings::get()->getCurrentLanguageCode().left(2);
 }
 
 Metadata::~Metadata()
@@ -88,7 +88,7 @@ QStringList Metadata::getColumnLabels()
 	metadata->endGroup();
 
 	foreach(Metadata *include, includes)
-		columnLabels << include->getColumnLabels();
+	columnLabels << include->getColumnLabels();
 
 	return columnLabels;
 }
@@ -165,7 +165,7 @@ void Metadata::refresh()
 void Metadata::retranslate(QString lang)
 {
 	if(lang.isEmpty())
-        currentAppLang = Settings::get()->getCurrentLanguageCode().left(2);
+		currentAppLang = Settings::get()->getCurrentLanguageCode().left(2);
 	else
 		currentAppLang = lang;
 
@@ -220,7 +220,7 @@ void Metadata::provideInclude(Metadata *m, QString path)
 			QList<Thumbnail*> thumbs;
 
 			foreach(Item *it, m_thumbItems)
-				thumbs << it->thumbnails(false);
+			thumbs << it->thumbnails(false);
 
 			m_item->server->assignThumbnailsToFiles(m_item, thumbs);
 		}
@@ -281,7 +281,7 @@ void Metadata::probeMetadata()
 			m_includedData = true;
 
 		foreach(QString path, toInclude)
-			emit includeRequired(m_item, path);
+		emit includeRequired(m_item, path);
 	}
 	metadata->endGroup();
 }
@@ -309,7 +309,7 @@ QStringList Metadata::buildIncludePaths(QStringList raw)
 	QStringList ret;
 
 	foreach(QString s, raw)
-		ret << buildIncludePath(s);
+	ret << buildIncludePath(s);
 
 	return ret;
 }
