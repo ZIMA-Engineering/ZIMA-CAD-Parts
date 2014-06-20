@@ -34,6 +34,13 @@ namespace Ui {
 class ProductView;
 }
 
+/**
+ * @brief The user interface for Product Views
+ * @see AbstractProductView
+ *
+ * Each product view must register itself in the ProductView constructor
+ * to be used.
+ */
 class ProductView : public QDialog
 {
 	Q_OBJECT
@@ -42,10 +49,16 @@ public:
 	explicit ProductView(QWidget *parent = 0);
 	~ProductView();
 
+    /** \brief Set the file which will be downloaded.
+     *
+     *  The comparation is done later in fileDownloaded() slot
+     */
 	bool expectFile(File* f);
+    //! Returns true if the one of registered product views can handle given file type
 	bool canHandle(File::FileTypes t);
 
 public slots:
+    //! Finally display the file
 	void fileDownloaded(File* f);
 
 protected:
@@ -59,12 +72,13 @@ private:
 	AbstractProductView *currentProvider;
 	FailbackProductView *failbackProvider;
 
+    //! The main registration function
 	template <class T> void addProviders()
 	{
 		T *provider = new T(this);
 		provider->hide();
 		foreach(File::FileTypes i, provider->canHandle())
-		providers[i] = provider;
+            providers[i] = provider;
 	}
 
 	void saveSettings();

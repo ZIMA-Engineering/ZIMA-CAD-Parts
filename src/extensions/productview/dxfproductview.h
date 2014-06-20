@@ -12,6 +12,10 @@ class DxfProductView;
 class DXFInterface;
 
 
+/**
+ * @brief The DxfProductView class is a product view for DXF files
+ * @see AbstractProductView
+ */
 class DxfProductView : public AbstractProductView
 {
 	Q_OBJECT

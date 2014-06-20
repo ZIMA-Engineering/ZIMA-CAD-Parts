@@ -25,6 +25,19 @@
 #include "mainwindow.h"
 #include "settings.h"
 
+/**
+\mainpage ZIMA-CAD-Parts Developer Documentation
+
+ZIMA-CAD-Parts is a tool, develop by ZIMA-Engineering (www.zima-engineering.cz),
+used by design engineers for management of CAD files.
+
+It can manage local CAD projects with the possibility of connection with PDM system.
+It is also a source of library CAD parts. It works with local or remote data storage.
+It supports Pro/Engineer, CATIA, NX (UGS), SolidWorks, SolidEdge, Inventor and
+neutral formats, i.e. STEP, IGES, DWG, DXF, STL, BLEND and PDF.
+
+The application is written in C++/Qt, it is multiplatform and supports Windows, MAC and Linux.
+*/
 
 int main(int argc, char *argv[])
 {

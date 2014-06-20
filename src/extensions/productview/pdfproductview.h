@@ -9,6 +9,11 @@ namespace Ui {
 class PDFProductView;
 }
 
+
+/**
+ * @brief The PDFProductView class is a product view for PDF files
+ * @see AbstractProductView
+ */
 class PDFProductView : public AbstractProductView
 {
 	Q_OBJECT

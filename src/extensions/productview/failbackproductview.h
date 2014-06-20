@@ -8,6 +8,10 @@ namespace Ui {
 class FailbackProductView;
 }
 
+/**
+ * @brief The FailbackProductView class is a product view for unhandled files
+ * @see AbstractProductView
+ */
 class FailbackProductView : public AbstractProductView
 {
 	Q_OBJECT

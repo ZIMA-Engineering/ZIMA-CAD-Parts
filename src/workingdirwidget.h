@@ -7,6 +7,12 @@ namespace Ui {
 class WorkingDirWidget;
 }
 
+
+/*!
+ * \brief The web-browser-like line edit widget to display up-to-date working dir
+ *
+ * Synchronized with Settings::WorkingDir
+ */
 class WorkingDirWidget : public QWidget
 {
 	Q_OBJECT

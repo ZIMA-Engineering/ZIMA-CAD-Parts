@@ -13,6 +13,9 @@
 class QSignalMapper;
 
 
+/*!
+ * \brief Hold relations between QTreeView/ServersModel/ServerTabWidget
+ */
 class ServersWidgetMap
 {
 public:
@@ -30,6 +33,11 @@ public:
 };
 
 
+/*!
+ * \brief The data source tree and ServerTabWidget user interface.
+ *
+ * The data source tree is kept in NavBar
+ */
 class ServersWidget : public QWidget, public Ui::ServersWidget
 {
 	Q_OBJECT

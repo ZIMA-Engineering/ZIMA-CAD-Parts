@@ -68,8 +68,6 @@ private:
 
 	QModelIndex lastFoundIndex;
 
-	void setupDeveloperMode(); // WTF?
-
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
