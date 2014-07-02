@@ -64,9 +64,9 @@ public:
 	bool hasErrors(BaseDataSource::Operation op);
 	Item *lastTechSpecRequest();
 
-	//! @returns datasource top level item (not the invisible model root)
+	//! @returns datasource top level item
 	Item *rootItem() {
-		return m_dataSourcerootItem;
+		return m_rootItem;
 	}
 
 	void stopDownload();
@@ -105,7 +105,6 @@ protected slots:
 private:
 	QIcon dirIcon, serverIcon;
 	BaseDataSource* m_datasource;
-	Item *m_dataSourcerootItem;
 	Item *m_rootItem;
 	Item *m_lastTechSpecRequest;
 	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];

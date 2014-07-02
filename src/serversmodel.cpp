@@ -39,50 +39,47 @@ ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
 	connect(this, SIGNAL(fileDownloaded(File*)), m_downloadModel, SLOT(fileDownloaded(File*)));
 
 	m_rootItem = new Item();
+	m_rootItem->children.clear();
+	m_rootItem->name = ds->label;
+	m_rootItem->isServer = true;
+	m_rootItem->server = ds;
+	m_rootItem->server->rootItem = m_rootItem;
+	connect(m_rootItem->server, SIGNAL(loadingItem(Item*)), this, SIGNAL(loadingItem(Item*)));
+	connect(m_rootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
+	connect(m_rootItem->server, SIGNAL(allItemsLoaded()), this, SIGNAL(allItemsLoaded()));
+	connect(m_rootItem->server, SIGNAL(techSpecAvailable(QUrl)), this, SIGNAL(techSpecAvailable(QUrl)));
+	connect(m_rootItem->server, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
+	connect(m_rootItem->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
+	connect(m_rootItem->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
+	connect(m_rootItem->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
+	connect(m_rootItem->server, SIGNAL(metadataInclude(Item*,QString)), this, SLOT(metadataInclude(Item*,QString)));
+	connect(m_rootItem->server, SIGNAL(metadataIncludeCancelled(Item*)), this, SLOT(metadataIncludeCancel(Item*)));
+	connect(m_rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
+	connect(m_rootItem->server, SIGNAL(itemInserted(Item*)), this, SLOT(newItem(Item*)));
+	connect(m_rootItem->server, SIGNAL(updateAvailable(Item*)), this, SLOT(itemUpdated(Item*)));
+	connect(m_rootItem->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
+	connect(m_rootItem->server, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
+	connect(m_rootItem->server, SIGNAL(partsIndexAlreadyExists(Item*)), this, SIGNAL(partsIndexAlreadyExists(Item*)));
+	connect(m_rootItem->server, SIGNAL(fileError(BaseDataSource::Operation,BaseDataSource::Error*)), this, SLOT(catchFileError(BaseDataSource::Operation,BaseDataSource::Error*)));
+	connect(m_rootItem->server, SIGNAL(filesDeleted()), this, SLOT(dataSourceFinishedDeleting()));
 
-	m_dataSourcerootItem = new Item();
-	m_dataSourcerootItem->children.clear();
-	m_dataSourcerootItem->name = ds->label;
-	m_dataSourcerootItem->isServer = true;
-	m_dataSourcerootItem->server = ds;
-	m_dataSourcerootItem->server->rootItem = m_dataSourcerootItem;
-	m_rootItem->children.append(m_dataSourcerootItem);
-	connect(m_dataSourcerootItem->server, SIGNAL(loadingItem(Item*)), this, SIGNAL(loadingItem(Item*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(allItemsLoaded()), this, SIGNAL(allItemsLoaded()));
-	connect(m_dataSourcerootItem->server, SIGNAL(techSpecAvailable(QUrl)), this, SIGNAL(techSpecAvailable(QUrl)));
-	connect(m_dataSourcerootItem->server, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
-	connect(m_dataSourcerootItem->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
-	connect(m_dataSourcerootItem->server, SIGNAL(metadataInclude(Item*,QString)), this, SLOT(metadataInclude(Item*,QString)));
-	connect(m_dataSourcerootItem->server, SIGNAL(metadataIncludeCancelled(Item*)), this, SLOT(metadataIncludeCancel(Item*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(itemInserted(Item*)), this, SLOT(newItem(Item*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(updateAvailable(Item*)), this, SLOT(itemUpdated(Item*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
-	connect(m_dataSourcerootItem->server, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(partsIndexAlreadyExists(Item*)), this, SIGNAL(partsIndexAlreadyExists(Item*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(fileError(BaseDataSource::Operation,BaseDataSource::Error*)), this, SLOT(catchFileError(BaseDataSource::Operation,BaseDataSource::Error*)));
-	connect(m_dataSourcerootItem->server, SIGNAL(filesDeleted()), this, SLOT(dataSourceFinishedDeleting()));
-
-	switch( m_dataSourcerootItem->server->dataSource )
+	switch( m_rootItem->server->dataSource )
 	{
 	case LOCAL: {
-		LocalDataSource *lds = static_cast<LocalDataSource*>(m_dataSourcerootItem->server);
-		m_dataSourcerootItem->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
+		LocalDataSource *lds = static_cast<LocalDataSource*>(m_rootItem->server);
+		m_rootItem->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
 		break;
 	}
 	case UNDEFINED:
 		// FIXME
 		break;
 	default:
-		BaseRemoteDataSource *rds = static_cast<BaseRemoteDataSource*>(m_dataSourcerootItem->server);
-		m_dataSourcerootItem->path = rds->remoteBaseDir.endsWith('/') ? rds->remoteBaseDir : rds->remoteBaseDir + "/";
+		BaseRemoteDataSource *rds = static_cast<BaseRemoteDataSource*>(m_rootItem->server);
+		m_rootItem->path = rds->remoteBaseDir.endsWith('/') ? rds->remoteBaseDir : rds->remoteBaseDir + "/";
 	}
 
-	ds->loadRootItem(m_dataSourcerootItem);
-	loadItem(m_dataSourcerootItem);
+	ds->loadRootItem(m_rootItem);
+	loadItem(m_rootItem);
 	reset();
 }
 
@@ -214,17 +211,6 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 	if(!index.isValid())
 		return QVariant();
 
-	//	if (role == Qt::DisplayRole)
-	//	{
-	//		if (index.column() == 0)
-	//			return servers->value(index.row())->address;
-	//	}else if (role == Qt::DecorationRole)
-	//	{
-	//		return serverIcon;
-	//		/*if (index.column() == 1)
-	//            return part->pixmap;*/
-	//	}
-
 	Item* item = static_cast<Item*>(index.internalPointer());
 
 	switch(role)
@@ -234,10 +220,6 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 			return item->isServer ? item->name : item->getLabel();
 		break;
 	case Qt::DecorationRole:
-//		if( item->isServer )
-//			return serverIcon;
-//		else if( item->isDir )
-//			return dirIcon;
 		if(!item->logo.isNull())
 			return item->logo;
 		return item->server->itemIcon(item);

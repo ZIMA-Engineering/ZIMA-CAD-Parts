@@ -90,7 +90,10 @@ void ServersWidget::settingsChanged()
 			view->header()->close();
 			//serversToolBox->addItem(view, ds->dataSourceIcon(), ds->label);
 			//serversToolBox->addItem(view, ds->itemIcon(model->rootItem()), ds->label);
-			serversToolBox->addPage(view, ds->label, ds->itemIcon(model->rootItem()));
+			serversToolBox->addPage(view, ds->label, model->rootItem()->logo.isNull()
+			                        ? ds->itemIcon(model->rootItem())
+			                        : model->rootItem()->logo
+			                       );
 
 			mapItem->view = view;
 
