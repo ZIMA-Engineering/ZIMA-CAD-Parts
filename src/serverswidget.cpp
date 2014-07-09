@@ -112,7 +112,7 @@ void ServersWidget::settingsChanged()
 			        model, SLOT(requestTechSpecs(const QModelIndex&)));
 			connect(view, SIGNAL(activated(const QModelIndex&)),
 			        model, SLOT(requestTechSpecs(const QModelIndex&)));
-			// track history
+
 			connect(view, SIGNAL(clicked(const QModelIndex&)),
 			        this, SIGNAL(clicked(QModelIndex)));
 			// track history
@@ -231,6 +231,7 @@ void ServersWidget::setModelindex(const QModelIndex &index)
 		if (i->model->dataSource() != item->server)
 			continue;
 
+		serversToolBox->setCurrentIndex(i->index);
 		stackedWidget->setCurrentIndex(i->index);
 		i->model->requestTechSpecs(item);
 		i->view->setCurrentIndex(index);
