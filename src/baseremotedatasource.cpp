@@ -119,7 +119,11 @@ QString BaseRemoteDataSource::name()
 
 QString BaseRemoteDataSource::cacheDirPath()
 {
+#if QT_VERSION < 0x050000
 	return QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+#else
+    return QStandardPaths::standardLocations(QStandardPaths::CacheLocation).at(0);
+#endif
 }
 
 QString BaseRemoteDataSource::pathToDataRoot()

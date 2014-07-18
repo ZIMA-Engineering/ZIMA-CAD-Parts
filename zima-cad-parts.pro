@@ -2,6 +2,9 @@
 # Project created by QtCreator 2009-05-18T21:26:48
 # -------------------------------------------------
 QT += network webkit opengl
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets webkitwidgets
+}
 TARGET = ZIMA-CAD-Parts
 TEMPLATE = app
 
@@ -10,8 +13,20 @@ VPATH += ./src
 
 INCLUDEPATH += libqdxf/src
 INCLUDEPATH += libqdxf/libdxfrw/src
+greaterThan(QT_MAJOR_VERSION, 4) {
+    INCLUDEPATH += src/extensions/qftp
+}
 
-LIBS += -lpoppler-qt4
+greaterThan(QT_MAJOR_VERSION, 4) {
+    win32 {
+        INCLUDEPATH += win32/poppler-0.24.5-win32/include
+        LIBS += -L$$PWD/win32/poppler-0.24.5-win32/bin
+    }
+    LIBS += -lpoppler-qt5
+}
+else {
+    LIBS += -lpoppler-qt4
+}
 
 SOURCES += zima-cad-parts.cpp \
     mainwindow.cpp \
@@ -79,6 +94,9 @@ SOURCES += zima-cad-parts.cpp \
     src/extensions/navbar/navbarsplitter.cpp \
     src/workingdirwidget.cpp
 
+greaterThan(QT_MAJOR_VERSION, 4) {
+    SOURCES += src/extensions/qftp/qftp.cpp src/extensions/qftp/qurlinfo.cpp
+}
 
 HEADERS += mainwindow.h \
     settingsdialog.h \
@@ -129,6 +147,9 @@ HEADERS += mainwindow.h \
     src/extensions/navbar/navbarsplitter.h \
     src/workingdirwidget.h
 
+greaterThan(QT_MAJOR_VERSION, 4) {
+    HEADERS += src/extensions/qftp/qftp.h src/extensions/qftp/qurlinfo.h
+}
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -144,6 +165,7 @@ FORMS += mainwindow.ui \
     src/servertabwidget.ui \
     src/extensions/navbar/navbaroptionsdialog.ui \
     src/workingdirwidget.ui
+
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc
 
@@ -183,6 +205,11 @@ OTHER_FILES += \
 TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts
 
 win32:CONFIG += static
-win32:RC_FILE = src/zima-cad-parts.rc
+greaterThan(QT_MAJOR_VERSION, 4) {
+    #win32:RC_ICONS += gfx/icon.ico
+}
+else {
+    win32:RC_FILE = src/zima-cad-parts.rc
+}
 
 ICON = gfx/icon.icns

@@ -80,7 +80,10 @@ ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
 
 	ds->loadRootItem(m_rootItem);
 	loadItem(m_rootItem);
-	reset();
+
+    //reset();
+    beginResetModel();
+    endResetModel();
 }
 
 ServersModel::~ServersModel()
