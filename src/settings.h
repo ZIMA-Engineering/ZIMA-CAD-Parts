@@ -23,9 +23,9 @@ class Settings
 {
 public:
 	enum Languages {
-		DETECT=0,
-		ENGLISH,
-		CZECH
+	    DETECT=0,
+	    ENGLISH,
+	    CZECH
 	};
 
 	//! The main access method to settings

@@ -42,10 +42,10 @@ protected:
 private:
 
 	enum Tabs {
-		TECH_SPECS,
-		PARTS,
-		DOWNLOADS,
-		TABS_COUNT
+	    TECH_SPECS,
+	    PARTS,
+	    DOWNLOADS,
+	    TABS_COUNT
 	};
 
 	Ui::ServerTabWidget *ui;

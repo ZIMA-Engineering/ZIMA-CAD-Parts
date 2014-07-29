@@ -89,7 +89,7 @@ private:
 
 private slots:
 	void dirTreeContextMenu(QPoint point);
-	void spawnZimaUtilityOnDir(int i);
+	void spawnZimaUtilityOnDir(const QString &);
 
 	void loadingItem(Item *i);
 	void allItemsLoaded();

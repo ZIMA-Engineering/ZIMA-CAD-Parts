@@ -37,8 +37,8 @@ class AddEditDataSource : public QDialog
 
 public:
 	enum Actions {
-		ADD=0,
-		EDIT
+	    ADD=0,
+	    EDIT
 	};
 
 	explicit AddEditDataSource(BaseDataSource *dataSource, Actions action, QWidget *parent = 0);

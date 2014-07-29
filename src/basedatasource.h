@@ -40,9 +40,9 @@ class Thumbnail;
 struct File;
 
 enum DataSources {
-	LOCAL=0,
-	FTP,
-	UNDEFINED
+    LOCAL=0,
+    FTP,
+    UNDEFINED
 };
 
 
@@ -52,9 +52,9 @@ class BaseDataSource : public QObject
 	Q_OBJECT
 public:
 	enum Operation {
-		Download=0,
-		Delete,
-		OperationCount
+	    Download=0,
+	    Delete,
+	    OperationCount
 	};
 
 	struct Error {

@@ -46,7 +46,7 @@ QString ZimaUtils::labelForUtility(ZimaUtility util)
 	}
 }
 
-QStringList ZimaUtils::paths()
+QHash<QString,QString> ZimaUtils::paths()
 {
-	return Settings::get()->ExternalPrograms.values();
+	return Settings::get()->ExternalPrograms;
 }

@@ -41,9 +41,9 @@ class DownloadModel : public QAbstractItemModel
 	Q_OBJECT
 public:
 	enum TransferHandlerType {
-		ServersModel,
-		TechSpec,
-		None
+	    ServersModel,
+	    TechSpec,
+	    None
 	};
 
 	explicit DownloadModel(TransferHandler *handler, QObject *parent = 0);

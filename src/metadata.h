@@ -47,9 +47,9 @@ public slots:
 
 private:
 	enum Include {
-		IncludeNothing=0,
-		IncludeMetadata=1,
-		IncludeThumbnails=2
+	    IncludeNothing=0,
+	    IncludeMetadata=1,
+	    IncludeThumbnails=2
 	};
 
 	Item *m_item;

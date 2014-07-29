@@ -29,7 +29,6 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QWebHistory>
-#include <QProcess>
 #include <QWebSettings>
 
 #include "mainwindow.h"

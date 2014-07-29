@@ -23,7 +23,7 @@ ServersWidget::ServersWidget(QWidget *parent)
 
 	splitter->setSizes(Settings::get()->ServersSplitterSizes);
 
-	connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(spawnZimaUtilityOnDir(int)));
+	connect(m_signalMapper, SIGNAL(mapped(QString)), this, SLOT(spawnZimaUtilityOnDir(QString)));
 	connect(serversToolBox, SIGNAL(currentChanged(int)), stackedWidget, SLOT(setCurrentIndex(int)));
 	connect(splitter, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)));
 }
@@ -164,28 +164,29 @@ void ServersWidget::dirTreeContextMenu(QPoint point)
 
 	menu->addSeparator();
 
-	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), "Clean with ZIMA-PTC-Cleaner", m_signalMapper, SLOT(map())), ZimaUtils::ZimaPtcCleaner);
-	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), "Sync with ZIMA-CAD-Sync", m_signalMapper, SLOT(map())), ZimaUtils::ZimaCadSync);
-	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), "Convert postscript to PDF with ZIMA-PS2PDF", m_signalMapper, SLOT(map())), ZimaUtils::ZimaPs2Pdf);
-	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-STEP-Edit.png"), "Edit step files with ZIMA-STEP-Edit", m_signalMapper, SLOT(map())), ZimaUtils::ZimaStepEdit);
+	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), tr("Clean with ZIMA-PTC-Cleaner"), m_signalMapper, SLOT(map())),
+	                           ZimaUtils::internalNameForUtility(ZimaUtils::ZimaPtcCleaner));
+	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), tr("Sync with ZIMA-CAD-Sync"), m_signalMapper, SLOT(map())),
+	                           ZimaUtils::internalNameForUtility(ZimaUtils::ZimaCadSync));
+	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), tr("Convert postscript to PDF with ZIMA-PS2PDF"), m_signalMapper, SLOT(map())),
+	                           ZimaUtils::internalNameForUtility(ZimaUtils::ZimaPs2Pdf));
+	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-STEP-Edit.png"), tr("Edit step files with ZIMA-STEP-Edit"), m_signalMapper, SLOT(map())),
+	                           ZimaUtils::internalNameForUtility(ZimaUtils::ZimaStepEdit));
 
 	menu->exec(serversToolBox->currentWidget()->mapToGlobal(point));
 	menu->deleteLater();
 }
 
-void ServersWidget::spawnZimaUtilityOnDir(int i)
+void ServersWidget::spawnZimaUtilityOnDir(const QString &label)
 {
-	QString label = ZimaUtils::labelForUtility(i);
-	QStringList paths = ZimaUtils::paths();
+	QString executable = Settings::get()->ExternalPrograms[label];
 
-	if (paths[i].isEmpty())
+	if (executable.isEmpty())
 	{
 		QMessageBox::warning(this, tr("Configure %1").arg(label), tr("Please first configure path to %1 executable.").arg(label));
 		emit showSettings(SettingsDialog::ExternalPrograms);
 		return;
 	}
-
-	QString executable = paths[i];
 
 	if (!QFile::exists(executable))
 	{

@@ -217,9 +217,9 @@ void FileModel::setRootIndex(Item *item)
 	{
 		rootItem = 0;
 		formalRootItem = 0;
-        //reset();
-        beginResetModel();
-        endResetModel();
+		//reset();
+		beginResetModel();
+		endResetModel();
 		return;
 	}
 
@@ -239,8 +239,8 @@ void FileModel::setRootIndex(Item *item)
 	}
 
 //	reset();
-    beginResetModel();
-    endResetModel();
+	beginResetModel();
+	endResetModel();
 	emit layoutChanged();
 }
 
@@ -295,8 +295,8 @@ void FileModel::itemLoaded(Item *item)
 			rootItem = formalRootItem;
 
 //		reset();
-        beginResetModel();
-        endResetModel();
+		beginResetModel();
+		endResetModel();
 		emit requestColumnResize();
 	}
 }

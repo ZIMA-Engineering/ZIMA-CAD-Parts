@@ -45,12 +45,12 @@ class SettingsDialog : public QDialog {
 	Q_DISABLE_COPY(SettingsDialog)
 public:
 	enum Section {
-		General=0,
-		DataSources,
-		ExternalPrograms,
-		DeveloperMode,
-		ProductView,
-		SectionCount
+	    General=0,
+	    DataSources,
+	    ExternalPrograms,
+	    DeveloperMode,
+	    ProductView,
+	    SectionCount
 	};
 
 	explicit SettingsDialog(QTranslator **translator, QWidget *parent = 0);
