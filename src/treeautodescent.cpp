@@ -33,8 +33,6 @@ void TreeAutoDescent::descend()
 	if(m_pathParts.isEmpty())
 		return;
 
-	qDebug() << "Descent path" << m_pathParts;
-
 	QString dsName = m_pathParts.takeFirst();
 	bool found = false;
 
@@ -45,8 +43,6 @@ void TreeAutoDescent::descend()
 			found = true;
 			m_ds = dsItem->server;
 
-			qDebug() << "DataSource" << m_ds->label << "matches." << m_pathParts;
-
 			if(m_pathParts.isEmpty())
 			{
 				emit completed(this, dsItem);
@@ -56,9 +52,17 @@ void TreeAutoDescent::descend()
 			m_currentItem = dsItem;
 			emit progress(this, dsItem);
 
-			continueDescent();
+            if (m_currentItem->name == m_pathParts.first())
+            {
+                emit completed(this, m_currentItem);
+                return;
+            }
+            else
+            {
+                continueDescent();
+            }
 
-			break;
+            break;
 		}
 	}
 
@@ -69,82 +73,44 @@ void TreeAutoDescent::descend()
 	}
 }
 
-void TreeAutoDescent::continueDescent(bool loaded)
+void TreeAutoDescent::continueDescent()
 {
-	qDebug() << "Continuing descent" << m_currentItem->name;
+    qDebug() << "Continuing descent" << m_currentItem->name << m_done;
 
-	if(m_done)
-	{
-		emit completed(this, m_done);
-		return;
+    bool found = false;
 
-	} else if(!loaded)
-	{
-		qDebug() << "Schedule load immediately" << m_currentItem->name;
-		m_sm->loadItem(m_currentItem);
-		return;
+    foreach(Item *child, m_currentItem->children)
+    {
+        if(child->name == m_pathParts.first())
+        {
+            found = true;
+            m_pathParts.removeFirst();
 
-	} else if(m_currentItem->children.isEmpty()) {
-		qDebug() << "Path not found (no children)" << m_path;
-		emit progress(this, m_currentItem);
-		emit notFound(this);
-		return;
+            emit progress(this, child);
 
-	} else if(m_pathParts.isEmpty()) {
-		qDebug() << "Path not found (pathParts empty)" << m_path;
-		emit notFound(this);
+            if(m_pathParts.isEmpty())
+            {
+                qDebug() << "Descent completed";
+                m_done = child;
+                m_sm->loadItem(child);
+                emit completed(this, m_done);
+                return;
+            } else {
+                m_currentItem = child;
 
-	} else if(m_pathParts.first().isEmpty()) {
-		do {
-			if(m_pathParts.first().isEmpty())
-				m_pathParts.removeFirst();
-			else break;
-		} while(!m_pathParts.isEmpty());
+                qDebug() << "Schedule load" << child->name;
+                m_sm->loadItem(child);
+                continueDescent();
+            }
+        }
+    }
 
-		if(m_pathParts.isEmpty())
-		{
-			qDebug() << "Path not found" << m_path;
-			emit notFound(this);
-		}
+    if(!found)
+    {
+        qDebug() << "Path not found" << m_path;
+        qDebug() << m_pathParts.first() << "not found, exiting search";
 
-	} else {
-		bool found = false;
+        emit notFound(this);
+    }
 
-		foreach(Item *child, m_currentItem->children)
-		{
-			if(child->name == m_pathParts.first())
-			{
-				found = true;
-				m_pathParts.removeFirst();
-
-				emit progress(this, child);
-
-				qDebug() << "child" << child->name << "found" << m_pathParts;
-
-				if(m_pathParts.isEmpty())
-				{
-					qDebug() << "Descent completed";
-					m_done = child;
-					m_sm->loadItem(child);
-					return;
-
-				} else {
-					m_currentItem = child;
-
-					qDebug() << "Schedule load" << child->name;
-					m_sm->loadItem(child);
-					return;
-				}
-			}
-		}
-
-		if(!found)
-		{
-			qDebug() << "Path not found" << m_path;
-			qDebug() << m_pathParts.first() << "not found, exiting search";
-
-			emit progress(this, m_currentItem);
-			emit notFound(this);
-		}
-	}
 }

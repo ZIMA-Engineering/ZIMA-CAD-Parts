@@ -245,6 +245,7 @@ void ServersWidget::goToWorkingDirectory()
 {
 	foreach (ServersWidgetMap* i, m_map)
 	{
+        qDebug() << "gotow" << i->model << i->index;
 		i->model->descentTo(Settings::get()->WorkingDir);
 	}
 }
@@ -264,7 +265,7 @@ void ServersWidget::setWorkingDirectory()
 	Item *it = static_cast<Item*>(view->currentIndex().internalPointer());
 	if (!it)
 		return;
-	Settings::get()->WorkingDir = it->pathWithDataSource();
+    Settings::get()->WorkingDir = it->pathWithDataSource();
 	emit workingDirChanged();
 }
 

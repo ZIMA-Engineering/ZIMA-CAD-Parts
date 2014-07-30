@@ -35,6 +35,7 @@ void WorkingDirWidget::setWorkingDirectoryDialog()
 	if (!str.isEmpty())
 	{
 		Settings::get()->WorkingDir = str;
+        settingsChanged();
 	}
 }
 

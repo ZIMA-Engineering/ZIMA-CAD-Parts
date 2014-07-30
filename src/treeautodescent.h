@@ -20,7 +20,7 @@ signals:
 
 public slots:
 	void descend();
-	void continueDescent(bool loaded = false);
+    void continueDescent();
 
 private:
 	ServersModel *m_sm;

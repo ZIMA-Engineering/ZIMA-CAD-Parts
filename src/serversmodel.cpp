@@ -277,8 +277,7 @@ void ServersModel::allPartsDownloaded(Item* item)
 		{
 			if(descent->waitsFor(item))
 			{
-				qDebug() << "Continue descent";
-				descent->continueDescent(true);
+                descent->continueDescent();
 				break;
 			}
 		}
@@ -632,6 +631,7 @@ void ServersModel::abort()
 
 void ServersModel::descentTo(QString path, Item *item)
 {
+    qDebug() << "descendTo" << path;
 	if(path.isEmpty())
 		return;
 
