@@ -433,38 +433,9 @@ void ServerTabWidget::previewInProductView(const QModelIndex &index)
 		return;
 	}
 
+#warning TODO/FIXME: simplify it
 	m_productView->expectFile(f);
-
-	// local files are not copied - just open the original
-	// remote datasources are cached in ~/.cache/... or something similar
-	if (f->parentItem->server->dataSource == LOCAL)
-	{
-		f->cachePath = f->path;
-		m_productView->fileDownloaded(f);
-	}
-	else if (f->parentItem->server->dataSource == FTP)
-	{
-		QString pathForItem(f->parentItem->server->getPathForItem(f->parentItem));
-		QDir d;
-		d.mkpath(pathForItem);
-
-		f->cachePath = pathForItem + "/" + f->name;
-		// simulate "real cache" hit. Use local copy of the file (if it exists)
-		if (QFile::exists(f->cachePath))
-		{
-			m_productView->fileDownloaded(f);
-		}
-		else
-		{
-			f->transferHandler = DownloadModel::ServersModel;
-			f->parentItem->server->downloadFiles(QList<File*>() << f, pathForItem);
-		}
-	}
-	else
-	{
-		Q_ASSERT_X(0, "business logic error", "Unhandled dataSource type");
-	}
-
+    m_productView->fileDownloaded(f);
 	m_productView->show();
 	// keep focus on the main window - keyboard handling
 	activateWindow();

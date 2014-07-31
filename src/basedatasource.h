@@ -39,11 +39,6 @@ class Item;
 class Thumbnail;
 struct File;
 
-enum DataSources {
-    LOCAL=0,
-    FTP,
-    UNDEFINED
-};
 
 
 
@@ -77,7 +72,7 @@ public:
 
 	Item    *rootItem;
 	QString label;
-	DataSources dataSource;
+
 public slots:
 	virtual void loadRootItem(Item *item) = 0;
 	virtual void loadDirectory(Item* item) = 0;

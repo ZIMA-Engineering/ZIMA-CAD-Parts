@@ -13,20 +13,26 @@ VPATH += ./src
 
 INCLUDEPATH += libqdxf/src
 INCLUDEPATH += libqdxf/libdxfrw/src
-greaterThan(QT_MAJOR_VERSION, 4) {
-    INCLUDEPATH += src/extensions/qftp
-}
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    win32 {
-        INCLUDEPATH += win32/poppler-0.24.5-win32/include
-        LIBS += -L$$PWD/win32/poppler-0.24.5-win32/bin
-    }
-    LIBS += -lpoppler-qt5
-}
-else {
-    LIBS += -lpoppler-qt4
-}
+# disabled 20140206 by Vlad's request:
+# only "supported" files should be displayed. For rest of files this dialog should be closed
+#greaterThan(QT_MAJOR_VERSION, 4) {
+#    win32 {
+#        INCLUDEPATH += win32/poppler-0.24.5-win32/include
+#        LIBS += -L$$PWD/win32/poppler-0.24.5-win32/bin
+#        LIBS += -lpoppler-qt5
+#    }
+#    unix {
+#        CONFIG += link_pkgconfig
+#        PKGCONFIG += poppler-qt5
+#    }
+#}
+#else {
+#    unix {
+#        CONFIG += link_pkgconfig
+#        PKGCONFIG += poppler-qt4
+#    }
+#}
 
 SOURCES += zima-cad-parts.cpp \
     mainwindow.cpp \
@@ -35,8 +41,6 @@ SOURCES += zima-cad-parts.cpp \
     item.cpp \
     filemodel.cpp \
     basedatasource.cpp \
-    baseremotedatasource.cpp \
-    ftpdatasource.cpp \
     localdatasource.cpp \
     addeditdatasource.cpp \
     downloadmodel.cpp \
@@ -94,18 +98,12 @@ SOURCES += zima-cad-parts.cpp \
     src/extensions/navbar/navbarsplitter.cpp \
     src/workingdirwidget.cpp
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    SOURCES += src/extensions/qftp/qftp.cpp src/extensions/qftp/qurlinfo.cpp
-}
-
 HEADERS += mainwindow.h \
     settingsdialog.h \
     serversmodel.h \
     item.h \
     filemodel.h \
     basedatasource.h \
-    baseremotedatasource.h \
-    ftpdatasource.h \
     localdatasource.h \
     addeditdatasource.h \
     downloadmodel.h \
@@ -146,10 +144,6 @@ HEADERS += mainwindow.h \
     src/extensions/navbar/navbarpagelistwidget.h \
     src/extensions/navbar/navbarsplitter.h \
     src/workingdirwidget.h
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-    HEADERS += src/extensions/qftp/qftp.h src/extensions/qftp/qurlinfo.h
-}
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

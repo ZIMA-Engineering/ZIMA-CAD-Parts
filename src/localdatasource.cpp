@@ -92,8 +92,6 @@ void LocalCopier::addFiles(QList<File*> files)
 LocalDataSource::LocalDataSource(QObject *parent) :
 	BaseDataSource(parent)
 {
-	dataSource = LOCAL;
-
 	copier = new LocalCopier();
 
 	connect(copier, SIGNAL(aboutToCopy(File*)), this, SLOT(aboutToCopy(File*)));

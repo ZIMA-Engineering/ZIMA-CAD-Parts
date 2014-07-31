@@ -24,7 +24,6 @@
 #include <QDialog>
 #include <QList>
 #include "basedatasource.h"
-#include "ftpdatasource.h"
 #include "localdatasource.h"
 
 namespace Ui {
@@ -54,7 +53,6 @@ private:
 	BaseDataSource *lastDataSource;
 private slots:
 	void openFileDialog();
-	void dataSourceTypeChanged(int index);
 	void labelChangedByUser();
 };
 

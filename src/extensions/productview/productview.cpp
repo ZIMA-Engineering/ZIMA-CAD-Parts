@@ -38,9 +38,9 @@ ProductView::ProductView(QWidget *parent) :
 
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
-	// disabled 20140206 by Vlad's request:
-	// only "supported" files should be displayed. For rest of files this dialog should be closed
-	// addProviders<PDFProductView>();
+#ifdef HAVE_POPPLER
+    addProviders<PDFProductView>();
+#endif
 	//failbackProvider = new FailbackProductView(this);
 	//failbackProvider->hide();
 	failbackProvider = 0;

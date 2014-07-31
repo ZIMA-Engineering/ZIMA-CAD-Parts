@@ -28,7 +28,6 @@ BaseDataSource::BaseDataSource(QObject *parent) :
 	QObject(parent)
 {
 	rootItem = 0;
-	dataSource = UNDEFINED;
 }
 
 Item* BaseDataSource::getRootItem()

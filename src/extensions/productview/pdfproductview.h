@@ -1,3 +1,4 @@
+#ifdef HAVE_POPPLER
 #ifndef PDFPRODUCTVIEW_H
 #define PDFPRODUCTVIEW_H
 
@@ -31,3 +32,5 @@ private:
 };
 
 #endif // PDFPRODUCTVIEW_H
+
+#endif

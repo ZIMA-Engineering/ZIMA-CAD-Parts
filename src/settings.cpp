@@ -1,7 +1,6 @@
 #include "settings.h"
 #include "zimautils.h"
 #include "localdatasource.h"
-#include "ftpdatasource.h"
 #include "filefilters/extensionfilter.h"
 #include "filefilters/versionfilter.h"
 #include "zima-cad-parts.h"
@@ -75,7 +74,7 @@ void Settings::load()
 	loadDataSources();
 	setupFilterGroups();
 }
-#include <QtDebug>
+
 void Settings::save()
 {
 	QSettings s;
@@ -129,29 +128,10 @@ void Settings::loadDataSources()
 	{
 		settings.beginGroup(str);
 
-		QString dataSourceType = settings.value("DataSourceType", "ftp").toString();
-		BaseDataSource *ds = 0;
-
-		if( dataSourceType == "ftp" )
-		{
-			FtpDataSource *ftpds = new FtpDataSource();
-			ds = ftpds;
-
-			ftpds->remoteHost = settings.value("Host", "localhost").toString();
-			ftpds->remotePort = settings.value("Port", "21").toInt();
-			//ftpds->remoteBaseDir = settings.value("BaseDir", "/").toString();
-			ftpds->remoteLogin = settings.value("Login", "").toString();
-			ftpds->remotePassword = settings.value("Password", "").toString();
-			ftpds->ftpPassiveMode = settings.value("PassiveMode", true).toBool();
-
-		} else if ( dataSourceType == "local" ) {
-			LocalDataSource *locds = new LocalDataSource();
-			ds = locds;
-			locds->localPath = settings.value("Path", "").toString();
-		}
-
-		ds->label = settings.value("Label").toString();
-		DataSources.append(ds);
+        LocalDataSource *locds = new LocalDataSource();
+        locds->localPath = settings.value("Path", "").toString();
+        locds->label = settings.value("Label").toString();
+        DataSources.append(locds);
 
 		settings.endGroup();
 	}
@@ -171,29 +151,8 @@ void Settings::saveDataSources()
 		settings.beginGroup(QString::number(i++));
 
 		settings.setValue("Label", ds->label);
-		settings.setValue("DataSourceType", ds->internalName());
-
-		switch( ds->dataSource )
-		{
-		case LOCAL: {
-			LocalDataSource *locds = static_cast<LocalDataSource*>(ds);
-			settings.setValue("Path", locds->localPath);
-			break;
-		}
-		case FTP: {
-			FtpDataSource *ftpds = static_cast<FtpDataSource*>(ds);
-			settings.setValue("Host", ftpds->remoteHost);
-			settings.setValue("Port", ftpds->remotePort);
-			//settings.setValue("BaseDir", ftpds->remoteBaseDir);
-			settings.setValue("Login", ftpds->remoteLogin);
-			settings.setValue("Password", ftpds->remotePassword);
-			settings.setValue("PassiveMode", ftpds->ftpPassiveMode);
-			break;
-		}
-		default:
-			break;
-		}
-
+        LocalDataSource *locds = static_cast<LocalDataSource*>(ds);
+        settings.setValue("Path", locds->localPath);
 		settings.endGroup();
 	}
 	settings.endGroup();

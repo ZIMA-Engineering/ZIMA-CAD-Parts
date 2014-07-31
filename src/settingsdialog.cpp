@@ -30,7 +30,6 @@
 #include <QToolButton>
 
 #include "addeditdatasource.h"
-#include "baseremotedatasource.h"
 #include "zimautils.h"
 
 //! A helpter template class to convert any pointer to QVariant and vice versa
@@ -69,7 +68,6 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	        this, SLOT(datasourceUpButton_clicked()));
 	connect(m_ui->datasourceDownButton, SIGNAL(clicked()),
 	        this, SLOT(datasourceDownButton_clicked()));
-	connect(m_ui->pruneCacheButton, SIGNAL(clicked()), this, SLOT(pruneCache()));
 	connect(m_ui->productViewButton, SIGNAL(clicked()),
 	        this, SLOT(productViewButton_clicked()));
 
@@ -218,26 +216,9 @@ void SettingsDialog::addDataSource()
 		if (!item)
 			item = m_ui->datasourceList->item(0);
 		BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
-		switch( ds->dataSource )
-		{
-		case LOCAL: {
-			LocalDataSource *s = new LocalDataSource;
-
-			dataSource = s;
-			break;
-		}
-		case FTP: {
-			FtpDataSource *s = new FtpDataSource;
-
-			dataSource = s;
-			break;
-		}
-		default:
-			break;
-		}
+        LocalDataSource *s = new LocalDataSource;
 	} else {
 		LocalDataSource *s = new LocalDataSource;
-
 		dataSource = s;
 	}
 
@@ -356,26 +337,6 @@ void SettingsDialog::setupDatasourceList()
 
 	m_ui->datasourceList->setCurrentRow(0);
 	m_ui->datasourceList->setFocus();
-}
-
-void SettingsDialog::pruneCache(QString path)
-{
-	if(path.isEmpty())
-		path = BaseRemoteDataSource::cacheDirPath();
-
-	QDir dir(path);
-
-	QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
-
-	foreach(QFileInfo f, files)
-	{
-		if(f.isDir())
-			pruneCache(f.filePath());
-		else
-			QFile::remove(f.filePath());
-	}
-
-	dir.rmdir(path);
 }
 
 void SettingsDialog::setZimaUtilPath(int util)

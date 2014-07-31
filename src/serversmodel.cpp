@@ -22,7 +22,6 @@
 #include <QDir>
 #include <QDebug>
 #include "basedatasource.h"
-#include "baseremotedatasource.h"
 #include "localdatasource.h"
 #include "settings.h"
 #include "downloadmodel.h"
@@ -63,20 +62,8 @@ ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
 	connect(m_rootItem->server, SIGNAL(fileError(BaseDataSource::Operation,BaseDataSource::Error*)), this, SLOT(catchFileError(BaseDataSource::Operation,BaseDataSource::Error*)));
 	connect(m_rootItem->server, SIGNAL(filesDeleted()), this, SLOT(dataSourceFinishedDeleting()));
 
-	switch( m_rootItem->server->dataSource )
-	{
-	case LOCAL: {
-		LocalDataSource *lds = static_cast<LocalDataSource*>(m_rootItem->server);
-		m_rootItem->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
-		break;
-	}
-	case UNDEFINED:
-		// FIXME
-		break;
-	default:
-		BaseRemoteDataSource *rds = static_cast<BaseRemoteDataSource*>(m_rootItem->server);
-		m_rootItem->path = rds->remoteBaseDir.endsWith('/') ? rds->remoteBaseDir : rds->remoteBaseDir + "/";
-	}
+    LocalDataSource *lds = static_cast<LocalDataSource*>(m_rootItem->server);
+    m_rootItem->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
 
 	ds->loadRootItem(m_rootItem);
 	loadItem(m_rootItem);

@@ -156,11 +156,7 @@ void ServersWidget::dirTreeContextMenu(QPoint point)
 	QMenu *menu = new QMenu(this);
 
 	menu->addAction(style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open"), this, SLOT(indexOpenPath()));
-
-	if (m_map[serversToolBox->currentIndex()]->model->dataSource()->dataSource == LOCAL)
-	{
-		menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
-	}
+    menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
 
 	menu->addSeparator();
 

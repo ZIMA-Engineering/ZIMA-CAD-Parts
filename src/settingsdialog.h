@@ -30,7 +30,6 @@
 
 #include "zima-cad-parts.h"
 #include "basedatasource.h"
-#include "ftpdatasource.h"
 #include "localdatasource.h"
 
 
@@ -68,7 +67,6 @@ private slots:
 	void removeDataSource();
 	void datasourceUpButton_clicked();
 	void datasourceDownButton_clicked();
-	void pruneCache(QString path = QString());
 	void setZimaUtilPath(int util);
 	void proeButton_clicked();
 	void productViewButton_clicked();
