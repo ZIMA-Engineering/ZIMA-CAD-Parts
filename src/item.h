@@ -28,14 +28,13 @@
 #include <QVariant>
 #include <QDateTime>
 
-#include "basedatasource.h"
 #include "metadata.h"
-#include "thumbnail.h"
 
-class BaseDataSource;
+class LocalDataSource;
 class ServersModel;
 class Item;
 class DataTransfer;
+class Thumbnail;
 
 struct File
 {
@@ -129,30 +128,22 @@ public:
 	void addThumbnail(Thumbnail *thumb);
 	QList<Thumbnail*> thumbnails(bool include = true);
 
-	int     id;
 	QString name;
-	QString part;
-	QPixmap pixmap;
-	QString pixmapFile;
 	QPixmap logo;
 	bool showText;
 	QString path;
-	QMap<QString, QVariant> params;
-	QFile   *openFtpFile;
-	bool    isChecked;
 	bool    isDir;
-	bool    isEmpty;
 	bool isServer;
-	bool hasTechSpecs;
-	bool hasLoadedChildren;
-	BaseDataSource* server;
-	QList<Thumbnail*> m_thumbnails;
+    LocalDataSource* server;
 
 	Item            *parent;
 	QList<Item*>    children;
 	QList<File*> files;
 
 	Metadata *metadata;
+
+private:
+    QList<Thumbnail*> m_thumbnails;
 };
 
 #endif // ITEM_H

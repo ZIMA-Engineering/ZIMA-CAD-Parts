@@ -66,9 +66,9 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 	connect(ui->partsWebView, SIGNAL(urlChanged(QUrl)),
 	        this, SLOT(partsWebView_urlChanged(QUrl)));
 
-	m_fileModel = new FileModel(this);
-	m_fileModel->setRootIndex(m_serversModel->rootItem());
-	viewHidePartsIndex(m_serversModel->rootItem());
+    m_fileModel = new FileModel(this);
+    m_fileModel->setRootIndex(m_serversModel->rootItem());
+    viewHidePartsIndex(m_serversModel->rootItem());
 
 	m_proxyFileModel = new FileFilterModel(this);
 	m_proxyFileModel->setSourceModel(m_fileModel);
@@ -87,9 +87,7 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 	        this, SLOT(partsIndexOverwrite(Item*)));
 
     connect(ui->copyToWorkingDirButton, SIGNAL(clicked()),
-            this, SLOT(copyToWorkingDirButton_clicked()));
-	connect(ui->btnUpdate, SIGNAL(clicked()),
-	        this, SLOT(updateClicked()));
+            m_serversModel, SLOT(copyToWorkingDir()));
 	connect(ui->btnDelete, SIGNAL(clicked()),
 	        this, SLOT(deleteSelectedParts()));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
@@ -346,25 +344,6 @@ void ServerTabWidget::viewHidePartsIndex(Item *item)
 		ui->partsWebView->show();
 
 	ui->partsWebView->load(partsIndex);
-}
-
-void ServerTabWidget::copyToWorkingDirButton_clicked()
-{
-	m_serversModel->downloadFiles(Settings::get()->WorkingDir);
-	m_serversModel->uncheckAll(); //TODO/FIXME: maps
-}
-
-void ServerTabWidget::updateClicked()
-{
-	Item* i = m_fileModel->getRootItem();
-
-	if (i == 0)
-		return;
-
-	m_fileModel->prepareForUpdate();
-
-	m_serversModel->refresh(i);//TODO/FIXME: maps
-	m_serversModel->requestTechSpecs(i);//TODO/FIXME: maps
 }
 
 void ServerTabWidget::deleteSelectedParts()

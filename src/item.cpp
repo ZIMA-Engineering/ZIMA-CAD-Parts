@@ -19,6 +19,7 @@
 */
 
 #include "item.h"
+#include "localdatasource.h"
 #include <QDebug>
 
 #include "datatransfer.h"
@@ -302,22 +303,16 @@ QString File::getRxFromStringList(const QStringList &extensions)
 
 Item::Item()
 {
-	isChecked = false;
-	openFtpFile = 0;
 	parent = 0;
 	isDir = false;
 	isServer = false;
-	isEmpty = true;
 	server = 0;
 	metadata = 0;
-	hasTechSpecs = false;
-	hasLoadedChildren = false;
 	showText = true;
 }
 
 Item::~Item()
 {
-	delete openFtpFile;
 	delete metadata;
 	metadata = 0;
 	qDeleteAll(files);
@@ -338,14 +333,6 @@ int Item::row() const
 Item *Item::child(int r)
 {
 	return children.value(r);
-}
-
-
-void Item::setNotEmpty()
-{
-	isEmpty = false;
-	if (parent)
-		parent->setNotEmpty();
 }
 
 QString Item::getLabel()

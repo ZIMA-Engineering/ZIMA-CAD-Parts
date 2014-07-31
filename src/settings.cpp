@@ -128,10 +128,10 @@ void Settings::loadDataSources()
 	{
 		settings.beginGroup(str);
 
-        LocalDataSource *locds = new LocalDataSource();
-        locds->localPath = settings.value("Path", "").toString();
-        locds->label = settings.value("Label").toString();
-        DataSources.append(locds);
+        LocalDataSource *ds = new LocalDataSource();
+        ds->localPath = settings.value("Path", "").toString();
+        ds->label = settings.value("Label").toString();
+        DataSources.append(ds);
 
 		settings.endGroup();
 	}
@@ -146,13 +146,12 @@ void Settings::saveDataSources()
 
 	settings.remove("DataSources");
 	settings.beginGroup("DataSources");
-	foreach(BaseDataSource *ds, DataSources)
+    foreach(LocalDataSource *ds, DataSources)
 	{
 		settings.beginGroup(QString::number(i++));
 
 		settings.setValue("Label", ds->label);
-        LocalDataSource *locds = static_cast<LocalDataSource*>(ds);
-        settings.setValue("Path", locds->localPath);
+        settings.setValue("Path", ds->localPath);
 		settings.endGroup();
 	}
 	settings.endGroup();

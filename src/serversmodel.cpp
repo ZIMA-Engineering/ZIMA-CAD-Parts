@@ -26,7 +26,7 @@
 #include "settings.h"
 
 
-ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
+ServersModel::ServersModel(LocalDataSource *ds, QObject *parent)
 	: QAbstractItemModel(parent)
 {
 	m_lastTechSpecRequest = 0;
@@ -56,8 +56,7 @@ ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
 	connect(m_rootItem->server, SIGNAL(fileError(BaseDataSource::Operation,BaseDataSource::Error*)), this, SLOT(catchFileError(BaseDataSource::Operation,BaseDataSource::Error*)));
 	connect(m_rootItem->server, SIGNAL(filesDeleted()), this, SLOT(dataSourceFinishedDeleting()));
 
-    LocalDataSource *lds = static_cast<LocalDataSource*>(m_rootItem->server);
-    m_rootItem->path = lds->localPath.endsWith('/') ? lds->localPath : lds->localPath + "/";
+    m_rootItem->path = m_rootItem->server->localPath.endsWith('/') ? m_rootItem->server->localPath : m_rootItem->server->localPath + "/";
 
 	ds->loadRootItem(m_rootItem);
 	loadItem(m_rootItem);
@@ -243,13 +242,7 @@ QString ServersModel::translateDataSourceNameToPath(QString name)
 
 void ServersModel::allPartsDownloaded(Item* item)
 {
-	//emit statusUpdated(tr("All done."));
-	//reset(); // ???
-	//emit serverLoaded();
-	//emit layoutChanged();
-	if(item->children.count())
-		item->isEmpty = false;
-	emit layoutChanged();
+    emit layoutChanged();
 	emit itemLoaded( createIndex(item->row(), 0, item) );
 
 	if(!autoDescents.isEmpty())
@@ -263,34 +256,6 @@ void ServersModel::allPartsDownloaded(Item* item)
 			}
 		}
 	}
-}
-
-void ServersModel::refresh(Item* item)
-{
-	//qDebug() << "refresh";
-
-	QModelIndex index = createIndex(item->row(), 0, item);
-	beginRemoveRows(index, 0, item->children.count());
-
-	qDeleteAll(item->children);
-	item->children.clear();
-	qDeleteAll(item->files);
-	item->files.clear();
-
-	//qDebug() << "resetting" << item->name;
-
-	//qDebug() << "layoutChanged";
-
-//	emit dataChanged(index, index);
-
-	//emit rowsRemoved(index, 0, cnt);
-	endRemoveRows();
-
-	//reset();
-
-	item->hasLoadedChildren = false;
-
-	loadItem(item);
 }
 
 void ServersModel::requestTechSpecs(const QModelIndex &index)
@@ -310,19 +275,6 @@ void ServersModel::requestTechSpecs(Item *item)
 
 void ServersModel::loadItem(Item* item)
 {
-	//clear();
-
-	if(item->hasLoadedChildren)
-	{
-		//qDebug() << "Item" << item->name << "has already loaded children - stop";
-
-		//item->server->sendTechSpecUrl(item);
-		allPartsDownloaded(item);
-		return;
-	} else {
-		//qDebug() << "Item" << item->name << "has not yet loaded children - go on";
-	}
-
 	Q_ASSERT(item);
 	Q_ASSERT(item->server);
 	item->server->loadDirectory(item);
@@ -353,18 +305,20 @@ void ServersModel::deleteFiles()
 	i->server->deleteFiles(getCheckedFiles(i));
 }
 
-void ServersModel::downloadFiles(QString dir)
+void ServersModel::copyToWorkingDir()
 {
 	QDir d;
-	d.mkpath(dir);
+    d.mkpath(Settings::get()->WorkingDir);
 
 	foreach(Item *i, m_rootItem->children)
 	{
 		QList<File*> tmp = getCheckedFiles(i);
 
 		if( tmp.count() > 0 )
-			i->server->downloadFiles(tmp, dir);
+            i->server->copyFiles(tmp, Settings::get()->WorkingDir);
 	}
+
+    uncheckAll(); //TODO/FIXME: maps
 }
 
 void ServersModel::uncheckAll(Item *item)

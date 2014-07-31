@@ -76,8 +76,6 @@ private slots:
 	void partsTreeView_doubleClicked(const QModelIndex &index);
 
 	void filesDeleted();
-	void copyToWorkingDirButton_clicked();
-	void updateClicked();
 	void deleteSelectedParts();
 	void partsIndexLoaded(const QModelIndex &index);
 

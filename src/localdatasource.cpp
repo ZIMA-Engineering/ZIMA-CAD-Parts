@@ -26,6 +26,7 @@
 
 #include "localdatasource.h"
 #include "metadata.h"
+#include "thumbnail.h"
 
 
 LocalCopier::LocalCopier(QList<File*> files) :
@@ -79,15 +80,11 @@ void LocalCopier::run()
 	emit done();
 }
 
-void LocalCopier::addFile(File* file)
-{
-	files << file;
-}
-
 void LocalCopier::addFiles(QList<File*> files)
 {
 	this->files << files;
 }
+
 
 LocalDataSource::LocalDataSource(QObject *parent) :
 	BaseDataSource(parent)
@@ -278,26 +275,18 @@ void LocalDataSource::deleteFiles(QList<File*> files)
 	emit filesDeleted();
 }
 
-void LocalDataSource::addFileToDownload(File *f)
-{
-	copier->addFile(f);
-}
-
-void LocalDataSource::downloadFiles(QList<File*> files, QString dir)
+void LocalDataSource::copyFiles(QList<File*> files, const QString &dir)
 {
 	foreach(File *f, files)
-	if( f->targetPath.isEmpty() )
-		f->targetPath = dir + "/" + f->name;
+    {
+        if( f->targetPath.isEmpty() )
+            f->targetPath = dir + "/" + f->name;
+    }
 
 	copier->addFiles(files);
 
 	if( !copier->isRunning() )
 		copier->start();
-}
-
-void LocalDataSource::downloadFile(File* file)
-{
-	Q_UNUSED(file);
 }
 
 void LocalDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)

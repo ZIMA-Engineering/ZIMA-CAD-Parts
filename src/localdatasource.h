@@ -23,6 +23,7 @@
 
 #include <QThread>
 #include "basedatasource.h"
+#include "item.h"
 
 class LocalCopier : public QThread
 {
@@ -32,11 +33,9 @@ public:
 	LocalCopier(File* file);
 	void run();
 	void addFiles(QList<File*> files);
-	void addFile(File* file);
 
 private:
 	QList<File*> files;
-	QString target;
 
 signals:
 	void aboutToCopy(File *file);
@@ -63,9 +62,7 @@ public slots:
 	void loadRootItem(Item *item);
 	void loadDirectory(Item* item);
 	void deleteFiles(QList<File*> files);
-	void addFileToDownload(File *f);
-	void downloadFiles(QList<File*> files, QString dir);
-	void downloadFile(File* file);
+    void copyFiles(QList<File*> files, const QString &dir);
 	void assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
 	void assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
 
@@ -78,5 +75,7 @@ protected slots:
 	void aboutToCopy(File *file);
 
 };
+
+typedef QList<LocalDataSource*> DataSourceList;
 
 #endif // LOCALDATASOURCE_H

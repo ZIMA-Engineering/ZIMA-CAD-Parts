@@ -40,20 +40,17 @@ public:
 	    EDIT
 	};
 
-	explicit AddEditDataSource(BaseDataSource *dataSource, Actions action, QWidget *parent = 0);
+    explicit AddEditDataSource(LocalDataSource *dataSource, Actions action, QWidget *parent = 0);
 	~AddEditDataSource();
 
-	BaseDataSource *dataSource();
+    LocalDataSource *dataSource();
 
 private:
-	void refill();
-
 	Ui::AddEditDataSource *ui;
-	DataSourceList dataSources;
-	BaseDataSource *lastDataSource;
+    LocalDataSource *m_ds;
+
 private slots:
 	void openFileDialog();
-	void labelChangedByUser();
 };
 
 #endif // ADDEDITDATASOURCE_H

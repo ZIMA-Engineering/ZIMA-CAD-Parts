@@ -23,10 +23,11 @@
 
 #include "filemodel.h"
 #include "item.h"
-#include "basedatasource.h"
+#include "localdatasource.h"
+#include "thumbnail.h"
 
 FileModel::FileModel(QObject *parent) :
-	QAbstractItemModel(parent), rootItem(0), formalRootItem(0), thumbWidth(256)
+    QAbstractItemModel(parent), rootItem(0), formalRootItem(0), thumbWidth(256)
 {
 }
 
@@ -307,10 +308,4 @@ void FileModel::metadataRetranslated()
 
 	emit headerDataChanged(Qt::Horizontal, 2, colLabels.count()-1);
 	emit requestColumnResize();
-}
-
-void FileModel::prepareForUpdate()
-{
-	formalRootItem = rootItem;
-	rootItem = 0;
 }

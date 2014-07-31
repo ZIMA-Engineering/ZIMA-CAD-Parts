@@ -23,6 +23,7 @@
 #include <QDebug>
 #include "basedatasource.h"
 #include "settings.h"
+#include "thumbnail.h"
 
 BaseDataSource::BaseDataSource(QObject *parent) :
 	QObject(parent)

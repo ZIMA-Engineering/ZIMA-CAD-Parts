@@ -1,4 +1,5 @@
 #include "thumbnail.h"
+#include "localdatasource.h"
 
 Thumbnail::Thumbnail(Item *item, QString name)
 	: m_item(item),

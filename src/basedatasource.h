@@ -78,9 +78,7 @@ public slots:
 	virtual void loadDirectory(Item* item) = 0;
 	virtual void sendTechSpecUrl(Item* item);
 	virtual void deleteFiles(QList<File*> files) = 0;
-	virtual void addFileToDownload(File *f) = 0;
-	virtual void downloadFiles(QList<File*> files, QString dir) = 0;
-	virtual void downloadFile(File* file) = 0;
+    virtual void copyFiles(QList<File*> files, const QString &dir) = 0;
 	void assignThumbnailsToFiles(Item *item, QList<Thumbnail*> thumbnails = QList<Thumbnail*>());
 	void determineFileVersions(Item *item);
 	void retranslate(QString lang = QString());
@@ -116,6 +114,5 @@ signals:
 };
 
 
-typedef QList<BaseDataSource*> DataSourceList;
 
 #endif // BASEDATASOURCE_H

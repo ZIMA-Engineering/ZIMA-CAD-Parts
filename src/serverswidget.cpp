@@ -54,7 +54,7 @@ void ServersWidget::settingsChanged()
 
 		// now setup all item==group again
 		int ix = 0;
-		foreach(BaseDataSource *ds, Settings::get()->DataSources)
+        foreach(LocalDataSource *ds, Settings::get()->DataSources)
 		{
 			ServersWidgetMap *mapItem = new ServersWidgetMap();
 			mapItem->index = ix;

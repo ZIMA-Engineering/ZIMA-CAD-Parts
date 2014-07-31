@@ -2,7 +2,7 @@
 #define SETTINGS_H
 
 #include <QHash>
-#include "basedatasource.h"
+#include "localdatasource.h"
 #include "filefilters/filtergroup.h"
 
 

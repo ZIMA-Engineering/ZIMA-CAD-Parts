@@ -25,19 +25,22 @@
 #include "addeditdatasource.h"
 #include "ui_addeditdatasource.h"
 
-AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, Actions action, QWidget *parent) :
+AddEditDataSource::AddEditDataSource(LocalDataSource *dataSource, Actions action, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::AddEditDataSource)
 {
 	ui->setupUi(this);
 
-	dataSources << dataSource;
-	lastDataSource = dataSource;
-
-	refill();
+    if (dataSource)
+    {
+        m_ds = dataSource;
+        ui->labelLineEdit->setText(m_ds->label);
+        ui->pathLineEdit->setText(m_ds->localPath);
+    }
+    else
+        m_ds = new LocalDataSource();
 
 	connect(ui->fileDialogButton, SIGNAL(clicked()), this, SLOT(openFileDialog()));
-    connect(ui->labelLineEdit, SIGNAL(textEdited(QString)), this, SLOT(labelChangedByUser()));
 
 	if( action == EDIT )
 		setWindowTitle(tr("Edit data source"));
@@ -46,39 +49,16 @@ AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, Actions action,
 AddEditDataSource::~AddEditDataSource()
 {
 	delete ui;
-
-	foreach(BaseDataSource *bs, dataSources)
-	if( bs != lastDataSource )
-		delete bs;
 }
 
-BaseDataSource* AddEditDataSource::dataSource()
+LocalDataSource* AddEditDataSource::dataSource()
 {
-	lastDataSource->label = ui->labelLineEdit->text();
-
-    LocalDataSource *s = static_cast<LocalDataSource*>(lastDataSource);
-    s->localPath = ui->pathLineEdit->text();
-	return lastDataSource;
+    m_ds->label = ui->labelLineEdit->text();
+    m_ds->localPath = ui->pathLineEdit->text();
+    return m_ds;
 }
 
 void AddEditDataSource::openFileDialog()
 {
 	ui->pathLineEdit->setText( QFileDialog::getExistingDirectory(this, tr("Select directory"), QDir::homePath()) );
-}
-
-void AddEditDataSource::refill()
-{
-	ui->labelLineEdit->setText(lastDataSource->label);
-
-    LocalDataSource *s = static_cast<LocalDataSource*>(lastDataSource);
-
-    if( !s->label.isEmpty() && s->localPath != s->label )
-        labelChangedByUser();
-    ui->pathLineEdit->setText( s->localPath );
-}
-
-#warning TODO/FIXME: simplify it
-void AddEditDataSource::labelChangedByUser()
-{
-	disconnect(ui->pathLineEdit, SIGNAL(textChanged(QString)), ui->labelLineEdit, SLOT(setText(QString)));
 }

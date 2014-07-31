@@ -37,7 +37,7 @@ class ServersModel : public QAbstractItemModel
 	Q_OBJECT
 
 public:
-	ServersModel(BaseDataSource *ds, QObject *parent = 0);
+    ServersModel(LocalDataSource *ds, QObject *parent = 0);
 	~ServersModel();
 
 	bool canFetchMore(const QModelIndex &parent) const;
@@ -54,7 +54,7 @@ public:
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 
-	BaseDataSource* dataSource() {
+    LocalDataSource* dataSource() {
 		return m_datasource;
 	}
 
@@ -69,13 +69,12 @@ public:
 	}
 
 public slots:
-	void refresh(Item* item);
 	void clear();
 	void loadItem(Item *item);
 	void requestTechSpecs(const QModelIndex &index);
 	void requestTechSpecs(Item *item);
 	void deleteFiles();
-	void downloadFiles(QString dir);
+    void copyToWorkingDir();
 	void uncheckAll(Item *item = 0);
 	void retranslateMetadata(Item *item = 0);
 	void descentTo(QString path, Item *item = 0);
@@ -89,7 +88,7 @@ protected slots:
 
 private:
 	QIcon dirIcon, serverIcon;
-	BaseDataSource* m_datasource;
+    LocalDataSource* m_datasource;
 	Item *m_rootItem;
 	Item *m_lastTechSpecRequest;
 	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];

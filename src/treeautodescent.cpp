@@ -2,6 +2,7 @@
 
 #include "treeautodescent.h"
 #include "serversmodel.h"
+#include "localdatasource.h"
 
 TreeAutoDescent::TreeAutoDescent(ServersModel *sm, Item *root, QString path, QObject *parent) :
 	QObject(parent),

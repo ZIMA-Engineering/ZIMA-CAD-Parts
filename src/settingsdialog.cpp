@@ -191,7 +191,7 @@ void SettingsDialog::accept()
 	for (int i = 0; i < m_ui->datasourceList->count(); ++i)
 	{
 		QListWidgetItem *item = m_ui->datasourceList->item(i);
-		newDSList << PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
+        newDSList << PtrVariant<LocalDataSource>::asPtr(item->data(DATASOURCE_ROLE));
 	}
 
 	if (newDSList != Settings::get()->DataSources)
@@ -208,39 +208,17 @@ void SettingsDialog::accept()
 
 void SettingsDialog::addDataSource()
 {
-	BaseDataSource *dataSource = 0;
+    AddEditDataSource addEdit(0, AddEditDataSource::ADD);
 
-	if ( m_ui->datasourceList->count() )
-	{
-		QListWidgetItem *item = m_ui->datasourceList->currentItem();
-		if (!item)
-			item = m_ui->datasourceList->item(0);
-		BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
-        LocalDataSource *s = new LocalDataSource;
-	} else {
-		LocalDataSource *s = new LocalDataSource;
-		dataSource = s;
-	}
-
-	if( dataSource != 0 )
-	{
-		AddEditDataSource *addEdit = new AddEditDataSource(dataSource, AddEditDataSource::ADD);
-
-		if( addEdit->exec() == QDialog::Accepted )
-		{
-			BaseDataSource *ds = addEdit->dataSource();
-			QListWidgetItem *item =  new QListWidgetItem(ds->dataSourceIcon(), ds->label);
-			item->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(ds));
-			item->setData(UNUSED_ROLE, true);
-			m_ui->datasourceList->addItem(item);
-			m_ui->datasourceList->setCurrentItem(item);
-		}
-		else
-			delete dataSource;
-
-		delete addEdit;
-	}
-
+    if (addEdit.exec() == QDialog::Accepted )
+    {
+        LocalDataSource *ds = addEdit.dataSource();
+        QListWidgetItem *item =  new QListWidgetItem(ds->dataSourceIcon(), ds->label);
+        item->setData(DATASOURCE_ROLE, PtrVariant<LocalDataSource>::asQVariant(ds));
+        item->setData(UNUSED_ROLE, true);
+        m_ui->datasourceList->addItem(item);
+        m_ui->datasourceList->setCurrentItem(item);
+    }
 }
 
 void SettingsDialog::editDataSource()
@@ -252,23 +230,19 @@ void SettingsDialog::editDataSource()
 	if (!item)
 		return;
 
-	BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(item->data(DATASOURCE_ROLE));
-	AddEditDataSource *addEdit = new AddEditDataSource(ds, AddEditDataSource::EDIT);
+    LocalDataSource *ds = PtrVariant<LocalDataSource>::asPtr(item->data(DATASOURCE_ROLE));
+    AddEditDataSource addEdit(ds, AddEditDataSource::EDIT);
 
-	if (addEdit->exec())
+    if (addEdit.exec())
 	{
-		BaseDataSource *edited = addEdit->dataSource();
+        LocalDataSource *edited = addEdit.dataSource();
 
-		if ( edited != ds )
-		{
-			// old datasource is deleted in ~AddEditDataSource
-			item->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(edited));
-			item->setIcon(edited->dataSourceIcon());
-			item->setText(edited->label);
-		}
-	}
-
-	delete addEdit;
+        item->setData(DATASOURCE_ROLE, PtrVariant<LocalDataSource>::asQVariant(edited));
+        item->setIcon(edited->dataSourceIcon());
+        item->setText(edited->label);
+        Settings::get()->DataSourcesNeedsUpdate = true;
+        delete ds;
+    }
 }
 
 void SettingsDialog::removeDataSource()
@@ -283,7 +257,7 @@ void SettingsDialog::removeDataSource()
 	//  no need to call deleteLater() on used/application datasource
 	//  because unused datasources are deleted in
 	//  mainwindow.cpp
-	BaseDataSource *ds = PtrVariant<BaseDataSource>::asPtr(it->data(DATASOURCE_ROLE));
+    LocalDataSource *ds = PtrVariant<LocalDataSource>::asPtr(it->data(DATASOURCE_ROLE));
 	if (it->data(UNUSED_ROLE).toBool())
 	{
 		ds->deleteLater();
@@ -327,10 +301,10 @@ void SettingsDialog::setupDatasourceList()
 	if (Settings::get()->DataSources.isEmpty())
 		return;
 
-	foreach(BaseDataSource *s, Settings::get()->DataSources)
+    foreach(LocalDataSource *s, Settings::get()->DataSources)
 	{
 		QListWidgetItem *i = new QListWidgetItem(s->dataSourceIcon(), s->label);
-		i->setData(DATASOURCE_ROLE, PtrVariant<BaseDataSource>::asQVariant(s));
+        i->setData(DATASOURCE_ROLE, PtrVariant<LocalDataSource>::asQVariant(s));
 		i->setData(UNUSED_ROLE, false);
 		m_ui->datasourceList->addItem(i);
 	}

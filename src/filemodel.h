@@ -31,7 +31,7 @@ class FileModel : public QAbstractItemModel
 {
 	Q_OBJECT
 public:
-	explicit FileModel(QObject *parent = 0);
+    explicit FileModel(QObject *parent = 0);
 
 	//---
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -55,7 +55,6 @@ public slots:
 	void setRootIndex(Item *item);
 	void setThumbWidth(int size);
 	void initMetadata(Item *i);
-	void prepareForUpdate();
 
 protected:
 	Item* rootItem;
@@ -64,7 +63,7 @@ protected:
 private:
 	int thumbWidth;
 	int previewWidth;
-	QStringList colLabels;
+    QStringList colLabels;
 
 private slots:
 	void thumbnailDownloaded(File *file);
