@@ -31,7 +31,6 @@
 #include "basedatasource.h"
 #include "metadata.h"
 #include "thumbnail.h"
-#include "downloadmodel.h"
 
 class BaseDataSource;
 class ServersModel;
@@ -112,7 +111,6 @@ struct File
 	int version;
 	bool newestVersion;
 	DataTransfer *transfer;
-	DownloadModel::TransferHandlerType transferHandler;
 
 private:
 	QPixmap m_icon;

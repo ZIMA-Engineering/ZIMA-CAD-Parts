@@ -29,11 +29,10 @@
 #include "item.h"
 #include "basedatasource.h"
 #include "treeautodescent.h"
-#include "transferhandler.h"
 
 class DownloadModel;
 
-class ServersModel : public QAbstractItemModel, public TransferHandler
+class ServersModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
@@ -69,13 +68,6 @@ public:
 		return m_rootItem;
 	}
 
-	void stopDownload();
-	void clearQueue();
-
-	DownloadModel* downloadModel() {
-		return m_downloadModel;
-	}
-
 public slots:
 	void refresh(Item* item);
 	void clear();
@@ -84,15 +76,8 @@ public slots:
 	void requestTechSpecs(Item *item);
 	void deleteFiles();
 	void downloadFiles(QString dir);
-	void resumeDownload();
 	void uncheckAll(Item *item = 0);
-	void deleteDownloadQueue();
-#if 0
-	void saveQueue(QSettings *settings);
-	int loadQueue(QSettings *settings);
-#endif
 	void retranslateMetadata(Item *item = 0);
-	void abort();
 	void descentTo(QString path, Item *item = 0);
 	void catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
 
@@ -111,10 +96,8 @@ private:
 	int dsDeleted;
 	QList<TreeAutoDescent*> autoDescents;
 	QHash<TreeAutoDescent*, Item*> metadataIncludeHash;
-	DownloadModel *m_downloadModel;
 
 private slots:
-	void dataSourceFinishedDownloading();
 	void dataSourceFinishedDeleting();
 	void metadataReady(Item *item);
 	void newItem(Item *item);

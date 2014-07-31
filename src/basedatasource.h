@@ -81,9 +81,6 @@ public slots:
 	virtual void addFileToDownload(File *f) = 0;
 	virtual void downloadFiles(QList<File*> files, QString dir) = 0;
 	virtual void downloadFile(File* file) = 0;
-	virtual void resumeDownload() = 0;
-	virtual void abort() = 0;
-	virtual void deleteDownloadQueue();
 	void assignThumbnailsToFiles(Item *item, QList<Thumbnail*> thumbnails = QList<Thumbnail*>());
 	void determineFileVersions(Item *item);
 	void retranslate(QString lang = QString());

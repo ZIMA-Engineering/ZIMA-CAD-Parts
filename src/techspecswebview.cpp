@@ -28,7 +28,6 @@
 #include <QDebug>
 
 #include "datatransfer.h"
-#include "downloadmodel.h"
 #include "settings.h"
 #include "zima-cad-parts.h"
 
@@ -36,8 +35,6 @@
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
 	QWebView(parent)
 {
-	m_downloadModel = new DownloadModel(this, this);
-
 	loadAboutPage();
 
 	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
@@ -57,6 +54,7 @@ void TechSpecsWebView::setDownloadDirectory(QString path)
 	m_dlDir = path;
 }
 
+#if 0
 void TechSpecsWebView::stopDownload()
 {
 	QList<File*> tmp = m_downloadModel->files();
@@ -81,6 +79,7 @@ void TechSpecsWebView::clearQueue()
 	foreach(File *f, tmp)
 	delete f->transfer;
 }
+#endif
 
 void TechSpecsWebView::loadAboutPage()
 {
@@ -186,7 +185,6 @@ void TechSpecsWebView::downloadFile(QNetworkReply *reply, File *f)
 		f->name = fileName;
 		f->path = reply->url().toString();
 		f->targetPath = m_dlDir + "/" + fileName;
-		f->transferHandler = DownloadModel::TechSpec;
 		f->transfer = new DataTransfer(reply, f);
 		f->transfer->setDeleteSrc(true);
 		f->transfer->setDeleteDst(true);
@@ -197,7 +195,4 @@ void TechSpecsWebView::downloadFile(QNetworkReply *reply, File *f)
 
 	if(reply->hasRawHeader("Content-Length"))
 		f->size = reply->rawHeader("Content-Length").toULongLong();
-
-	if(f->transfer->initiate() && isNew)
-		m_downloadModel->enqueue(f);
 }

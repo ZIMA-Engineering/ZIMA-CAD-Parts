@@ -66,8 +66,6 @@ public slots:
 	void addFileToDownload(File *f);
 	void downloadFiles(QList<File*> files, QString dir);
 	void downloadFile(File* file);
-	void resumeDownload();
-	void abort();
 	void assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
 	void assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite = false);
 

@@ -43,7 +43,6 @@ SOURCES += zima-cad-parts.cpp \
     basedatasource.cpp \
     localdatasource.cpp \
     addeditdatasource.cpp \
-    downloadmodel.cpp \
     src/settings.cpp \
     src/extensions/productview/productview.cpp \
     src/filtersdialog.cpp \
@@ -59,7 +58,6 @@ SOURCES += zima-cad-parts.cpp \
     src/filefilters/filtergroup.cpp \
     src/filefilters/versionfilter.cpp \
     src/datatransfer.cpp \
-    src/transferhandler.cpp \
     src/extensions/productview/abstractproductview.cpp \
     src/extensions/productview/proeproductview.cpp \
     src/extensions/productview/dxfproductview.cpp \
@@ -106,7 +104,6 @@ HEADERS += mainwindow.h \
     basedatasource.h \
     localdatasource.h \
     addeditdatasource.h \
-    downloadmodel.h \
     src/settings.h \
     src/extensions/productview/productview.h \
     src/filtersdialog.h \
@@ -123,7 +120,6 @@ HEADERS += mainwindow.h \
     src/filefilters/filtergroup.h \
     src/filefilters/versionfilter.h \
     src/datatransfer.h \
-    src/transferhandler.h \
     src/extensions/productview/abstractproductview.h \
     src/extensions/productview/proeproductview.h \
     src/extensions/productview/dxfproductview.h \

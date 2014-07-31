@@ -26,9 +26,6 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 
 	m_productView = new ProductView(this);
 
-	ui->downloadTreeView->setModel(m_serversModel->downloadModel());
-	ui->downloadTreeView->setItemDelegate(new DownloadDelegate(this));
-
 	ui->techSpecBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 	ui->techSpecForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
 	ui->techSpecReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
@@ -89,17 +86,12 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 	connect(m_serversModel, SIGNAL(partsIndexAlreadyExists(Item*)),
 	        this, SLOT(partsIndexOverwrite(Item*)));
 
-	connect(ui->deleteQueueBtn, SIGNAL(clicked()),
-	        m_serversModel->downloadModel(), SLOT(clear()));
-
-	connect(ui->btnDownload, SIGNAL(clicked()),
-	        this, SLOT(downloadButton()));
+    connect(ui->copyToWorkingDirButton, SIGNAL(clicked()),
+            this, SLOT(copyToWorkingDirButton_clicked()));
 	connect(ui->btnUpdate, SIGNAL(clicked()),
 	        this, SLOT(updateClicked()));
 	connect(ui->btnDelete, SIGNAL(clicked()),
 	        this, SLOT(deleteSelectedParts()));
-	connect(ui->startStopDownloadBtn, SIGNAL(clicked()),
-	        this, SLOT(toggleDownload()));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
 	        m_fileModel, SLOT(setThumbWidth(int)));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
@@ -356,15 +348,10 @@ void ServerTabWidget::viewHidePartsIndex(Item *item)
 	ui->partsWebView->load(partsIndex);
 }
 
-void ServerTabWidget::downloadButton()
+void ServerTabWidget::copyToWorkingDirButton_clicked()
 {
 	m_serversModel->downloadFiles(Settings::get()->WorkingDir);
 	m_serversModel->uncheckAll(); //TODO/FIXME: maps
-
-	ui->tabWidget->setCurrentIndex(DOWNLOADS);
-
-	ui->downloadTreeView->resizeColumnToContents(0);
-	ui->downloadTreeView->resizeColumnToContents(2);
 }
 
 void ServerTabWidget::updateClicked()
@@ -391,29 +378,6 @@ void ServerTabWidget::deleteSelectedParts()
 		m_serversModel->deleteFiles(); //TODO/FIXME: maps
 		m_serversModel->uncheckAll(); //TODO/FIXME: maps
 	}
-}
-
-void ServerTabWidget::toggleDownload()
-{
-	if (m_serversModel->downloadModel()->isEmpty())
-		return;
-
-	if (m_serversModel->downloadModel()->isDownloading())
-		stopDownload();
-	else
-		resumeDownload();
-}
-
-void ServerTabWidget::resumeDownload()
-{
-	m_serversModel->downloadModel()->resume();
-	ui->startStopDownloadBtn->setText(tr("Stop"));
-}
-
-void ServerTabWidget::stopDownload()
-{
-	m_serversModel->downloadModel()->stop();
-	ui->startStopDownloadBtn->setText(tr("Resume"));
 }
 
 void ServerTabWidget::adjustThumbColumnWidth(int width)

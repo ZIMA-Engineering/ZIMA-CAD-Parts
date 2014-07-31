@@ -24,18 +24,13 @@
 #include "basedatasource.h"
 #include "localdatasource.h"
 #include "settings.h"
-#include "downloadmodel.h"
+
 
 ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
 	: QAbstractItemModel(parent)
 {
 	m_lastTechSpecRequest = 0;
 	m_datasource = ds;
-
-	m_downloadModel = new DownloadModel(this, this);
-
-	connect(this, SIGNAL(fileProgress(File*)), m_downloadModel, SLOT(fileChanged(File*)));
-	connect(this, SIGNAL(fileDownloaded(File*)), m_downloadModel, SLOT(fileDownloaded(File*)));
 
 	m_rootItem = new Item();
 	m_rootItem->children.clear();
@@ -50,7 +45,6 @@ ServersModel::ServersModel(BaseDataSource *ds, QObject *parent)
 	connect(m_rootItem->server, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
 	connect(m_rootItem->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
 	connect(m_rootItem->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
-	connect(m_rootItem->server, SIGNAL(filesDownloaded()), this, SLOT(dataSourceFinishedDownloading()));
 	connect(m_rootItem->server, SIGNAL(metadataInclude(Item*,QString)), this, SLOT(metadataInclude(Item*,QString)));
 	connect(m_rootItem->server, SIGNAL(metadataIncludeCancelled(Item*)), this, SLOT(metadataIncludeCancel(Item*)));
 	connect(m_rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
@@ -368,20 +362,9 @@ void ServersModel::downloadFiles(QString dir)
 	{
 		QList<File*> tmp = getCheckedFiles(i);
 
-		foreach(File *f, tmp)
-		f->transferHandler = DownloadModel::ServersModel;
-
-		m_downloadModel->enqueue(tmp);
-
 		if( tmp.count() > 0 )
 			i->server->downloadFiles(tmp, dir);
 	}
-}
-
-void ServersModel::resumeDownload()
-{
-	foreach(Item *i, m_rootItem->children)
-	i->server->resumeDownload();
 }
 
 void ServersModel::uncheckAll(Item *item)
@@ -408,87 +391,7 @@ void ServersModel::clear()
 	//reset(); // ???
 }
 
-void ServersModel::deleteDownloadQueue()
-{
-	m_downloadModel->clear();
 
-	foreach(Item *i, m_rootItem->children)
-	i->server->deleteDownloadQueue();
-
-	emit queueChanged();
-}
-
-#warning "TODO/FIXME: void ServersModel::saveQueue"
-#if 0
-void ServersModel::saveQueue(QSettings *settings)
-{
-	settings->remove("DownloadQueue");
-	settings->beginGroup("DownloadQueue");
-
-	QList<File*> files = downloadQueue->files();
-	int i = 0;
-
-	foreach(File *f, files)
-	{
-		if(!f->parentItem)
-			continue;
-
-		settings->beginGroup(QString::number(i));
-		settings->setValue("DataSourceIndex", servers.indexOf(f->parentItem->server));
-		settings->setValue("Name", f->name);
-		settings->setValue("RemotePath", f->path);
-		settings->setValue("TargetPath", f->targetPath);
-		settings->setValue("Size", f->size);
-		settings->endGroup();
-
-		i++;
-	}
-
-	settings->endGroup();
-}
-
-int ServersModel::loadQueue(QSettings *settings)
-{
-	int fileCnt = 0;
-
-	settings->beginGroup("DownloadQueue");
-
-	QStringList groups = settings->childGroups();
-	int cnt = groups.count();
-	int dsCnt = servers.count();
-
-	for(int i = 0; i < cnt; i++)
-	{
-		settings->beginGroup(groups[i]);
-
-		int dsIndex = settings->value("DataSourceIndex").toInt();
-
-		if( dsIndex >= dsCnt )
-			continue;
-
-		File *f = new File;
-		f->parentItem = servers[dsIndex]->getRootItem();
-		f->name = settings->value("Name").toString();
-		f->path = settings->value("RemotePath").toString();
-		f->targetPath = settings->value("TargetPath").toString();
-		f->size = settings->value("Size").toULongLong();
-		f->bytesDone = 0;
-		f->transferHandler = DownloadModel::ServersModel;
-
-		downloadQueue->enqueue(f);
-
-		servers[dsIndex]->addFileToDownload(f);
-
-		settings->endGroup();
-
-		fileCnt++;
-	}
-
-	settings->endGroup();
-
-	return fileCnt;
-}
-#endif
 void ServersModel::retranslateMetadata(Item *item)
 {
 	QString lang = Settings::get()->getCurrentLanguageCode().left(2);
@@ -515,12 +418,6 @@ void ServersModel::retranslateMetadata(Item *item)
 
 		retranslateMetadata(i);
 	}
-}
-
-void ServersModel::dataSourceFinishedDownloading()
-{
-	if( m_downloadModel->isEmpty() )
-		emit filesDownloaded();
 }
 
 void ServersModel::dataSourceFinishedDeleting()
@@ -611,11 +508,6 @@ void ServersModel::metadataIncludeCancel(Item *item)
 	}
 }
 
-void ServersModel::abort()
-{
-	m_datasource->abort();
-}
-
 void ServersModel::descentTo(QString path, Item *item)
 {
     qDebug() << "descendTo" << path;
@@ -649,17 +541,6 @@ bool ServersModel::hasErrors(BaseDataSource::Operation op)
 Item* ServersModel::lastTechSpecRequest()
 {
 	return m_lastTechSpecRequest;
-}
-
-void ServersModel::stopDownload()
-{
-	abort();
-}
-
-void ServersModel::clearQueue()
-{
-	foreach(Item *i, m_rootItem->children)
-	i->server->deleteDownloadQueue();
 }
 
 void ServersModel::catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err)

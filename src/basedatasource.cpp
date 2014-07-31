@@ -47,11 +47,6 @@ QIcon BaseDataSource::dataSourceIcon()
 	return qApp->style()->standardIcon( QStyle::SP_DriveHDIcon );
 }
 
-void BaseDataSource::deleteDownloadQueue()
-{
-
-}
-
 void BaseDataSource::assignThumbnailsToFiles(Item *item, QList<Thumbnail*> thumbnails)
 {
 	if(thumbnails.isEmpty())

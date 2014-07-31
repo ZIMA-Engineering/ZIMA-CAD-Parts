@@ -44,7 +44,6 @@ private:
 	enum Tabs {
 	    TECH_SPECS,
 	    PARTS,
-	    DOWNLOADS,
 	    TABS_COUNT
 	};
 
@@ -77,14 +76,11 @@ private slots:
 	void partsTreeView_doubleClicked(const QModelIndex &index);
 
 	void filesDeleted();
-	void downloadButton();
+	void copyToWorkingDirButton_clicked();
 	void updateClicked();
 	void deleteSelectedParts();
 	void partsIndexLoaded(const QModelIndex &index);
 
-	void toggleDownload();
-	void resumeDownload();
-	void stopDownload();
 	void adjustThumbColumnWidth(int width);
 	void loadTechSpec(const QUrl &url);
 	void partsIndexOverwrite(Item *item);

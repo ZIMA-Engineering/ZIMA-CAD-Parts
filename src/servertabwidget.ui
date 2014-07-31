@@ -268,50 +268,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btnDownload">
+          <widget class="QPushButton" name="copyToWorkingDirButton">
            <property name="text">
             <string>Download</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>&amp;Download queue</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <item>
-        <widget class="QTreeView" name="downloadTreeView"/>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="deleteQueueBtn">
-           <property name="text">
-            <string>Delete queue</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="startStopDownloadBtn">
-           <property name="text">
-            <string>Stop</string>
            </property>
           </widget>
          </item>

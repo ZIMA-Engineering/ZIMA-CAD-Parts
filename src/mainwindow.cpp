@@ -34,7 +34,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "serversmodel.h"
-#include "downloadmodel.h"
 #include "filtersdialog.h"
 #include "item.h"
 #include "zimautils.h"
@@ -165,9 +164,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
 {
 	Settings::get()->MainWindowState = saveState();
 	Settings::get()->MainWindowGeometry = saveGeometry();
-
-#warning "TODO/FIXME: saveQueue"
-	//serversModel->saveQueue(settings);
 
 	QMainWindow::closeEvent(e);
 }
