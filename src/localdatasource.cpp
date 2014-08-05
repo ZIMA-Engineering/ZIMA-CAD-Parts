@@ -144,7 +144,7 @@ QString LocalDataSource::name()
 
 void LocalDataSource::loadDirectory(Item* item)
 {
-//    qDebug() << "LocalDataSource::loadDirectory" << item->children << item->files;
+    qDebug() << "LocalDataSource::loadDirectory" << item->children << item->files << item->path;
 	if(!item->children.isEmpty() || !item->files.isEmpty())
 	{
 		emit itemLoaded(item);
@@ -202,52 +202,14 @@ void LocalDataSource::loadDirectory(Item* item)
 		}
 	}
 
-	// Check for thumbnails
-//	if(!item->files.isEmpty() && !thumbnails.isEmpty())
-//	{
-//		foreach(File *f, item->files)
-//		{
-//			f->pixmapPath = "";
-
-//			QString fileNamePrefix = f->name.section('.', 0, 0);
-
-//			for(int i = 0; i < thumbnails.count(); i++)
-//			{
-//				QString thumbPrefix = thumbnails[i].section('.', -2, -2);
-//				QString thumbName;
-//				bool isLocalized = false;
-
-//				if(thumbPrefix.lastIndexOf('_') == thumbPrefix.count()-3)
-//				{
-//					thumbName = thumbPrefix.left(thumbPrefix.count()-3);
-//					isLocalized = true;
-//				} else thumbName = thumbPrefix;
-
-//				if(fileNamePrefix == thumbName)
-//				{
-//					// When there's no thumbnail set yet, pick first available
-//					if(f->pixmapPath.isEmpty())
-//						f->pixmapPath = item->path + thumbnails[i];
-
-//					// Localized thumbnail has precedence/
-//					if(isLocalized && thumbPrefix.right(2) == currentMetadataLang)
-//					{
-//						f->pixmapPath = item->path + thumbnails[i];
-//						break;
-//					}
-//				}
-//			}
-
-//			if(!f->pixmapPath.isEmpty())
-//				f->pixmap = QPixmap(f->pixmapPath).scaledToWidth(100);
-//		}
-//	}
-
-	assignThumbnailsToFiles(item);
+    assignThumbnailsToFiles(item);
 	determineFileVersions(item);
 
+    foreach(Item *i, item->children)
+        loadDirectory(i);
+
 //    qDebug() << "LocalDataSource::loadDirectory" << "itemLoaded";
-	emit itemLoaded(item);
+    emit itemLoaded(item);
 }
 
 void LocalDataSource::deleteFiles(QList<File*> files)

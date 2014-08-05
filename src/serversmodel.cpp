@@ -212,7 +212,8 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 			return QSize(item->logo.width(), item->logo.height());
 		break;
 	case Qt::ToolTipRole:
-		return item->pathWithDataSource();
+        // warning tooltip role is used for "go to home directory" in ServersWidget as well!
+        return item->path;
 	default:
 		;
 	}

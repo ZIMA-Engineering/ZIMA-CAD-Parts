@@ -187,7 +187,7 @@ void Metadata::provideInclude(Metadata *m, QString path)
 	} else {
 		qDebug() << "Include loaded" << m->getLabel();
 
-		QString path = QDir::cleanPath(m->m_item->pathWithDataSource());
+        QString path = QDir::cleanPath(m->m_item->path);
 
 		QHashIterator<QString, Include> i(m_includeHash);
 		while(i.hasNext())

@@ -135,7 +135,7 @@ void ServersWidget::settingsChanged()
 	} // Settings::get()->DataSourcesNeedsUpdate
 
 	foreach (ServersWidgetMap* i, m_map)
-	i->tab->settingsChanged();
+        i->tab->settingsChanged();
 }
 
 void ServersWidget::retranslateMetadata()
@@ -239,11 +239,25 @@ void ServersWidget::setModelindex(const QModelIndex &index)
 
 void ServersWidget::goToWorkingDirectory()
 {
-	foreach (ServersWidgetMap* i, m_map)
-	{
-        qDebug() << "gotow" << i->model << i->index;
-		i->model->descentTo(Settings::get()->WorkingDir);
-	}
+    foreach (ServersWidgetMap* i, m_map)
+    {
+        if (Settings::get()->WorkingDirDS.isNull()
+                || i->model->dataSource()->name() != Settings::get()->WorkingDirDS)
+        {
+            continue;
+        }
+
+        QModelIndexList ix = i->model->match(i->model->index(0, 0),
+                                             Qt::ToolTipRole,
+                                             Settings::get()->WorkingDir,
+                                             1,
+                                             Qt::MatchRecursive | Qt::MatchExactly);
+        if (ix.size())
+        {
+            setModelindex(ix.at(0));
+            break;
+        }
+    }
 }
 
 void ServersWidget::retranslateMetadata(int langIndex)
@@ -261,7 +275,8 @@ void ServersWidget::setWorkingDirectory()
 	Item *it = static_cast<Item*>(view->currentIndex().internalPointer());
 	if (!it)
 		return;
-    Settings::get()->WorkingDir = it->pathWithDataSource();
+    Settings::get()->WorkingDir = it->path;
+    Settings::get()->WorkingDirDS = it->server->name();
 	emit workingDirChanged();
 }
 
@@ -272,9 +287,5 @@ void ServersWidget::indexOpenPath()
 		return;
 
 	Item *i = static_cast<Item*>(index.internalPointer());
-	QString path = i->server->getPathForItem(i);// pathWithDataSource();
-
-	// Warning: it opens local file, even for remote datasources
-#warning it opens local file, even for remote datasources
-	QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(i->path));
 }

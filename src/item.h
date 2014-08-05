@@ -124,7 +124,6 @@ public:
 	Item *child(int r);
 	~Item();
 	QString getLabel();
-	QString pathWithDataSource();
 	void addThumbnail(Thumbnail *thumb);
 	QList<Thumbnail*> thumbnails(bool include = true);
 

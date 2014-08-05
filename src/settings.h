@@ -49,6 +49,8 @@ public:
 	// real settings
 
 	QHash<QString,QString> ExternalPrograms;
+    //! Current working datasource
+    QString WorkingDirDS;
 	//! Current working directory
 	QString WorkingDir;
 	//! State of the MainWindow

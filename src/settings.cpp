@@ -7,6 +7,7 @@
 
 #include <QSettings>
 #include <QDir>
+#include <QtDebug>
 
 
 Settings * Settings::m_instance = 0;
@@ -59,6 +60,7 @@ void Settings::load()
 	ServersSplitterSizes << i.toInt();
 
 	WorkingDir = s.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString();
+    WorkingDirDS = s.value("WorkingDirDS", QString()).toString();
 
 	GUIThumbWidth = s.value("GUI/ThumbWidth", 32).toInt();
 	GUIPreviewWidth = s.value("GUI/PreviewWidth", 256).toInt();
@@ -104,6 +106,7 @@ void Settings::save()
 	s.setValue("Server/SplitterSizes", l);
 
 	s.setValue("WorkingDir", WorkingDir);
+    s.setValue("WorkingDirDS", WorkingDirDS);
 
 	s.setValue("GUIThumbWidth", GUIThumbWidth);
 	s.setValue("GUIPreviewWidth", GUIPreviewWidth);
@@ -120,22 +123,32 @@ void Settings::save()
 
 void Settings::loadDataSources()
 {
-
 	QSettings settings;
+    qDebug(settings.fileName().toLocal8Bit().constData());
 
 	settings.beginGroup("DataSources");
 	foreach(QString str, settings.childGroups())
 	{
 		settings.beginGroup(str);
 
+        QString label = settings.value("Label", QString()).toString();
+        QString path = settings.value("Path", QString()).toString();
+        if (path.isNull())
+        {
+            qDebug() << "Datasource" << label << "has an empty path. Skipping.";
+            continue;
+        }
+
         LocalDataSource *ds = new LocalDataSource();
-        ds->localPath = settings.value("Path", "").toString();
-        ds->label = settings.value("Label").toString();
+        ds->localPath = path;
+        ds->label = label;
         DataSources.append(ds);
 
 		settings.endGroup();
 	}
 	settings.endGroup();
+
+    qDebug() << "All datasources count:" << DataSources.size();
 }
 
 
