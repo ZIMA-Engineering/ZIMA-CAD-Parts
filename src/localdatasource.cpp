@@ -113,10 +113,10 @@ void LocalDataSource::loadItemLogo(Item *item)
 
 	if(QFile::exists(logoPath + LOGO_FILE)) {
 		item->logo = QPixmap(logoPath + LOGO_FILE);
-		item->showText = false;
+        item->showText = true;
 	} else if(QFile::exists(logoPath + LOGO_TEXT_FILE)) {
 		item->logo = QPixmap(logoPath + LOGO_TEXT_FILE);
-		item->showText = true;
+        item->showText = false;
 	}
 }
 
