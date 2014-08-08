@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "item.h"
-
+#if 0
 class TreeAutoDescent : public QObject
 {
 	Q_OBJECT
@@ -32,5 +32,7 @@ private:
 	Item *m_done;
 
 };
+
+#endif
 
 #endif // TREEAUTODESCENT_H

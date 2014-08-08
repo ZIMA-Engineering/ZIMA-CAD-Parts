@@ -1,6 +1,6 @@
 #include "filefilter.h"
 
-FileFilter::FileFilter(File::FileTypes type)
+FileFilter::FileFilter(File::FileType type)
 	: type(type)
 {
 }

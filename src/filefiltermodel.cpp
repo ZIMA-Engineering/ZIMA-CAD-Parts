@@ -17,22 +17,36 @@ void FileFilterModel::setShowProeVersions(bool show)
 
 bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
 {
-	if(m_showProeVersions)
+    FileModel *fm = qobject_cast<FileModel*>(sourceModel());
+    Q_ASSERT(fm);
+
+    QModelIndex current = fm->index(source_row, 0, source_parent);
+    File f(fm->fileInfo(current));
+
+    if (f.type == File::UNDEFINED)
+    {
+        qDebug() << "FILTER6 undefined" << f.fileInfo.absoluteFilePath();
+        return false;
+    }
+    else if (m_showProeVersions)
+    {
+        // now we know that it's supported file and we should not take care about versions
+        return true;
+    }
+
+    if (!f.version
+            || (
+                   f.type != File::PRT_PROE
+                && f.type != File::ASM
+                && f.type != File::DRW
+                && f.type != File::FRM
+                && f.type != File::NEU_PROE)
+            )
+    {
+        qDebug() << "FILTER1" << QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 		return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+    }
 
-	Item *item = static_cast<FileModel*>(sourceModel())->getRootItem();
-	File *f = item->files.at(source_row);
-
-	if(!f->version || (
-	            f->type != File::PRT_PROE
-	            && f->type != File::ASM
-	            && f->type != File::DRW
-	            && f->type != File::FRM
-	            && f->type != File::NEU_PROE)
-	  )
-		return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-
-	qDebug() << "File filter model does magic!" << source_row << f->name;
-
-	return f->newestVersion && QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+    qDebug() << "FILTER2" << f.newestVersion << QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent) << (f.newestVersion && QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent));
+    return f.newestVersion && QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }

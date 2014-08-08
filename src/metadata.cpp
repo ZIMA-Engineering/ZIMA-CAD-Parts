@@ -26,17 +26,67 @@
 #include "settings.h"
 #include "item.h"
 
-Metadata::Metadata(Item *item, QObject *parent)
+#if 0
+Metadata::Metadata(const QString &path, QObject *parent)
 	: QObject(parent),
-	  m_item(item),
+      m_path(path),
 	  m_loadedIncludes(0),
 	  m_includedData(false)
 {
-	Q_ASSERT(item);
-	Q_ASSERT(m_item->server);
-	metadataFile = m_item->server->getPathForItem(m_item) + "/" + TECHSPEC_DIR + "/" + METADATA_FILE;
+    m_settings = new QSettings(m_path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE, QSettings::IniFormat);
+    m_settings->setIniCodec("utf-8");
 
 	currentAppLang = Settings::get()->getCurrentLanguageCode().left(2);
+
+    m_settings->beginGroup("params");
+    {
+        foreach(QString group, m_settings->childGroups())
+        {
+            if(group == currentAppLang)
+            {
+                lang = group;
+                break;
+            }
+        }
+
+        if(lang.isEmpty())
+        {
+            QStringList childGroups = m_settings->childGroups();
+
+            if(childGroups.contains("en"))
+                lang = "en";
+            else if(childGroups.count())
+                lang = childGroups.first();
+            else {
+                m_settings->endGroup();
+                return;
+            }
+        }
+    }
+    m_settings->endGroup();
+
+    m_settings->beginGroup("include");
+    {
+        QStringList toInclude;
+        QStringList data = buildIncludePaths(m_settings->value("data").toStringList());
+        QStringList thumbs = buildIncludePaths(m_settings->value("thumbnails").toStringList());
+
+        setIncludeMark(data, IncludeMetadata);
+        setIncludeMark(thumbs, IncludeThumbnails);
+
+        toInclude << data << thumbs;
+
+        toInclude.removeDuplicates();
+
+        if(data.isEmpty())
+            emit ready(m_item);
+        else
+            m_includedData = true;
+
+        foreach(QString path, toInclude)
+        emit includeRequired(m_item, path);
+    }
+    m_settings->endGroup();
 }
 
 Metadata::~Metadata()
@@ -44,13 +94,13 @@ Metadata::~Metadata()
 	if(m_includeHash.size())
 		emit includeRequireCancelled(m_item);
 
-	delete metadata;
-}
+    delete m_settings;
 
-void Metadata::init()
-{
-	openMetadata();
-	probeMetadata();
+    columnLabels.clear();
+    label.clear();
+    lang.clear();
+    m_includeHash.clear();
+    m_thumbItems.clear();
 }
 
 QString Metadata::getLabel()
@@ -58,7 +108,7 @@ QString Metadata::getLabel()
 	if(label.count())
 		return label;
 
-	return (label = metadata->value(QString("params/%1/label").arg(lang), QString()).toString());
+    return (label = m_settings->value(QString("params/%1/label").arg(lang), QString()).toString());
 }
 
 QStringList Metadata::getColumnLabels()
@@ -69,23 +119,23 @@ QStringList Metadata::getColumnLabels()
 	QRegExp colRx("^\\d+$");
 	int colIndex = 1;
 
-	metadata->beginGroup("params");
+    m_settings->beginGroup("params");
 	{
-		metadata->beginGroup(lang);
+        m_settings->beginGroup(lang);
 		{
-			foreach(QString col, metadata->childKeys())
+            foreach(QString col, m_settings->childKeys())
 			{
 				if(colRx.exactMatch(col))
 				{
 					//columnLabels << metadata->value(col).toString();
 
-					columnLabels << metadata->value( QString("%1").arg(colIndex++) ).toString();
+                    columnLabels << m_settings->value( QString("%1").arg(colIndex++) ).toString();
 				}
 			}
 		}
-		metadata->endGroup();
+        m_settings->endGroup();
 	}
-	metadata->endGroup();
+    m_settings->endGroup();
 
 	foreach(Metadata *include, includes)
 	columnLabels << include->getColumnLabels();
@@ -99,24 +149,24 @@ QString Metadata::getPartParam(QString part, int col)
 	QString anyVal;
 	QString val;
 
-	metadata->beginGroup(partGroup);
+    m_settings->beginGroup(partGroup);
 
-	foreach(QString group, metadata->childGroups())
+    foreach(QString group, m_settings->childGroups())
 	{
-		if(!(val = metadata->value(QString("%1/%2").arg(group).arg(col)).toString()).isEmpty() && group == currentAppLang)
+        if(!(val = m_settings->value(QString("%1/%2").arg(group).arg(col)).toString()).isEmpty() && group == currentAppLang)
 			break;
 
 		if(anyVal.isEmpty())
 			anyVal = val;
 	}
 
-	metadata->endGroup();
+    m_settings->endGroup();
 
 	if(!val.isEmpty())
 		return val;
 	else {
 
-		QString ret = anyVal.isEmpty() ? metadata->value(QString("%1/%2").arg(partGroup).arg(col), QString()).toString() : anyVal;
+        QString ret = anyVal.isEmpty() ? m_settings->value(QString("%1/%2").arg(partGroup).arg(col), QString()).toString() : anyVal;
 
 		if(ret.isEmpty())
 		{
@@ -140,26 +190,12 @@ void Metadata::deletePart(QString part)
 	if(grp.isEmpty())
 		return;
 
-	metadata->remove(grp);
+    m_settings->remove(grp);
 }
 
 QList<Item*> Metadata::includedThumbnailItems()
 {
 	return m_thumbItems;
-}
-
-void Metadata::refresh()
-{
-	columnLabels.clear();
-	label.clear();
-	lang.clear();
-	m_includeHash.clear();
-	m_thumbItems.clear();
-
-	delete metadata;
-
-	openMetadata();
-	probeMetadata();
 }
 
 void Metadata::retranslate(QString lang)
@@ -222,72 +258,15 @@ void Metadata::provideInclude(Metadata *m, QString path)
 			foreach(Item *it, m_thumbItems)
 			thumbs << it->thumbnails(false);
 
-			m_item->server->assignThumbnailsToFiles(m_item, thumbs);
+#warning todo			m_item->server->assignThumbnailsToFiles(m_item, thumbs);
 		}
 	}
-}
-
-void Metadata::openMetadata()
-{
-	metadata = new QSettings(metadataFile, QSettings::IniFormat);
-	metadata->setIniCodec("utf-8");
-}
-
-void Metadata::probeMetadata()
-{
-	metadata->beginGroup("params");
-	{
-		foreach(QString group, metadata->childGroups())
-		{
-			if(group == currentAppLang)
-			{
-				lang = group;
-				break;
-			}
-		}
-
-		if(lang.isEmpty())
-		{
-			QStringList childGroups = metadata->childGroups();
-
-			if(childGroups.contains("en"))
-				lang = "en";
-			else if(childGroups.count())
-				lang = childGroups.first();
-			else {
-				metadata->endGroup();
-				return;
-			}
-		}
-	}
-	metadata->endGroup();
-
-	metadata->beginGroup("include");
-	{
-		QStringList toInclude;
-		QStringList data = buildIncludePaths(metadata->value("data").toStringList());
-		QStringList thumbs = buildIncludePaths(metadata->value("thumbnails").toStringList());
-
-		setIncludeMark(data, IncludeMetadata);
-		setIncludeMark(thumbs, IncludeThumbnails);
-
-		toInclude << data << thumbs;
-
-		toInclude.removeDuplicates();
-
-		if(data.isEmpty())
-			emit ready(m_item);
-		else
-			m_includedData = true;
-
-		foreach(QString path, toInclude)
-		emit includeRequired(m_item, path);
-	}
-	metadata->endGroup();
 }
 
 QString Metadata::buildIncludePath(QString raw)
 {
+#warning todo
+#if 0
 	QString dsName = m_item->server->name();
 	QString ret;
 
@@ -302,6 +281,7 @@ QString Metadata::buildIncludePath(QString raw)
 		ret = dsName + "/" + ret;
 
 	return ret;
+#endif
 }
 
 QStringList Metadata::buildIncludePaths(QStringList raw)
@@ -324,3 +304,4 @@ void Metadata::setIncludeMark(QStringList &list, Include mark)
 		m_includeHash[path] = (Include) (m_includeHash[path] | mark);
 	}
 }
+#endif

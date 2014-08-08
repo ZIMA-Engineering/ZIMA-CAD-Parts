@@ -2,9 +2,33 @@
 #define SETTINGS_H
 
 #include <QHash>
+#include <QCache>
 #include "localdatasource.h"
 #include "filefilters/filtergroup.h"
 
+#include "serversmodel.h"
+#include "metadata.h"
+
+
+class DataSource
+{
+public:
+    DataSource(const QString &name, const QString &path)
+    {
+        this->name = name;
+        this->rootPath = path;
+#warning todo icon - logo text
+        ServersIconProvider ip;
+        icon = ip.icon(QFileInfo(path));
+    }
+
+    QString name;
+    QString rootPath;
+    QIcon icon;
+};
+
+//! name - datasource
+typedef QHash<QString,DataSource*> DataSourceList;
 
 /**
  * \brief The Settings singleton.
@@ -107,6 +131,9 @@ public:
 	int langIndex(const QString &lang);
 	//! Map Languages enum to string code
 	QString langIndexToName(int lang);
+
+#warning todo documentation of the "not so nice" link
+//    QCache<QString,Metadata> MetadataCache;
 
 private:
 	//! cannot access it directly. Use getCurrentLanguageCode()

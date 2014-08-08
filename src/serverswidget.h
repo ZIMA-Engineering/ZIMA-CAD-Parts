@@ -1,36 +1,11 @@
 #ifndef SERVERSWIDGET_H
 #define SERVERSWIDGET_H
 
-#include <QToolBox>
-#include <QPushButton>
-#include <QTreeView>
-
 #include "ui_serverswidget.h"
-#include "serversmodel.h"
 #include "settingsdialog.h"
 #include "servertabwidget.h"
 
 class QSignalMapper;
-
-
-/*!
- * \brief Hold relations between QTreeView/ServersModel/ServerTabWidget
- */
-class ServersWidgetMap
-{
-public:
-	~ServersWidgetMap()
-	{
-		view->deleteLater();
-		model->deleteLater();
-		tab->deleteLater();
-	}
-
-	int index;
-	ServersModel *model;
-	QTreeView *view;
-	ServerTabWidget *tab;
-};
 
 
 /*!
@@ -47,12 +22,8 @@ public:
 
 	void retranslateMetadata();
 
-	void refresh(Item* item);
-	void deleteFiles();
-	void uncheckAll();
-
 	QModelIndex currentIndex();
-	void setModelindex(const QModelIndex &index);
+    void setDirectory(const QString &path);
 
 signals:
 	void statusUpdated(const QString &message);
@@ -61,19 +32,11 @@ signals:
 	void itemLoaded(const QModelIndex&);
 	void clicked(const QModelIndex&);
 	void activated(const QModelIndex&);
-	// emit newly selected tree view root item to MainWindow to load toplevel files into part view
-	//void groupChanged(const QModelIndex&);
-
-	void errorOccured(const QString &error);
-	void filesDownloaded();
-	void fileDownloaded(File*);
 
 	void techSpecAvailable(const QUrl&);
-	void autoDescentProgress(const QModelIndex&);
-	void autoDescentComplete(const QModelIndex&);
-	void autoDescentNotFound();
 
 	void workingDirChanged();
+    void directorySelected(const QString&);
 
 public slots:
 	void expand(const QModelIndex & index);
@@ -82,19 +45,9 @@ public slots:
 	void retranslateMetadata(int langIndex);
 
 private:
-	QList<ServersWidgetMap*> m_map;
-
-	QSignalMapper *m_signalMapper;
 	QStringList m_zimaUtils;
 
 private slots:
-	void dirTreeContextMenu(QPoint point);
-	void spawnZimaUtilityOnDir(const QString &);
-
-	void loadingItem(Item *i);
-	void allItemsLoaded();
-	void setWorkingDirectory();
-	void indexOpenPath();
 	void splitterMoved(int, int);
 };
 

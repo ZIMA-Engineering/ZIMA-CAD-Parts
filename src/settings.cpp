@@ -131,18 +131,17 @@ void Settings::loadDataSources()
 	{
 		settings.beginGroup(str);
 
-        QString label = settings.value("Label", QString()).toString();
+        QString name = settings.value("Label", QString()).toString();
         QString path = settings.value("Path", QString()).toString();
         if (path.isNull())
         {
-            qDebug() << "Datasource" << label << "has an empty path. Skipping.";
+            qDebug() << "Datasource" << name << "has an empty path. Skipping.";
             continue;
         }
 
-        LocalDataSource *ds = new LocalDataSource();
-        ds->localPath = path;
-        ds->label = label;
-        DataSources.append(ds);
+        DataSource *ds = new DataSource(name, path);
+#warning todo check unique names; sqlite maybe?
+        DataSources[name] = ds;
 
 		settings.endGroup();
 	}
@@ -159,12 +158,12 @@ void Settings::saveDataSources()
 
 	settings.remove("DataSources");
 	settings.beginGroup("DataSources");
-    foreach(LocalDataSource *ds, DataSources)
+    foreach(DataSource *ds, DataSources)
 	{
 		settings.beginGroup(QString::number(i++));
 
-		settings.setValue("Label", ds->label);
-        settings.setValue("Path", ds->localPath);
+        settings.setValue("Label", ds->name);
+        settings.setValue("Path", ds->rootPath);
 		settings.endGroup();
 	}
 	settings.endGroup();

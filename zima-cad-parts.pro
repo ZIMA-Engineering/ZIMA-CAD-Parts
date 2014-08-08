@@ -94,7 +94,8 @@ SOURCES += zima-cad-parts.cpp \
     src/extensions/navbar/navbaroptionsdialog.cpp \
     src/extensions/navbar/navbarpagelistwidget.cpp \
     src/extensions/navbar/navbarsplitter.cpp \
-    src/workingdirwidget.cpp
+    src/workingdirwidget.cpp \
+    src/serversview.cpp
 
 HEADERS += mainwindow.h \
     settingsdialog.h \
@@ -139,7 +140,8 @@ HEADERS += mainwindow.h \
     src/extensions/navbar/navbarpage.h \
     src/extensions/navbar/navbarpagelistwidget.h \
     src/extensions/navbar/navbarsplitter.h \
-    src/workingdirwidget.h
+    src/workingdirwidget.h \
+    src/serversview.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

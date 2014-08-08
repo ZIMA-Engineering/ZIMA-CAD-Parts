@@ -18,21 +18,20 @@ QString FailbackProductView::title()
 	return tr("Common Document");
 }
 
-QList<File::FileTypes> FailbackProductView::canHandle()
+QList<File::FileType> FailbackProductView::canHandle()
 {
-	return QList<File::FileTypes>();
+	return QList<File::FileType>();
 }
 
 bool FailbackProductView::handle(File *f)
 {
-	QString lastModified = f->lastModified.isNull() ? "n/a" : f->lastModified.toString();
+    QString lastModified = f->fileInfo.lastModified().toString();
 
 	QString html = "<html><body><table width=\"100%\" border=\"0\">";
 	html += "<tr><th>" + tr("Property") + "</th><th>" + tr("Value") + "</th></tr>";
-	html += "<tr><td>" + tr("Name") + "</td><td>" + f->baseName() + "</td></tr>";
-	html += "<tr><td>" + tr("Checked") + "</td><td>" + (f->isChecked ? "Y":"N") + "</td></tr>";
+    html += "<tr><td>" + tr("Name") + "</td><td>" + f->fileInfo.baseName() + "</td></tr>";
 	html += "<tr><td>" + tr("Last Modified") + "</td><td>" + lastModified + "</td></tr>";
-	html += "<tr><td>" + tr("Size") + "</td><td>" + QString("%1").arg(f->size) + "</td></tr>";
+    html += "<tr><td>" + tr("Size") + "</td><td>" + QString("%1").arg(f->fileInfo.size()) + "</td></tr>";
 	html += "<tr><td>" + tr("Version") + "</td><td>" + QString("%1").arg(f->version) + "</td></tr>";
 	html += "</table></body></html>";
 

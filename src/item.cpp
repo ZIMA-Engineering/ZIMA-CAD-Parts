@@ -21,21 +21,28 @@
 #include "item.h"
 #include "localdatasource.h"
 #include <QDebug>
+#include <QFileIconProvider>
 
 #include "datatransfer.h"
 
-void File::setName(QString name)
+File::File(const QFileInfo &fi)
+    : type(UNDEFINED),
+      version(0),
+      newestVersion(true),
+      fileInfo(fi)
 {
-	this->name = name;
-
-	detectFileType();
+    #warning todo newest file version in basedatasource.cpp
+    detectFileType();
 }
 
-QString File::baseName()
+QPixmap File::icon() const
 {
-	if(!m_baseName.isEmpty())
-		return m_baseName;
-	return name;
+    QString s = QString(":/gfx/icons/%1.png").arg(getInternalNameForFileType(type));
+
+    if (QFile::exists(s))
+        return QPixmap(s);
+
+    return QFileIconProvider().icon(fileInfo).pixmap(64);
 }
 
 void File::detectFileType()
@@ -44,15 +51,16 @@ void File::detectFileType()
 
 	for(int i = 0; i < TYPES_COUNT; i++)
 	{
-		QRegExp rx(getRxForFileType((File::FileTypes)i));
+        QRegExp rx(getRxForFileType((File::FileType)i));
+        // *.dxf vs. *.DXF in some examples
+        rx.setCaseSensitivity(Qt::CaseInsensitive);
 
-		if(rx.exactMatch(name))
+        if(rx.exactMatch(fileInfo.fileName()))
 		{
-			type = (File::FileTypes)i;
+            type = (File::FileType)i;
 
 			if(rx.captureCount() == 3)
 			{
-				m_baseName = rx.cap(2);
 				version = rx.cap(3).toInt();
 			}
 
@@ -61,23 +69,7 @@ void File::detectFileType()
 	}
 }
 
-QPixmap File::icon()
-{
-	if( type == File::UNDEFINED )
-		detectFileType();
-
-	if(!m_icon.isNull())
-		return m_icon;
-
-	QString s = QString(":/gfx/icons/%1.png").arg(getInternalNameForFileType(type));
-
-	if(QFile::exists(s))
-		m_icon = QPixmap(s);
-
-	return m_icon;
-}
-
-QString File::getInternalNameForFileType(File::FileTypes type)
+QString File::getInternalNameForFileType(File::FileType type)
 {
 	switch(type)
 	{
@@ -148,7 +140,7 @@ QString File::getInternalNameForFileType(File::FileTypes type)
 	}
 }
 
-QString File::getLabelForFileType(File::FileTypes type)
+QString File::getLabelForFileType(File::FileType type)
 {
 	switch(type)
 	{
@@ -219,7 +211,7 @@ QString File::getLabelForFileType(File::FileTypes type)
 	}
 }
 
-QString File::getRxForFileType(File::FileTypes type)
+QString File::getRxForFileType(File::FileType type)
 {
 	switch(type)
 	{
@@ -301,12 +293,13 @@ QString File::getRxFromStringList(const QStringList &extensions)
 	return ret;
 }
 
+#if 0
 Item::Item()
 {
 	parent = 0;
 	isDir = false;
 	isServer = false;
-	server = 0;
+//	server = 0;
 	metadata = 0;
 	showText = true;
 }
@@ -360,3 +353,4 @@ QList<Thumbnail*> Item::thumbnails(bool include)
 
 	return ret;
 }
+#endif

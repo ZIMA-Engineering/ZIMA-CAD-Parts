@@ -27,18 +27,21 @@
 #include <QList>
 #include <QVariant>
 #include <QDateTime>
+#include <QFileInfo>
 
 #include "metadata.h"
 
-class LocalDataSource;
-class ServersModel;
-class Item;
-class DataTransfer;
+//class LocalDataSource;
+//class ServersModel;
+//class Item;
+//class DataTransfer;
 class Thumbnail;
 
-struct File
+class File
 {
-	enum FileTypes {
+
+public:
+    enum FileType {
 	    // Pro/e
 	    PRT_PROE=0,
 	    ASM,
@@ -83,38 +86,25 @@ struct File
 	    UNDEFINED
 	};
 
-	File():thumbnail(0),openFtpFile(0),isChecked(false),type(UNDEFINED),bytesDone(0),version(0),newestVersion(false),transfer(0) {}
-	void setName(QString name);
-	QString baseName();
-	void detectFileType();
-	QPixmap icon();
-	static QString getInternalNameForFileType(FileTypes type);
-	static QString getLabelForFileType(FileTypes type);
-	static QString getRxForFileType(FileTypes type);
-	static QString getRxFromStringList(const QStringList &extensions);
+    File(const QFileInfo &fi);
 
-	Item* parentItem;
-	QString m_baseName; // name without version
-	QString name;
-	QString path;
-	QString targetPath;
+    FileType type;
+    int version;
+    bool newestVersion;
+    QFileInfo fileInfo;
 
-	Thumbnail *thumbnail;
-	QList<Thumbnail*> thumbnails;
-	QFile *openFtpFile;
-	bool isChecked;
-	QDateTime lastModified;
-	FileTypes type;
-	qint64 bytesDone;
-	qint64 size;
-	int version;
-	bool newestVersion;
-	DataTransfer *transfer;
+    QPixmap icon() const;
+
+    static QString getInternalNameForFileType(FileType type);
+    static QString getLabelForFileType(FileType type);
+    static QString getRxForFileType(FileType type);
+    static QString getRxFromStringList(const QStringList &extensions);
 
 private:
-	QPixmap m_icon;
+    void detectFileType();
 };
 
+#if 0
 class Item
 {
 public:
@@ -133,7 +123,7 @@ public:
 	QString path;
 	bool    isDir;
 	bool isServer;
-    LocalDataSource* server;
+    //LocalDataSource* server;
 
 	Item            *parent;
 	QList<Item*>    children;
@@ -144,5 +134,6 @@ public:
 private:
     QList<Thumbnail*> m_thumbnails;
 };
+#endif
 
 #endif // ITEM_H

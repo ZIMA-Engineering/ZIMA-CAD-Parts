@@ -25,6 +25,7 @@
 #include <QList>
 #include "basedatasource.h"
 #include "localdatasource.h"
+#include "settings.h"
 
 namespace Ui {
 class AddEditDataSource;
@@ -40,14 +41,14 @@ public:
 	    EDIT
 	};
 
-    explicit AddEditDataSource(LocalDataSource *dataSource, Actions action, QWidget *parent = 0);
+    explicit AddEditDataSource(DataSource *dataSource, Actions action, QWidget *parent = 0);
 	~AddEditDataSource();
 
-    LocalDataSource *dataSource();
+    DataSource *dataSource();
 
 private:
 	Ui::AddEditDataSource *ui;
-    LocalDataSource *m_ds;
+    DataSource *m_ds;
 
 private slots:
 	void openFileDialog();

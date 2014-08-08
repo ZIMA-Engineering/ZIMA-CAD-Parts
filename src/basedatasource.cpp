@@ -25,6 +25,7 @@
 #include "settings.h"
 #include "thumbnail.h"
 
+#if 0
 BaseDataSource::BaseDataSource(QObject *parent) :
 	QObject(parent)
 {
@@ -150,3 +151,4 @@ void BaseDataSource::createMetadata(Item *item)
 
 	item->metadata->init();
 }
+#endif

@@ -1,6 +1,7 @@
 #include "thumbnail.h"
 #include "localdatasource.h"
 
+#if 0
 Thumbnail::Thumbnail(Item *item, QString name)
 	: m_item(item),
 	  m_fullName(name),
@@ -39,7 +40,7 @@ QString& Thumbnail::language()
 
 QString Thumbnail::absolutePath()
 {
-	return m_item->server->getPathForItem(m_item) + "/" + m_fullName;
+    return m_item->server->getPathForItem(m_item) + "/" + m_fullName;
 }
 
 QPixmap& Thumbnail::pixmap()
@@ -66,3 +67,4 @@ void Thumbnail::setReady(bool ready)
 {
 	m_ready = ready;
 }
+#endif

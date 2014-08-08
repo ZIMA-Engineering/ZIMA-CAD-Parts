@@ -19,78 +19,79 @@
 */
 
 #include <QDebug>
-#include <QRegExp>
+#include <QMessageBox>
 
 #include "filemodel.h"
-#include "item.h"
-#include "localdatasource.h"
-#include "thumbnail.h"
+#include "settings.h"
+
 
 FileModel::FileModel(QObject *parent) :
-    QAbstractItemModel(parent), rootItem(0), formalRootItem(0), thumbWidth(256)
+    QAbstractItemModel(parent)
 {
+}
+
+void FileModel::setDirectory(const QString &path)
+{
+#warning todo caching?
+    qDeleteAll(m_data);
+    m_data.clear();
+    QDirIterator it(path, QDir::Files, QDirIterator::NoIteratorFlags);
+    while (it.hasNext())
+    {
+        it.next();
+        m_data.append(new FileItem(it.fileInfo()));
+    }
+
+    reset();
+}
+
+QFileInfo FileModel::fileInfo(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return QFileInfo();
+
+    return m_data[index.row()]->file->fileInfo;
+}
+
+void FileModel::settingsChanged()
+{
+    reset();
 }
 
 int FileModel::columnCount(const QModelIndex &parent) const
 {
 	Q_UNUSED(parent);
-	//qDebug() << "col count = " << 2 + colLabels.count();
-	return 2 + colLabels.count();
+    return 2 + m_columnLabels.count();
 }
 
 int FileModel::rowCount(const QModelIndex &parent) const
 {
-	if( rootItem == 0 )
-		return 0;
-
-	//qDebug() << "Asking about rowCount" << rootItem->files.size();
-
-	if( !parent.isValid() )
-		return rootItem->files.size();
-	return 0;
+    if (!parent.isValid())
+        return m_data.count();
+    return 0;
 }
 
 QModelIndex FileModel::parent(const QModelIndex &index) const
 {
 	Q_UNUSED(index);
-	//qDebug() << "Asking about parent";
 	return QModelIndex();
 }
 
 QModelIndex FileModel::index(int row, int column, const QModelIndex &parent) const
 {
 	Q_UNUSED(parent);
-
-	if( rootItem == 0 )
-		return QModelIndex();
-
-	/*if( !parent.isValid() )
-		return QModelIndex();*/
-
-	//qDebug() << "Asking about index" << row << column;
-
 	return createIndex(row, column);
 }
 
 QVariant FileModel::data(const QModelIndex &index, int role) const
 {
-	if( rootItem == 0 || rootItem->files.isEmpty() )
+    if (m_data.isEmpty())
 		return QVariant();
-
-	//qDebug() << "Asking about data" << rootItem->files.at( index.row() )->name << role;
-	//qDebug() << "Column" << index.column();
 
 	const int row = index.row();
 	const int col = index.column();
 
-	/**
-	  * When the rootItem is changed, old signals may still be in queue
-	  * and accessing non-existent items caused crash.
-	  */
-	if(row >= rootItem->files.size())
-		return QVariant();
-
-	File *file = rootItem->files.at(row);
+    FileItem *file = m_data[row];
 
 	switch(col)
 	{
@@ -99,17 +100,17 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		{
 		case Qt::DecorationRole:
 			if(file->thumbnail)
-				return file->thumbnail->scaledPixmap(thumbWidth);
+                return file->thumbnail->scaled(Settings::get()->GUIThumbWidth, Settings::get()->GUIThumbWidth);
 
 		case Qt::SizeHintRole:
 			if(file->thumbnail)
-				return QSize(thumbWidth, thumbWidth);
+                return file->thumbnail->size();
 			else
-				return QSize(thumbWidth, 0);
+                return QSize(Settings::get()->GUIThumbWidth, 0);
 
 		case Qt::ToolTipRole:
 			if(file->thumbnail)
-				return QString("<img src=\"%1\" width=\"%2\">").arg(file->thumbnail->absolutePath()).arg(previewWidth);
+                return QString("<img src=\"%1\" width=\"%2\">").arg(file->file->fileInfo.absoluteFilePath()).arg(Settings::get()->GUIPreviewWidth);
 		}
 		break;
 
@@ -118,14 +119,13 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		{
 		case Qt::DisplayRole:
 			//qDebug() << "returning" << rootItem->files.at( index.row() )->name;
-			return file->name;
+            return file->file->fileInfo.fileName();
 
 		case Qt::CheckStateRole:
-			return file->isChecked ? Qt::Checked : Qt::Unchecked;
+            return file->checked ? Qt::Checked : Qt::Unchecked;
 
 		case Qt::DecorationRole: {
-			QPixmap tmp = file->icon();
-
+            QPixmap tmp = file->file->icon();
 			if( !tmp.isNull() )
 				return tmp.scaledToWidth(16);
 		}
@@ -133,11 +133,11 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		break;
 	}
 
-	if(col > 1 && role == Qt::DisplayRole && col-1 <= colLabels.count())
+    if(col > 1 && role == Qt::DisplayRole && col-1 <= m_columnLabels.count())
 	{
 		//qDebug() << "Probing section" << rootItem->files.at( row )->name.section('.', 0, 0);
 		//return rootItem->metadata->value(QString("%1/%2").arg(rootItem->files.at( row )->name.section('.', 0, 0)).arg(col-1), QString()).toString();
-		return rootItem->metadata->getPartParam(file->name, col-1);
+#warning todo		return rootItem->metadata->getPartParam(file->name, col-1);
 	}
 
 	return QVariant();
@@ -149,7 +149,7 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 		return false;
 
 	if( role == Qt::CheckStateRole )
-		rootItem->files[ index.row() ]->isChecked = value.toBool();
+        m_data[ index.row() ]->checked = value.toBool();
 
 	emit dataChanged(index, index);
 
@@ -169,9 +169,9 @@ QVariant FileModel::headerData (int section, Qt::Orientation orientation, int ro
 		return tr("Part name");
 	}
 
-	if(section > 1 && section-2 < colLabels.count())
+    if(section > 1 && section-2 < m_columnLabels.count())
 	{
-		return colLabels[section - 2];
+        return m_columnLabels[section - 2];
 	}
 
 	return QVariant();
@@ -193,58 +193,8 @@ Qt::ItemFlags FileModel::flags(const QModelIndex &index) const
 	else return QAbstractItemModel::flags(index);
 }
 
-void FileModel::setRootIndex(const QModelIndex &index)
-{
-	if ( !index.isValid() )
-	{
-		return;
-	}
-	setRootIndex(static_cast<Item*>(index.internalPointer()));
-}
-
-void FileModel::setRootIndex(Item *item)
-{
-	if( rootItem )
-	{
-		disconnect(rootItem->server, SIGNAL(thumbnailLoaded(File*)), this, SLOT(thumbnailDownloaded(File*)));
-		disconnect(rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(initMetadata(Item*)));
-		disconnect(rootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(itemLoaded(Item*)));
-
-		if(rootItem->metadata)
-			disconnect(rootItem->metadata, SIGNAL(retranslated()), this, SLOT(metadataRetranslated()));
-	}
-
-	if (!item)
-	{
-		rootItem = 0;
-		formalRootItem = 0;
-		//reset();
-		beginResetModel();
-		endResetModel();
-		return;
-	}
-
-	//emit layoutAboutToBeChanged();
-	rootItem = item;
-	connect(rootItem->server, SIGNAL(thumbnailLoaded(File*)), this, SLOT(thumbnailDownloaded(File*)));
-	connect(rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(initMetadata(Item*)));
-	connect(rootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(itemLoaded(Item*)));
-
-	if(rootItem->metadata)
-		initMetadata(rootItem);
-	else if( colLabels.count() )
-	{
-		beginRemoveColumns(QModelIndex(), 2, 2 + colLabels.count());
-		endRemoveColumns();
-		colLabels.clear();
-	}
-
-//	reset();
-	beginResetModel();
-	endResetModel();
-	emit layoutChanged();
-}
-
+#warning todo metadata
+#if 0
 void FileModel::initMetadata(Item *i)
 {
 	if(i != rootItem)
@@ -252,60 +202,67 @@ void FileModel::initMetadata(Item *i)
 
 	connect(rootItem->metadata, SIGNAL(retranslated()), this, SLOT(metadataRetranslated()));
 
-	colLabels = rootItem->metadata->getColumnLabels();
+    m_columnLabels = rootItem->metadata->getColumnLabels();
 
 	//qDebug() << colLabels;
 
-	beginInsertColumns(QModelIndex(), 2, 2 + colLabels.count());
+    beginInsertColumns(QModelIndex(), 2, 2 + m_columnLabels.count());
 	endInsertColumns();
 	//emit headerDataChanged(Qt::Horizontal, 2, 2 + colLabels.count());
 
 	emit requestColumnResize();
 }
-
-Item* FileModel::getRootItem()
-{
-	return !rootItem && formalRootItem ? formalRootItem : rootItem;
-}
-
-void FileModel::setThumbWidth(int size)
-{
-	thumbWidth = size;
-
-	if(rootItem)
-		emit dataChanged(index(0, 1), index(rootItem->files.count(), 1));
-}
-
-void FileModel::setPreviewWidth(int size)
-{
-	previewWidth = size;
-}
+#endif
 
 void FileModel::thumbnailDownloaded(File *file)
 {
-	QModelIndex mi = index( file->parentItem->files.indexOf(file), 1 );
+#warning	QModelIndex mi = index( file->parentItem->files.indexOf(file), 1 );
 
-	emit dataChanged(mi, mi);
-}
-
-void FileModel::itemLoaded(Item *item)
-{
-	if(item == rootItem || (!rootItem && formalRootItem))
-	{
-		if(!rootItem && formalRootItem)
-			rootItem = formalRootItem;
-
-//		reset();
-		beginResetModel();
-		endResetModel();
-		emit requestColumnResize();
-	}
+#warning	emit dataChanged(mi, mi);
 }
 
 void FileModel::metadataRetranslated()
 {
-	colLabels = rootItem->metadata->getColumnLabels();
+#warning todo metadata
+#if 0
+    m_columnLabels = rootItem->metadata->getColumnLabels();
 
-	emit headerDataChanged(Qt::Horizontal, 2, colLabels.count()-1);
+    emit headerDataChanged(Qt::Horizontal, 2, m_columnLabels.count()-1);
 	emit requestColumnResize();
+#endif
 }
+
+void FileModel::createIndexHtmlFile(const QString &text, const QString &fileBase)
+{
+    QDir techSpecDir(m_path + "/" + TECHSPEC_DIR);
+
+    if(!techSpecDir.exists())
+        techSpecDir.mkdir(techSpecDir.absolutePath());
+
+    QString lang = Settings::get()->getCurrentLanguageCode().left(2);
+    QFile indexFile(m_path + "/" + fileBase + "_" + lang + ".html");
+
+    if(indexFile.exists())
+    {
+        if (QMessageBox::warning(0,
+                                 tr("HTML index file already exists"),
+                                 tr("HTML index for already exists, would you like to overwrite it?").arg(m_path),
+                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
+        {
+            return;
+        }
+    }
+
+    if(!indexFile.open(QIODevice::WriteOnly))
+        return; // FIXME: Notify user on failure?
+
+    QByteArray htmlIndex = QString("<html>\n"
+                                   "	<head>\n"
+                                   "		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
+                                   "	</head>\n"
+                                   "</html>\n").arg(text).toUtf8();
+
+    indexFile.write(htmlIndex);
+    indexFile.close();
+}
+

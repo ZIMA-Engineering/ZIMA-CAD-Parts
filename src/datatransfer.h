@@ -6,6 +6,7 @@
 
 struct File;
 
+#if 0
 class DataTransfer : public QObject
 {
 	Q_OBJECT
@@ -37,4 +38,5 @@ private:
 	bool canceled;
 };
 
+#endif
 #endif // DATATRANSFER_H

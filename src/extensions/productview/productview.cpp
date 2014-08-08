@@ -52,7 +52,7 @@ ProductView::~ProductView()
 
 	delete ui;
 
-	QHashIterator<File::FileTypes, AbstractProductView*> i(providers);
+	QHashIterator<File::FileType, AbstractProductView*> i(providers);
 	while (i.hasNext())
 	{
 		i.next();
@@ -62,7 +62,7 @@ ProductView::~ProductView()
 	providers.clear();
 }
 
-bool ProductView::canHandle(File::FileTypes t)
+bool ProductView::canHandle(File::FileType t)
 {
 	return providers.contains(t);
 }
@@ -89,30 +89,12 @@ void ProductView::saveSettings()
 	Settings::get()->ExtensionsProductViewPosition = pos();
 }
 
-
-bool ProductView::expectFile(File *f)
-{
-	if (expectedFile != f)
-	{
-		expectedFile = f;
-		return true;
-	}
-	return false;
-//	ui->statusLabel->setText(tr("Waiting for part to download..."));
-}
-
-void ProductView::fileDownloaded(File *f)
+void ProductView::setFile(File* f)
 {
 	if (currentProvider)
 	{
 		currentProvider->hide();
 		ui->verticalLayout->removeWidget(currentProvider);
-	}
-
-	if (f != expectedFile)
-	{
-//		ui->statusLabel->setText(tr("Double click any part."));
-		return;
 	}
 
 	if (!providers.contains(f->type))
@@ -126,7 +108,7 @@ void ProductView::fileDownloaded(File *f)
 		currentProvider = providers.value(f->type);
 	}
 
-	setWindowTitle(f->baseName() + " " + currentProvider->title());
+    setWindowTitle(f->fileInfo.baseName() + " " + currentProvider->title());
 
 	//qDebug() << "PTH" << f->path << f->targetPath;
 	//ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));

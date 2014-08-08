@@ -21,11 +21,30 @@
 #ifndef FILEMODEL_H
 #define FILEMODEL_H
 
-#include <QAbstractItemModel>
-#include <QStringList>
+#include <QFileSystemModel>
+#include <QFileIconProvider>
+#include <QSortFilterProxyModel>
 
-class Item;
-struct File;
+#include "item.h"
+
+class FileItem
+{
+public:
+    FileItem(const QFileInfo &fi)
+    {
+        file = new File(fi);
+        checked = false;
+        thumbnail = 0;
+    }
+    ~FileItem() {
+        delete(file);
+        delete(thumbnail);
+    }
+
+    File *file;
+    bool checked;
+    QPixmap *thumbnail;
+};
 
 class FileModel : public QAbstractItemModel
 {
@@ -42,33 +61,33 @@ public:
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 	QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 	bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole);
-	QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
-	QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
+    //QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
+    //QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	//---
 
-	Item* getRootItem();
-	void setPreviewWidth(int size);
+//	Item* getRootItem();
+//	void setPreviewWidth(int size);
+
+    QFileInfo fileInfo(const QModelIndex &index) const;
+    void createIndexHtmlFile(const QString &text, const QString &fileBase);
 
 public slots:
-	void setRootIndex(const QModelIndex &index);
-	void setRootIndex(Item *item);
-	void setThumbWidth(int size);
-	void initMetadata(Item *i);
-
-protected:
-	Item* rootItem;
-	Item* formalRootItem;
+//	void setRootIndex(const QModelIndex &index);
+//	void setRootIndex(Item *item);
+    void setDirectory(const QString &path);
+#warning    void initMetadata(Item *i);
+    void settingsChanged();
 
 private:
-	int thumbWidth;
-	int previewWidth;
-    QStringList colLabels;
+    QString m_path;
+    QStringList m_columnLabels;
+    QList<FileItem*> m_data;
 
 private slots:
-	void thumbnailDownloaded(File *file);
-	void itemLoaded(Item *item);
-	void metadataRetranslated();
+    void thumbnailDownloaded(File *file);
+//	void itemLoaded(Item *item);
+    void metadataRetranslated();
 
 signals:
 	void requestColumnResize();

@@ -8,7 +8,7 @@
 class FileModel;
 class FileFilterModel;
 class ProductView;
-
+class QWebView;
 
 namespace Ui {
 class ServerTabWidget;
@@ -25,13 +25,13 @@ class ServerTabWidget : public QWidget
 	Q_OBJECT
 
 public:
-	explicit ServerTabWidget(ServersModel *serversModel, QWidget *parent = 0);
+    explicit ServerTabWidget(QWidget *parent = 0);
 	~ServerTabWidget();
 
 public slots:
+    void setDirectory(const QString &rootPath);
+
 	void settingsChanged();
-	void setPartsIndex(const QModelIndex &index);
-	void techSpecsIndexOverwrite(Item *item);
 
 signals:
 	void changeSettings();
@@ -51,14 +51,9 @@ private:
 
 	FileModel *m_fileModel;
 	FileFilterModel *m_proxyFileModel;
-	ServersModel *m_serversModel;
 	ProductView *m_productView;
 
-	Item *lastPartsIndexItem;
-	QUrl lastPartsIndex;
-	QDateTime lastPartsIndexModTime;
-
-	void viewHidePartsIndex(Item *item);
+    void loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound);
 
 private slots:
 	void techSpecUrlLineEdit_returnPressed();
@@ -68,7 +63,6 @@ private slots:
 	void partsIndexGoButton_clicked();
 	void partsIndexPinButton_clicked();
 
-	void fileModel_requestColumnResize();
 	void techSpec_urlChanged(const QUrl &url);
 	void partsWebView_urlChanged(const QUrl &url);
 
@@ -77,11 +71,8 @@ private slots:
 
 	void filesDeleted();
 	void deleteSelectedParts();
-	void partsIndexLoaded(const QModelIndex &index);
 
 	void adjustThumbColumnWidth(int width);
-	void loadTechSpec(const QUrl &url);
-	void partsIndexOverwrite(Item *item);
 
 	void setFiltersDialog();
 };

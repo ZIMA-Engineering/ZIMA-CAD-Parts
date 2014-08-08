@@ -15,12 +15,9 @@
 #include "extensions/productview/productview.h"
 
 
-ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
+ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	QWidget(parent),
-	ui(new Ui::ServerTabWidget),
-	m_serversModel(serversModel),
-	lastPartsIndexItem(0)
-
+    ui(new Ui::ServerTabWidget)
 {
 	ui->setupUi(this);
 
@@ -66,37 +63,27 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 	connect(ui->partsWebView, SIGNAL(urlChanged(QUrl)),
 	        this, SLOT(partsWebView_urlChanged(QUrl)));
 
+    m_proxyFileModel = new FileFilterModel(this);
+
     m_fileModel = new FileModel(this);
-    m_fileModel->setRootIndex(m_serversModel->rootItem());
-    viewHidePartsIndex(m_serversModel->rootItem());
+    m_proxyFileModel->setSourceModel(m_fileModel);
+    ui->partsTreeView->setModel(m_proxyFileModel);
 
-	m_proxyFileModel = new FileFilterModel(this);
-	m_proxyFileModel->setSourceModel(m_fileModel);
-	ui->partsTreeView->setModel(m_proxyFileModel);
-
-	connect(m_fileModel, SIGNAL(requestColumnResize()),
-	        this, SLOT(fileModel_requestColumnResize()));
-
+#warning todo
+#if 0
 	connect(m_serversModel, SIGNAL(filesDeleted()),
 	        this, SLOT(filesDeleted()));
-	connect(m_serversModel, SIGNAL(itemLoaded(const QModelIndex&)),
-	        this, SLOT(partsIndexLoaded(const QModelIndex&)));
-	connect(m_serversModel, SIGNAL(techSpecAvailable(QUrl)),
-	        this, SLOT(loadTechSpec(QUrl)));
 	connect(m_serversModel, SIGNAL(partsIndexAlreadyExists(Item*)),
 	        this, SLOT(partsIndexOverwrite(Item*)));
 
     connect(ui->copyToWorkingDirButton, SIGNAL(clicked()),
             m_serversModel, SLOT(copyToWorkingDir()));
+#endif
 	connect(ui->btnDelete, SIGNAL(clicked()),
 	        this, SLOT(deleteSelectedParts()));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
-	        m_fileModel, SLOT(setThumbWidth(int)));
-	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
 	        this, SLOT(adjustThumbColumnWidth(int)));
 
-	connect(m_serversModel, SIGNAL(fileDownloaded(File*)),
-	        m_productView, SLOT(fileDownloaded(File*)));
 	connect(ui->partsTreeView, SIGNAL(activated(QModelIndex)),
 	        this, SLOT(previewInProductView(QModelIndex)));
 	connect(ui->partsTreeView, SIGNAL(clicked(QModelIndex)),
@@ -112,6 +99,56 @@ ServerTabWidget::ServerTabWidget(ServersModel *serversModel, QWidget *parent) :
 ServerTabWidget::~ServerTabWidget()
 {
 	delete ui;
+}
+
+void ServerTabWidget::setDirectory(const QString &rootPath)
+{
+    qDebug() << "_______________________________________________ set dir :" << rootPath;
+    // set the directory to the file model
+    m_fileModel->setDirectory(rootPath);
+    int columnCnt = ui->partsTreeView->model()->columnCount(QModelIndex());
+    for (int i = 0; i < columnCnt; i++)
+        ui->partsTreeView->resizeColumnToContents(i);
+
+    // handle the ui->partsWebView, custom index-parts*.html page in "parts" tab
+    loadIndexHtml(rootPath, ui->partsWebView, "index-parts", true);
+    // handle the ui->partsWebView, custom index*.html page in "parts" tab
+    loadIndexHtml(rootPath, ui->techSpec, "index", false);
+}
+
+void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound)
+{
+    QStringList filters;
+    filters << filterBase + "_??.html"
+            << filterBase + "_??.htm"
+            << filterBase + ".html"
+            << filterBase + ".htm";
+
+    QDir dir(rootPath + "/" + TECHSPEC_DIR);
+    QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
+
+    if (indexes.isEmpty())
+    {
+        webView->setHtml("");
+        if (hideIfNotFound) webView->hide();
+        return;
+    }
+
+    QString selectedIndex = indexes.first();
+    indexes.removeFirst();
+
+    foreach(QString index, indexes)
+    {
+        QString prefix = index.section('.', 0, 0);
+        if(prefix.lastIndexOf('_') == prefix.count()-3
+                && prefix.right(2) == Settings::get()->getCurrentLanguageCode().left(2))
+        {
+            selectedIndex = index;
+        }
+    }
+
+    webView->show();
+    webView->load(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
 }
 
 void ServerTabWidget::changeEvent(QEvent *e)
@@ -136,9 +173,7 @@ void ServerTabWidget::settingsChanged()
 	ui->techSpec->loadAboutPage();
 	ui->techSpec->setDownloadDirectory(Settings::get()->WorkingDir);
 
-	m_fileModel->setRootIndex(QModelIndex());
-	m_fileModel->setThumbWidth(Settings::get()->GUIThumbWidth);
-	m_fileModel->setPreviewWidth(Settings::get()->GUIPreviewWidth);
+    m_fileModel->settingsChanged();
 
 	m_proxyFileModel->setFilterRegExp(Settings::get()->filtersRegex);
 	m_proxyFileModel->setShowProeVersions(Settings::get()->ShowProeVersions);
@@ -163,28 +198,6 @@ void ServerTabWidget::techSpecGoButton_clicked()
 		ui->techSpec->setUrl(QUrl(str));
 }
 
-void ServerTabWidget::techSpecPinButton_clicked()
-{
-	Item *it = m_fileModel->getRootItem();
-
-	if (!it)
-		return;
-
-	QString lang = Settings::get()->getCurrentLanguageCode().left(2);
-	it->server->assignTechSpecUrlToItem(ui->techSpecUrlLineEdit->text(), it, lang, true);
-}
-
-void ServerTabWidget::techSpecsIndexOverwrite(Item *item)
-{
-	if (QMessageBox::warning(this,
-	                         tr("Tech specs index already exists"),
-	                         tr("Index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
-	                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
-	{
-		techSpecPinButton_clicked();
-	}
-}
-
 void ServerTabWidget::partsIndexUrlLineEdit_returnPressed()
 {
 	partsIndexGoButton_clicked();
@@ -202,13 +215,14 @@ void ServerTabWidget::partsIndexGoButton_clicked()
 
 void ServerTabWidget::partsIndexPinButton_clicked()
 {
-	Item *it = m_fileModel->getRootItem();
+    m_fileModel->createIndexHtmlFile(ui->partsIndexUrlLineEdit->text(), "index-parts");
+}
 
-	if (!it)
-		return;
+void ServerTabWidget::techSpecPinButton_clicked()
+{
+    m_fileModel->createIndexHtmlFile(ui->techSpecUrlLineEdit->text(), "index");
 
-	QString lang = Settings::get()->getCurrentLanguageCode().left(2);
-	it->server->assignPartsIndexUrlToItem(ui->partsIndexUrlLineEdit->text(), it, lang, true);
+
 }
 
 void ServerTabWidget::techSpec_urlChanged(const QUrl &url)
@@ -232,15 +246,10 @@ void ServerTabWidget::partsWebView_urlChanged(const QUrl &url)
 	ui->partsIndexUrlLineEdit->setText(str);
 }
 
-void ServerTabWidget::fileModel_requestColumnResize()
-{
-	int columnCnt = ui->partsTreeView->model()->columnCount(QModelIndex());
-	for (int i = 0; i < columnCnt; i++)
-		ui->partsTreeView->resizeColumnToContents(i);
-}
-
 void ServerTabWidget::filesDeleted()
 {
+#warning todo
+#if 0
 	if (m_serversModel->hasErrors(BaseDataSource::Delete))
 	{
 		ErrorDialog dlg;
@@ -263,87 +272,7 @@ void ServerTabWidget::filesDeleted()
 
 		ui->partsTreeView->reset();
 	}
-}
-
-void ServerTabWidget::setPartsIndex(const QModelIndex &index)
-{
-	//qDebug() << "Set parts index init:" << index.isValid();
-	if (!index.isValid())
-		return;
-	//qDebug() << "Set parts index" << static_cast<Item*>(index.internalPointer())->name;
-
-	m_fileModel->setRootIndex(index);
-	partsIndexLoaded(index);
-}
-
-void ServerTabWidget::partsIndexLoaded(const QModelIndex &index)
-{
-	//qDebug() << "ServerTabWidget::partsIndexLoaded" << index.isValid();
-	if (!index.isValid())
-		return;
-
-	Item *it = static_cast<Item*>(index.internalPointer());
-
-	if (it == m_fileModel->getRootItem())
-	{
-		viewHidePartsIndex(it);
-	}
-}
-
-void ServerTabWidget::viewHidePartsIndex(Item *item)
-{
-	if(!item && !lastPartsIndexItem)
-		return;
-	else if(!item)
-		item = lastPartsIndexItem;
-
-	QStringList filters;
-	filters << "index-parts_??.html" << "index-parts_??.htm" << "index-parts.html" << "index-parts.htm";
-
-	QDir dir(item->server->getTechSpecPathForItem(item));
-	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
-
-	if(indexes.isEmpty())
-	{
-		ui->partsWebView->setHtml("");
-		ui->partsWebView->hide();
-		lastPartsIndex = QUrl();
-		lastPartsIndexItem = 0;
-		return;
-	}
-
-	QString selectedIndex = indexes.first();
-	indexes.removeFirst();
-
-	foreach(QString index, indexes)
-	{
-		QString prefix = index.section('.', 0, 0);
-
-		if(prefix.lastIndexOf('_') == prefix.count()-3 && prefix.right(2) == Settings::get()->getCurrentLanguageCode().left(2))
-			selectedIndex = index;
-	}
-
-	QUrl partsIndex = QUrl::fromLocalFile(dir.path() + "/" + selectedIndex);
-	QDateTime modTime = QFileInfo(dir.path() + "/" + selectedIndex).lastModified();
-
-	if(partsIndex == lastPartsIndex)
-	{
-		if(modTime > lastPartsIndexModTime)
-			lastPartsIndexModTime = modTime;
-		else if(ui->partsWebView->isHidden()) {
-			ui->partsWebView->show();
-			return;
-		}
-	} else {
-		lastPartsIndex = partsIndex;
-		lastPartsIndexModTime = modTime;
-		lastPartsIndexItem = item;
-	}
-
-	if(ui->partsWebView->isHidden())
-		ui->partsWebView->show();
-
-	ui->partsWebView->load(partsIndex);
+#endif
 }
 
 void ServerTabWidget::deleteSelectedParts()
@@ -354,31 +283,34 @@ void ServerTabWidget::deleteSelectedParts()
 	                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
 	        ==  QMessageBox::Yes)
 	{
+#warning todo
+#if 0
 		m_serversModel->deleteFiles(); //TODO/FIXME: maps
 		m_serversModel->uncheckAll(); //TODO/FIXME: maps
+#endif
 	}
 }
 
 void ServerTabWidget::adjustThumbColumnWidth(int width)
 {
 	ui->partsTreeView->setColumnWidth(1, width);
+    Settings::get()->GUIThumbWidth = width;
+    m_fileModel->settingsChanged();
 }
 
 void ServerTabWidget::previewInProductView(const QModelIndex &index)
 {
 	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->partsTreeView->model())->mapToSource(index);
+    QFileInfo fi(m_fileModel->fileInfo(srcIndex));
+    File f(fi);
 
-	File *f = m_fileModel->getRootItem()->files.at(srcIndex.row());
-
-	if (!m_productView->canHandle(f->type))
+    if (!m_productView->canHandle(f.type))
 	{
 		m_productView->hide();
 		return;
 	}
 
-#warning TODO/FIXME: simplify it
-	m_productView->expectFile(f);
-    m_productView->fileDownloaded(f);
+    m_productView->setFile(&f);
 	m_productView->show();
 	// keep focus on the main window - keyboard handling
 	activateWindow();
@@ -388,9 +320,10 @@ void ServerTabWidget::partsTreeView_doubleClicked(const QModelIndex &index)
 {
 	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->partsTreeView->model())->mapToSource(index);
 
-	File *f = m_fileModel->getRootItem()->files.at(srcIndex.row());
+    QFileInfo fi = m_fileModel->fileInfo(srcIndex);
+    File f(fi);
 
-	switch (f->type)
+    switch (f.type)
 	{
 	case File::PRT_PROE:
 	case File::ASM:
@@ -399,8 +332,8 @@ void ServerTabWidget::partsTreeView_doubleClicked(const QModelIndex &index)
 	case File::NEU_PROE:
 	{
 		QString exe = Settings::get()->ProeExecutable;
-		qDebug() << "Starting ProE:" << exe << f->path << "; working dir" << Settings::get()->WorkingDir;
-		bool ret = QProcess::startDetached(exe, QStringList() << f->path, Settings::get()->WorkingDir);
+        qDebug() << "Starting ProE:" << exe << f.fileInfo.absoluteFilePath() << "; working dir" << Settings::get()->WorkingDir;
+        bool ret = QProcess::startDetached(exe, QStringList() << f.fileInfo.absoluteFilePath(), Settings::get()->WorkingDir);
 		if (!ret)
 			QMessageBox::information(this, tr("ProE Startup Error"),
 			                         tr("An error occured while ProE has been requested to start"),
@@ -408,37 +341,8 @@ void ServerTabWidget::partsTreeView_doubleClicked(const QModelIndex &index)
 		break;
 	}
 	default:
-		QDesktopServices::openUrl(QUrl::fromLocalFile(f->path));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(f.fileInfo.absoluteFilePath()));
 	}
-}
-
-void ServerTabWidget::loadTechSpec(const QUrl &url)
-{
-	Item *it = m_serversModel->lastTechSpecRequest();
-
-	if(it)
-		ui->techSpec->setRootPath(it->server->pathToDataRoot());
-
-	ui->techSpec->load(url);
-}
-
-void ServerTabWidget::partsIndexOverwrite(Item *item)
-{
-	if (QMessageBox::warning(this,
-	                         tr("Parts index already exists"),
-	                         tr("Parts index %1 already exists, would you like to overwrite it?").arg(item->getLabel()),
-	                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
-	{
-		return;
-	}
-
-	Item *it = m_fileModel->getRootItem();
-
-	if (!it)
-		return;
-
-	QString lang = Settings::get()->getCurrentLanguageCode().left(2);
-	m_serversModel->dataSource()->assignPartsIndexUrlToItem(ui->partsIndexUrlLineEdit->text(), it, lang, true);
 }
 
 void ServerTabWidget::setFiltersDialog()

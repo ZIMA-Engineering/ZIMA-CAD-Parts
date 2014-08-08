@@ -186,6 +186,12 @@
           <property name="verticalScrollMode">
            <enum>QAbstractItemView::ScrollPerPixel</enum>
           </property>
+          <property name="itemsExpandable">
+           <bool>false</bool>
+          </property>
+          <property name="expandsOnDoubleClick">
+           <bool>false</bool>
+          </property>
          </widget>
         </widget>
        </item>

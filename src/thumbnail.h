@@ -3,6 +3,7 @@
 
 #include "item.h"
 
+#if 0
 class Thumbnail
 {
 public:
@@ -26,5 +27,6 @@ private:
 	QPixmap m_scaledPixmap;
 	bool m_ready;
 };
+#endif
 
 #endif // THUMBNAIL_H

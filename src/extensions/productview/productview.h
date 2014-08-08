@@ -49,17 +49,13 @@ public:
 	explicit ProductView(QWidget *parent = 0);
 	~ProductView();
 
-    /** \brief Set the file which will be downloaded.
-     *
-     *  The comparation is done later in fileDownloaded() slot
-     */
-	bool expectFile(File* f);
     //! Returns true if the one of registered product views can handle given file type
-	bool canHandle(File::FileTypes t);
+	bool canHandle(File::FileType t);
 
 public slots:
-    //! Finally display the file
-	void fileDownloaded(File* f);
+    /** \brief Set the file which will be displayed
+     */
+    void setFile(File* f);
 
 protected:
 	void hideEvent(QHideEvent *e);
@@ -67,8 +63,7 @@ protected:
 
 private:
 	Ui::ProductView *ui;
-	File *expectedFile;
-	QHash<File::FileTypes, AbstractProductView*> providers;
+	QHash<File::FileType, AbstractProductView*> providers;
 	AbstractProductView *currentProvider;
 	FailbackProductView *failbackProvider;
 
@@ -77,7 +72,7 @@ private:
 	{
 		T *provider = new T(this);
 		provider->hide();
-		foreach(File::FileTypes i, provider->canHandle())
+		foreach(File::FileType i, provider->canHandle())
             providers[i] = provider;
 	}
 

@@ -151,6 +151,8 @@ void TechSpecsWebView::pageLoaded(bool ok)
 
 void TechSpecsWebView::downloadFile(QNetworkReply *reply, File *f)
 {
+#warning todo
+#if 0
 	bool isNew = !f;
 
 	if(isNew)
@@ -195,4 +197,5 @@ void TechSpecsWebView::downloadFile(QNetworkReply *reply, File *f)
 
 	if(reply->hasRawHeader("Content-Length"))
 		f->size = reply->rawHeader("Content-Length").toULongLong();
+#endif
 }

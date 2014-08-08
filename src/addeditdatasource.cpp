@@ -25,12 +25,13 @@
 #include "addeditdatasource.h"
 #include "ui_addeditdatasource.h"
 
-AddEditDataSource::AddEditDataSource(LocalDataSource *dataSource, Actions action, QWidget *parent) :
+AddEditDataSource::AddEditDataSource(DataSource *dataSource, Actions action, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::AddEditDataSource)
 {
 	ui->setupUi(this);
-
+#warning todo
+#if 0
     if (dataSource)
     {
         m_ds = dataSource;
@@ -39,7 +40,7 @@ AddEditDataSource::AddEditDataSource(LocalDataSource *dataSource, Actions action
     }
     else
         m_ds = new LocalDataSource();
-
+#endif
 	connect(ui->fileDialogButton, SIGNAL(clicked()), this, SLOT(openFileDialog()));
 
 	if( action == EDIT )
@@ -51,11 +52,14 @@ AddEditDataSource::~AddEditDataSource()
 	delete ui;
 }
 
-LocalDataSource* AddEditDataSource::dataSource()
+DataSource* AddEditDataSource::dataSource()
 {
+#warning todo
+#if 0
     m_ds->label = ui->labelLineEdit->text();
     m_ds->localPath = ui->pathLineEdit->text();
     return m_ds;
+#endif
 }
 
 void AddEditDataSource::openFileDialog()

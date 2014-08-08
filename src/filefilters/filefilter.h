@@ -17,7 +17,7 @@ public:
 		Version
 	};
 
-	FileFilter(File::FileTypes type);
+	FileFilter(File::FileType type);
 	virtual FileFilters filterType() = 0;
 	virtual void load(QSettings *settings) = 0;
 	virtual void save(QSettings *settings) = 0;
@@ -25,7 +25,7 @@ public:
 
 	virtual void apply();
 
-	File::FileTypes type;
+	File::FileType type;
 	bool enabled;
 	FilterGroup *group;
 

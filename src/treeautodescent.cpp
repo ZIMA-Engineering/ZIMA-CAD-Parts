@@ -4,6 +4,8 @@
 #include "serversmodel.h"
 #include "localdatasource.h"
 
+#if 0
+
 TreeAutoDescent::TreeAutoDescent(ServersModel *sm, Item *root, QString path, QObject *parent) :
 	QObject(parent),
 	m_sm(sm),
@@ -115,3 +117,5 @@ void TreeAutoDescent::continueDescent()
     }
 
 }
+
+#endif

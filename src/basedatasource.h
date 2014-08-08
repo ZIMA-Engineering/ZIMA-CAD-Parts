@@ -35,13 +35,13 @@
 #define LOGO_TEXT_FILE "logo-text.png"
 
 class QListWidgetItem;
-class Item;
-class Thumbnail;
+//class Item;
+//class Thumbnail;
 struct File;
 
 
 
-
+#if 0
 class BaseDataSource : public QObject
 {
 	Q_OBJECT
@@ -96,7 +96,6 @@ signals:
 	void updateAvailable(Item*);
 	void loadingItem(Item*);
 	void itemLoaded(Item*);
-	void allItemsLoaded();
 	void fileProgress(File*);
 	void fileDownloaded(File*);
 	void filesDownloaded(); //TODO: identify this somehow
@@ -106,13 +105,11 @@ signals:
 	void metadataInclude(Item *item, QString path);
 	void metadataIncludeCancelled(Item *item);
 	void metadataReady(Item*);
-	void errorOccured(const QString &error);
-	void techSpecsIndexAlreadyExists(Item*);
 	void partsIndexAlreadyExists(Item*);
 	void fileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
 	void filesDeleted();
 };
 
-
+#endif
 
 #endif // BASEDATASOURCE_H

@@ -62,28 +62,23 @@ private:
 	WorkingDirWidget *m_wdirWidget;
 
 	// History
-	QList<QModelIndex> history;
-	int historyCurrentIndex;
-	int historySize;
+    QList<QString> m_history;
+    int m_historyCurrent;
 
 	QModelIndex lastFoundIndex;
 
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
+    void handleHistory();
+
 public slots:
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
-	void searchClicked();
 	void updateStatus(const QString &message);
-	void errorOccured(const QString &error);
-	void filesDownloaded();
 
 private slots:
 	void settingsChanged();
-	void autoDescentProgress(const QModelIndex &index);
-	void autoDescendComplete(const QModelIndex &index);
-	void autoDescentNotFound();
-	void trackHistory(const QModelIndex &index);
+    void trackHistory(const QString &index);
 	void historyBack();
 	void historyForward();
 };

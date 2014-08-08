@@ -1,6 +1,6 @@
 #include "extensionfilter.h"
 
-ExtensionFilter::ExtensionFilter(File::FileTypes type)
+ExtensionFilter::ExtensionFilter(File::FileType type)
 	: FileFilter(type)
 {
 

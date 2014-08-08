@@ -1,0 +1,129 @@
+#include "serversview.h"
+#include "serversmodel.h"
+#include "zimautils.h"
+#include "settings.h"
+#include "settingsdialog.h"
+
+#include <QHeaderView>
+#include <QDesktopServices>
+#include <QSignalMapper>
+#include <QMenu>
+#include <QMessageBox>
+#include <QProcess>
+
+ServersView::ServersView(const QString &rootPath, QWidget *parent) :
+    QTreeView(parent)
+{
+    m_proxy = new ServersProxyModel(this);
+
+    m_model = new ServersModel(this);
+    m_proxy->setSourceModel(m_model);
+#warning			model->retranslateMetadata();
+
+    setModel(m_proxy);
+
+    setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(rootPath)));
+    header()->close();
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    m_signalMapper = new QSignalMapper(this);
+
+    connect(m_signalMapper, SIGNAL(mapped(QString)),
+            this, SLOT(spawnZimaUtilityOnDir(QString)));
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(showContextMenu(QPoint)));
+    connect(this, SIGNAL(clicked(QModelIndex)),
+            this, SLOT(modelClicked(QModelIndex)));
+}
+
+void ServersView::modelClicked(const QModelIndex &index)
+{
+    emit directorySelected(currentFileInfo().absoluteFilePath());
+}
+
+QFileInfo ServersView::currentFileInfo()
+{
+    QModelIndex index = currentIndex();
+    if (!index.isValid())
+        return QFileInfo();
+
+    QModelIndex srcIndex = m_proxy->mapToSource(index);
+    return m_model->fileInfo(srcIndex).absoluteFilePath();
+}
+
+void ServersView::showContextMenu(const QPoint &point)
+{
+    QModelIndex i = currentIndex();
+
+    if (!i.isValid())
+        return;
+
+    QMenu *menu = new QMenu(this);
+
+    menu->addAction(style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open"), this, SLOT(indexOpenPath()));
+    menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
+
+    menu->addSeparator();
+
+    m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), tr("Clean with ZIMA-PTC-Cleaner"), m_signalMapper, SLOT(map())),
+                               ZimaUtils::internalNameForUtility(ZimaUtils::ZimaPtcCleaner));
+    m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), tr("Sync with ZIMA-CAD-Sync"), m_signalMapper, SLOT(map())),
+                               ZimaUtils::internalNameForUtility(ZimaUtils::ZimaCadSync));
+    m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), tr("Convert postscript to PDF with ZIMA-PS2PDF"), m_signalMapper, SLOT(map())),
+                               ZimaUtils::internalNameForUtility(ZimaUtils::ZimaPs2Pdf));
+    m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-STEP-Edit.png"), tr("Edit step files with ZIMA-STEP-Edit"), m_signalMapper, SLOT(map())),
+                               ZimaUtils::internalNameForUtility(ZimaUtils::ZimaStepEdit));
+
+    menu->exec(mapToGlobal(point));
+    menu->deleteLater();
+}
+
+void ServersView::indexOpenPath()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(currentFileInfo().absoluteFilePath()));
+}
+
+void ServersView::spawnZimaUtilityOnDir(const QString &label)
+{
+    QString executable = Settings::get()->ExternalPrograms[label];
+
+    if (executable.isEmpty())
+    {
+        QMessageBox::warning(this, tr("Configure %1").arg(label), tr("Please first configure path to %1 executable.").arg(label));
+        emit showSettings(SettingsDialog::ExternalPrograms);
+        return;
+    }
+
+    if (!QFile::exists(executable))
+    {
+        QMessageBox::warning(this, tr("Configure %1").arg(label), tr("Path '%1' to %2 executable does not exists!").arg(executable).arg(label));
+        emit showSettings(SettingsDialog::ExternalPrograms);
+        return;
+    }
+
+    QStringList args;
+    args << currentFileInfo().absoluteFilePath();
+    QProcess::startDetached(executable, args);
+}
+
+void ServersView::setWorkingDirectory()
+{
+    Settings::get()->WorkingDir = currentFileInfo().absoluteFilePath();
+    emit workingDirChanged();
+}
+
+bool ServersView::navigateToDirectory(const QString &path)
+{
+    QModelIndexList ix = m_model->match(m_model->index(0, 0),
+                                        Qt::ToolTipRole,
+                                        path,
+                                        1,
+                                        Qt::MatchRecursive | Qt::MatchExactly);
+    if (ix.size())
+    {
+        setCurrentIndex(m_proxy->mapFromSource(ix.at(0)));
+        return true;
+    }
+    return false;
+}

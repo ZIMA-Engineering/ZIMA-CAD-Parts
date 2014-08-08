@@ -23,7 +23,7 @@ public:
     //! Returns title for current product view
 	virtual QString title() = 0;
     //! Returns a list with file types available in current product type
-	virtual QList<File::FileTypes> canHandle() = 0;
+	virtual QList<File::FileType> canHandle() = 0;
     //! Display the file
 	virtual bool handle(File *f) = 0;
 

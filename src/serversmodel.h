@@ -30,6 +30,50 @@
 #include "basedatasource.h"
 #include "treeautodescent.h"
 
+
+#include <QFileSystemModel>
+#include <QSortFilterProxyModel>
+#include <QFileIconProvider>
+
+class ServersModel : public QFileSystemModel
+{
+    Q_OBJECT
+public:
+    explicit ServersModel(QObject *parent = 0);
+
+    int columnCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role) const;
+
+signals:
+
+public slots:
+
+};
+
+class ServersIconProvider : public QFileIconProvider
+{
+public:
+    ServersIconProvider();
+
+    virtual QIcon   icon ( IconType type ) const;
+    virtual QIcon   icon ( const QFileInfo & info ) const;
+    virtual QString type ( const QFileInfo & info ) const;
+};
+
+
+class ServersProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+public:
+    ServersProxyModel(QObject *parent = 0);
+
+protected:
+    bool filterAcceptsRow(int sourceRow,
+                          const QModelIndex &sourceParent) const;
+};
+
+#if 0
 class DownloadModel;
 
 class ServersModel : public QAbstractItemModel
@@ -110,20 +154,12 @@ private slots:
 signals:
 	void loadingItem(Item*);
 	void itemLoaded(const QModelIndex&);
-	void allItemsLoaded();
 	void techSpecAvailable(QUrl);
 	void statusUpdated(QString);
-	void errorOccured(const QString &error);
 	void fileProgress(File*);
-	void fileDownloaded(File*);
-	void filesDownloaded();
 	void queueChanged();
-	void autoDescentProgress(const QModelIndex&);
-	void autoDescentCompleted(const QModelIndex&);
-	void autoDescentNotFound();
-	void techSpecsIndexAlreadyExists(Item*);
 	void partsIndexAlreadyExists(Item*);
 	void filesDeleted();
 };
-
+#endif
 #endif // SERVERSMODEL_H

@@ -47,8 +47,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
-	  historyCurrentIndex(-1),
-	  historySize(0)
+      m_historyCurrent(-1)
 {
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
@@ -69,7 +68,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 #ifdef Q_WS_WIN
-	// do not display menu bar for now on WIndows. It contains only one "File" item now.
+    // do not display menu bar for now on Windows. It contains only one "File" item now.
 	// On th eother side it's mandatory to allow user to quit the app in some
 	// X11 window manager (and mac)
 	ui->menuBar->hide();
@@ -80,8 +79,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(ui->serversWidget, SIGNAL(showSettings(SettingsDialog::Section)),
 	        this, SLOT(showSettings(SettingsDialog::Section)));
-	connect(ui->serversWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
-	connect(ui->serversWidget, SIGNAL(activated(const QModelIndex&)), this, SLOT(trackHistory(const QModelIndex&)));
+
+    connect(ui->serversWidget, SIGNAL(directorySelected(QString)),
+            this, SLOT(trackHistory(QString)));
 
 	connect(ui->actionHistoryBack, SIGNAL(triggered()), this, SLOT(historyBack()));
 	connect(ui->actionHistoryForward, SIGNAL(triggered()), this, SLOT(historyForward()));
@@ -103,14 +103,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	// status bar - use this one
 	connect(ui->serversWidget, SIGNAL(statusUpdated(QString)),
 	        this, SLOT(updateStatus(QString)));
-	connect(ui->serversWidget, SIGNAL(autoDescentProgress(QModelIndex)),
-	        this, SLOT(autoDescentProgress(QModelIndex)));
-	connect(ui->serversWidget, SIGNAL(autoDescentComplete(QModelIndex)),
-	        this, SLOT(autoDescendComplete(QModelIndex)));
-	connect(ui->serversWidget, SIGNAL(autoDescentNotFound()),
-	        this, SLOT(autoDescentNotFound()));
 
-	connect(ui->serversWidget, SIGNAL(errorOccured(QString)), this, SLOT(errorOccured(QString)));
 	connect(ui->serversWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
 
@@ -137,7 +130,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
 
 	settingsChanged();
-	ui->serversWidget->goToWorkingDirectory();
 
 	if( useSplash )
 	{
@@ -204,17 +196,11 @@ void MainWindow::settingsChanged()
 	m_wdirWidget->settingsChanged();
 
 	// Prune tree history
-	history.clear();
-	historyCurrentIndex = -1;
-	historySize = 0;
+    m_history.clear();
+    m_historyCurrent = -1;
 
 	ui->actionHistoryBack->setEnabled(false);
 	ui->actionHistoryForward->setEnabled(false);
-}
-
-void MainWindow::searchClicked()
-{
-	QMessageBox::information(this, "ZimaParts", "Not yet implemented");
 }
 
 void MainWindow::updateStatus(const QString &message)
@@ -222,75 +208,40 @@ void MainWindow::updateStatus(const QString &message)
 	statusDir->setText(message);
 }
 
-void MainWindow::errorOccured(const QString &error)
+void MainWindow::trackHistory(const QString &path)
 {
-	updateStatus(tr("Error: %1").arg(error));
-	QMessageBox::warning(this, tr("FTP error"), error);
-}
+    if (m_history.count() && m_history.at(0) == path)
+        return;
+    else
+    {
+        m_history << path;
+        m_historyCurrent++;
+    }
 
-void MainWindow::filesDownloaded()
-{
-	updateStatus(tr("Parts downloaded."));
-}
-
-void MainWindow::autoDescentProgress(const QModelIndex &index)
-{
-	lastFoundIndex = index;
-	ui->serversWidget->expand(index);
-}
-
-void MainWindow::autoDescendComplete(const QModelIndex &index)
-{
-	ui->serversWidget->expand(index);
-	ui->serversWidget->setModelindex(index);
-	trackHistory(index);
-}
-
-void MainWindow::autoDescentNotFound()
-{
-	if(lastFoundIndex.isValid())
-	{
-		ui->serversWidget->setModelindex(lastFoundIndex);
-	}
-
-	QMessageBox::warning(this, tr("Directory not found"), tr("Directory not found: %1").arg(Settings::get()->WorkingDir));
-}
-
-void MainWindow::trackHistory(const QModelIndex &index)
-{
-	if(historyCurrentIndex >= 0 && history[historyCurrentIndex].internalPointer() == index.internalPointer())
-		return;
-
-	if(historyCurrentIndex != historySize-1)
-	{
-		for(int i = historyCurrentIndex + 1; i < historySize; i++)
-			history.removeAt(i);
-
-		historySize = history.size();
-
+    if (m_historyCurrent == 0)
 		ui->actionHistoryForward->setEnabled(false);
-	}
-
-	history << index;
-	historyCurrentIndex++;
-	historySize++;
-
-	if(historyCurrentIndex > 0)
+    else if (m_historyCurrent > 0)
 		ui->actionHistoryBack->setEnabled(true);
 }
 
 void MainWindow::historyBack()
 {
-	const QModelIndex index = history[--historyCurrentIndex];
-	ui->serversWidget->setModelindex(index);
-	ui->actionHistoryBack->setEnabled( !(historyCurrentIndex == 0) );
-	ui->actionHistoryForward->setEnabled(true);
+    --m_historyCurrent;
+    handleHistory();
 }
 
 void MainWindow::historyForward()
 {
-	const QModelIndex index = history[++historyCurrentIndex];
-	ui->serversWidget->setModelindex(index);
-	ui->actionHistoryForward->setEnabled( !(historyCurrentIndex == historySize-1) );
-	ui->actionHistoryBack->setEnabled(true);
+    ++m_historyCurrent;
+    handleHistory();
+}
+
+void MainWindow::handleHistory()
+{
+    qDebug() << "handle history" << m_historyCurrent << m_history.at(m_historyCurrent);
+    QString path = m_history.at(m_historyCurrent);
+    ui->serversWidget->setDirectory(path);
+
+    ui->actionHistoryBack->setEnabled(m_historyCurrent != 0);
+    ui->actionHistoryForward->setEnabled(m_historyCurrent != m_history.count()-1);
 }

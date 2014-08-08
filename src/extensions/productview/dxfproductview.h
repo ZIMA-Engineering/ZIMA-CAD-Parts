@@ -25,7 +25,7 @@ public:
 	~DxfProductView();
 
 	QString title();
-	QList<File::FileTypes> canHandle();
+	QList<File::FileType> canHandle();
 	bool handle(File *f);
 
 private:

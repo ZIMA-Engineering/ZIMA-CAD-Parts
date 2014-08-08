@@ -28,7 +28,7 @@
 #include "metadata.h"
 #include "thumbnail.h"
 
-
+#if 0
 LocalCopier::LocalCopier(QList<File*> files) :
 	files(files)
 {
@@ -253,56 +253,12 @@ void LocalDataSource::copyFiles(QList<File*> files, const QString &dir)
 
 void LocalDataSource::assignTechSpecUrlToItem(QString url, Item *item, QString lang, bool overwrite)
 {
-	QByteArray htmlIndex = QString("<html>\n"
-	                               "	<head>\n"
-	                               "		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
-	                               "	</head>\n"
-	                               "</html>\n").arg(url).toUtf8();
-	QDir techSpecDir(item->path + "/" + TECHSPEC_DIR);
 
-	if(!techSpecDir.exists())
-		techSpecDir.mkdir(techSpecDir.absolutePath());
-
-	QFile indexFile(techSpecDir.absoluteFilePath("index_" + lang + ".html"));
-
-	if(indexFile.exists() && !overwrite)
-	{
-		emit techSpecsIndexAlreadyExists(item);
-		return;
-	}
-
-	if(!indexFile.open(QIODevice::WriteOnly))
-		return; // FIXME: Notify user on failure?
-
-	indexFile.write(htmlIndex);
-	indexFile.close();
 }
 
 void LocalDataSource::assignPartsIndexUrlToItem(QString url, Item *item, QString lang, bool overwrite)
 {
-	QByteArray htmlIndex = QString("<html>\n"
-	                               "	<head>\n"
-	                               "		<meta http-equiv=\"refresh\" content=\"0;url=%1\">\n"
-	                               "	</head>\n"
-	                               "</html>\n").arg(url).toUtf8();
-	QDir techSpecDir(item->path + "/" + TECHSPEC_DIR);
 
-	if(!techSpecDir.exists())
-		techSpecDir.mkdir(techSpecDir.absolutePath());
-
-	QFile indexFile(techSpecDir.absoluteFilePath("index-parts_" + lang + ".html"));
-
-	if(indexFile.exists() && !overwrite)
-	{
-		emit partsIndexAlreadyExists(item);
-		return;
-	}
-
-	if(!indexFile.open(QIODevice::WriteOnly))
-		return; // FIXME: Notify user on failure?
-
-	indexFile.write(htmlIndex);
-	indexFile.close();
 }
 
 void LocalDataSource::aboutToCopy(File *file)
@@ -314,3 +270,4 @@ QString LocalDataSource::pathToDataRoot()
 {
 	return localPath;
 }
+#endif

@@ -186,6 +186,8 @@ void SettingsDialog::accept()
 
 	Settings::get()->ProeExecutable = m_ui->proeEdit->text();
 
+#warning todo
+#if 0
 	// datasources
 	DataSourceList newDSList;
 	for (int i = 0; i < m_ui->datasourceList->count(); ++i)
@@ -202,12 +204,15 @@ void SettingsDialog::accept()
 		Settings::get()->DataSources = newDSList;
 		Settings::get()->DataSourcesNeedsUpdate = true;
 	}
+#endif
 
 	QDialog::accept();
 }
 
 void SettingsDialog::addDataSource()
 {
+#warning todo
+#if 0
     AddEditDataSource addEdit(0, AddEditDataSource::ADD);
 
     if (addEdit.exec() == QDialog::Accepted )
@@ -219,10 +224,13 @@ void SettingsDialog::addDataSource()
         m_ui->datasourceList->addItem(item);
         m_ui->datasourceList->setCurrentItem(item);
     }
+#endif
 }
 
 void SettingsDialog::editDataSource()
 {
+#warning todo
+#if 0
 	if ( !m_ui->datasourceList->count() )
 		return;
 
@@ -243,10 +251,13 @@ void SettingsDialog::editDataSource()
         Settings::get()->DataSourcesNeedsUpdate = true;
         delete ds;
     }
+#endif
 }
 
 void SettingsDialog::removeDataSource()
 {
+#warning todo
+#if 0
 	if ( !m_ui->datasourceList->count() )
 		return;
 
@@ -267,6 +278,7 @@ void SettingsDialog::removeDataSource()
 	m_ui->datasourceList->takeItem(row);
 
 	delete it;
+#endif
 }
 
 void SettingsDialog::datasourceUpButton_clicked()
@@ -297,6 +309,8 @@ void SettingsDialog::datasourceDownButton_clicked()
 
 void SettingsDialog::setupDatasourceList()
 {
+#warning todo
+#if 0
 	m_ui->datasourceList->clear();
 	if (Settings::get()->DataSources.isEmpty())
 		return;
@@ -311,6 +325,7 @@ void SettingsDialog::setupDatasourceList()
 
 	m_ui->datasourceList->setCurrentRow(0);
 	m_ui->datasourceList->setFocus();
+#endif
 }
 
 void SettingsDialog::setZimaUtilPath(int util)

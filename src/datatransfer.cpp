@@ -3,6 +3,7 @@
 #include <QDebug>
 #include "item.h"
 
+#if 0
 DataTransfer::DataTransfer(QNetworkReply *src, File *dst, QObject *parent) :
 	QObject(parent),
 	dst(dst),
@@ -104,3 +105,5 @@ void DataTransfer::onMetadataChange()
 	if(src->hasRawHeader("Content-Length"))
 		dst->size = src->rawHeader("Content-Length").toULongLong();
 }
+
+#endif

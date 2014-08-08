@@ -25,7 +25,87 @@
 #include "localdatasource.h"
 #include "settings.h"
 
+ServersModel::ServersModel(QObject *parent) :
+    QFileSystemModel(parent)
+{
+    setReadOnly(true);
+    setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
+    setIconProvider(new ServersIconProvider());
+}
 
+int ServersModel::columnCount(const QModelIndex & parent) const
+{
+    Q_UNUSED(parent);
+    return 1;
+}
+
+QVariant ServersModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid())
+        return QVariant();
+
+    switch(role)
+    {
+    case Qt::ToolTipRole:
+        // warning: tooltip role is used for "go to home directory" in ServersWidget as well!
+        return fileInfo(index).absoluteFilePath();
+    default:
+        ;
+    }
+
+    return QFileSystemModel::data(index, role);
+}
+
+
+ServersProxyModel::ServersProxyModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+}
+
+
+bool ServersProxyModel::filterAcceptsRow(int sourceRow,
+                                            const QModelIndex &sourceParent) const
+{
+    QModelIndex ix = sourceModel()->index(sourceRow, 0, sourceParent);
+    return ix.data().toString() != TECHSPEC_DIR;
+}
+
+ServersIconProvider::ServersIconProvider()
+{
+}
+
+QIcon ServersIconProvider::icon ( IconType type ) const
+{
+    return QFileIconProvider::icon(type);
+}
+
+QIcon ServersIconProvider::icon ( const QFileInfo & info ) const
+{
+    QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
+
+    if (!info.isDir())
+    {
+        return QFileIconProvider::icon(info);
+    }
+    else if (QFile::exists(logoPath + LOGO_FILE))
+    {
+        return QIcon(logoPath + LOGO_FILE);
+    }
+    else if (QFile::exists(logoPath + LOGO_TEXT_FILE))
+    {
+        return QIcon(logoPath + LOGO_TEXT_FILE);
+    }
+    else
+        return QFileIconProvider::icon(info);
+}
+
+QString ServersIconProvider::type ( const QFileInfo & info ) const
+{
+    return QFileIconProvider::type(info);
+}
+
+
+#if 0
 ServersModel::ServersModel(LocalDataSource *ds, QObject *parent)
 	: QAbstractItemModel(parent)
 {
@@ -40,18 +120,14 @@ ServersModel::ServersModel(LocalDataSource *ds, QObject *parent)
 	m_rootItem->server->rootItem = m_rootItem;
 	connect(m_rootItem->server, SIGNAL(loadingItem(Item*)), this, SIGNAL(loadingItem(Item*)));
 	connect(m_rootItem->server, SIGNAL(itemLoaded(Item*)), this, SLOT(allPartsDownloaded(Item*)));
-	connect(m_rootItem->server, SIGNAL(allItemsLoaded()), this, SIGNAL(allItemsLoaded()));
 	connect(m_rootItem->server, SIGNAL(techSpecAvailable(QUrl)), this, SIGNAL(techSpecAvailable(QUrl)));
 	connect(m_rootItem->server, SIGNAL(statusUpdated(QString)), this, SIGNAL(statusUpdated(QString)));
 	connect(m_rootItem->server, SIGNAL(fileProgress(File*)), this, SIGNAL(fileProgress(File*)));
-	connect(m_rootItem->server, SIGNAL(fileDownloaded(File*)), this, SIGNAL(fileDownloaded(File*)));
 	connect(m_rootItem->server, SIGNAL(metadataInclude(Item*,QString)), this, SLOT(metadataInclude(Item*,QString)));
 	connect(m_rootItem->server, SIGNAL(metadataIncludeCancelled(Item*)), this, SLOT(metadataIncludeCancel(Item*)));
 	connect(m_rootItem->server, SIGNAL(metadataReady(Item*)), this, SLOT(metadataReady(Item*)));
 	connect(m_rootItem->server, SIGNAL(itemInserted(Item*)), this, SLOT(newItem(Item*)));
 	connect(m_rootItem->server, SIGNAL(updateAvailable(Item*)), this, SLOT(itemUpdated(Item*)));
-	connect(m_rootItem->server, SIGNAL(errorOccured(QString)), this, SIGNAL(errorOccured(QString)));
-	connect(m_rootItem->server, SIGNAL(techSpecsIndexAlreadyExists(Item*)), this, SIGNAL(techSpecsIndexAlreadyExists(Item*)));
 	connect(m_rootItem->server, SIGNAL(partsIndexAlreadyExists(Item*)), this, SIGNAL(partsIndexAlreadyExists(Item*)));
 	connect(m_rootItem->server, SIGNAL(fileError(BaseDataSource::Operation,BaseDataSource::Error*)), this, SLOT(catchFileError(BaseDataSource::Operation,BaseDataSource::Error*)));
 	connect(m_rootItem->server, SIGNAL(filesDeleted()), this, SLOT(dataSourceFinishedDeleting()));
@@ -502,3 +578,5 @@ void ServersModel::catchFileError(BaseDataSource::Operation op, BaseDataSource::
 {
 	m_fileErrors[op] << err;
 }
+
+#endif

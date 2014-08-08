@@ -26,13 +26,13 @@ QString ProEProductView::title()
 	return tr("PRO/E part");
 }
 
-QList<File::FileTypes> ProEProductView::canHandle()
+QList<File::FileType> ProEProductView::canHandle()
 {
 #ifdef Q_OS_WIN
 	// ProductView Express is available for windows only
 	return QList<File::FileTypes>() << File::PRT_PROE << File::PRT_NX;
 #else
-	return QList<File::FileTypes>();
+	return QList<File::FileType>();
 #endif
 }
 
@@ -44,11 +44,11 @@ bool ProEProductView::handle(File *f)
 	QString html = stream.readAll();
 
 	html.replace("%VERSION%", VERSION);
-	html.replace("%FILE_NAME%", f->name);
-    html.replace("%FILE_PATH%", f->path);
+    html.replace("%FILE_NAME%", f->fileInfo.fileName());
+    html.replace("%FILE_PATH%", f->fileInfo.filePath());
 	html.replace("%PRODUCTVIEW_PATH%", Settings::get()->ExtensionsProductViewPath);
 
-	QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->name + ".html");
+    QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->fileInfo.fileName() + ".html");
 
 	if(tmp.open())
 	{

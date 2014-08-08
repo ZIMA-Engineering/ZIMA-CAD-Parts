@@ -25,6 +25,7 @@
 #include "basedatasource.h"
 #include "item.h"
 
+#if 0
 class LocalCopier : public QThread
 {
 	Q_OBJECT
@@ -77,5 +78,5 @@ protected slots:
 };
 
 typedef QList<LocalDataSource*> DataSourceList;
-
+#endif
 #endif // LOCALDATASOURCE_H
