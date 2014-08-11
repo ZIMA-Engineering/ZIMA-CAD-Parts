@@ -125,7 +125,7 @@ void Settings::save()
 void Settings::loadDataSources()
 {
 	QSettings settings;
-    qDebug(settings.fileName().toLocal8Bit().constData());
+    //qDebug(settings.fileName().toLocal8Bit().constData());
 
 	settings.beginGroup("DataSources");
 	foreach(QString str, settings.childGroups())
@@ -141,8 +141,7 @@ void Settings::loadDataSources()
         }
 
         DataSource *ds = new DataSource(name, path);
-#warning todo check unique names; sqlite maybe?
-        DataSources[name] = ds;
+        DataSources.append(ds);
 
 		settings.endGroup();
 	}

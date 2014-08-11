@@ -23,6 +23,9 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 
 	m_productView = new ProductView(this);
 
+    connect(ui->refreshButton, SIGNAL(clicked()),
+            MetadataCache::get(), SLOT(clear()));
+
 	ui->techSpecBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 	ui->techSpecForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
 	ui->techSpecReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
@@ -221,8 +224,6 @@ void ServerTabWidget::partsIndexPinButton_clicked()
 void ServerTabWidget::techSpecPinButton_clicked()
 {
     m_fileModel->createIndexHtmlFile(ui->techSpecUrlLineEdit->text(), "index");
-
-
 }
 
 void ServerTabWidget::techSpec_urlChanged(const QUrl &url)

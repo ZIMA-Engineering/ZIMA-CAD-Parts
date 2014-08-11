@@ -87,7 +87,6 @@ public:
     //! The main access method to Metadata
     static MetadataCache *get();
 
-    void clear();
     QString label(const QString &path);
     QStringList columnLabels(const QString &path);
     QString partParam(const QString &path, const QString &fname, int column);
@@ -96,6 +95,9 @@ public:
 signals:
     //! Emitted when is the cache content invalidated. All dependent objects should reset themself.
     void cleared();
+
+public slots:
+     void clear();
 
 private:
     //! Singleton handling

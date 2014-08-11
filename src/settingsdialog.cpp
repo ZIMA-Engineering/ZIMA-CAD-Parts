@@ -71,6 +71,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	connect(m_ui->productViewButton, SIGNAL(clicked()),
 	        this, SLOT(productViewButton_clicked()));
 
+    m_editedDS = Settings::get()->DataSources;
 	setupDatasourceList();
 
 	m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
@@ -186,51 +187,37 @@ void SettingsDialog::accept()
 
 	Settings::get()->ProeExecutable = m_ui->proeEdit->text();
 
-#warning todo
-#if 0
-	// datasources
-	DataSourceList newDSList;
-	for (int i = 0; i < m_ui->datasourceList->count(); ++i)
-	{
-		QListWidgetItem *item = m_ui->datasourceList->item(i);
-        newDSList << PtrVariant<LocalDataSource>::asPtr(item->data(DATASOURCE_ROLE));
-	}
-
-	if (newDSList != Settings::get()->DataSources)
-	{
+    qDebug() << "DSsS" << (m_editedDS != Settings::get()->DataSources);
+    if (m_editedDS != Settings::get()->DataSources)
+    {
 		// Note: do not delete datasources here. It will be handled in ServersWidget::settingsChanged()
-		//qDeleteAll(Settings::get()->DataSources);
-		Settings::get()->DataSources.clear();
-		Settings::get()->DataSources = newDSList;
-		Settings::get()->DataSourcesNeedsUpdate = true;
+        qDeleteAll(Settings::get()->DataSources);
+        Settings::get()->DataSources.clear();
+        Settings::get()->DataSources = m_editedDS;
+        Settings::get()->DataSourcesNeedsUpdate = true;
 	}
-#endif
 
 	QDialog::accept();
 }
 
 void SettingsDialog::addDataSource()
 {
-#warning todo
-#if 0
-    AddEditDataSource addEdit(0, AddEditDataSource::ADD);
+    AddEditDataSource addEdit(m_editedDS, 0, AddEditDataSource::ADD);
 
     if (addEdit.exec() == QDialog::Accepted )
     {
-        LocalDataSource *ds = addEdit.dataSource();
-        QListWidgetItem *item =  new QListWidgetItem(ds->dataSourceIcon(), ds->label);
-        item->setData(DATASOURCE_ROLE, PtrVariant<LocalDataSource>::asQVariant(ds));
+        DataSource *ds = addEdit.dataSource();
+        QListWidgetItem *item =  new QListWidgetItem(ds->icon, ds->name);
+        item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
         item->setData(UNUSED_ROLE, true);
         m_ui->datasourceList->addItem(item);
         m_ui->datasourceList->setCurrentItem(item);
+        m_editedDS.append(ds);
     }
-#endif
 }
 
 void SettingsDialog::editDataSource()
 {
-#warning todo
-#if 0
 	if ( !m_ui->datasourceList->count() )
 		return;
 
@@ -238,26 +225,23 @@ void SettingsDialog::editDataSource()
 	if (!item)
 		return;
 
-    LocalDataSource *ds = PtrVariant<LocalDataSource>::asPtr(item->data(DATASOURCE_ROLE));
-    AddEditDataSource addEdit(ds, AddEditDataSource::EDIT);
+    DataSource *ds = PtrVariant<DataSource>::asPtr(item->data(DATASOURCE_ROLE));
+    AddEditDataSource addEdit(m_editedDS, ds, AddEditDataSource::EDIT);
 
     if (addEdit.exec())
 	{
-        LocalDataSource *edited = addEdit.dataSource();
+        m_editedDS.removeAll(ds);
+        ds = addEdit.dataSource();
 
-        item->setData(DATASOURCE_ROLE, PtrVariant<LocalDataSource>::asQVariant(edited));
-        item->setIcon(edited->dataSourceIcon());
-        item->setText(edited->label);
+        item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
+        item->setIcon(ds->icon);
+        item->setText(ds->name);
         Settings::get()->DataSourcesNeedsUpdate = true;
-        delete ds;
     }
-#endif
 }
 
 void SettingsDialog::removeDataSource()
 {
-#warning todo
-#if 0
 	if ( !m_ui->datasourceList->count() )
 		return;
 
@@ -268,17 +252,17 @@ void SettingsDialog::removeDataSource()
 	//  no need to call deleteLater() on used/application datasource
 	//  because unused datasources are deleted in
 	//  mainwindow.cpp
-    LocalDataSource *ds = PtrVariant<LocalDataSource>::asPtr(it->data(DATASOURCE_ROLE));
+    DataSource *ds = PtrVariant<DataSource>::asPtr(it->data(DATASOURCE_ROLE));
 	if (it->data(UNUSED_ROLE).toBool())
 	{
-		ds->deleteLater();
+        m_editedDS.removeAll(ds);
+        delete ds;
 	}
 
 	int row = m_ui->datasourceList->currentRow();
 	m_ui->datasourceList->takeItem(row);
 
 	delete it;
-#endif
 }
 
 void SettingsDialog::datasourceUpButton_clicked()
@@ -291,6 +275,7 @@ void SettingsDialog::datasourceUpButton_clicked()
 		QListWidgetItem *temp = lw->takeItem(ix);
 		lw->insertItem(ix-1, temp);
 		lw->setCurrentRow(ix-1);
+        m_editedDS.swap(ix, ix-1);
 	}
 }
 
@@ -304,28 +289,26 @@ void SettingsDialog::datasourceDownButton_clicked()
 		QListWidgetItem *temp = lw->takeItem(ix);
 		lw->insertItem(ix+1, temp);
 		lw->setCurrentRow(ix+1);
+        m_editedDS.swap(ix, ix+1);
 	}
 }
 
 void SettingsDialog::setupDatasourceList()
 {
-#warning todo
-#if 0
 	m_ui->datasourceList->clear();
-	if (Settings::get()->DataSources.isEmpty())
+    if (!m_editedDS.count())
 		return;
 
-    foreach(LocalDataSource *s, Settings::get()->DataSources)
+    foreach(DataSource *s, m_editedDS)
 	{
-		QListWidgetItem *i = new QListWidgetItem(s->dataSourceIcon(), s->label);
-        i->setData(DATASOURCE_ROLE, PtrVariant<LocalDataSource>::asQVariant(s));
+        QListWidgetItem *i = new QListWidgetItem(s->icon, s->name);
+        i->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(s));
 		i->setData(UNUSED_ROLE, false);
 		m_ui->datasourceList->addItem(i);
 	}
 
 	m_ui->datasourceList->setCurrentRow(0);
 	m_ui->datasourceList->setFocus();
-#endif
 }
 
 void SettingsDialog::setZimaUtilPath(int util)

@@ -22,13 +22,11 @@
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
-#include <QMultiHash>
 #include <QTranslator>
 #include <QSignalMapper>
-#include <QList>
-#include <QLineEdit>
 
 #include "zima-cad-parts.h"
+#include "settings.h"
 
 
 class QListWidgetItem;
@@ -74,6 +72,7 @@ private:
 	QTranslator **translator;
 	QSignalMapper *zimaUtilSignalMapper;
 	QList<QLineEdit*> zimaUtilLineEdits;
+    DataSourceList m_editedDS;
 
 	void setupDatasourceList();
 };

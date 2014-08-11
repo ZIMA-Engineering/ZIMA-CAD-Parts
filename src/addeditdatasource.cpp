@@ -21,30 +21,40 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QDebug>
+#include <QPushButton>
 
 #include "addeditdatasource.h"
 #include "ui_addeditdatasource.h"
 
-AddEditDataSource::AddEditDataSource(DataSource *dataSource, Actions action, QWidget *parent) :
+AddEditDataSource::AddEditDataSource(const DataSourceList &names, DataSource *dataSource, Actions action, QWidget *parent) :
 	QDialog(parent),
-	ui(new Ui::AddEditDataSource)
+    ui(new Ui::AddEditDataSource)
 {
 	ui->setupUi(this);
-#warning todo
-#if 0
+    m_action = action;
+    ui->statusLabel->setVisible(false);
+
+    foreach (DataSource *i, names)
+        m_names.append(i->name);
+
     if (dataSource)
     {
-        m_ds = dataSource;
-        ui->labelLineEdit->setText(m_ds->label);
-        ui->pathLineEdit->setText(m_ds->localPath);
+        ui->labelLineEdit->setText(dataSource->name);
+        ui->pathLineEdit->setText(dataSource->rootPath);
     }
     else
-        m_ds = new LocalDataSource();
-#endif
-	connect(ui->fileDialogButton, SIGNAL(clicked()), this, SLOT(openFileDialog()));
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
+    connect(ui->fileDialogButton, SIGNAL(clicked()),
+            this, SLOT(openFileDialog()));
+    connect(ui->labelLineEdit, SIGNAL(textEdited(QString)),
+            this, SLOT(labelLineEdit_textEdited(QString)));
 
 	if( action == EDIT )
+    {
+        m_originalName = dataSource->name;
 		setWindowTitle(tr("Edit data source"));
+    }
 }
 
 AddEditDataSource::~AddEditDataSource()
@@ -54,15 +64,20 @@ AddEditDataSource::~AddEditDataSource()
 
 DataSource* AddEditDataSource::dataSource()
 {
-#warning todo
-#if 0
-    m_ds->label = ui->labelLineEdit->text();
-    m_ds->localPath = ui->pathLineEdit->text();
-    return m_ds;
-#endif
+    return new DataSource(ui->labelLineEdit->text(), ui->pathLineEdit->text());
 }
 
 void AddEditDataSource::openFileDialog()
 {
 	ui->pathLineEdit->setText( QFileDialog::getExistingDirectory(this, tr("Select directory"), QDir::homePath()) );
+}
+
+void AddEditDataSource::labelLineEdit_textEdited(const QString &text)
+{
+    // do not allow duplicated names for datasources
+    bool enable = m_names.contains(text);
+    if (m_action == EDIT && m_originalName == text)
+        enable = false;
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!enable);
+    ui->statusLabel->setVisible(enable);
 }

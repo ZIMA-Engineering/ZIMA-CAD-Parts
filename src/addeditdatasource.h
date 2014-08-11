@@ -25,6 +25,8 @@
 #include <QList>
 #include "settings.h"
 
+class DataSources;
+
 namespace Ui {
 class AddEditDataSource;
 }
@@ -39,7 +41,7 @@ public:
 	    EDIT
 	};
 
-    explicit AddEditDataSource(DataSource *dataSource, Actions action, QWidget *parent = 0);
+    explicit AddEditDataSource(const DataSourceList &names, DataSource *dataSource, Actions action, QWidget *parent = 0);
 	~AddEditDataSource();
 
     DataSource *dataSource();
@@ -47,9 +49,13 @@ public:
 private:
 	Ui::AddEditDataSource *ui;
     DataSource *m_ds;
+    QStringList m_names;
+    QString m_originalName;
+    Actions m_action;
 
 private slots:
 	void openFileDialog();
+    void labelLineEdit_textEdited(const QString &text);
 };
 
 #endif // ADDEDITDATASOURCE_H

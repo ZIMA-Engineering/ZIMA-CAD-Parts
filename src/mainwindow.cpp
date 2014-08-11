@@ -66,6 +66,11 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
+    ui->actionRefresh->setShortcut(QKeySequence::Refresh);
+    ui->actionRefresh->setShortcutContext(Qt::ApplicationShortcut);
+    connect(ui->actionRefresh, SIGNAL(triggered()),
+            MetadataCache::get(), SLOT(clear()));
+
 #ifdef Q_WS_WIN
     // do not display menu bar for now on Windows. It contains only one "File" item now.
 	// On th eother side it's mandatory to allow user to quit the app in some
@@ -104,13 +109,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	        this, SLOT(updateStatus(QString)));
 
 	connect(ui->serversWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
-
-
-#warning "TODO/FIXME: server model"
-#if 0
-	if (serversModel->loadQueue(settings) )
-		ui->startStopDownloadBtn->setText(tr("Resume"));
-#endif
 
 	m_wdirWidget = new WorkingDirWidget(this);
 	ui->toolBar->addWidget(m_wdirWidget);

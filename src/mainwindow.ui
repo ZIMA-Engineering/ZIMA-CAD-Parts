@@ -82,6 +82,8 @@
    <addaction name="actionHistoryBack"/>
    <addaction name="actionHistoryForward"/>
    <addaction name="separator"/>
+   <addaction name="actionRefresh"/>
+   <addaction name="separator"/>
   </widget>
   <action name="actionHome">
    <property name="icon">
@@ -125,6 +127,11 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt...</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
    </property>
   </action>
  </widget>

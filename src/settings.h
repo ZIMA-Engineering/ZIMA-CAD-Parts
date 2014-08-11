@@ -1,7 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QHash>
+#include <QList>
 
 #include "filefilters/filtergroup.h"
 #include "serversmodel.h"
@@ -32,8 +32,8 @@ public:
     QIcon icon;
 };
 
-//! name - datasource
-typedef QHash<QString,DataSource*> DataSourceList;
+
+typedef QList<DataSource*> DataSourceList;
 
 /**
  * \brief The Settings singleton.
