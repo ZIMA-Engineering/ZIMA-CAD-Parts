@@ -18,7 +18,6 @@ class ServerTabWidget;
 /*!
  * \brief The tab widget displaying "Parts" tabs.
  *
- * There is always one ServerTabWidget per one ServersModel/DataSource
  */
 class ServerTabWidget : public QWidget
 {

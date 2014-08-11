@@ -5,7 +5,6 @@
 
 #include "file.h"
 
-
 /**
  * @brief The abstract base for all "file preview" processing
  *
@@ -26,7 +25,7 @@ public:
     //! Returns a list with file types available in current product type
 	virtual QList<File::FileType> canHandle() = 0;
     //! Display the file
-	virtual bool handle(File *f) = 0;
+    virtual bool handle(FileMetadata *f) = 0;
 
 signals:
 

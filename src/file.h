@@ -31,12 +31,10 @@
 
 #include "metadata.h"
 
-//class LocalDataSource;
-//class ServersModel;
-//class Item;
-//class DataTransfer;
-class Thumbnail;
 
+/*! Additional metadata for CAD-aware file.
+ * Used in FileModel class.
+ */
 class File
 {
 
@@ -86,22 +84,40 @@ public:
 	    UNDEFINED
 	};
 
-    File(const QFileInfo &fi);
-
-    FileType type;
-    int version;
-    bool newestVersion;
-    QFileInfo fileInfo;
-
-    QPixmap icon() const;
-
     static QString getInternalNameForFileType(FileType type);
     static QString getLabelForFileType(FileType type);
     static QString getRxForFileType(FileType type);
     static QString getRxFromStringList(const QStringList &extensions);
+};
+
+
+class FileMetadata
+{
+public:
+    FileMetadata(const QFileInfo &fi);
+    ~FileMetadata();
+
+    //! CAD type of the file
+    File::FileType type;
+    int version;
+    bool newestVersion;
+    QFileInfo fileInfo;
+
+    /*! Returns a file icon. For CAD files it uses bundled resources.
+     * It's used as a standard file icon on the model - column 0, Qt::DecorationRole
+     */
+    QPixmap icon() const;
+
+    bool checked;
+    /*! File thumbnail != icon.
+     * Thumbnail is a standalone image kept in the filesystem used
+     * in dedicated "thumbnail" column
+     */
+    QPixmap *thumbnail;
 
 private:
     void detectFileType();
+
 };
 
 #endif // ITEM_H

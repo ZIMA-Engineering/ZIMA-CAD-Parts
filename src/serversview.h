@@ -11,12 +11,18 @@ class QSignalMapper;
 class QFileInfo;
 
 
+/*! Main class for "directory tree" widget. Every datasource has one
+ * ServersView.
+ */
 class ServersView : public QTreeView
 {
     Q_OBJECT
 public:
     explicit ServersView(const QString &rootPath, QWidget *parent = 0);
 
+    /*! try to find the path.
+     * @returns true if the path can be found
+     */
     bool navigateToDirectory(const QString &path);
 
 signals:

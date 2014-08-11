@@ -39,6 +39,7 @@ void Settings::load()
 
 	Languages << "en_US" << "cs_CZ" << "de_DE" << "ru_RU";
 	Language = s.value("Language", "detect").toString();
+    LanguageMetadata = s.value("LanguageMetadata", "en").toString();
 
 	// zima utils
 	s.beginGroup("ExternalPrograms");
@@ -81,6 +82,7 @@ void Settings::save()
 	QSettings s;
 
 	s.setValue("Language", Language);
+    s.setValue("LanguageMetadata", LanguageMetadata);
 
 	// zima utils
 	s.beginGroup("ExternalPrograms");

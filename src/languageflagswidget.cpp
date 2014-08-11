@@ -46,6 +46,6 @@ LanguageFlagsWidget::LanguageFlagsWidget(QWidget *parent) :
 
 void LanguageFlagsWidget::changeLanguage(int langIndex)
 {
-    Settings::get()->setCurrentLanguageCode(Settings::get()->langIndexToName(langIndex+1));
+    Settings::get()->LanguageMetadata = Settings::get()->langIndexToName(langIndex+1).left(2);
     MetadataCache::get()->clear();
 }

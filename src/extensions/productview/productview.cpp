@@ -19,12 +19,14 @@
 */
 
 #include "productview.h"
-#include "../../settings.h"
+#include "settings.h"
 
 #include "ui_productview.h"
 #include "proeproductview.h"
 #include "dxfproductview.h"
 #include "pdfproductview.h"
+
+#include "filemodel.h"
 
 
 ProductView::ProductView(QWidget *parent) :
@@ -89,7 +91,7 @@ void ProductView::saveSettings()
 	Settings::get()->ExtensionsProductViewPosition = pos();
 }
 
-void ProductView::setFile(File* f)
+void ProductView::setFile(FileMetadata* f)
 {
 	if (currentProvider)
 	{

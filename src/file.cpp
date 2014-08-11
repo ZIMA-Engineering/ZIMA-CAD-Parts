@@ -20,53 +20,8 @@
 
 #include "file.h"
 
-#include <QDebug>
 #include <QFileIconProvider>
 
-
-File::File(const QFileInfo &fi)
-    : type(UNDEFINED),
-      version(0),
-      newestVersion(true),
-      fileInfo(fi)
-{
-    #warning todo newest file version in basedatasource.cpp
-    detectFileType();
-}
-
-QPixmap File::icon() const
-{
-    QString s = QString(":/gfx/icons/%1.png").arg(getInternalNameForFileType(type));
-
-    if (QFile::exists(s))
-        return QPixmap(s);
-
-    return QFileIconProvider().icon(fileInfo).pixmap(64);
-}
-
-void File::detectFileType()
-{
-	type = File::UNDEFINED;
-
-	for(int i = 0; i < TYPES_COUNT; i++)
-	{
-        QRegExp rx(getRxForFileType((File::FileType)i));
-        // *.dxf vs. *.DXF in some examples
-        rx.setCaseSensitivity(Qt::CaseInsensitive);
-
-        if(rx.exactMatch(fileInfo.fileName()))
-		{
-            type = (File::FileType)i;
-
-			if(rx.captureCount() == 3)
-			{
-				version = rx.cap(3).toInt();
-			}
-
-			break;
-		}
-	}
-}
 
 QString File::getInternalNameForFileType(File::FileType type)
 {
@@ -290,4 +245,58 @@ QString File::getRxFromStringList(const QStringList &extensions)
 	}
 	ret.chop(1);
 	return ret;
+}
+
+
+FileMetadata::FileMetadata(const QFileInfo &fi)
+    : type(File::UNDEFINED),
+      version(0),
+      newestVersion(true),
+      fileInfo(fi)
+{
+    #warning todo newest file version in basedatasource.cpp
+    detectFileType();
+
+    checked = false;
+    thumbnail = MetadataCache::get()->partThumbnail(fi.path(), fi.fileName());
+
+}
+
+FileMetadata::~FileMetadata()
+{
+    delete(thumbnail);
+}
+
+QPixmap FileMetadata::icon() const
+{
+    QString s = QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(type));
+
+    if (QFile::exists(s))
+        return QPixmap(s);
+
+    return QFileIconProvider().icon(fileInfo).pixmap(64);
+}
+
+void FileMetadata::detectFileType()
+{
+    type = File::UNDEFINED;
+
+    for(int i = 0; i < File::TYPES_COUNT; i++)
+    {
+        QRegExp rx(File::getRxForFileType((File::FileType)i));
+        // *.dxf vs. *.DXF in some examples
+        rx.setCaseSensitivity(Qt::CaseInsensitive);
+
+        if(rx.exactMatch(fileInfo.fileName()))
+        {
+            type = (File::FileType)i;
+
+            if(rx.captureCount() == 3)
+            {
+                version = rx.cap(3).toInt();
+            }
+
+            break;
+        }
+    }
 }

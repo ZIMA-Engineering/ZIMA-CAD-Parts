@@ -14,6 +14,7 @@
 #define METADATA_FILE "metadata.ini"
 
 
+//! Small wrapper for filesystem directory - the root directory of one data source.
 class DataSource
 {
 public:
@@ -135,6 +136,9 @@ public:
 	int langIndex(const QString &lang);
 	//! Map Languages enum to string code
 	QString langIndexToName(int lang);
+
+    //! A language shortcode for Metadata. 'en', 'cs', ...
+    QString LanguageMetadata;
 
 private:
 	//! cannot access it directly. Use getCurrentLanguageCode()

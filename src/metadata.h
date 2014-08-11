@@ -26,6 +26,25 @@
 #include <QSettings>
 
 
+/*! Metadata for one directory.
+ *
+ * @warning do not access Metadata directly - use MetadataCache.
+ *
+ * Metadata are stored in 0000-index/metadata.ini as QSettings::IniFormat.
+ * Groups:
+ * [params]
+ * <lang>/label = string // a directory label to be displayed in the directory tree
+ * <lang>/1..n = string // a FileModel column label for additional columns
+ *
+ * [<base file name>] // name of the file without an extension
+ * <lang>/1..n = string // a value which belongs to a column label
+ *
+ * Metadata Includes
+ * [include]
+ * data = path
+ * thumbnails = path
+ *
+ */
 class Metadata : public QObject
 {
 	Q_OBJECT
@@ -33,37 +52,33 @@ public:
     explicit Metadata(const QString &path, QObject *parent = 0);
 	~Metadata();
 
+    //! Label for current directory (tree)
 	QString getLabel();
+    //! Labels for FileModel
     QStringList columnLabels();
+    //! Value for FileModel
     QString partParam(const QString &partName, int col);
+    //! Thumbnail path for FileModel
     QString partThumbnailPath(const QString &partName);
+
     void deletePart(const QString &part);
 
-public slots:
-	void retranslate(QString lang = QString());
-
 private:
-	enum Include {
-	    IncludeNothing=0,
-	    IncludeMetadata=1,
-	    IncludeThumbnails=2
-	};
-
     QSettings *m_settings;
 
     QString m_path;
 	QList<Metadata*> includes;
 	int m_loadedIncludes;
-    QString m_currentAppLang;
-	QString lang;
     QStringList m_columnLabels;
-	QString label;
-	bool m_includedData;
+    QString label;
 
     QString buildIncludePath(const QString &raw);
     QStringList buildIncludePaths(const QStringList &raw);
 };
 
+/*! An access singleton to the Metadata cache.
+ * All-aware universal key is the "path" - the full path of the directory.
+ */
 class MetadataCache : public QObject
 {
     Q_OBJECT
@@ -77,7 +92,9 @@ public:
     QStringList columnLabels(const QString &path);
     QString partParam(const QString &path, const QString &fname, int column);
     QPixmap* partThumbnail(const QString &path, const QString fname);
+
 signals:
+    //! Emitted when is the cache content invalidated. All dependent objects should reset themself.
     void cleared();
 
 private:
@@ -85,7 +102,7 @@ private:
     static MetadataCache *m_instance;
 
     MetadataCache();
-    MetadataCache(const MetadataCache &) {};
+    //MetadataCache(const MetadataCache &) {};
     ~MetadataCache();
 
     QHash<QString,Metadata*> m_map;

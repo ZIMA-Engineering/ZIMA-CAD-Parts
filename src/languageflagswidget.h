@@ -6,6 +6,10 @@
 class QButtonGroup;
 
 
+/*! Handle language switching from the GUI.
+ * The MetadataCache is reset after language switch.
+ * Dependent widgets should register itself to MetadataCache cleared() signal
+ */
 class LanguageFlagsWidget : public QWidget
 {
 	Q_OBJECT

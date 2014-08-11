@@ -25,21 +25,6 @@
 #include "settings.h"
 
 
-FileItem::FileItem(const QFileInfo &fi)
-{
-    file = new File(fi);
-    checked = false;
-    thumbnail = MetadataCache::get()->partThumbnail(fi.path(), fi.fileName());
-
-}
-
-FileItem::~FileItem()
-{
-    delete(file);
-    delete(thumbnail);
-}
-
-
 FileModel::FileModel(QObject *parent) :
     QAbstractItemModel(parent)
 {
@@ -56,7 +41,7 @@ void FileModel::setDirectory(const QString &path)
     while (it.hasNext())
     {
         it.next();
-        m_data.append(new FileItem(it.fileInfo()));
+        m_data.append(new FileMetadata(it.fileInfo()));
     }
 
     m_columnLabels = MetadataCache::get()->columnLabels(m_path);
@@ -74,7 +59,7 @@ QFileInfo FileModel::fileInfo(const QModelIndex &index) const
     if (!index.isValid())
         return QFileInfo();
 
-    return m_data[index.row()]->file->fileInfo;
+    return m_data[index.row()]->fileInfo;
 }
 
 void FileModel::settingsChanged()
@@ -115,7 +100,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 	const int row = index.row();
 	const int col = index.column();
 
-    FileItem *file = m_data[row];
+    FileMetadata *file = m_data[row];
 
 	switch(col)
 	{
@@ -131,7 +116,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 
 		case Qt::ToolTipRole:
 			if(file->thumbnail)
-                return QString("<img src=\"%1\" width=\"%2\">").arg(file->file->fileInfo.absoluteFilePath()).arg(Settings::get()->GUIPreviewWidth);
+                return QString("<img src=\"%1\" width=\"%2\">").arg(file->fileInfo.absoluteFilePath()).arg(Settings::get()->GUIPreviewWidth);
 		}
 		break;
 
@@ -140,13 +125,13 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		{
 		case Qt::DisplayRole:
 			//qDebug() << "returning" << rootItem->files.at( index.row() )->name;
-            return file->file->fileInfo.fileName();
+            return file->fileInfo.fileName();
 
 		case Qt::CheckStateRole:
             return file->checked ? Qt::Checked : Qt::Unchecked;
 
 		case Qt::DecorationRole: {
-            QPixmap tmp = file->file->icon();
+            QPixmap tmp = file->icon();
 			if( !tmp.isNull() )
 				return tmp.scaledToWidth(16);
 		}
@@ -156,7 +141,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 
     if(col > 1 && role == Qt::DisplayRole && col-1 <= m_columnLabels.count())
 	{
-        return MetadataCache::get()->partParam(m_path, file->file->fileInfo.fileName(), col-1);
+        return MetadataCache::get()->partParam(m_path, file->fileInfo.fileName(), col-1);
 	}
 
 	return QVariant();

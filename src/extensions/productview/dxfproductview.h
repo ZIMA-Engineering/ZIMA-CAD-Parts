@@ -26,7 +26,7 @@ public:
 
 	QString title();
 	QList<File::FileType> canHandle();
-	bool handle(File *f);
+    bool handle(FileMetadata *f);
 
 private:
 	Ui::DxfProductView *ui;

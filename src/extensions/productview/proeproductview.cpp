@@ -36,7 +36,7 @@ QList<File::FileType> ProEProductView::canHandle()
 #endif
 }
 
-bool ProEProductView::handle(File *f)
+bool ProEProductView::handle(FileMetadata *f)
 {
 	QFile pv(":/data/extensions/productview/proeproductview.html");
 	pv.open(QIODevice::ReadOnly);

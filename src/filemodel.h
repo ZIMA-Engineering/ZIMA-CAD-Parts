@@ -25,18 +25,8 @@
 #include <QFileIconProvider>
 #include <QSortFilterProxyModel>
 
-class File;
+#include "file.h"
 
-class FileItem
-{
-public:
-    FileItem(const QFileInfo &fi);
-    ~FileItem();
-
-    File *file;
-    bool checked;
-    QPixmap *thumbnail;
-};
 
 class FileModel : public QAbstractItemModel
 {
@@ -71,7 +61,7 @@ public slots:
 private:
     QString m_path;
     QStringList m_columnLabels;
-    QList<FileItem*> m_data;
+    QList<FileMetadata*> m_data;
 
 private slots:
     void refreshModel();

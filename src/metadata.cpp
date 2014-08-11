@@ -101,42 +101,12 @@ QPixmap* MetadataCache::partThumbnail(const QString &path, const QString fname)
 Metadata::Metadata(const QString &path, QObject *parent)
 	: QObject(parent),
       m_path(path),
-	  m_loadedIncludes(0),
-	  m_includedData(false)
+      m_loadedIncludes(0)
 {
     qDebug() << "Metadata constructor for" << path;
     m_settings = new QSettings(m_path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE, QSettings::IniFormat);
     m_settings->setIniCodec("utf-8");
     qDebug() << "ini file" << m_settings->fileName();
-
-    m_currentAppLang = Settings::get()->getCurrentLanguageCode().left(2);
-
-    m_settings->beginGroup("params");
-    {
-        foreach(QString group, m_settings->childGroups())
-        {
-            if(group == m_currentAppLang)
-            {
-                lang = group;
-                break;
-            }
-        }
-
-        if(lang.isEmpty())
-        {
-            QStringList childGroups = m_settings->childGroups();
-
-            if(childGroups.contains("en"))
-                lang = "en";
-            else if(childGroups.count())
-                lang = childGroups.first();
-            else {
-                m_settings->endGroup();
-                return;
-            }
-        }
-    }
-    m_settings->endGroup();
 
     m_settings->beginGroup("include");
     {
@@ -147,9 +117,6 @@ Metadata::Metadata(const QString &path, QObject *parent)
         toInclude << data << thumbs;
 
         toInclude.removeDuplicates();
-
-        if(!data.isEmpty())
-            m_includedData = true;
 
         foreach(QString path, toInclude)
             includes << new Metadata(path, this);
@@ -162,8 +129,6 @@ Metadata::~Metadata()
     delete m_settings;
 
     m_columnLabels.clear();
-    label.clear();
-    lang.clear();
 }
 
 QString Metadata::getLabel()
@@ -171,7 +136,7 @@ QString Metadata::getLabel()
 	if(label.count())
 		return label;
 
-    return (label = m_settings->value(QString("params/%1/label").arg(lang), QString()).toString());
+    return (label = m_settings->value(QString("params/%1/label").arg(Settings::get()->LanguageMetadata), QString()).toString());
 }
 
 QStringList Metadata::columnLabels()
@@ -184,7 +149,7 @@ QStringList Metadata::columnLabels()
 
     m_settings->beginGroup("params");
 	{
-        m_settings->beginGroup(lang);
+        m_settings->beginGroup(Settings::get()->LanguageMetadata);
 		{
             foreach(QString col, m_settings->childKeys())
 			{
@@ -214,7 +179,7 @@ QString Metadata::partParam(const QString &partName, int col)
 
     foreach(QString group, m_settings->childGroups())
 	{
-        if(!(val = m_settings->value(QString("%1/%2").arg(group).arg(col)).toString()).isEmpty() && group == m_currentAppLang)
+        if(!(val = m_settings->value(QString("%1/%2").arg(group).arg(col)).toString()).isEmpty() && group == Settings::get()->LanguageMetadata)
 			break;
 
 		if(anyVal.isEmpty())
@@ -273,16 +238,6 @@ void Metadata::deletePart(const QString &part)
 		return;
 
     m_settings->remove(grp);
-}
-
-void Metadata::retranslate(QString lang)
-{
-	if(lang.isEmpty())
-        m_currentAppLang = Settings::get()->getCurrentLanguageCode().left(2);
-	else
-        m_currentAppLang = lang;
-
-#warning	refresh();
 }
 
 QString Metadata::buildIncludePath(const QString &raw)

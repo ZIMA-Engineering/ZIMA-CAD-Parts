@@ -28,7 +28,7 @@ QList<File::FileType> DxfProductView::canHandle()
 	return QList<File::FileType>() << File::DXF;
 }
 
-bool DxfProductView::handle(File *f)
+bool DxfProductView::handle(FileMetadata *f)
 {
 	if (dxf)
 	{

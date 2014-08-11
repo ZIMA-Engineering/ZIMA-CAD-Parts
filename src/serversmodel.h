@@ -31,6 +31,8 @@
 #include <QFileIconProvider>
 
 
+/*! A "datasource" tree. This class is used inside ServersView only
+ */
 class ServersModel : public QFileSystemModel
 {
     Q_OBJECT
@@ -41,6 +43,9 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
 };
 
+/*! An icon provider for ServersModel. It contains additional
+ * handling of LOGO_FILE and LOGO_FILE_TEXT files in the TECHSPEC_DIR directory
+ */
 class ServersIconProvider : public QFileIconProvider
 {
 public:
@@ -51,7 +56,9 @@ public:
     virtual QString type ( const QFileInfo & info ) const;
 };
 
-
+/*! A filter proxy for ServersModel. Its main task is to filter out
+ * the TECHSPEC_DIR directory
+ */
 class ServersProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT

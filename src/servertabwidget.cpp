@@ -302,7 +302,7 @@ void ServerTabWidget::previewInProductView(const QModelIndex &index)
 {
 	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->partsTreeView->model())->mapToSource(index);
     QFileInfo fi(m_fileModel->fileInfo(srcIndex));
-    File f(fi);
+    FileMetadata f(fi);
 
     if (!m_productView->canHandle(f.type))
 	{
@@ -321,7 +321,7 @@ void ServerTabWidget::partsTreeView_doubleClicked(const QModelIndex &index)
 	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->partsTreeView->model())->mapToSource(index);
 
     QFileInfo fi = m_fileModel->fileInfo(srcIndex);
-    File f(fi);
+    FileMetadata f(fi);
 
     switch (f.type)
 	{

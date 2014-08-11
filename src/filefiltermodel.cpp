@@ -22,7 +22,7 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
     Q_ASSERT(fm);
 
     QModelIndex current = fm->index(source_row, 0, source_parent);
-    File f(fm->fileInfo(current));
+    FileMetadata f(fm->fileInfo(current));
 
     if (f.type == File::UNDEFINED)
     {

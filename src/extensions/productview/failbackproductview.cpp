@@ -23,7 +23,7 @@ QList<File::FileType> FailbackProductView::canHandle()
 	return QList<File::FileType>();
 }
 
-bool FailbackProductView::handle(File *f)
+bool FailbackProductView::handle(FileMetadata *f)
 {
     QString lastModified = f->fileInfo.lastModified().toString();
 

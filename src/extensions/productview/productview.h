@@ -28,6 +28,7 @@
 #include "abstractproductview.h"
 #include "failbackproductview.h"
 
+class FileMetadata;
 
 namespace Ui {
 class ProductView;
@@ -54,7 +55,7 @@ public:
 public slots:
     /** \brief Set the file which will be displayed
      */
-    void setFile(File* f);
+    void setFile(FileMetadata* f);
 
 protected:
 	void hideEvent(QHideEvent *e);
