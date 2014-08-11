@@ -1,6 +1,7 @@
 #include <QFileDialog>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QUrl>
 
 #include "workingdirwidget.h"
 #include "settings.h"

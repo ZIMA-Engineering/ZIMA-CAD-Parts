@@ -25,6 +25,21 @@
 #include "settings.h"
 
 
+FileItem::FileItem(const QFileInfo &fi)
+{
+    file = new File(fi);
+    checked = false;
+    thumbnail = MetadataCache::get()->partThumbnail(fi.path(), fi.fileName());
+
+}
+
+FileItem::~FileItem()
+{
+    delete(file);
+    delete(thumbnail);
+}
+
+
 FileModel::FileModel(QObject *parent) :
     QAbstractItemModel(parent)
 {
@@ -189,45 +204,6 @@ Qt::ItemFlags FileModel::flags(const QModelIndex &index) const
 	if( index.column() == 0 )
 		return Qt::ItemIsUserCheckable | QAbstractItemModel::flags(index);
 	else return QAbstractItemModel::flags(index);
-}
-
-#warning todo metadata
-#if 0
-void FileModel::initMetadata(Item *i)
-{
-	if(i != rootItem)
-		return;
-
-	connect(rootItem->metadata, SIGNAL(retranslated()), this, SLOT(metadataRetranslated()));
-
-    m_columnLabels = rootItem->metadata->getColumnLabels();
-
-	//qDebug() << colLabels;
-
-    beginInsertColumns(QModelIndex(), 2, 2 + m_columnLabels.count());
-	endInsertColumns();
-	//emit headerDataChanged(Qt::Horizontal, 2, 2 + colLabels.count());
-
-	emit requestColumnResize();
-}
-#endif
-
-void FileModel::thumbnailDownloaded(File *file)
-{
-#warning	QModelIndex mi = index( file->parentItem->files.indexOf(file), 1 );
-
-#warning	emit dataChanged(mi, mi);
-}
-
-void FileModel::metadataRetranslated()
-{
-#warning todo metadata
-#if 0
-    m_columnLabels = rootItem->metadata->getColumnLabels();
-
-    emit headerDataChanged(Qt::Horizontal, 2, m_columnLabels.count()-1);
-	emit requestColumnResize();
-#endif
 }
 
 void FileModel::createIndexHtmlFile(const QString &text, const QString &fileBase)

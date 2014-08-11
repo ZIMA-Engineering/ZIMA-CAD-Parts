@@ -29,8 +29,6 @@
 #include <QLineEdit>
 
 #include "zima-cad-parts.h"
-#include "basedatasource.h"
-#include "localdatasource.h"
 
 
 class QListWidgetItem;

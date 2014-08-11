@@ -25,21 +25,13 @@
 #include <QFileIconProvider>
 #include <QSortFilterProxyModel>
 
-#include "item.h"
+class File;
 
 class FileItem
 {
 public:
-    FileItem(const QFileInfo &fi)
-    {
-        file = new File(fi);
-        checked = false;
-        thumbnail = MetadataCache::get()->partThumbnail(fi.path(), fi.fileName());
-    }
-    ~FileItem() {
-        delete(file);
-        delete(thumbnail);
-    }
+    FileItem(const QFileInfo &fi);
+    ~FileItem();
 
     File *file;
     bool checked;
@@ -73,10 +65,7 @@ public:
     void createIndexHtmlFile(const QString &text, const QString &fileBase);
 
 public slots:
-//	void setRootIndex(const QModelIndex &index);
-//	void setRootIndex(Item *item);
     void setDirectory(const QString &path);
-#warning    void initMetadata(Item *i);
     void settingsChanged();
 
 private:
@@ -84,13 +73,6 @@ private:
     QStringList m_columnLabels;
     QList<FileItem*> m_data;
 
-private slots:
-    void thumbnailDownloaded(File *file);
-//	void itemLoaded(Item *item);
-    void metadataRetranslated();
-
-signals:
-	void requestColumnResize();
 };
 
 #endif // FILEMODEL_H

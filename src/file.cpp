@@ -18,12 +18,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "item.h"
-#include "localdatasource.h"
+#include "file.h"
+
 #include <QDebug>
 #include <QFileIconProvider>
 
-#include "datatransfer.h"
 
 File::File(const QFileInfo &fi)
     : type(UNDEFINED),
@@ -292,65 +291,3 @@ QString File::getRxFromStringList(const QStringList &extensions)
 	ret.chop(1);
 	return ret;
 }
-
-#if 0
-Item::Item()
-{
-	parent = 0;
-	isDir = false;
-	isServer = false;
-//	server = 0;
-	metadata = 0;
-	showText = true;
-}
-
-Item::~Item()
-{
-	delete metadata;
-	metadata = 0;
-	qDeleteAll(files);
-	qDeleteAll(m_thumbnails);
-	qDeleteAll(children);
-	files.clear();
-	children.clear();
-}
-
-int Item::row() const
-{
-	if (parent)
-		return parent->children.indexOf(const_cast<Item*>(this));
-
-	return 0;
-}
-
-Item *Item::child(int r)
-{
-	return children.value(r);
-}
-
-QString Item::getLabel()
-{
-	if(metadata)
-		return metadata->getLabel();
-	return name;
-}
-
-void Item::addThumbnail(Thumbnail *thumb)
-{
-	m_thumbnails << thumb;
-}
-
-QList<Thumbnail*> Item::thumbnails(bool include)
-{
-	if(!include || !metadata)
-		return m_thumbnails;
-
-	QList<Thumbnail*> ret;
-	ret << m_thumbnails;
-
-	foreach(Item *it, metadata->includedThumbnailItems())
-	ret << it->thumbnails();
-
-	return ret;
-}
-#endif

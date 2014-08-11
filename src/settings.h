@@ -2,12 +2,16 @@
 #define SETTINGS_H
 
 #include <QHash>
-#include <QCache>
-#include "localdatasource.h"
-#include "filefilters/filtergroup.h"
 
+#include "filefilters/filtergroup.h"
 #include "serversmodel.h"
 #include "metadata.h"
+
+
+#define TECHSPEC_DIR "0000-index"
+#define LOGO_FILE "logo.png"
+#define LOGO_TEXT_FILE "logo-text.png"
+#define METADATA_FILE "metadata.ini"
 
 
 class DataSource

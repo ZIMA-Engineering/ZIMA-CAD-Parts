@@ -1,6 +1,5 @@
 #include "settings.h"
 #include "zimautils.h"
-#include "localdatasource.h"
 #include "filefilters/extensionfilter.h"
 #include "filefilters/versionfilter.h"
 #include "zima-cad-parts.h"

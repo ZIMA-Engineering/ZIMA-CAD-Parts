@@ -104,36 +104,4 @@ private:
     void detectFileType();
 };
 
-#if 0
-class Item
-{
-public:
-	Item();
-	int row() const;
-	void setNotEmpty();
-	Item *child(int r);
-	~Item();
-	QString getLabel();
-	void addThumbnail(Thumbnail *thumb);
-	QList<Thumbnail*> thumbnails(bool include = true);
-
-	QString name;
-	QPixmap logo;
-	bool showText;
-	QString path;
-	bool    isDir;
-	bool isServer;
-    //LocalDataSource* server;
-
-	Item            *parent;
-	QList<Item*>    children;
-	QList<File*> files;
-
-	Metadata *metadata;
-
-private:
-    QList<Thumbnail*> m_thumbnails;
-};
-#endif
-
 #endif // ITEM_H

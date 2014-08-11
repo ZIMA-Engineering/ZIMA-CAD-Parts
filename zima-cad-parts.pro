@@ -11,6 +11,8 @@ TEMPLATE = app
 win32:INCLUDEPATH += ../
 VPATH += ./src
 
+INCLUDEPATH += src
+INCLUDEPATH += src/filefilters
 INCLUDEPATH += libqdxf/src
 INCLUDEPATH += libqdxf/libdxfrw/src
 
@@ -34,15 +36,13 @@ INCLUDEPATH += libqdxf/libdxfrw/src
 #    }
 #}
 
-SOURCES += zima-cad-parts.cpp \
-    mainwindow.cpp \
-    settingsdialog.cpp \
-    serversmodel.cpp \
-    item.cpp \
-    filemodel.cpp \
-    basedatasource.cpp \
-    localdatasource.cpp \
-    addeditdatasource.cpp \
+SOURCES += src/zima-cad-parts.cpp \
+    src/mainwindow.cpp \
+    src/settingsdialog.cpp \
+    src/serversmodel.cpp \
+    src/file.cpp \
+    src/filemodel.cpp \
+    src/addeditdatasource.cpp \
     src/settings.cpp \
     src/extensions/productview/productview.cpp \
     src/filtersdialog.cpp \
@@ -50,14 +50,11 @@ SOURCES += zima-cad-parts.cpp \
     src/techspecswebview.cpp \
     src/zimautils.cpp \
     src/errordialog.cpp \
-    src/treeautodescent.cpp \
-    src/thumbnail.cpp \
     src/filefiltermodel.cpp \
     src/filefilters/filefilter.cpp \
     src/filefilters/extensionfilter.cpp \
     src/filefilters/filtergroup.cpp \
     src/filefilters/versionfilter.cpp \
-    src/datatransfer.cpp \
     src/extensions/productview/abstractproductview.cpp \
     src/extensions/productview/proeproductview.cpp \
     src/extensions/productview/dxfproductview.cpp \
@@ -97,14 +94,12 @@ SOURCES += zima-cad-parts.cpp \
     src/workingdirwidget.cpp \
     src/serversview.cpp
 
-HEADERS += mainwindow.h \
-    settingsdialog.h \
-    serversmodel.h \
-    item.h \
-    filemodel.h \
-    basedatasource.h \
-    localdatasource.h \
-    addeditdatasource.h \
+HEADERS += src/mainwindow.h \
+    src/settingsdialog.h \
+    src/serversmodel.h \
+    src/file.h \
+    src/filemodel.h \
+    src/addeditdatasource.h \
     src/settings.h \
     src/extensions/productview/productview.h \
     src/filtersdialog.h \
@@ -113,14 +108,11 @@ HEADERS += mainwindow.h \
     src/zima-cad-parts.h \
     src/zimautils.h \
     src/errordialog.h \
-    src/treeautodescent.h \
-    src/thumbnail.h \
     src/filefiltermodel.h \
     src/filefilters/filefilter.h \
     src/filefilters/extensionfilter.h \
     src/filefilters/filtergroup.h \
     src/filefilters/versionfilter.h \
-    src/datatransfer.h \
     src/extensions/productview/abstractproductview.h \
     src/extensions/productview/proeproductview.h \
     src/extensions/productview/dxfproductview.h \

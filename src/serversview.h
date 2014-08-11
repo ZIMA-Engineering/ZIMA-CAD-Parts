@@ -8,6 +8,8 @@
 class ServersModel;
 class ServersProxyModel;
 class QSignalMapper;
+class QFileInfo;
+
 
 class ServersView : public QTreeView
 {

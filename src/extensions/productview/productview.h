@@ -28,7 +28,6 @@
 #include "abstractproductview.h"
 #include "failbackproductview.h"
 
-#include "../../item.h"
 
 namespace Ui {
 class ProductView;

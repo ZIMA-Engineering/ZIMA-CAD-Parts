@@ -26,14 +26,10 @@
 #include <QList>
 #include <QKeyEvent>
 
-#include "item.h"
-#include "basedatasource.h"
-#include "treeautodescent.h"
-
-
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
 #include <QFileIconProvider>
+
 
 class ServersModel : public QFileSystemModel
 {
@@ -73,93 +69,4 @@ protected:
                           const QModelIndex &sourceParent) const;
 };
 
-#if 0
-class DownloadModel;
-
-class ServersModel : public QAbstractItemModel
-{
-	Q_OBJECT
-
-public:
-    ServersModel(LocalDataSource *ds, QObject *parent = 0);
-	~ServersModel();
-
-	bool canFetchMore(const QModelIndex &parent) const;
-	void fetchMore(const QModelIndex &parent);
-//	bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
-	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
-
-	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-	bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole);
-	QVariant data(const QModelIndex &index, int role) const;
-	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-	QModelIndex parent(const QModelIndex &index) const;
-	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-
-    LocalDataSource* dataSource() {
-		return m_datasource;
-	}
-
-	QString translateDataSourceNameToPath(QString name);
-	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
-	bool hasErrors(BaseDataSource::Operation op);
-	Item *lastTechSpecRequest();
-
-	//! @returns datasource top level item
-	Item *rootItem() {
-		return m_rootItem;
-	}
-
-public slots:
-	void clear();
-	void loadItem(Item *item);
-	void requestTechSpecs(const QModelIndex &index);
-	void requestTechSpecs(Item *item);
-	void deleteFiles();
-    void copyToWorkingDir();
-	void uncheckAll(Item *item = 0);
-	void retranslateMetadata(Item *item = 0);
-	void descentTo(QString path, Item *item = 0);
-	void catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
-
-protected:
-	QList<File*> getCheckedFiles(Item *item);
-
-protected slots:
-	void allPartsDownloaded(Item* item);
-
-private:
-	QIcon dirIcon, serverIcon;
-    LocalDataSource* m_datasource;
-	Item *m_rootItem;
-	Item *m_lastTechSpecRequest;
-	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];
-	int dsDeleted;
-	QList<TreeAutoDescent*> autoDescents;
-	QHash<TreeAutoDescent*, Item*> metadataIncludeHash;
-
-private slots:
-	void dataSourceFinishedDeleting();
-	void metadataReady(Item *item);
-	void newItem(Item *item);
-	void itemUpdated(Item *item);
-	void forwardAutoDescentProgress(TreeAutoDescent *descent, Item *item);
-	void forwardAutoDescentCompleted(TreeAutoDescent *descent, Item *item);
-	void forwardAutoDescentNotFound(TreeAutoDescent *descent);
-	void metadataInclude(Item *item, QString path);
-	void metadataIncludeCancel(Item *item);
-
-signals:
-	void loadingItem(Item*);
-	void itemLoaded(const QModelIndex&);
-	void techSpecAvailable(QUrl);
-	void statusUpdated(QString);
-	void fileProgress(File*);
-	void queueChanged();
-	void partsIndexAlreadyExists(Item*);
-	void filesDeleted();
-};
-#endif
 #endif // SERVERSMODEL_H

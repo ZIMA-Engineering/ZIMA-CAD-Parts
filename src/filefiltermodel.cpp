@@ -1,8 +1,9 @@
 #include <QDebug>
 
 #include "filefiltermodel.h"
-#include "item.h"
 #include "filemodel.h"
+#include "file.h"
+
 
 FileFilterModel::FileFilterModel(QObject *parent) :
 	QSortFilterProxyModel(parent),

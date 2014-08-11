@@ -23,8 +23,6 @@
 
 #include <QDialog>
 #include <QList>
-#include "basedatasource.h"
-#include "localdatasource.h"
 #include "settings.h"
 
 namespace Ui {

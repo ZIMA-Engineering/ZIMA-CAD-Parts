@@ -10,6 +10,8 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QProcess>
+#include <QUrl>
+
 
 ServersView::ServersView(const QString &rootPath, QWidget *parent) :
     QTreeView(parent)

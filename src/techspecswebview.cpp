@@ -27,7 +27,6 @@
 #include <QRegExp>
 #include <QDebug>
 
-#include "datatransfer.h"
 #include "settings.h"
 #include "zima-cad-parts.h"
 

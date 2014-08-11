@@ -25,7 +25,6 @@
 
 #include "filtersdialog.h"
 #include "ui_filtersdialog.h"
-#include "item.h"
 #include "settings.h"
 
 

@@ -3,7 +3,8 @@
 
 #include <QWidget>
 
-#include "../../item.h"
+#include "file.h"
+
 
 /**
  * @brief The abstract base for all "file preview" processing

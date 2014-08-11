@@ -24,7 +24,6 @@
 
 #include "metadata.h"
 #include "settings.h"
-#include "item.h"
 
 
 MetadataCache * MetadataCache::m_instance = 0;

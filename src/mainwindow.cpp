@@ -35,7 +35,6 @@
 #include "ui_mainwindow.h"
 #include "serversmodel.h"
 #include "filtersdialog.h"
-#include "item.h"
 #include "zimautils.h"
 #include "errordialog.h"
 #include "settings.h"

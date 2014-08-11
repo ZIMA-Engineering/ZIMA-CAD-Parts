@@ -4,10 +4,11 @@
 #include <QSettings>
 #include <QTreeWidgetItem>
 
-#include "../item.h"
 #include "filtergroup.h"
+#include "file.h"
 
 class FilterGroup;
+
 
 class FileFilter
 {
