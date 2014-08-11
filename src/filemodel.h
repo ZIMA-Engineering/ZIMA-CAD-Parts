@@ -73,6 +73,8 @@ private:
     QStringList m_columnLabels;
     QList<FileItem*> m_data;
 
+private slots:
+    void refreshModel();
 };
 
 #endif // FILEMODEL_H

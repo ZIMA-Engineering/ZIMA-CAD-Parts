@@ -24,9 +24,8 @@ signals:
     void workingDirChanged();
     void directorySelected(const QString &path);
 
-public slots:
-
 private:
+    QString m_path;
     ServersModel *m_model;
     ServersProxyModel *m_proxy;
     QSignalMapper *m_signalMapper;
@@ -34,6 +33,7 @@ private:
     QFileInfo currentFileInfo();
 
 private slots:
+    void refreshModel();
     void modelClicked(const QModelIndex &index);
     void showContextMenu(const QPoint &point);
     void spawnZimaUtilityOnDir(const QString &label);

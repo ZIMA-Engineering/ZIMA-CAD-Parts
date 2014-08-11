@@ -12,13 +12,11 @@ class LanguageFlagsWidget : public QWidget
 public:
 	explicit LanguageFlagsWidget(QWidget *parent = 0);
 
-signals:
-	void changeLanguage(int);
-
-public slots:
-
 private:
 	QButtonGroup *m_buttons;
+
+private slots:
+    void changeLanguage(int langIndex);
 };
 
 #endif // LANGUAGEFLAGSWIDGET_H

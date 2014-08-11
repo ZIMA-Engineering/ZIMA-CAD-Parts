@@ -43,6 +43,7 @@ FileItem::~FileItem()
 FileModel::FileModel(QObject *parent) :
     QAbstractItemModel(parent)
 {
+    connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(refreshModel()));
 }
 
 void FileModel::setDirectory(const QString &path)
@@ -61,6 +62,11 @@ void FileModel::setDirectory(const QString &path)
     m_columnLabels = MetadataCache::get()->columnLabels(m_path);
 
     reset();
+}
+
+void FileModel::refreshModel()
+{
+    setDirectory(m_path);
 }
 
 QFileInfo FileModel::fileInfo(const QModelIndex &index) const

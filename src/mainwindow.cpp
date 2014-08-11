@@ -119,8 +119,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	LanguageFlagsWidget *flagsWidget = new LanguageFlagsWidget(this);
 	ui->toolBar->addWidget(flagsWidget);
-	connect(flagsWidget, SIGNAL(changeLanguage(int)),
-	        ui->serversWidget, SLOT(retranslateMetadata(int)));
 
 	ui->toolBar->addSeparator();
 	ui->toolBar->addAction(ui->action_Preferences);

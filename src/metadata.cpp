@@ -51,6 +51,7 @@ void MetadataCache::clear()
 {
     qDeleteAll(m_map);
     m_map.clear();
+    emit cleared();
 }
 
 void MetadataCache::load(const QString &path)
@@ -59,6 +60,13 @@ void MetadataCache::load(const QString &path)
     if (m_map.contains(path))
         m_map[path]->deleteLater();
     m_map[path] = new Metadata(path);
+}
+
+QString MetadataCache::label(const QString &path)
+{
+    if (!m_map.contains(path))
+        load(path);
+    return m_map[path]->getLabel();
 }
 
 QStringList MetadataCache::columnLabels(const QString &path)

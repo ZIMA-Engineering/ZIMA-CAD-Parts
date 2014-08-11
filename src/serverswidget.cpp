@@ -80,17 +80,6 @@ void ServersWidget::settingsChanged()
     goToWorkingDirectory();
 }
 
-void ServersWidget::retranslateMetadata()
-{
-#warning todo
-#if 0
-	foreach (ServersWidgetMap *i, m_map)
-	{
-#warning		i->model->retranslateMetadata();
-	}
-#endif
-}
-
 void ServersWidget::expand(const QModelIndex & index)
 {
 	qobject_cast<QTreeView*>(serversToolBox->currentWidget())->expand(index);
@@ -121,16 +110,4 @@ void ServersWidget::goToWorkingDirectory()
 {
     qDebug() << "GTW";
     setDirectory(Settings::get()->WorkingDir);
-}
-
-void ServersWidget::retranslateMetadata(int langIndex)
-{
-#warning todo
-#if 0
-	Settings::get()->setCurrentLanguageCode(Settings::get()->Languages[langIndex]);
-	foreach (ServersWidgetMap* i, m_map)
-	{
-		i->model->retranslateMetadata();
-	}
-#endif
 }

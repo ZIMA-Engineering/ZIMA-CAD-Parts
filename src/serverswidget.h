@@ -18,9 +18,6 @@ class ServersWidget : public QWidget, public Ui::ServersWidget
 	Q_OBJECT
 public:
 	explicit ServersWidget(QWidget *parent = 0);
-	//void setModel(ServersModel *model);
-
-	void retranslateMetadata();
 
 	QModelIndex currentIndex();
     void setDirectory(const QString &path);
@@ -42,7 +39,6 @@ public slots:
 	void expand(const QModelIndex & index);
 	void settingsChanged();
 	void goToWorkingDirectory();
-	void retranslateMetadata(int langIndex);
 
 private:
 	QStringList m_zimaUtils;

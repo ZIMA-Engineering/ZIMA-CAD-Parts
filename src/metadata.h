@@ -64,18 +64,21 @@ private:
     QStringList buildIncludePaths(const QStringList &raw);
 };
 
-
-class MetadataCache
+class MetadataCache : public QObject
 {
+    Q_OBJECT
 public:
 
     //! The main access method to Metadata
     static MetadataCache *get();
 
     void clear();
+    QString label(const QString &path);
     QStringList columnLabels(const QString &path);
     QString partParam(const QString &path, const QString &fname, int column);
     QPixmap* partThumbnail(const QString &path, const QString fname);
+signals:
+    void cleared();
 
 private:
     //! Singleton handling

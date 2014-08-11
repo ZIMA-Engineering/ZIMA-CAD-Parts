@@ -14,17 +14,17 @@
 
 
 ServersView::ServersView(const QString &rootPath, QWidget *parent) :
-    QTreeView(parent)
+    QTreeView(parent),
+    m_path(rootPath)
 {
     m_proxy = new ServersProxyModel(this);
 
     m_model = new ServersModel(this);
     m_proxy->setSourceModel(m_model);
-#warning			model->retranslateMetadata();
 
     setModel(m_proxy);
+    refreshModel();
 
-    setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(rootPath)));
     header()->close();
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -37,6 +37,15 @@ ServersView::ServersView(const QString &rootPath, QWidget *parent) :
             this, SLOT(showContextMenu(QPoint)));
     connect(this, SIGNAL(clicked(QModelIndex)),
             this, SLOT(modelClicked(QModelIndex)));
+    connect(MetadataCache::get(), SIGNAL(cleared()),
+            this, SLOT(refreshModel()));
+}
+
+void ServersView::refreshModel()
+{
+    // it has to be reset here because calling QFileSystemModel's reset
+    // or begin/end alternatives results in "/" as a root path
+    setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
 }
 
 void ServersView::modelClicked(const QModelIndex &index)
