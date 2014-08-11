@@ -25,7 +25,7 @@
 #include <QStringList>
 #include <QSettings>
 
-#if 0
+
 class Metadata : public QObject
 {
 	Q_OBJECT
@@ -34,14 +34,13 @@ public:
 	~Metadata();
 
 	QString getLabel();
-	QStringList getColumnLabels();
-	QString getPartParam(QString part, int col);
-	void deletePart(QString part);
-	QList<Item*> includedThumbnailItems();
+    QStringList columnLabels();
+    QString partParam(const QString &partName, int col);
+    QString partThumbnailPath(const QString &partName);
+    void deletePart(const QString &part);
 
 public slots:
 	void retranslate(QString lang = QString());
-	void provideInclude(Metadata *m, QString path = QString());
 
 private:
 	enum Include {
@@ -50,27 +49,44 @@ private:
 	    IncludeThumbnails=2
 	};
 
-    QString *m_path;
+    QSettings *m_settings;
+
+    QString m_path;
 	QList<Metadata*> includes;
 	int m_loadedIncludes;
-    QSettings *m_settings;
-	QString currentAppLang;
+    QString m_currentAppLang;
 	QString lang;
-	QStringList columnLabels;
+    QStringList m_columnLabels;
 	QString label;
-	QHash<QString, Include> m_includeHash;
-    QList<Item*> m_thumbItems;
 	bool m_includedData;
 
-	QString buildIncludePath(QString raw);
-	QStringList buildIncludePaths(QStringList raw);
-	void setIncludeMark(QStringList &list, Include mark);
-
-signals:
-	void includeRequired(Item *item, QString path);
-	void includeRequireCancelled(Item *item);
-	void ready(Item *item);
-	void retranslated();
+    QString buildIncludePath(const QString &raw);
+    QStringList buildIncludePaths(const QStringList &raw);
 };
-#endif
+
+
+class MetadataCache
+{
+public:
+
+    //! The main access method to Metadata
+    static MetadataCache *get();
+
+    void clear();
+    QStringList columnLabels(const QString &path);
+    QString partParam(const QString &path, const QString &fname, int column);
+    QPixmap* partThumbnail(const QString &path, const QString fname);
+
+private:
+    //! Singleton handling
+    static MetadataCache *m_instance;
+
+    MetadataCache();
+    MetadataCache(const MetadataCache &) {};
+    ~MetadataCache();
+
+    QHash<QString,Metadata*> m_map;
+    void load(const QString &path);
+};
+
 #endif // METADATA_H

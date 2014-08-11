@@ -35,12 +35,15 @@ void FileModel::setDirectory(const QString &path)
 #warning todo caching?
     qDeleteAll(m_data);
     m_data.clear();
-    QDirIterator it(path, QDir::Files, QDirIterator::NoIteratorFlags);
+    m_path = path;
+    QDirIterator it(m_path, QDir::Files, QDirIterator::NoIteratorFlags);
     while (it.hasNext())
     {
         it.next();
         m_data.append(new FileItem(it.fileInfo()));
     }
+
+    m_columnLabels = MetadataCache::get()->columnLabels(m_path);
 
     reset();
 }
@@ -99,14 +102,11 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		switch( role )
 		{
 		case Qt::DecorationRole:
-			if(file->thumbnail)
+            if(file->thumbnail)
                 return file->thumbnail->scaled(Settings::get()->GUIThumbWidth, Settings::get()->GUIThumbWidth);
 
 		case Qt::SizeHintRole:
-			if(file->thumbnail)
-                return file->thumbnail->size();
-			else
-                return QSize(Settings::get()->GUIThumbWidth, 0);
+            return QSize(Settings::get()->GUIThumbWidth, file->thumbnail ? Settings::get()->GUIThumbWidth : 0);
 
 		case Qt::ToolTipRole:
 			if(file->thumbnail)
@@ -135,9 +135,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 
     if(col > 1 && role == Qt::DisplayRole && col-1 <= m_columnLabels.count())
 	{
-		//qDebug() << "Probing section" << rootItem->files.at( row )->name.section('.', 0, 0);
-		//return rootItem->metadata->value(QString("%1/%2").arg(rootItem->files.at( row )->name.section('.', 0, 0)).arg(col-1), QString()).toString();
-#warning todo		return rootItem->metadata->getPartParam(file->name, col-1);
+        return MetadataCache::get()->partParam(m_path, file->file->fileInfo.fileName(), col-1);
 	}
 
 	return QVariant();

@@ -132,9 +132,6 @@ public:
 	//! Map Languages enum to string code
 	QString langIndexToName(int lang);
 
-#warning todo documentation of the "not so nice" link
-//    QCache<QString,Metadata> MetadataCache;
-
 private:
 	//! cannot access it directly. Use getCurrentLanguageCode()
 	QString Language;

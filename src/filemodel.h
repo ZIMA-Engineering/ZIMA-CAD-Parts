@@ -34,7 +34,7 @@ public:
     {
         file = new File(fi);
         checked = false;
-        thumbnail = 0;
+        thumbnail = MetadataCache::get()->partThumbnail(fi.path(), fi.fileName());
     }
     ~FileItem() {
         delete(file);
