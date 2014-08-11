@@ -242,7 +242,6 @@ void Metadata::deletePart(const QString &part)
 
 QString Metadata::buildIncludePath(const QString &raw)
 {
-    qDebug() << "BIP>>>" << raw << QDir::cleanPath(raw);
 	if(raw.startsWith('/'))
         return QDir::cleanPath(raw);
 	else

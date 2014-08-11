@@ -46,7 +46,8 @@ void FileModel::setDirectory(const QString &path)
 
     m_columnLabels = MetadataCache::get()->columnLabels(m_path);
 
-    reset();
+    beginResetModel();
+    endResetModel();
 }
 
 void FileModel::refreshModel()
@@ -64,7 +65,8 @@ QFileInfo FileModel::fileInfo(const QModelIndex &index) const
 
 void FileModel::settingsChanged()
 {
-    reset();
+    beginResetModel();
+    endResetModel();
 }
 
 int FileModel::columnCount(const QModelIndex &parent) const
