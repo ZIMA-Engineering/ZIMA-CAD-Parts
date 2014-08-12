@@ -57,18 +57,18 @@ void Settings::load()
 	MainWindowGeometry = s.value("geometry").toByteArray();
 
 	foreach (QVariant i, s.value("Server/SplitterSizes").toList())
-	ServersSplitterSizes << i.toInt();
+        ServersSplitterSizes << i.toInt();
 
 	WorkingDir = s.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString();
     WorkingDirDS = s.value("WorkingDirDS", QString()).toString();
 
-	GUIThumbWidth = s.value("GUI/ThumbWidth", 32).toInt();
-	GUIPreviewWidth = s.value("GUI/PreviewWidth", 256).toInt();
-	GUISplashEnabled = s.value("GUI/Splash/Enabled", true).toBool();
-	GUISplashDuration = s.value("GUI/Splash/Duration", 1500).toInt();
-	DeveloperEnabled = s.value("Developer/Enabled", false).toBool();
-	DeveloperTechSpecToolBar = s.value("Developer/TechSpecToolBar", true).toBool();
-	ExtensionsProductViewPath = s.value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString();
+    GUIThumbWidth = s.value("GUIThumbWidth", 32).toInt();
+    GUIPreviewWidth = s.value("GUIPreviewWidth", 256).toInt();
+    GUISplashEnabled = s.value("GUISplashEnabled", true).toBool();
+    GUISplashDuration = s.value("GUISplashDuration", 1500).toInt();
+    DeveloperEnabled = s.value("DeveloperEnabled", false).toBool();
+    DeveloperTechSpecToolBar = s.value("DeveloperTechSpecToolBar", true).toBool();
+    ExtensionsProductViewPath = s.value("ExtensionsProductViewPath", PRODUCT_VIEW_DEFAULT_PATH).toString();
 	ExtensionsProductViewGeometry = s.value("Extensions/ProductView/geometry").toByteArray();
 	ExtensionsProductViewPosition = s.value("Extensions/ProductView/position").toPoint();
 	ProeExecutable = s.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();

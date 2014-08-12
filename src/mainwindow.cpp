@@ -50,10 +50,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 {
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
-	bool useSplash = Settings::get()->GUISplashEnabled;
 	QSplashScreen *splash = 0;
 
-	if( useSplash )
+    if (Settings::get()->GUISplashEnabled)
 	{
 		QPixmap pixmap(":/gfx/splash.png");
 
@@ -126,7 +125,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	settingsChanged();
 
-	if( useSplash )
+    if (Settings::get()->GUISplashEnabled)
 	{
 		SleeperThread::msleep(Settings::get()->GUISplashDuration);
 		splash->finish(this);
