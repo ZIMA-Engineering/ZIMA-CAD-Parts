@@ -187,11 +187,9 @@ void SettingsDialog::accept()
 
 	Settings::get()->ProeExecutable = m_ui->proeEdit->text();
 
-    qDebug() << "DSsS" << (m_editedDS != Settings::get()->DataSources);
     if (m_editedDS != Settings::get()->DataSources)
     {
 		// Note: do not delete datasources here. It will be handled in ServersWidget::settingsChanged()
-        qDeleteAll(Settings::get()->DataSources);
         Settings::get()->DataSources.clear();
         Settings::get()->DataSources = m_editedDS;
         Settings::get()->DataSourcesNeedsUpdate = true;
@@ -236,6 +234,7 @@ void SettingsDialog::editDataSource()
         item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
         item->setIcon(ds->icon);
         item->setText(ds->name);
+        m_editedDS.append(ds);
         Settings::get()->DataSourcesNeedsUpdate = true;
     }
 }
@@ -249,9 +248,6 @@ void SettingsDialog::removeDataSource()
 	if (!it)
 		return;
 
-	//  no need to call deleteLater() on used/application datasource
-	//  because unused datasources are deleted in
-	//  mainwindow.cpp
     DataSource *ds = PtrVariant<DataSource>::asPtr(it->data(DATASOURCE_ROLE));
 	if (it->data(UNUSED_ROLE).toBool())
 	{
@@ -261,6 +257,7 @@ void SettingsDialog::removeDataSource()
 
 	int row = m_ui->datasourceList->currentRow();
 	m_ui->datasourceList->takeItem(row);
+    delete m_editedDS.takeAt(row);
 
 	delete it;
 }

@@ -31,22 +31,19 @@ void ServersWidget::settingsChanged()
 
 		// Datasources
 		// firstly delete all stuff used. Remember "the reset"
-        for (int i = 0; i < serversToolBox->count(); ++i)
-            serversToolBox->widget(i)->deleteLater();
         while (serversToolBox->count())
+        {
+            serversToolBox->widget(0)->deleteLater();
             serversToolBox->removePage(0);
+        }
+
 		qApp->processEvents();
 
 		// now setup all item==group again
         foreach(DataSource *ds, Settings::get()->DataSources)
 		{
-
-#if 0
-
-			connect(model, SIGNAL(techSpecAvailable(QUrl)),
-			        this, SIGNAL(techSpecAvailable(QUrl)));
-#endif
             ServersView *view = new ServersView(ds->rootPath, this);
+
             connect(view, SIGNAL(showSettings(SettingsDialog::Section)),
                     this, SIGNAL(showSettings(SettingsDialog::Section)));
             connect(view, SIGNAL(workingDirChanged()),
@@ -57,18 +54,6 @@ void ServersWidget::settingsChanged()
                     this, SIGNAL(directorySelected(QString)));
 
             serversToolBox->addPage(view, ds->name, ds->icon);
-
-
-#warning todo
-#if 0
-
-			connect(view, SIGNAL(clicked(const QModelIndex&)),
-			        this, SIGNAL(clicked(QModelIndex)));
-			// track history
-			connect(view, SIGNAL(activated(const QModelIndex&)),
-			        this, SIGNAL(activated(const QModelIndex&)));
-
-#endif
 		}
 
         serversToolBox->setVisibleRows(serversToolBox->count());
@@ -92,14 +77,14 @@ QModelIndex ServersWidget::currentIndex()
 
 void ServersWidget::setDirectory(const QString &path)
 {
-    qDebug() << "SD1" << path;
+//    qDebug() << "SD1" << path;
     for (int i = 0; i < serversToolBox->count(); ++i)
     {
-        qDebug() << "SD2" << path;
+//        qDebug() << "SD2" << path;
         ServersView *w = qobject_cast<ServersView*>(serversToolBox->widget(i));
         if (w->navigateToDirectory(path))
         {
-            qDebug() << "SD3" << path;
+//            qDebug() << "SD3" << path;
             serversToolBox->setCurrentIndex(i);
             partsWidget->setDirectory(path);
         }
@@ -108,6 +93,5 @@ void ServersWidget::setDirectory(const QString &path)
 
 void ServersWidget::goToWorkingDirectory()
 {
-    qDebug() << "GTW";
     setDirectory(Settings::get()->WorkingDir);
 }
