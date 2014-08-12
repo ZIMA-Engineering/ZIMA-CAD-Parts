@@ -118,7 +118,11 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 
 		case Qt::ToolTipRole:
 			if(file->thumbnail)
-                return QString("<img src=\"%1\" width=\"%2\">").arg(file->fileInfo.absoluteFilePath()).arg(Settings::get()->GUIPreviewWidth);
+            {
+                return QString("<img src=\"%1\" width=\"%2\">")
+                        .arg(MetadataCache::get()->partThumbnailPath(m_path, file->fileInfo.absoluteFilePath()))
+                        .arg(Settings::get()->GUIPreviewWidth);
+            }
 		}
 		break;
 

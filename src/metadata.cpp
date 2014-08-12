@@ -97,6 +97,13 @@ QPixmap* MetadataCache::partThumbnail(const QString &path, const QString fname)
         return new QPixmap(thumb);
 }
 
+QString MetadataCache::partThumbnailPath(const QString &path, const QString fname)
+{
+    if (!m_map.contains(path))
+        load(path);
+    return m_map[path]->partThumbnailPath(fname);
+}
+
 
 Metadata::Metadata(const QString &path, QObject *parent)
 	: QObject(parent),

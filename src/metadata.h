@@ -91,6 +91,7 @@ public:
     QStringList columnLabels(const QString &path);
     QString partParam(const QString &path, const QString &fname, int column);
     QPixmap* partThumbnail(const QString &path, const QString fname);
+    QString partThumbnailPath(const QString &path, const QString fname);
 
 signals:
     //! Emitted when is the cache content invalidated. All dependent objects should reset themself.
