@@ -53,9 +53,13 @@ private:
     QString m_originalName;
     Actions m_action;
 
+    //! User data validations
+    void checkEnable();
+
 private slots:
 	void openFileDialog();
     void labelLineEdit_textEdited(const QString &text);
+    void pathLineEdit_textEdited(const QString &text);
 };
 
 #endif // ADDEDITDATASOURCE_H

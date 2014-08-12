@@ -32,7 +32,6 @@ AddEditDataSource::AddEditDataSource(const DataSourceList &names, DataSource *da
 {
 	ui->setupUi(this);
     m_action = action;
-    ui->statusLabel->setVisible(false);
 
     foreach (DataSource *i, names)
         m_names.append(i->name);
@@ -49,12 +48,16 @@ AddEditDataSource::AddEditDataSource(const DataSourceList &names, DataSource *da
             this, SLOT(openFileDialog()));
     connect(ui->labelLineEdit, SIGNAL(textEdited(QString)),
             this, SLOT(labelLineEdit_textEdited(QString)));
+    connect(ui->pathLineEdit, SIGNAL(textEdited(QString)),
+            this, SLOT(pathLineEdit_textEdited(QString)));
 
 	if( action == EDIT )
     {
         m_originalName = dataSource->name;
 		setWindowTitle(tr("Edit data source"));
     }
+
+    checkEnable();
 }
 
 AddEditDataSource::~AddEditDataSource()
@@ -69,15 +72,61 @@ DataSource* AddEditDataSource::dataSource()
 
 void AddEditDataSource::openFileDialog()
 {
-	ui->pathLineEdit->setText( QFileDialog::getExistingDirectory(this, tr("Select directory"), QDir::homePath()) );
+    QDir userEntered(ui->pathLineEdit->text());
+    QString initDir;
+    if (userEntered.exists())
+        initDir = userEntered.absolutePath();
+    else
+        initDir = QDir::homePath();
+
+    QString ret = QFileDialog::getExistingDirectory(this, tr("Select directory"), initDir);
+    if (ret.isEmpty())
+        return;
+    ui->pathLineEdit->setText(ret);
 }
 
 void AddEditDataSource::labelLineEdit_textEdited(const QString &text)
 {
+    Q_UNUSED(text);
+    checkEnable();
+}
+
+void AddEditDataSource::pathLineEdit_textEdited(const QString &text)
+{
+    Q_UNUSED(text);
+    checkEnable();
+}
+
+void AddEditDataSource::checkEnable()
+{
     // do not allow duplicated names for datasources
-    bool enable = m_names.contains(text);
-    if (m_action == EDIT && m_originalName == text)
-        enable = false;
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!enable);
-    ui->statusLabel->setVisible(enable);
+    QString label = ui->labelLineEdit->text().trimmed();
+    QString errmsg;
+
+    if (label.isEmpty())
+    {
+        errmsg = tr("Label/name of the data source cannot be empty");
+    }
+    else if (m_names.contains(label))
+    {
+        errmsg = tr("Label must be unique");
+        if (m_action == EDIT && m_originalName == label)
+        {
+            errmsg = "";
+        }
+    }
+
+    // directory existence
+    if (ui->pathLineEdit->text().trimmed().isEmpty())
+        errmsg += "\n" + tr("Enter the directory path");
+    else
+    {
+        QDir d(ui->pathLineEdit->text());
+        if (!d.exists())
+            errmsg += "\n" + tr("Directory must exist");
+    }
+
+    ui->statusLabel->setText(errmsg.trimmed());
+    ui->statusLabel->setVisible(!errmsg.isEmpty());
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(errmsg.isEmpty());
 }
