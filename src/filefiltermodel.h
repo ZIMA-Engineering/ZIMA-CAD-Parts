@@ -11,7 +11,8 @@ public:
 	void setShowProeVersions(bool show);
 
 protected:
-	virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+    bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+    bool filterAcceptsColumn(int source_column, const QModelIndex & source_parent) const;
 
 private:
 	bool m_showProeVersions;

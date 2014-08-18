@@ -66,12 +66,6 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	connect(ui->partsWebView, SIGNAL(urlChanged(QUrl)),
 	        this, SLOT(partsWebView_urlChanged(QUrl)));
 
-    m_proxyFileModel = new FileFilterModel(this);
-
-    m_fileModel = new FileModel(this);
-    m_proxyFileModel->setSourceModel(m_fileModel);
-    ui->partsTreeView->setModel(m_proxyFileModel);
-
 #warning todo
 #if 0
 	connect(m_serversModel, SIGNAL(filesDeleted()),
@@ -108,11 +102,7 @@ void ServerTabWidget::setDirectory(const QString &rootPath)
 {
     qDebug() << "_______________________________________________ set dir :" << rootPath;
     // set the directory to the file model
-    m_fileModel->setDirectory(rootPath);
-    int columnCnt = ui->partsTreeView->model()->columnCount(QModelIndex());
-    for (int i = 0; i < columnCnt; i++)
-        ui->partsTreeView->resizeColumnToContents(i);
-
+    ui->partsTreeView->setDirectory(rootPath);
     // handle the ui->partsWebView, custom index-parts*.html page in "parts" tab
     loadIndexHtml(rootPath, ui->partsWebView, "index-parts", true);
     // handle the ui->partsWebView, custom index*.html page in "parts" tab
@@ -172,16 +162,11 @@ void ServerTabWidget::settingsChanged()
 	ui->techSpecDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled
 	                                        && Settings::get()->DeveloperTechSpecToolBar);
 	ui->partsIndexDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled);
-
 	ui->techSpec->loadAboutPage();
 	ui->techSpec->setDownloadDirectory(Settings::get()->WorkingDir);
-
-    m_fileModel->settingsChanged();
-
-	m_proxyFileModel->setFilterRegExp(Settings::get()->filtersRegex);
-	m_proxyFileModel->setShowProeVersions(Settings::get()->ShowProeVersions);
-
 	ui->thumbnailSizeSlider->setValue(Settings::get()->GUIThumbWidth);
+
+    ui->partsTreeView->settingsChanged();
 }
 
 void ServerTabWidget::techSpecUrlLineEdit_returnPressed()
@@ -218,12 +203,12 @@ void ServerTabWidget::partsIndexGoButton_clicked()
 
 void ServerTabWidget::partsIndexPinButton_clicked()
 {
-    m_fileModel->createIndexHtmlFile(ui->partsIndexUrlLineEdit->text(), "index-parts");
+    ui->partsTreeView->createIndexHtmlFile(ui->partsIndexUrlLineEdit->text(), "index-parts");
 }
 
 void ServerTabWidget::techSpecPinButton_clicked()
 {
-    m_fileModel->createIndexHtmlFile(ui->techSpecUrlLineEdit->text(), "index");
+    ui->partsTreeView->createIndexHtmlFile(ui->techSpecUrlLineEdit->text(), "index");
 }
 
 void ServerTabWidget::techSpec_urlChanged(const QUrl &url)
@@ -296,13 +281,12 @@ void ServerTabWidget::adjustThumbColumnWidth(int width)
 {
 	ui->partsTreeView->setColumnWidth(1, width);
     Settings::get()->GUIThumbWidth = width;
-    m_fileModel->settingsChanged();
+    ui->partsTreeView->settingsChanged();
 }
 
 void ServerTabWidget::previewInProductView(const QModelIndex &index)
 {
-	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->partsTreeView->model())->mapToSource(index);
-    QFileInfo fi(m_fileModel->fileInfo(srcIndex));
+    QFileInfo fi(ui->partsTreeView->fileInfo(index));
     FileMetadata f(fi);
 
     if (!m_productView->canHandle(f.type))
@@ -319,9 +303,7 @@ void ServerTabWidget::previewInProductView(const QModelIndex &index)
 
 void ServerTabWidget::partsTreeView_doubleClicked(const QModelIndex &index)
 {
-	QModelIndex srcIndex = static_cast<QSortFilterProxyModel*>(ui->partsTreeView->model())->mapToSource(index);
-
-    QFileInfo fi = m_fileModel->fileInfo(srcIndex);
+    QFileInfo fi(ui->partsTreeView->fileInfo(index));
     FileMetadata f(fi);
 
     switch (f.type)

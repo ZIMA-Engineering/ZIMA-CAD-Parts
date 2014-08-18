@@ -83,25 +83,11 @@ QString MetadataCache::partParam(const QString &path, const QString &fname, int 
     return m_map[path]->partParam(fname, column);
 }
 
-QPixmap* MetadataCache::partThumbnail(const QString &path, const QString fname)
+QHash<QString,QString> MetadataCache::partThumbnailPaths(const QString &path)
 {
     if (!m_map.contains(path))
         load(path);
-    qDebug() << 1 << path << m_map[path] << fname;
-    QString thumb(m_map[path]->partThumbnailPath(fname));
-    qDebug() << thumb;
-#warning todo QPixmapCache?
-    if (thumb.isEmpty())
-        return 0;
-    else
-        return new QPixmap(thumb);
-}
-
-QString MetadataCache::partThumbnailPath(const QString &path, const QString fname)
-{
-    if (!m_map.contains(path))
-        load(path);
-    return m_map[path]->partThumbnailPath(fname);
+    return m_map[path]->partThumbnailPaths();
 }
 
 
@@ -196,7 +182,9 @@ QString Metadata::partParam(const QString &partName, int col)
     m_settings->endGroup();
 
 	if(!val.isEmpty())
+    {
 		return val;
+    }
 	else {
 
         QString ret = anyVal.isEmpty() ? m_settings->value(QString("%1/%2").arg(partGroup).arg(col), QString()).toString() : anyVal;
@@ -216,25 +204,33 @@ QString Metadata::partParam(const QString &partName, int col)
 	}
 }
 
-QString Metadata::partThumbnailPath(const QString &partName)
+QHash<QString,QString> Metadata::partThumbnailPaths()
 {
-    QFileInfo fi(partName);
+    QHash<QString,QString> ret;
     QDir d(m_path);
-    QString base(fi.baseName());
-    QStringList thumbs = d.entryList(QStringList() << base+".png" << base+".jpg",
+    QStringList thumbs = d.entryList(QStringList() << "*.png" << "*.jpg",
                                      QDir::Files | QDir::Readable);
 
-    if (thumbs.size())
-        return m_path + "/" + thumbs.at(0);
-
+    QFileInfo fi;
+    // includes first because local dir overrides it
     foreach(Metadata *include, includes)
     {
-        QString ret = include->partThumbnailPath(partName);
-        if (!ret.isEmpty())
-            return ret;
+        QHashIterator<QString,QString> it(include->partThumbnailPaths());
+        while (it.hasNext())
+        {
+            it.next();
+            fi.setFile(it.key());
+            ret[fi.baseName()] = it.value();
+        }
     }
 
-    return QString();
+    foreach (QString i, thumbs)
+    {
+        fi.setFile(i);
+        ret[fi.baseName()] = m_path + "/" + i;
+    }
+
+    return ret;
 }
 
 void Metadata::deletePart(const QString &part)

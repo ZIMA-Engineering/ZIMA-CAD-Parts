@@ -59,7 +59,7 @@ public:
     //! Value for FileModel
     QString partParam(const QString &partName, int col);
     //! Thumbnail path for FileModel
-    QString partThumbnailPath(const QString &partName);
+    QHash<QString,QString> partThumbnailPaths();
 
     void deletePart(const QString &part);
 
@@ -90,8 +90,7 @@ public:
     QString label(const QString &path);
     QStringList columnLabels(const QString &path);
     QString partParam(const QString &path, const QString &fname, int column);
-    QPixmap* partThumbnail(const QString &path, const QString fname);
-    QString partThumbnailPath(const QString &path, const QString fname);
+    QHash<QString,QString> partThumbnailPaths(const QString &path);
 
 signals:
     //! Emitted when is the cache content invalidated. All dependent objects should reset themself.

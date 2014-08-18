@@ -257,24 +257,13 @@ FileMetadata::FileMetadata(const QFileInfo &fi)
     #warning todo newest file version in basedatasource.cpp
     detectFileType();
 
-    checked = false;
-    thumbnail = MetadataCache::get()->partThumbnail(fi.path(), fi.fileName());
-
+    //thumbnail = MetadataCache::get()->partThumbnail(fi.path(), fi.fileName());
 }
 
 FileMetadata::~FileMetadata()
 {
-    delete(thumbnail);
-}
-
-QPixmap FileMetadata::icon() const
-{
-    QString s = QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(type));
-
-    if (QFile::exists(s))
-        return QPixmap(s);
-
-    return QFileIconProvider().icon(fileInfo).pixmap(64);
+    //if (thumbnail)
+//        delete(thumbnail);
 }
 
 void FileMetadata::detectFileType()

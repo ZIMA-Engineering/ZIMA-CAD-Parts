@@ -92,7 +92,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/extensions/navbar/navbarpagelistwidget.cpp \
     src/extensions/navbar/navbarsplitter.cpp \
     src/workingdirwidget.cpp \
-    src/serversview.cpp
+    src/serversview.cpp \
+    src/fileview.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -133,7 +134,8 @@ HEADERS += src/mainwindow.h \
     src/extensions/navbar/navbarpagelistwidget.h \
     src/extensions/navbar/navbarsplitter.h \
     src/workingdirwidget.h \
-    src/serversview.h
+    src/serversview.h \
+    src/fileview.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

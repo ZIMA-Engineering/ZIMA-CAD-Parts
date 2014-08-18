@@ -48,8 +48,6 @@ private:
 
 	Ui::ServerTabWidget *ui;
 
-	FileModel *m_fileModel;
-	FileFilterModel *m_proxyFileModel;
 	ProductView *m_productView;
 
     void loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound);

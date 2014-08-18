@@ -35,7 +35,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <property name="minimumSize">
@@ -182,7 +182,7 @@
            </url>
           </property>
          </widget>
-         <widget class="QTreeView" name="partsTreeView">
+         <widget class="FileView" name="partsTreeView">
           <property name="verticalScrollMode">
            <enum>QAbstractItemView::ScrollPerPixel</enum>
           </property>
@@ -298,6 +298,11 @@
    <class>TechSpecsWebView</class>
    <extends>QWebView</extends>
    <header>src/techspecswebview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FileView</class>
+   <extends>QTreeView</extends>
+   <header>src/fileview.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -103,18 +103,6 @@ public:
     bool newestVersion;
     QFileInfo fileInfo;
 
-    /*! Returns a file icon. For CAD files it uses bundled resources.
-     * It's used as a standard file icon on the model - column 0, Qt::DecorationRole
-     */
-    QPixmap icon() const;
-
-    bool checked;
-    /*! File thumbnail != icon.
-     * Thumbnail is a standalone image kept in the filesystem used
-     * in dedicated "thumbnail" column
-     */
-    QPixmap *thumbnail;
-
 private:
     void detectFileType();
 

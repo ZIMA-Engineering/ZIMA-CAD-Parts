@@ -24,9 +24,10 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
     QModelIndex current = fm->index(source_row, 0, source_parent);
     FileMetadata f(fm->fileInfo(current));
 
-    if (f.type == File::UNDEFINED)
+    if (f.fileInfo.isDir())
+        return true;
+    else if (f.type == File::UNDEFINED)
     {
-        qDebug() << "FILTER6 undefined" << f.fileInfo.absoluteFilePath();
         return false;
     }
     else if (m_showProeVersions)
@@ -44,10 +45,17 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
                 && f.type != File::NEU_PROE)
             )
     {
-        qDebug() << "FILTER1" << QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 		return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
     }
 
-    qDebug() << "FILTER2" << f.newestVersion << QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent) << (f.newestVersion && QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent));
     return f.newestVersion && QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+}
+
+bool FileFilterModel::filterAcceptsColumn(int source_column, const QModelIndex & source_parent) const
+{
+    Q_UNUSED(source_parent);
+    // hide all QFileSystemModel "meta" columns and use only extended ones
+    if (source_column >=1 && source_column < 4)
+        return false;
+    return true;
 }
