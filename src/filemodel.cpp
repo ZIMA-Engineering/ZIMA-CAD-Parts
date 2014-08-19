@@ -50,7 +50,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
     // first handle standard QFileSystemModel data
     if (col == 0 && role == Qt::CheckStateRole)
     {
-        return m_checked[fileInfo(index).fileName()] ? Qt::Checked : Qt::Unchecked;
+        return m_checked[index];
     }
     else if (col < QFileSystemModel::columnCount())
     {
@@ -120,7 +120,7 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 {
     if (role == Qt::CheckStateRole)
     {
-        m_checked[fileInfo(index).fileName()] = value.toBool();
+        m_checked[index] = value.toBool() ? Qt::Checked : Qt::Unchecked;
         emit dataChanged(index, index);
         return true;
     }
@@ -153,6 +153,24 @@ void FileModel::setDirectory(const QString &path)
     m_checked.clear();
     m_path = path;
     m_columnLabels = MetadataCache::get()->columnLabels(m_path);
+}
+
+void FileModel::deleteParts()
+{
+    QHashIterator<QModelIndex,Qt::CheckState> it(m_checked);
+    while (it.hasNext())
+    {
+        it.next();
+        if (it.value() == Qt::Unchecked)
+            continue;
+        if (Settings::get()->ShowProeVersions)
+        {
+            // delete all "versioned" files
+        }
+        else
+            qDebug() << remove(it.key());
+    }
+    m_checked.clear();
 }
 
 

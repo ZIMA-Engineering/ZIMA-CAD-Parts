@@ -44,10 +44,12 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
+    void deleteParts();
+
 private:
     QString m_path;
     QStringList m_columnLabels;
-    QHash<QString,bool> m_checked;
+    QHash<QModelIndex,Qt::CheckState> m_checked;
     QHash<QString,QPixmap> m_thumbnails;
     QHash<QString,QString> m_thumbnailPath;
 

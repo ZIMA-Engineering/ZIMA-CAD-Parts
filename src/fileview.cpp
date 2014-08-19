@@ -24,6 +24,8 @@ FileView::FileView(QWidget *parent) :
 
 void FileView::setDirectory(const QString &path)
 {
+    if (m_path == path)
+        return;
     // it has to be reset here because calling QFileSystemModel's reset
     // or begin/end alternatives results in "/" as a root path
     m_path = path;
@@ -33,6 +35,7 @@ void FileView::setDirectory(const QString &path)
 
 void FileView::refreshModel()
 {
+    m_path = ""; // enforce setdirectory reload
     setDirectory(m_path);
 }
 
@@ -89,4 +92,9 @@ void FileView::createIndexHtmlFile(const QString &text, const QString &fileBase)
 
     indexFile.write(htmlIndex);
     indexFile.close();
+}
+
+void FileView::deleteParts()
+{
+    m_model->deleteParts();
 }

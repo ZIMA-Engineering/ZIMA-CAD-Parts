@@ -25,6 +25,9 @@
 #include <QStringList>
 #include <QSettings>
 
+class QMutex;
+class QWaitCondition;
+
 
 /*! Metadata for one directory.
  *

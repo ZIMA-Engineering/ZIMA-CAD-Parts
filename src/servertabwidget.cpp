@@ -269,11 +269,7 @@ void ServerTabWidget::deleteSelectedParts()
 	                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
 	        ==  QMessageBox::Yes)
 	{
-#warning todo
-#if 0
-		m_serversModel->deleteFiles(); //TODO/FIXME: maps
-		m_serversModel->uncheckAll(); //TODO/FIXME: maps
-#endif
+        ui->partsTreeView->deleteParts();
 	}
 }
 

@@ -56,7 +56,6 @@ void MetadataCache::clear()
 
 void MetadataCache::load(const QString &path)
 {
-    qDebug() << "MCACHE" << path;
     if (m_map.contains(path))
         m_map[path]->deleteLater();
     m_map[path] = new Metadata(path);
@@ -207,7 +206,7 @@ QString Metadata::partParam(const QString &partName, int col)
 QHash<QString,QString> Metadata::partThumbnailPaths()
 {
     QHash<QString,QString> ret;
-    QDir d(m_path);
+    QDir d(m_path + "/" + THUMBNAILS_DIR);
     QStringList thumbs = d.entryList(QStringList() << "*.png" << "*.jpg",
                                      QDir::Files | QDir::Readable);
 
@@ -227,7 +226,7 @@ QHash<QString,QString> Metadata::partThumbnailPaths()
     foreach (QString i, thumbs)
     {
         fi.setFile(i);
-        ret[fi.baseName()] = m_path + "/" + i;
+        ret[fi.baseName()] = m_path + "/" + THUMBNAILS_DIR + "/" + i;
     }
 
     return ret;
@@ -259,7 +258,7 @@ QStringList Metadata::buildIncludePaths(const QStringList &raw)
 	QStringList ret;
 
 	foreach(QString s, raw)
-	ret << buildIncludePath(s);
+        ret << buildIncludePath(s);
 
 	return ret;
 }

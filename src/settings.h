@@ -9,6 +9,7 @@
 
 
 #define TECHSPEC_DIR "0000-index"
+#define THUMBNAILS_DIR "0000-index/thumbnails"
 #define LOGO_FILE "logo.png"
 #define LOGO_TEXT_FILE "logo-text.png"
 #define METADATA_FILE "metadata.ini"
