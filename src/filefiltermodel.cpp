@@ -3,17 +3,20 @@
 #include "filefiltermodel.h"
 #include "filemodel.h"
 #include "file.h"
+#include "settings.h"
 
 
 FileFilterModel::FileFilterModel(QObject *parent) :
 	QSortFilterProxyModel(parent),
 	m_showProeVersions(true)
 {
+    setShowProeVersions(Settings::get()->ShowProeVersions);
 }
 
 void FileFilterModel::setShowProeVersions(bool show)
 {
 	m_showProeVersions = show;
+    invalidate();
 }
 
 bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
@@ -25,7 +28,13 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
     FileMetadata f(fm->fileInfo(current));
 
     if (f.fileInfo.isDir())
+    {
         return true;
+    }
+    else if (!Settings::get()->filtersRegex.exactMatch(f.fileInfo.fileName()))
+    {
+        return false;
+    }
     else if (f.type == File::UNDEFINED)
     {
         return false;
