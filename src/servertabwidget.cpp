@@ -100,7 +100,6 @@ ServerTabWidget::~ServerTabWidget()
 
 void ServerTabWidget::setDirectory(const QString &rootPath)
 {
-    qDebug() << "_______________________________________________ set dir :" << rootPath;
     // set the directory to the file model
     ui->partsTreeView->setDirectory(rootPath);
     // handle the ui->partsWebView, custom index-parts*.html page in "parts" tab

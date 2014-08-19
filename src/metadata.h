@@ -75,6 +75,8 @@ private:
     QStringList m_columnLabels;
     QString label;
 
+    QHash<QString,QString> m_thumbnailsCache;
+
     QString buildIncludePath(const QString &raw);
     QStringList buildIncludePaths(const QStringList &raw);
 };

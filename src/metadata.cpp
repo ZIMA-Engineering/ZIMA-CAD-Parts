@@ -205,7 +205,9 @@ QString Metadata::partParam(const QString &partName, int col)
 
 QHash<QString,QString> Metadata::partThumbnailPaths()
 {
-    QHash<QString,QString> ret;
+    if (m_thumbnailsCache.size())
+        return m_thumbnailsCache;
+
     QDir d(m_path + "/" + THUMBNAILS_DIR);
     QStringList thumbs = d.entryList(QStringList() << "*.png" << "*.jpg",
                                      QDir::Files | QDir::Readable);
@@ -219,17 +221,17 @@ QHash<QString,QString> Metadata::partThumbnailPaths()
         {
             it.next();
             fi.setFile(it.key());
-            ret[fi.baseName()] = it.value();
+            m_thumbnailsCache[fi.baseName()] = it.value();
         }
     }
 
     foreach (QString i, thumbs)
     {
         fi.setFile(i);
-        ret[fi.baseName()] = m_path + "/" + THUMBNAILS_DIR + "/" + i;
+        m_thumbnailsCache[fi.baseName()] = m_path + "/" + THUMBNAILS_DIR + "/" + i;
     }
 
-    return ret;
+    return m_thumbnailsCache;
 }
 
 void Metadata::deletePart(const QString &part)

@@ -48,8 +48,7 @@ void FileView::resizeColumnToContents()
 
 void FileView::settingsChanged()
 {
-#warning    m_model->settingsChanged();
-
+    m_model->settingsChanged();
     m_proxy->setFilterRegExp(Settings::get()->filtersRegex);
     m_proxy->setShowProeVersions(Settings::get()->ShowProeVersions);
 }

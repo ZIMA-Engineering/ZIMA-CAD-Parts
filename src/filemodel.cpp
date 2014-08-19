@@ -65,10 +65,15 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
         {
         case Qt::DecorationRole:
             if (m_thumbnails.contains(key))
-                return m_thumbnails[key];
+                return m_thumbnails[key].scaled(Settings::get()->GUIThumbWidth,
+                                                Settings::get()->GUIThumbWidth);
             break;
         case Qt::SizeHintRole:
-            return QSize(Settings::get()->GUIThumbWidth, m_thumbnails.contains(key) ? Settings::get()->GUIThumbWidth : 0);
+            if (m_thumbnails.contains(key))
+            {
+                return QSize(Settings::get()->GUIThumbWidth,
+                             Settings::get()->GUIThumbWidth);
+            }
             break;
         case Qt::ToolTipRole:
             if (m_thumbnails.contains(key))
@@ -93,6 +98,9 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 
 void FileModel::loadThumbnails(const QString &path)
 {
+    if (m_thumbnails.size() && path == m_path)
+        return;
+
     QHashIterator<QString,QString> it(MetadataCache::get()->partThumbnailPaths(m_path));
     while (it.hasNext())
     {
@@ -100,7 +108,7 @@ void FileModel::loadThumbnails(const QString &path)
         QPixmap pm(it.value());
         if (!pm.isNull())
         {
-            m_thumbnails[it.key()] = pm.scaled(Settings::get()->GUIThumbWidth, Settings::get()->GUIThumbWidth);
+            m_thumbnails[it.key()] = pm;
             m_thumbnailPath[it.key()] = it.value();
         }
     }
@@ -153,6 +161,11 @@ void FileModel::setDirectory(const QString &path)
     m_checked.clear();
     m_path = path;
     m_columnLabels = MetadataCache::get()->columnLabels(m_path);
+}
+
+void FileModel::settingsChanged()
+{
+    //setDirectory(m_path);
 }
 
 void FileModel::deleteParts()
