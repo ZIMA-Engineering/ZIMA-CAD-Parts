@@ -50,6 +50,7 @@ void ServersView::refreshModel()
 
 void ServersView::modelClicked(const QModelIndex &index)
 {
+    Q_UNUSED(index);
     emit directorySelected(currentFileInfo().absoluteFilePath());
 }
 

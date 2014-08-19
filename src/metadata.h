@@ -25,9 +25,14 @@
 #include <QStringList>
 #include <QSettings>
 
-class QMutex;
-class QWaitCondition;
+#include "file.h"
 
+
+//! \brief Thumbnail map: baseName -> full path to the file (including the file name)
+typedef QHash<QString,QString> MetadataThumbnailMap;
+
+//! \brief Version map: completeBaseName -> fileName, only the latest version is stored in this map
+typedef QHash<QString,QString> MetadataVersionsMap;
 
 /*! Metadata for one directory.
  *
@@ -61,10 +66,15 @@ public:
     QStringList columnLabels();
     //! Value for FileModel
     QString partParam(const QString &partName, int col);
-    //! Thumbnail path for FileModel
-    QHash<QString,QString> partThumbnailPaths();
+    //! Thumbnail paths for FileModel
+    MetadataThumbnailMap partThumbnailPaths();
 
     void deletePart(const QString &part);
+    /*! Load part versions.
+     * Implementation: list name-ordered directory and use only the latest
+     * file name for its completeBaseName
+     */
+    MetadataVersionsMap partVersions();
 
 private:
     QSettings *m_settings;
@@ -75,14 +85,17 @@ private:
     QStringList m_columnLabels;
     QString label;
 
-    QHash<QString,QString> m_thumbnailsCache;
+    MetadataThumbnailMap m_thumbnailsCache;
+    MetadataVersionsMap m_versionsCache;
 
     QString buildIncludePath(const QString &raw);
     QStringList buildIncludePaths(const QStringList &raw);
+    bool partVersionType(FileType::FileType t, const QFileInfo &fi);
 };
 
 /*! An access singleton to the Metadata cache.
- * All-aware universal key is the "path" - the full path of the directory.
+ * All-aware universal key is the "path" - the full path of the directory
+ * used in the FileModel.
  */
 class MetadataCache : public QObject
 {
@@ -95,7 +108,8 @@ public:
     QString label(const QString &path);
     QStringList columnLabels(const QString &path);
     QString partParam(const QString &path, const QString &fname, int column);
-    QHash<QString,QString> partThumbnailPaths(const QString &path);
+    MetadataThumbnailMap partThumbnailPaths(const QString &path);
+    MetadataVersionsMap partVersions(const QString &path);
 
 signals:
     //! Emitted when is the cache content invalidated. All dependent objects should reset themself.

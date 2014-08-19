@@ -18,9 +18,9 @@ QString FailbackProductView::title()
 	return tr("Common Document");
 }
 
-QList<File::FileType> FailbackProductView::canHandle()
+FileTypeList FailbackProductView::canHandle()
 {
-	return QList<File::FileType>();
+    return FileTypeList();
 }
 
 bool FailbackProductView::handle(FileMetadata *f)
@@ -32,7 +32,6 @@ bool FailbackProductView::handle(FileMetadata *f)
     html += "<tr><td>" + tr("Name") + "</td><td>" + f->fileInfo.baseName() + "</td></tr>";
 	html += "<tr><td>" + tr("Last Modified") + "</td><td>" + lastModified + "</td></tr>";
     html += "<tr><td>" + tr("Size") + "</td><td>" + QString("%1").arg(f->fileInfo.size()) + "</td></tr>";
-	html += "<tr><td>" + tr("Version") + "</td><td>" + QString("%1").arg(f->version) + "</td></tr>";
 	html += "</table></body></html>";
 
 	ui->textBrowser->setHtml(html);

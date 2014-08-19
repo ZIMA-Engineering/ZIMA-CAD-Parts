@@ -15,7 +15,7 @@
 #define METADATA_FILE "metadata.ini"
 
 
-//! Small wrapper for filesystem directory - the root directory of one data source.
+//! \brief Small wrapper for filesystem directory - the root directory of one data source.
 class DataSource
 {
 public:
@@ -23,7 +23,6 @@ public:
     {
         this->name = name;
         this->rootPath = path;
-#warning todo icon - logo text
         ServersIconProvider ip;
         icon = ip.icon(QFileInfo(path));
     }
@@ -79,8 +78,6 @@ public:
 	// real settings
 
 	QHash<QString,QString> ExternalPrograms;
-    //! Current working datasource
-    QString WorkingDirDS;
 	//! Current working directory
 	QString WorkingDir;
 	//! State of the MainWindow

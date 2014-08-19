@@ -23,213 +23,222 @@
 #include <QFileIconProvider>
 
 
-QString File::getInternalNameForFileType(File::FileType type)
+FileTypeList File::versionedTypes()
+{
+    return FileTypeList() << FileType::PRT_PROE
+                          << FileType::ASM
+                          << FileType::DRW
+                          << FileType::FRM
+                          << FileType::NEU_PROE;
+}
+
+QString File::getInternalNameForFileType(FileType::FileType type)
 {
 	switch(type)
 	{
-	case File::PRT_PROE:
+    case FileType::PRT_PROE:
 		return "prt_proe";
-	case File::ASM:
+    case FileType::ASM:
 		return "asm";
-	case File::DRW:
+    case FileType::DRW:
 		return "drw";
-	case File::FRM:
+    case FileType::FRM:
 		return "frm";
-	case File::NEU_PROE:
+    case FileType::NEU_PROE:
 		return "neu_proe";
-	case File::CATPART:
+    case FileType::CATPART:
 		return "catpart";
-	case File::CATPRODUCT:
+    case FileType::CATPRODUCT:
 		return "catproduct";
-	case File::CATDRAWING:
+    case FileType::CATDRAWING:
 		return "catdrawing";
-	case File::PRT_NX:
+    case FileType::PRT_NX:
 		return "prt_nx";
-	case File::SLDPRT:
+    case FileType::SLDPRT:
 		return "sldprt";
-	case File::SLDASM:
+    case FileType::SLDASM:
 		return "sldasm";
-	case File::SLDDRW:
+    case FileType::SLDDRW:
 		return "slddrw";
-	case File::PAR:
+    case FileType::PAR:
 		return "par";
-	case File::PSM:
+    case FileType::PSM:
 		return "psm";
-	case File::DFT:
+    case FileType::DFT:
 		return "dft";
-	case File::IPT:
+    case FileType::IPT:
 		return "ipt";
-	case File::IAM:
+    case FileType::IAM:
 		return "iam";
-	case File::IDW:
+    case FileType::IDW:
 		return "idw";
-	case File::DWG:
+    case FileType::DWG:
 		return "dwg";
-	case File::STEP:
+    case FileType::STEP:
 		return "step";
-	case File::IGES:
+    case FileType::IGES:
 		return "iges";
-	case File::DXF:
+    case FileType::DXF:
 		return "dxf";
-	case File::STL:
+    case FileType::STL:
 		return "stl";
-	case File::BLEND:
+    case FileType::BLEND:
 		return "blend";
-	case File::PDF:
+    case FileType::PDF:
 		return "pdf";
-	case File::OFFICE_WRITER:
+    case FileType::OFFICE_WRITER:
 		return "office-document";
-	case File::OFFICE_CALC:
+    case FileType::OFFICE_CALC:
 		return "office-spreadsheet";
-	case File::OFFICE_IMPRESS:
+    case FileType::OFFICE_IMPRESS:
 		return "office-presentation";
-	case File::OFFICE_DRAW:
+    case FileType::OFFICE_DRAW:
 		return "office-drawing";
-	case File::OFFICE_PROJECT:
+    case FileType::OFFICE_PROJECT:
 		return "office-project";
-	case File::OFFICE_BASE:
+    case FileType::OFFICE_BASE:
 		return "office-database";
 	default:
 		return "undefined";
 	}
 }
 
-QString File::getLabelForFileType(File::FileType type)
+QString File::getLabelForFileType(FileType::FileType type)
 {
 	switch(type)
 	{
-	case File::PRT_PROE:
+    case FileType::PRT_PROE:
 		return "*.prt";
-	case File::ASM:
+    case FileType::ASM:
 		return "*.asm";
-	case File::DRW:
+    case FileType::DRW:
 		return "*.drw";
-	case File::FRM:
+    case FileType::FRM:
 		return "*.frm";
-	case File::NEU_PROE:
+    case FileType::NEU_PROE:
 		return "*.neu";
-	case File::CATPART:
+    case FileType::CATPART:
 		return "*.catpart";
-	case File::CATPRODUCT:
+    case FileType::CATPRODUCT:
 		return "*.catproduct";
-	case File::CATDRAWING:
+    case FileType::CATDRAWING:
 		return "*.catdrawing";
-	case File::PRT_NX:
+    case FileType::PRT_NX:
 		return "*.prt";
-	case File::SLDPRT:
+    case FileType::SLDPRT:
 		return "*.sldprt";
-	case File::SLDASM:
+    case FileType::SLDASM:
 		return "*.sldasm";
-	case File::SLDDRW:
+    case FileType::SLDDRW:
 		return "*.slddrw";
-	case File::PAR:
+    case FileType::PAR:
 		return "*.par";
-	case File::PSM:
+    case FileType::PSM:
 		return "*.psm";
-	case File::DFT:
+    case FileType::DFT:
 		return "*.dft";
-	case File::IPT:
+    case FileType::IPT:
 		return "*.ipt";
-	case File::IAM:
+    case FileType::IAM:
 		return "*.iam";
-	case File::IDW:
+    case FileType::IDW:
 		return "*.idw";
-	case File::DWG:
+    case FileType::DWG:
 		return "*.dwg";
-	case File::STEP:
+    case FileType::STEP:
 		return "*.step";
-	case File::IGES:
+    case FileType::IGES:
 		return "*.iges";
-	case File::DXF:
+    case FileType::DXF:
 		return "*.dxf";
-	case File::STL:
+    case FileType::STL:
 		return "*.stl";
-	case File::BLEND:
+    case FileType::BLEND:
 		return "*.blend";
-	case File::PDF:
+    case FileType::PDF:
 		return "*.pdf";
-	case File::OFFICE_WRITER:
+    case FileType::OFFICE_WRITER:
 		return QObject::tr("Office document");
-	case File::OFFICE_CALC:
+    case FileType::OFFICE_CALC:
 		return QObject::tr("Office spreadsheet");
-	case File::OFFICE_IMPRESS:
+    case FileType::OFFICE_IMPRESS:
 		return QObject::tr("Office presentation");
-	case File::OFFICE_DRAW:
+    case FileType::OFFICE_DRAW:
 		return QObject::tr("Office drawing");
-	case File::OFFICE_PROJECT:
+    case FileType::OFFICE_PROJECT:
 		return QObject::tr("Office project");
-	case File::OFFICE_BASE:
+    case FileType::OFFICE_BASE:
 		return QObject::tr("Office database");
 	default:
 		return "undefined";
 	}
 }
 
-QString File::getRxForFileType(File::FileType type)
+QString File::getRxForFileType(FileType::FileType type)
 {
 	switch(type)
 	{
-	case File::PRT_PROE:
+    case FileType::PRT_PROE:
 		return "((^.+\\.prt)\\.(\\d+)$)";
-	case File::ASM:
+    case FileType::ASM:
 		return "((^.+\\.asm)\\.(\\d+)$)";
-	case File::DRW:
+    case FileType::DRW:
 		return "((^.+\\.drw)\\.(\\d+)$)";
-	case File::FRM:
+    case FileType::FRM:
 		return "((^.+\\.frm)\\.(\\d+)$)";
-	case File::NEU_PROE:
+    case FileType::NEU_PROE:
 		return "((^.+\\.neu)\\.(\\d+)$)";
-	case File::CATPART:
+    case FileType::CATPART:
 		return "(^.+\\.catpart$)";
-	case File::CATPRODUCT:
+    case FileType::CATPRODUCT:
 		return "(^.+\\.catproduct$)";
-	case File::CATDRAWING:
+    case FileType::CATDRAWING:
 		return "(^.+\\.catdrawing$)";
-	case File::PRT_NX:
+    case FileType::PRT_NX:
 		return "(^.+\\.prt$)";
-	case File::SLDPRT:
+    case FileType::SLDPRT:
 		return "(^.+\\.sldprt$)";
-	case File::SLDASM:
+    case FileType::SLDASM:
 		return "(^.+\\.sldasm$)";
-	case File::SLDDRW:
+    case FileType::SLDDRW:
 		return "(^.+\\.slddrw$)";
-	case File::PAR:
+    case FileType::PAR:
 		return "(^.+\\.par$)";
-	case File::PSM:
+    case FileType::PSM:
 		return "(^.+\\.psm$)";
-	case File::DFT:
+    case FileType::DFT:
 		return "(^.+\\.dft$)";
-	case File::IPT:
+    case FileType::IPT:
 		return "(^.+\\.ipt$)";
-	case File::IAM:
+    case FileType::IAM:
 		return "(^.+\\.iam$)";
-	case File::IDW:
+    case FileType::IDW:
 		return "(^.+\\.idw$)";
-	case File::DWG:
+    case FileType::DWG:
 		return "(^.+\\.dwg$)";
-	case File::STEP:
+    case FileType::STEP:
 		return "(^.+\\.step|.+\\.stp$)";
-	case File::IGES:
+    case FileType::IGES:
 		return "(^.+\\.iges|.+\\.igs$)";
-	case File::DXF:
+    case FileType::DXF:
 		return "(^.+\\.dxf$)";
-	case File::STL:
+    case FileType::STL:
 		return "(^.+\\.stl$)";
-	case File::BLEND:
+    case FileType::BLEND:
 		return "(^.+\\.blend$)";
-	case File::PDF:
+    case FileType::PDF:
 		return "(^.+\\.pdf$)";
-	case File::OFFICE_WRITER:
+    case FileType::OFFICE_WRITER:
 		return getRxFromStringList(QStringList() << "odt" << "ott" << "odm" << "doc" << "dot" << "docx" << "docm" << "dotx" << "dotm");
-	case File::OFFICE_CALC:
+    case FileType::OFFICE_CALC:
 		return getRxFromStringList(QStringList() << "ods" << "ots" << "xls" << "xlt" << "xlm" << "xlsx" << "xlsm" << "xltx" << "xltm" << "csv");
-	case File::OFFICE_IMPRESS:
+    case FileType::OFFICE_IMPRESS:
 		return getRxFromStringList(QStringList() << "odp" << "otp" << "ppt" << "pot" << "pps" << "pptx" << "pptm" << "potx" << "potm" << "ppam" << "ppsx" << "ppsm" << "sldx" << "sldm");
-	case File::OFFICE_DRAW:
+    case FileType::OFFICE_DRAW:
 		return getRxFromStringList(QStringList() << "odg" << "otg");
-	case File::OFFICE_PROJECT:
+    case FileType::OFFICE_PROJECT:
 		return getRxFromStringList(QStringList() << "mpd" << "mpp");
-	case File::OFFICE_BASE:
+    case FileType::OFFICE_BASE:
 		return getRxFromStringList(QStringList() << "odb" << "mdb" << "accdb" << "accde" << "accdt" << "accdr");
 	default:
 		return "";
@@ -249,42 +258,27 @@ QString File::getRxFromStringList(const QStringList &extensions)
 
 
 FileMetadata::FileMetadata(const QFileInfo &fi)
-    : type(File::UNDEFINED),
-      version(0),
-      newestVersion(true),
+    : type(FileType::UNDEFINED),
       fileInfo(fi)
 {
-    #warning todo newest file version in basedatasource.cpp
     detectFileType();
-
-    //thumbnail = MetadataCache::get()->partThumbnail(fi.path(), fi.fileName());
 }
 
 FileMetadata::~FileMetadata()
 {
-    //if (thumbnail)
-//        delete(thumbnail);
 }
 
 void FileMetadata::detectFileType()
 {
-    type = File::UNDEFINED;
-
-    for(int i = 0; i < File::TYPES_COUNT; i++)
+    for(int i = 0; i < FileType::TYPES_COUNT; i++)
     {
-        QRegExp rx(File::getRxForFileType((File::FileType)i));
+        QRegExp rx(File::getRxForFileType((FileType::FileType)i));
         // *.dxf vs. *.DXF in some examples
         rx.setCaseSensitivity(Qt::CaseInsensitive);
 
         if(rx.exactMatch(fileInfo.fileName()))
         {
-            type = (File::FileType)i;
-
-            if(rx.captureCount() == 3)
-            {
-                version = rx.cap(3).toInt();
-            }
-
+            type = (FileType::FileType)i;
             break;
         }
     }

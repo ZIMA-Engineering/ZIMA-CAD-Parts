@@ -54,7 +54,7 @@ ProductView::~ProductView()
 
 	delete ui;
 
-	QHashIterator<File::FileType, AbstractProductView*> i(providers);
+    QHashIterator<FileType::FileType, AbstractProductView*> i(providers);
 	while (i.hasNext())
 	{
 		i.next();
@@ -64,7 +64,7 @@ ProductView::~ProductView()
 	providers.clear();
 }
 
-bool ProductView::canHandle(File::FileType t)
+bool ProductView::canHandle(FileType::FileType t)
 {
 	return providers.contains(t);
 }

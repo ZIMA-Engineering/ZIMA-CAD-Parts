@@ -35,7 +35,7 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
     {
         return false;
     }
-    else if (f.type == File::UNDEFINED)
+    else if (f.type == FileType::UNDEFINED)
     {
         return false;
     }
@@ -44,20 +44,13 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
         // now we know that it's supported file and we should not take care about versions
         return true;
     }
-
-    if (!f.version
-            || (
-                   f.type != File::PRT_PROE
-                && f.type != File::ASM
-                && f.type != File::DRW
-                && f.type != File::FRM
-                && f.type != File::NEU_PROE)
-            )
+    else if (File::versionedTypes().contains(f.type))
     {
-		return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+        MetadataVersionsMap versions = MetadataCache::get()->partVersions(fm->path());
+        return versions[f.fileInfo.completeBaseName()] == f.fileInfo.fileName();
     }
 
-    return f.newestVersion && QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }
 
 bool FileFilterModel::filterAcceptsColumn(int source_column, const QModelIndex & source_parent) const

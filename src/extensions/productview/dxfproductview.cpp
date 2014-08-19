@@ -23,9 +23,9 @@ QString DxfProductView::title()
 	return tr("DXF part");
 }
 
-QList<File::FileType> DxfProductView::canHandle()
+FileTypeList DxfProductView::canHandle()
 {
-	return QList<File::FileType>() << File::DXF;
+    return FileTypeList() << FileType::DXF;
 }
 
 bool DxfProductView::handle(FileMetadata *f)

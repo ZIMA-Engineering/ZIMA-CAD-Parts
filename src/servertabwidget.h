@@ -66,7 +66,6 @@ private slots:
 	void previewInProductView(const QModelIndex &index);
 	void partsTreeView_doubleClicked(const QModelIndex &index);
 
-	void filesDeleted();
 	void deleteSelectedParts();
 
 	void adjustThumbColumnWidth(int width);

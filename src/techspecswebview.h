@@ -24,8 +24,8 @@
 #include <QWebView>
 #include <QNetworkReply>
 
-class DownloadModel;
-struct File;
+class WebDowloaderDialog;
+
 
 class TechSpecsWebView : public QWebView
 {
@@ -33,7 +33,6 @@ class TechSpecsWebView : public QWebView
 public:
 	explicit TechSpecsWebView(QWidget *parent = 0);
 	void setRootPath(QString path);
-	void setDownloadDirectory(QString path);
 
 signals:
 
@@ -46,12 +45,11 @@ protected:
 private slots:
 	void pageLoaded(bool ok);
 	void urlChange(const QUrl &url);
-	void downloadFile(QNetworkReply *reply, File *f = 0);
+    void downloadFile(QNetworkReply *reply);
 
 private:
 	QString m_rootPath;
-	QString m_dlDir;
-
+    WebDowloaderDialog *m_downloader;
 };
 
 #endif // TECHSPECSWEBVIEW_H

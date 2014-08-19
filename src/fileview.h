@@ -23,6 +23,7 @@ signals:
 public slots:
     void setDirectory(const QString &path);
     void settingsChanged();
+    void copyToWorkingDir();
 
 private:
     QString m_path;

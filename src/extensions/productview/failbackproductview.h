@@ -21,7 +21,7 @@ public:
 	~FailbackProductView();
 
 	QString title();
-	QList<File::FileType> canHandle();
+    FileTypeList canHandle();
     bool handle(FileMetadata *f);
 
 private:

@@ -20,7 +20,7 @@ public:
 	~ProEProductView();
 
 	QString title();
-	QList<File::FileType> canHandle();
+    FileTypeList canHandle();
     bool handle(FileMetadata *f);
 
 signals:

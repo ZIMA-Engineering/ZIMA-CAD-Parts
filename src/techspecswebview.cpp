@@ -19,6 +19,7 @@
 */
 
 #include "techspecswebview.h"
+#include "webdowloaderdialog.h"
 
 #include <QDialog>
 #include <QVBoxLayout>
@@ -26,13 +27,15 @@
 #include <QWebElementCollection>
 #include <QRegExp>
 #include <QDebug>
+#include <QMessageBox>
 
 #include "settings.h"
 #include "zima-cad-parts.h"
 
 
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
-	QWebView(parent)
+    QWebView(parent),
+    m_downloader(0)
 {
 	loadAboutPage();
 
@@ -40,45 +43,14 @@ TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
 
 	page()->setForwardUnsupportedContent(true);
-	connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
+    connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)),
+            this, SLOT(downloadFile(QNetworkReply*)));
 }
 
 void TechSpecsWebView::setRootPath(QString path)
 {
 	m_rootPath = path;
 }
-
-void TechSpecsWebView::setDownloadDirectory(QString path)
-{
-	m_dlDir = path;
-}
-
-#if 0
-void TechSpecsWebView::stopDownload()
-{
-	QList<File*> tmp = m_downloadModel->files();
-
-	foreach(File *f, tmp)
-	f->transfer->cancel();
-}
-
-void TechSpecsWebView::resumeDownload()
-{
-	QList<File*> tmp = m_downloadModel->files();
-
-	foreach(File *f, tmp)
-	downloadFile(page()->networkAccessManager()->get(QNetworkRequest(f->path)), f);
-
-}
-
-void TechSpecsWebView::clearQueue()
-{
-	QList<File*> tmp = m_downloadModel->files();
-
-	foreach(File *f, tmp)
-	delete f->transfer;
-}
-#endif
 
 void TechSpecsWebView::loadAboutPage()
 {
@@ -148,53 +120,48 @@ void TechSpecsWebView::pageLoaded(bool ok)
 	}
 }
 
-void TechSpecsWebView::downloadFile(QNetworkReply *reply, File *f)
+void TechSpecsWebView::downloadFile(QNetworkReply *reply)
 {
-#warning todo
-#if 0
-	bool isNew = !f;
+    QString fileName = Settings::get()->WorkingDir + "/" + reply->url().path().split('/').last();
+    if (QDir().exists(fileName))
+    {
+        if (QMessageBox::question(this, tr("File Exists"),
+                              tr("File %1 already exists. Overwrite?").arg(fileName),
+                              QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        {
+            reply->close();
+            reply->deleteLater();
+            return;
+        }
+    }
 
-	if(isNew)
-	{
-		QString fileName = reply->url().path().split('/').last();
+    if(reply->hasRawHeader("Content-Disposition"))
+    {
+        QStringList patterns;
+        patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
 
-		if(reply->hasRawHeader("Content-Disposition"))
-		{
-			QStringList patterns;
-			patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
+        QRegExp rx;
 
-			QRegExp rx;
+        foreach(QString pattern, patterns)
+        {
+            rx.setPattern(pattern);
 
-			foreach(QString pattern, patterns)
-			{
-				rx.setPattern(pattern);
+            if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
+            {
+                fileName = rx.cap(1).replace('\\', '/').split('/').last();
 
-				if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
-				{
-					fileName = rx.cap(1).replace('\\', '/').split('/').last();
+                if(fileName.endsWith(';'))
+                    fileName.chop(1);
 
-					if(fileName.endsWith(';'))
-						fileName.chop(1);
+                break;
+            }
+        }
+    }
 
-					break;
-				}
-			}
-		}
-
-		f = new File;
-		f->parentItem = 0;
-		f->name = fileName;
-		f->path = reply->url().toString();
-		f->targetPath = m_dlDir + "/" + fileName;
-		f->transfer = new DataTransfer(reply, f);
-		f->transfer->setDeleteSrc(true);
-		f->transfer->setDeleteDst(true);
-	} else {
-		f->bytesDone = 0;
-		f->transfer->setSource(reply);
-	}
-
-	if(reply->hasRawHeader("Content-Length"))
-		f->size = reply->rawHeader("Content-Length").toULongLong();
-#endif
+    if (!m_downloader)
+    {
+        m_downloader = new WebDowloaderDialog(this);
+    }
+    m_downloader->enqueue(fileName, reply);
+    m_downloader->show();
 }

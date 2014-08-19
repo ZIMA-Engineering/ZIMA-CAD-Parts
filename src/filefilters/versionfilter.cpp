@@ -1,9 +1,8 @@
 #include "versionfilter.h"
 
 VersionFilter::VersionFilter()
-	: FileFilter(File::UNDEFINED)
+    : FileFilter(FileType::UNDEFINED)
 {
-
 }
 
 VersionFilter::FileFilters VersionFilter::filterType()

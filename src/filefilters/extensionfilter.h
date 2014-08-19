@@ -7,7 +7,7 @@
 class ExtensionFilter : public FileFilter
 {
 public:
-	ExtensionFilter(File::FileType type);
+    ExtensionFilter(FileType::FileType type);
 	FileFilters filterType();
 	void load(QSettings *settings);
 	void save(QSettings *settings);

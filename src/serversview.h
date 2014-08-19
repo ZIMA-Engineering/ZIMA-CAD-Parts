@@ -2,7 +2,7 @@
 #define SERVERSVIEW_H
 
 #include <QTreeView>
-#warning todo make settings dialog calling simpler
+
 #include "settingsdialog.h"
 
 class ServersModel;

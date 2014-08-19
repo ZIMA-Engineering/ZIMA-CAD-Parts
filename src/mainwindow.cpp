@@ -36,7 +36,6 @@
 #include "serversmodel.h"
 #include "filtersdialog.h"
 #include "zimautils.h"
-#include "errordialog.h"
 #include "settings.h"
 #include "languageflagswidget.h"
 #include "workingdirwidget.h"

@@ -60,7 +60,6 @@ void Settings::load()
         ServersSplitterSizes << i.toInt();
 
 	WorkingDir = s.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString();
-    WorkingDirDS = s.value("WorkingDirDS", QString()).toString();
 
     GUIThumbWidth = s.value("GUIThumbWidth", 32).toInt();
     GUIPreviewWidth = s.value("GUIPreviewWidth", 256).toInt();
@@ -107,7 +106,6 @@ void Settings::save()
 	s.setValue("Server/SplitterSizes", l);
 
 	s.setValue("WorkingDir", WorkingDir);
-    s.setValue("WorkingDirDS", WorkingDirDS);
 
 	s.setValue("GUIThumbWidth", GUIThumbWidth);
 	s.setValue("GUIPreviewWidth", GUIPreviewWidth);
@@ -173,60 +171,60 @@ void Settings::setupFilterGroups()
 {
 	FilterGroups << FilterGroup("ProE", "Pro/Engineer");
 	FilterGroups.last()
-	        << new ExtensionFilter(File::PRT_PROE)
-	        << new ExtensionFilter(File::ASM)
-	        << new ExtensionFilter(File::DRW)
-	        << new ExtensionFilter(File::FRM)
-	        << new ExtensionFilter(File::NEU_PROE)
+            << new ExtensionFilter(FileType::PRT_PROE)
+            << new ExtensionFilter(FileType::ASM)
+            << new ExtensionFilter(FileType::DRW)
+            << new ExtensionFilter(FileType::FRM)
+            << new ExtensionFilter(FileType::NEU_PROE)
 	        << new VersionFilter();
 
 	FilterGroups << FilterGroup("CATIA", "CATIA");
 	FilterGroups.last()
-	        << new ExtensionFilter(File::CATPART)
-	        << new ExtensionFilter(File::CATPRODUCT)
-	        << new ExtensionFilter(File::CATDRAWING);
+            << new ExtensionFilter(FileType::CATPART)
+            << new ExtensionFilter(FileType::CATPRODUCT)
+            << new ExtensionFilter(FileType::CATDRAWING);
 
 	FilterGroups << FilterGroup("NX", "NX (UGS)");
 	FilterGroups.last()
-	        << new ExtensionFilter(File::PRT_NX);
+            << new ExtensionFilter(FileType::PRT_NX);
 
 	FilterGroups << FilterGroup("SolidWorks", "SolidWorks");
 	FilterGroups.last().filters
-	        << new ExtensionFilter(File::SLDPRT)
-	        << new ExtensionFilter(File::SLDASM)
-	        << new ExtensionFilter(File::SLDDRW);
+            << new ExtensionFilter(FileType::SLDPRT)
+            << new ExtensionFilter(FileType::SLDASM)
+            << new ExtensionFilter(FileType::SLDDRW);
 
 	FilterGroups << FilterGroup("SolidEdge", "Solid Edge");
 	FilterGroups.last()
-	        << new ExtensionFilter(File::PAR)
-	        << new ExtensionFilter(File::PSM)
-	        << new ExtensionFilter(File::ASM)
-	        << new ExtensionFilter(File::DFT);
+            << new ExtensionFilter(FileType::PAR)
+            << new ExtensionFilter(FileType::PSM)
+            << new ExtensionFilter(FileType::ASM)
+            << new ExtensionFilter(FileType::DFT);
 
 	FilterGroups << FilterGroup("Invertor", "INVERTOR");
 	FilterGroups.last()
-	        << new ExtensionFilter(File::IPT)
-	        << new ExtensionFilter(File::IAM)
-	        << new ExtensionFilter(File::IDW);
+            << new ExtensionFilter(FileType::IPT)
+            << new ExtensionFilter(FileType::IAM)
+            << new ExtensionFilter(FileType::IDW);
 
 	FilterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
 	FilterGroups.last()
-	        << new ExtensionFilter(File::STEP)
-	        << new ExtensionFilter(File::IGES)
-	        << new ExtensionFilter(File::DWG)
-	        << new ExtensionFilter(File::DXF);
+            << new ExtensionFilter(FileType::STEP)
+            << new ExtensionFilter(FileType::IGES)
+            << new ExtensionFilter(FileType::DWG)
+            << new ExtensionFilter(FileType::DXF);
 
 	FilterGroups << FilterGroup("NonCAD", "NonCAD");
 	FilterGroups.last()
-	        << new ExtensionFilter(File::STL)
-	        << new ExtensionFilter(File::BLEND)
-	        << new ExtensionFilter(File::PDF)
-	        << new ExtensionFilter(File::OFFICE_BASE)
-	        << new ExtensionFilter(File::OFFICE_CALC)
-	        << new ExtensionFilter(File::OFFICE_DRAW)
-	        << new ExtensionFilter(File::OFFICE_IMPRESS)
-	        << new ExtensionFilter(File::OFFICE_PROJECT)
-	        << new ExtensionFilter(File::OFFICE_WRITER);
+            << new ExtensionFilter(FileType::STL)
+            << new ExtensionFilter(FileType::BLEND)
+            << new ExtensionFilter(FileType::PDF)
+            << new ExtensionFilter(FileType::OFFICE_BASE)
+            << new ExtensionFilter(FileType::OFFICE_CALC)
+            << new ExtensionFilter(FileType::OFFICE_DRAW)
+            << new ExtensionFilter(FileType::OFFICE_IMPRESS)
+            << new ExtensionFilter(FileType::OFFICE_PROJECT)
+            << new ExtensionFilter(FileType::OFFICE_WRITER);
 
 	QSettings settings;
 	settings.beginGroup("PartFilters");
@@ -293,7 +291,7 @@ void Settings::recalculateFilters()
 			{
 			case FileFilter::Extension:
 				if(FilterGroups[i].filters[j]->enabled)
-					expressions << File::getRxForFileType(FilterGroups[i].filters[j]->type);
+                    expressions << File::getRxForFileType(FilterGroups[i].filters[j]->type);
 				break;
 
 			case FileFilter::Version:

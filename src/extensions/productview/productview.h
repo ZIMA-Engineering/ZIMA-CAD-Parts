@@ -50,7 +50,7 @@ public:
 	~ProductView();
 
     //! Returns true if the one of registered product views can handle given file type
-	bool canHandle(File::FileType t);
+    bool canHandle(FileType::FileType t);
 
 public slots:
     /** \brief Set the file which will be displayed
@@ -63,7 +63,7 @@ protected:
 
 private:
 	Ui::ProductView *ui;
-	QHash<File::FileType, AbstractProductView*> providers;
+    QHash<FileType::FileType, AbstractProductView*> providers;
 	AbstractProductView *currentProvider;
 	FailbackProductView *failbackProvider;
 
@@ -72,7 +72,7 @@ private:
 	{
 		T *provider = new T(this);
 		provider->hide();
-		foreach(File::FileType i, provider->canHandle())
+        foreach(FileType::FileType i, provider->canHandle())
             providers[i] = provider;
 	}
 

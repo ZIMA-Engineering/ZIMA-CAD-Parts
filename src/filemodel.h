@@ -24,7 +24,7 @@
 #include <QFileSystemModel>
 #include <QFileIconProvider>
 #include <QSortFilterProxyModel>
-#include <QPixmapCache>
+#include "metadata.h"
 
 
 /*! A "list files" tree. This class is used inside FileView only
@@ -46,13 +46,16 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
     void deleteParts();
+    void copyToWorkingDir();
+
+    QString path() const { return m_path; }
 
 private:
     QString m_path;
     QStringList m_columnLabels;
     QHash<QModelIndex,Qt::CheckState> m_checked;
     QHash<QString,QPixmap> m_thumbnails;
-    QHash<QString,QString> m_thumbnailPath;
+    MetadataThumbnailMap m_thumbnailPath;
 
 private slots:
     void loadThumbnails(const QString &path);

@@ -82,11 +82,18 @@ QString MetadataCache::partParam(const QString &path, const QString &fname, int 
     return m_map[path]->partParam(fname, column);
 }
 
-QHash<QString,QString> MetadataCache::partThumbnailPaths(const QString &path)
+MetadataThumbnailMap MetadataCache::partThumbnailPaths(const QString &path)
 {
     if (!m_map.contains(path))
         load(path);
     return m_map[path]->partThumbnailPaths();
+}
+
+MetadataVersionsMap MetadataCache::partVersions(const QString &path)
+{
+    if (!m_map.contains(path))
+        load(path);
+    return m_map[path]->partVersions();
 }
 
 
@@ -121,6 +128,8 @@ Metadata::~Metadata()
     delete m_settings;
 
     m_columnLabels.clear();
+    m_thumbnailsCache.clear();
+    m_versionsCache.clear();
 }
 
 QString Metadata::getLabel()
@@ -203,7 +212,7 @@ QString Metadata::partParam(const QString &partName, int col)
 	}
 }
 
-QHash<QString,QString> Metadata::partThumbnailPaths()
+MetadataThumbnailMap Metadata::partThumbnailPaths()
 {
     if (m_thumbnailsCache.size())
         return m_thumbnailsCache;
@@ -234,8 +243,45 @@ QHash<QString,QString> Metadata::partThumbnailPaths()
     return m_thumbnailsCache;
 }
 
+bool Metadata::partVersionType(FileType::FileType t, const QFileInfo &fi)
+{
+    QRegExp re(File::getRxForFileType(t));
+    re.setCaseSensitivity(Qt::CaseInsensitive);
+    if (re.exactMatch(fi.fileName()))
+    {
+        m_versionsCache[fi.completeBaseName()] = fi.fileName();
+        return true;
+    }
+    return false;
+}
+
+MetadataVersionsMap Metadata::partVersions()
+{
+    if (m_versionsCache.size())
+        return m_versionsCache;
+
+    QDir d(m_path);
+    QStringList files = d.entryList(QStringList(),
+                                    QDir::Files | QDir::Readable,
+                                    QDir::Name);
+
+    QFileInfo fi;
+    foreach (QString i, files)
+    {
+        fi.setFile(i);
+        foreach(FileType::FileType t, File::versionedTypes())
+        {
+            if (partVersionType(t, fi.fileName()))
+                break;
+        }
+    }
+
+    return m_versionsCache;
+}
+
 void Metadata::deletePart(const QString &part)
 {
+#warning TODO/FIXME: implementation
 	QString grp = part.section('.', 0, 0);
 
 	if(grp.isEmpty())

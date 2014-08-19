@@ -36,7 +36,6 @@ void WorkingDirWidget::setWorkingDirectoryDialog()
 	if (!str.isEmpty())
 	{
 		Settings::get()->WorkingDir = str;
-        Settings::get()->WorkingDirDS = QString();
         settingsChanged();
 	}
 }

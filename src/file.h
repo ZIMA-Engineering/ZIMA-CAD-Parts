@@ -18,8 +18,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ITEM_H
-#define ITEM_H
+#ifndef FILE_H
+#define FILE_H
 
 #include <QString>
 #include <QPixmap>
@@ -29,8 +29,56 @@
 #include <QDateTime>
 #include <QFileInfo>
 
-#include "metadata.h"
+namespace FileType {
 
+typedef enum {
+    // Pro/e
+    PRT_PROE=0,
+    ASM,
+    DRW,
+    FRM,
+    NEU_PROE,
+    // CATIA
+    CATPART,
+    CATPRODUCT,
+    CATDRAWING,
+    // NX
+    PRT_NX,
+    // SolidWorks
+    SLDPRT,
+    SLDASM,
+    SLDDRW,
+    // Solid Edge
+    PAR,
+    PSM,
+//		FileType::ASM,
+    DFT,
+    // Inventor
+    IPT,
+    IAM,
+    IDW,
+    // CAD NEUTRAL
+    STEP,
+    IGES,
+    DWG,
+    DXF,
+    // NonCAD
+    STL,
+    BLEND,
+    PDF,
+    OFFICE_WRITER,
+    OFFICE_CALC,
+    OFFICE_IMPRESS,
+    OFFICE_DRAW,
+    OFFICE_PROJECT,
+    OFFICE_BASE,
+    TYPES_COUNT,
+    UNDEFINED
+} FileType;
+
+} // namespace FileType
+
+typedef QList<FileType::FileType> FileTypeList;
 
 /*! Additional metadata for CAD-aware file.
  * Used in FileModel class.
@@ -39,54 +87,10 @@ class File
 {
 
 public:
-    enum FileType {
-	    // Pro/e
-	    PRT_PROE=0,
-	    ASM,
-	    DRW,
-	    FRM,
-	    NEU_PROE,
-	    // CATIA
-	    CATPART,
-	    CATPRODUCT,
-	    CATDRAWING,
-	    // NX
-	    PRT_NX,
-	    // SolidWorks
-	    SLDPRT,
-	    SLDASM,
-	    SLDDRW,
-	    // Solid Edge
-	    PAR,
-	    PSM,
-//		ASM,
-	    DFT,
-	    // Inventor
-	    IPT,
-	    IAM,
-	    IDW,
-	    // CAD NEUTRAL
-	    STEP,
-	    IGES,
-	    DWG,
-	    DXF,
-	    // NonCAD
-	    STL,
-	    BLEND,
-	    PDF,
-	    OFFICE_WRITER,
-	    OFFICE_CALC,
-	    OFFICE_IMPRESS,
-	    OFFICE_DRAW,
-	    OFFICE_PROJECT,
-	    OFFICE_BASE,
-	    TYPES_COUNT,
-	    UNDEFINED
-	};
-
-    static QString getInternalNameForFileType(FileType type);
-    static QString getLabelForFileType(FileType type);
-    static QString getRxForFileType(FileType type);
+    static FileTypeList versionedTypes();
+    static QString getInternalNameForFileType(FileType::FileType type);
+    static QString getLabelForFileType(FileType::FileType type);
+    static QString getRxForFileType(FileType::FileType type);
     static QString getRxFromStringList(const QStringList &extensions);
 };
 
@@ -98,9 +102,8 @@ public:
     ~FileMetadata();
 
     //! CAD type of the file
-    File::FileType type;
-    int version;
-    bool newestVersion;
+    FileType::FileType type;
+
     QFileInfo fileInfo;
 
 private:
@@ -108,4 +111,4 @@ private:
 
 };
 
-#endif // ITEM_H
+#endif // FILE_H

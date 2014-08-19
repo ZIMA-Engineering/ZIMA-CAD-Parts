@@ -26,13 +26,13 @@ QString ProEProductView::title()
 	return tr("PRO/E part");
 }
 
-QList<File::FileType> ProEProductView::canHandle()
+FileTypeList ProEProductView::canHandle()
 {
 #ifdef Q_OS_WIN
 	// ProductView Express is available for windows only
-    return QList<File::FileType>() << File::PRT_PROE << File::PRT_NX;
+    return FileTypeList << File::FileType::PRT_PROE << File::PRT_NX;
 #else
-	return QList<File::FileType>();
+    return FileTypeList();
 #endif
 }
 

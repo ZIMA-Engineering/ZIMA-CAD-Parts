@@ -5,6 +5,7 @@
 
 #include <QMessageBox>
 
+#define RELOAD_FLAG "reload"
 
 FileView::FileView(QWidget *parent) :
     QTreeView(parent)
@@ -24,18 +25,22 @@ FileView::FileView(QWidget *parent) :
 
 void FileView::setDirectory(const QString &path)
 {
-    if (m_path == path)
+    if (!m_path.isNull() && m_path != RELOAD_FLAG && m_path == path)
+    {
+        qDebug("SET DIR false");
         return;
+    }
+
     // it has to be reset here because calling QFileSystemModel's reset
     // or begin/end alternatives results in "/" as a root path
-    m_path = path;
     m_model->setDirectory(path);
+    m_path = path;
     setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(path)));
 }
 
 void FileView::refreshModel()
 {
-    m_path = ""; // enforce setdirectory reload
+    m_path = RELOAD_FLAG; // enforce setDirectory reload
     setDirectory(m_path);
 }
 
@@ -96,4 +101,12 @@ void FileView::createIndexHtmlFile(const QString &text, const QString &fileBase)
 void FileView::deleteParts()
 {
     m_model->deleteParts();
+}
+
+void FileView::copyToWorkingDir()
+{
+    if (m_path == Settings::get()->WorkingDir)
+        return;
+
+    m_model->copyToWorkingDir();
 }

@@ -53,7 +53,7 @@ private:
     QString m_originalName;
     Actions m_action;
 
-    //! User data validations
+    //! \brief User data validations
     void checkEnable();
 
 private slots:

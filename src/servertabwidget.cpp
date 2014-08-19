@@ -9,7 +9,6 @@
 #include "ui_servertabwidget.h"
 #include "filemodel.h"
 #include "filefiltermodel.h"
-#include "errordialog.h"
 #include "settings.h"
 #include "filtersdialog.h"
 #include "extensions/productview/productview.h"
@@ -72,10 +71,10 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	        this, SLOT(filesDeleted()));
 	connect(m_serversModel, SIGNAL(partsIndexAlreadyExists(Item*)),
 	        this, SLOT(partsIndexOverwrite(Item*)));
+#endif
 
     connect(ui->copyToWorkingDirButton, SIGNAL(clicked()),
-            m_serversModel, SLOT(copyToWorkingDir()));
-#endif
+            ui->partsTreeView, SLOT(copyToWorkingDir()));
 	connect(ui->btnDelete, SIGNAL(clicked()),
 	        this, SLOT(deleteSelectedParts()));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
@@ -162,7 +161,6 @@ void ServerTabWidget::settingsChanged()
 	                                        && Settings::get()->DeveloperTechSpecToolBar);
 	ui->partsIndexDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled);
 	ui->techSpec->loadAboutPage();
-	ui->techSpec->setDownloadDirectory(Settings::get()->WorkingDir);
 	ui->thumbnailSizeSlider->setValue(Settings::get()->GUIThumbWidth);
 
     ui->partsTreeView->settingsChanged();
@@ -231,35 +229,6 @@ void ServerTabWidget::partsWebView_urlChanged(const QUrl &url)
 	ui->partsIndexUrlLineEdit->setText(str);
 }
 
-void ServerTabWidget::filesDeleted()
-{
-#warning todo
-#if 0
-	if (m_serversModel->hasErrors(BaseDataSource::Delete))
-	{
-		ErrorDialog dlg;
-		dlg.setError(tr("Unable to delete files:"));
-
-		QString str = "<html><body><dl>";
-		foreach(BaseDataSource::Error *e, m_serversModel->fileErrors(BaseDataSource::Delete))
-		{
-			str += "<dt>" + e->file->path + ":</dt>";
-			str += "<dd>" + e->error + "</dd>";
-		}
-		str += "</dl></body></html>";
-
-		dlg.setText(str);
-		dlg.exec();
-	} else {
-		// FIXME: if the deletion should occur in another thread and take more time, it will
-		// be neccessary to check if the reset is needed (user might be viewing something entirely
-		// different by the time it's finished).
-
-		ui->partsTreeView->reset();
-	}
-#endif
-}
-
 void ServerTabWidget::deleteSelectedParts()
 {
 	if( QMessageBox::question(this,
@@ -303,11 +272,11 @@ void ServerTabWidget::partsTreeView_doubleClicked(const QModelIndex &index)
 
     switch (f.type)
 	{
-	case File::PRT_PROE:
-	case File::ASM:
-	case File::DRW:
-	case File::FRM:
-	case File::NEU_PROE:
+    case FileType::PRT_PROE:
+    case FileType::ASM:
+    case FileType::DRW:
+    case FileType::FRM:
+    case FileType::NEU_PROE:
 	{
 		QString exe = Settings::get()->ProeExecutable;
         qDebug() << "Starting ProE:" << exe << f.fileInfo.absoluteFilePath() << "; working dir" << Settings::get()->WorkingDir;

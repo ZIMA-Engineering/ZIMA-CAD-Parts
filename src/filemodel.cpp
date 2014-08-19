@@ -19,9 +19,11 @@
 */
 
 #include <QDebug>
+#include <QMessageBox>
 
 #include "filemodel.h"
 #include "settings.h"
+#include "errordialog.h"
 
 FileModel::FileModel(QObject *parent) :
     QFileSystemModel(parent)
@@ -90,7 +92,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
     {
         return MetadataCache::get()->partParam(m_path,
                                                fileInfo(index).fileName(),
-                                               col-QFileSystemModel::columnCount()-1);
+                                               col-QFileSystemModel::columnCount());
     }
 
     return QVariant();
@@ -178,12 +180,65 @@ void FileModel::deleteParts()
             continue;
         if (Settings::get()->ShowProeVersions)
         {
+#warning TODO/FIXME: delete versioned parts
             // delete all "versioned" files
         }
         else
             qDebug() << remove(it.key());
     }
     m_checked.clear();
+}
+
+void FileModel::copyToWorkingDir()
+{
+    QHashIterator<QModelIndex,Qt::CheckState> it(m_checked);
+    bool overwrite = false;
+    QHash<QString,QString> errors;
+    while (it.hasNext())
+    {
+        it.next();
+        if (it.value() != Qt::Checked)
+            continue;
+
+        QFileInfo fi = fileInfo(it.key());
+        QFile f(fi.absoluteFilePath());
+        QString target = Settings::get()->WorkingDir + "/" + fi.fileName();
+
+        if (!overwrite && QDir().exists(target))
+        {
+            QMessageBox::StandardButton ret = QMessageBox::question(0, tr("Overwrite file?"),
+                                          tr("File %1 already exists. Overwrite?").arg(target),
+                                          QMessageBox::Yes|QMessageBox::No|QMessageBox::YesAll|QMessageBox::Cancel
+                                          );
+            switch (ret)
+            {
+            case QMessageBox::Yes:
+                break;
+            case QMessageBox::No:
+                continue;
+                break;
+            case QMessageBox::YesAll:
+                overwrite = true;
+                break;
+            case QMessageBox::Cancel:
+                return;
+                break;
+            default:
+                break;
+            } // switch
+
+        } // if !overwrite
+
+        if (!f.copy(target))
+            errors[target] = f.errorString();
+    } // while
+
+    if (errors.count())
+    {
+        ErrorDialog dlg;
+        dlg.setErrors(tr("File copying error(s):"), errors);
+        dlg.exec();
+    }
 }
 
 
@@ -198,7 +253,6 @@ QIcon FileIconProvider::icon ( IconType type ) const
 
 QIcon FileIconProvider::icon ( const QFileInfo & info ) const
 {
-#warning todo get rid of FileMetadata. getInternalNameForFileType(QFileInfo) should be enough
     FileMetadata fi(info);
     QString s = QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(fi.type));
 

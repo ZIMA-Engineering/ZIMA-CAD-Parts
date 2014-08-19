@@ -2,10 +2,14 @@
 #define ERRORDIALOG_H
 
 #include <QDialog>
+#include <QHash>
 
 namespace Ui {
 class ErrorDialog;
 }
+
+typedef QHash<QString,QString> ErrorsMap;
+typedef QHashIterator<QString,QString> ErrorsMapIterator;
 
 class ErrorDialog : public QDialog
 {
@@ -14,8 +18,7 @@ class ErrorDialog : public QDialog
 public:
 	explicit ErrorDialog(QWidget *parent = 0);
 	~ErrorDialog();
-	void setError(QString s);
-	void setText(QString s);
+    void setErrors(const QString &label, const ErrorsMap &errors);
 
 private:
 	Ui::ErrorDialog *ui;
