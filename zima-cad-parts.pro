@@ -94,8 +94,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/workingdirwidget.cpp \
     src/serversview.cpp \
     src/fileview.cpp \
-    src/webdowloaderdialog.cpp \
-    src/webdownloaderwidget.cpp
+    src/webdownloaderwidget.cpp \
+    src/webdownloaderdialog.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -138,8 +138,8 @@ HEADERS += src/mainwindow.h \
     src/workingdirwidget.h \
     src/serversview.h \
     src/fileview.h \
-    src/webdowloaderdialog.h \
-    src/webdownloaderwidget.h
+    src/webdownloaderwidget.h \
+    src/webdownloaderdialog.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -155,8 +155,8 @@ FORMS += mainwindow.ui \
     src/servertabwidget.ui \
     src/extensions/navbar/navbaroptionsdialog.ui \
     src/workingdirwidget.ui \
-    src/webdowloaderdialog.ui \
-    src/webdownloaderwidget.ui
+    src/webdownloaderwidget.ui \
+    src/webdownloaderdialog.ui
 
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc

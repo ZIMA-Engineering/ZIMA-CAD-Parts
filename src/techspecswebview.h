@@ -24,7 +24,7 @@
 #include <QWebView>
 #include <QNetworkReply>
 
-class WebDowloaderDialog;
+class WebDownloaderDialog;
 
 
 class TechSpecsWebView : public QWebView
@@ -49,7 +49,7 @@ private slots:
 
 private:
 	QString m_rootPath;
-    WebDowloaderDialog *m_downloader;
+    WebDownloaderDialog *m_downloader;
 };
 
 #endif // TECHSPECSWEBVIEW_H

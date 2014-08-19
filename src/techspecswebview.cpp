@@ -19,7 +19,7 @@
 */
 
 #include "techspecswebview.h"
-#include "webdowloaderdialog.h"
+#include "webdownloaderdialog.h"
 
 #include <QDialog>
 #include <QVBoxLayout>
@@ -160,7 +160,7 @@ void TechSpecsWebView::downloadFile(QNetworkReply *reply)
 
     if (!m_downloader)
     {
-        m_downloader = new WebDowloaderDialog(this);
+        m_downloader = new WebDownloaderDialog(this);
     }
     m_downloader->enqueue(fileName, reply);
     m_downloader->show();

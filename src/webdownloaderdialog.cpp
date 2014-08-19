@@ -1,13 +1,13 @@
-#include "webdowloaderdialog.h"
-#include "ui_webdowloaderdialog.h"
+#include "webdownloaderdialog.h"
+#include "ui_webdownloaderdialog.h"
 
 #include <QNetworkReply>
 #include <QHBoxLayout>
 
 
-WebDowloaderDialog::WebDowloaderDialog(QWidget *parent) :
+WebDownloaderDialog::WebDownloaderDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::WebDowloaderDialog)
+    ui(new Ui::WebDownloaderDialog)
 {
     ui->setupUi(this);
 
@@ -16,12 +16,12 @@ WebDowloaderDialog::WebDowloaderDialog(QWidget *parent) :
     m_layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Expanding));
 }
 
-WebDowloaderDialog::~WebDowloaderDialog()
+WebDownloaderDialog::~WebDownloaderDialog()
 {
     delete ui;
 }
 
-void WebDowloaderDialog::enqueue(const QString &fileName, QNetworkReply *reply)
+void WebDownloaderDialog::enqueue(const QString &fileName, QNetworkReply *reply)
 {
     WebDownloaderWidget *w = new WebDownloaderWidget(fileName, reply, this);
     m_map[fileName] = w;
