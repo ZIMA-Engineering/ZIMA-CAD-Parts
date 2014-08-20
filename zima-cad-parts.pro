@@ -162,7 +162,7 @@ RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc
 
 OTHER_FILES += \
-    zima-cad-parts.rc \
+    src/zima-cad-parts.rc \
     LICENSE \
     AUTHORS \
     data/zima-cad-parts.html \
@@ -198,7 +198,7 @@ TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts
 
 win32:CONFIG += static
 greaterThan(QT_MAJOR_VERSION, 4) {
-    #win32:RC_ICONS += gfx/icon.ico
+    win32:RC_ICONS = gfx/icon.ico
 }
 else {
     win32:RC_FILE = src/zima-cad-parts.rc
