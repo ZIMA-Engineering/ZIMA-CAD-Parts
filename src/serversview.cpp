@@ -127,15 +127,13 @@ void ServersView::setWorkingDirectory()
 
 bool ServersView::navigateToDirectory(const QString &path)
 {
-    QModelIndexList ix = m_model->match(m_model->index(0, 0),
-                                        Qt::ToolTipRole,
-                                        path,
-                                        1,
-                                        Qt::MatchRecursive | Qt::MatchExactly);
-    if (ix.size())
-    {
-        setCurrentIndex(m_proxy->mapFromSource(ix.at(0)));
-        return true;
-    }
-    return false;
+    // find the common root path. Then ise the index.
+    // note: all QFileSystemModels have the index(path) so we need to
+    // handle prefixes. ::match() did not work here.
+    QString root = m_model->filePath(m_proxy->mapToSource(rootIndex()));
+    if (!path.startsWith(root))
+        return false;
+
+    setCurrentIndex(m_proxy->mapFromSource(m_model->index(path)));
+    return true;
 }

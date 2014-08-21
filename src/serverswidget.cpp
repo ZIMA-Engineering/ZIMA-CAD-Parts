@@ -77,14 +77,11 @@ QModelIndex ServersWidget::currentIndex()
 
 void ServersWidget::setDirectory(const QString &path)
 {
-//    qDebug() << "SD1" << path;
     for (int i = 0; i < serversToolBox->count(); ++i)
     {
-//        qDebug() << "SD2" << path;
         ServersView *w = qobject_cast<ServersView*>(serversToolBox->widget(i));
         if (w->navigateToDirectory(path))
         {
-//            qDebug() << "SD3" << path;
             serversToolBox->setCurrentIndex(i);
             partsWidget->setDirectory(path);
         }

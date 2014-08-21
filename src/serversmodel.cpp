@@ -50,7 +50,6 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
         else
             return MetadataCache::get()->label(filePath(index));
     case Qt::ToolTipRole:
-        // warning: tooltip role is used for "go to home directory" in ServersWidget as well!
         return fileInfo(index).absoluteFilePath();
     default:
         ;

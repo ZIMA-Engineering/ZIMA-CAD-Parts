@@ -27,7 +27,6 @@ void FileView::setDirectory(const QString &path)
 {
     if (!m_path.isNull() && m_path != RELOAD_FLAG && m_path == path)
     {
-        qDebug("SET DIR false");
         return;
     }
 
