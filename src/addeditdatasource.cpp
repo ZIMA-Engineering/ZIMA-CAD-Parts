@@ -83,6 +83,7 @@ void AddEditDataSource::openFileDialog()
     if (ret.isEmpty())
         return;
     ui->pathLineEdit->setText(ret);
+    checkEnable();
 }
 
 void AddEditDataSource::labelLineEdit_textEdited(const QString &text)
