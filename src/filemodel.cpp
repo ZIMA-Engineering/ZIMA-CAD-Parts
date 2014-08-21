@@ -229,8 +229,15 @@ void FileModel::copyToWorkingDir()
 
         } // if !overwrite
 
+        if (f.exists(target) && !f.remove(target))
+        {
+            errors[target] = f.errorString();
+            continue;
+        }
         if (!f.copy(target))
             errors[target] = f.errorString();
+        else
+            m_checked[it.key()] = Qt::Unchecked;
     } // while
 
     if (errors.count())
