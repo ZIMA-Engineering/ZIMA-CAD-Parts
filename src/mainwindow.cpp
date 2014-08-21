@@ -26,9 +26,7 @@
 #include <QBitmap>
 #include <QRegExp>
 #include <QFile>
-#include <QTextStream>
 #include <QDebug>
-#include <QWebHistory>
 #include <QWebSettings>
 
 #include "mainwindow.h"

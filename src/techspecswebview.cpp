@@ -28,6 +28,7 @@
 #include <QRegExp>
 #include <QDebug>
 #include <QMessageBox>
+#include <QTextCodec>
 
 #include "settings.h"
 #include "zima-cad-parts.h"
@@ -61,6 +62,8 @@ void TechSpecsWebView::loadAboutPage()
 	QFile f(filename);
 	f.open(QIODevice::ReadOnly);
 	QTextStream stream(&f);
+    // resource/bundled html files are UTF-8 encoded for sure
+    stream.setCodec(QTextCodec::codecForName("utf8"));
 
 	setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }

@@ -3,7 +3,6 @@
 
 #include <QNetworkReply>
 #include <QFile>
-#include <QTextStream>
 
 
 WebDownloaderWidget::WebDownloaderWidget(const QString &fileName, QNetworkReply *reply, QWidget *parent) :
