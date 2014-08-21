@@ -17,6 +17,9 @@ ServersView::ServersView(const QString &rootPath, QWidget *parent) :
     QTreeView(parent),
     m_path(rootPath)
 {
+    // boss requirement - icons shoudl have be at least 32px sized
+    setStyleSheet("icon-size: 32px;");
+
     m_proxy = new ServersProxyModel(this);
 
     m_model = new ServersModel(this);
