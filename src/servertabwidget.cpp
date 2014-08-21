@@ -87,7 +87,6 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	connect(ui->partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
 	        this, SLOT(partsTreeView_doubleClicked(QModelIndex)));
 
-#warning "TODO/FIXME: icon for the button to save space"
 	connect(ui->filterButton, SIGNAL(clicked()),
 	        this, SLOT(setFiltersDialog()));
 }

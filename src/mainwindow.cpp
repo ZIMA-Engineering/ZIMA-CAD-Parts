@@ -64,6 +64,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
     ui->actionRefresh->setShortcut(QKeySequence::Refresh);
     ui->actionRefresh->setShortcutContext(Qt::ApplicationShortcut);
+    ui->actionRefresh->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
     connect(ui->actionRefresh, SIGNAL(triggered()),
             MetadataCache::get(), SLOT(clear()));
 
