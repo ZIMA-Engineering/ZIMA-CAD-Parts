@@ -23,10 +23,14 @@ FileView::FileView(QWidget *parent) :
 
 void FileView::setDirectory(const QString &path)
 {
+    if (path.isEmpty())
+    {
+        return;
+    }
+    m_path = path;
     // it has to be reset here because calling QFileSystemModel's reset
     // or begin/end alternatives results in "/" as a root path
-    m_model->setDirectory(path);
-    m_path = path;
+    m_model->setDirectory(m_path);
     setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
     resizeColumnToContents();
 }

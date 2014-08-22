@@ -41,7 +41,7 @@ int FileModel::columnCount(const QModelIndex & parent) const
 
 QVariant FileModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if (!index.isValid() || m_path.isEmpty())
         return QVariant();
 
     const int col = index.column();
@@ -100,7 +100,9 @@ void FileModel::loadThumbnails(const QString &path)
     if (m_thumbnails.size() && path == m_path)
         return;
 
-    QHashIterator<QString,QString> it(MetadataCache::get()->partThumbnailPaths(m_path));
+    // Warning: do not use m_path here. Path is assigned to m_path
+    // after the call of loadThumbnails()
+    QHashIterator<QString,QString> it(MetadataCache::get()->partThumbnailPaths(path));
     while (it.hasNext())
     {
         it.next();
@@ -163,7 +165,6 @@ void FileModel::setDirectory(const QString &path)
 
         m_columnLabels = MetadataCache::get()->columnLabels(path);
         loadThumbnails(path);
-
         m_path = path;
     }
 
