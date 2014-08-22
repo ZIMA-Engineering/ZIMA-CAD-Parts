@@ -235,6 +235,20 @@ void FileModel::copyToWorkingDir()
     QHashIterator<QModelIndex,Qt::CheckState> it(m_checked);
     bool overwrite = false;
     QHash<QString,QString> errors;
+    QDir d;
+
+    if (!d.exists(Settings::get()->WorkingDir))
+    {
+        if (QMessageBox::question(0, tr("Working Dir does not exist"),
+                                  tr("Working directory %1 does not exist. Create it?").arg(Settings::get()->WorkingDir),
+                                  QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        {
+            return;
+        }
+        if (!d.mkpath(Settings::get()->WorkingDir))
+            errors[Settings::get()->WorkingDir] = "Cannot create directory: " + Settings::get()->WorkingDir;
+    }
+
     while (it.hasNext())
     {
         it.next();
