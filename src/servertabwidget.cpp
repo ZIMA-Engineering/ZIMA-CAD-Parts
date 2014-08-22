@@ -98,12 +98,18 @@ ServerTabWidget::~ServerTabWidget()
 
 void ServerTabWidget::setDirectory(const QString &rootPath)
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    setEnabled(false);
+
     // set the directory to the file model
     ui->partsTreeView->setDirectory(rootPath);
     // handle the ui->partsWebView, custom index-parts*.html page in "parts" tab
     loadIndexHtml(rootPath, ui->partsWebView, "index-parts", true);
     // handle the ui->partsWebView, custom index*.html page in "parts" tab
     loadIndexHtml(rootPath, ui->techSpec, "index", false);
+
+    setEnabled(true);
+    QApplication::restoreOverrideCursor();
 }
 
 void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound)
