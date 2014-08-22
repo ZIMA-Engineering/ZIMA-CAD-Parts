@@ -29,7 +29,7 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
 
     if (f.fileInfo.isDir())
     {
-        return true;
+        return false;
     }
     else if (!Settings::get()->filtersRegex.exactMatch(f.fileInfo.fileName()))
     {
