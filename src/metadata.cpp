@@ -63,6 +63,11 @@ void MetadataCache::load(const QString &path)
 
 QString MetadataCache::label(const QString &path)
 {
+    // avoid creation of empty Metadata instances
+    // in ServersModel::data
+    if (!QDir().exists(path + "/" + TECHSPEC_DIR))
+        return QString();
+
     if (!m_map.contains(path))
         load(path);
     return m_map[path]->getLabel();
