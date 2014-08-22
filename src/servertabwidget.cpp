@@ -115,7 +115,14 @@ void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebView *webView, 
         if (hideIfNotFound) webView->hide();
         // load aboutPage only when there is no custom index.html and there is no WD specified
         if (rootPath == DEFAULT_WDIR && webView == ui->techSpec)
+        {
             ui->techSpec->loadAboutPage();
+            return;
+        }
+        QDir d(rootPath);
+        if (!d.cdUp())
+            return;
+        loadIndexHtml(d.absolutePath(), webView, filterBase, hideIfNotFound);
         return;
     }
 
