@@ -23,8 +23,9 @@
 
 #include <QAbstractItemModel>
 #include <QFileIconProvider>
-//#include <QSortFilterProxyModel>
 #include "metadata.h"
+
+class FileIconProvider;
 
 
 /*! A "list files" tree. This class is used inside FileView only
@@ -34,6 +35,7 @@ class FileModel : public QAbstractItemModel
     Q_OBJECT
 public:
     explicit FileModel(QObject *parent = 0);
+    ~FileModel();
 
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const;
@@ -64,6 +66,7 @@ private:
     QString m_path;
     QStringList m_columnLabels;
     QHash<QModelIndex,Qt::CheckState> m_checked;
+    FileIconProvider *m_iconProvider;
 
 private slots:
     void loadFiles(const QString &path);

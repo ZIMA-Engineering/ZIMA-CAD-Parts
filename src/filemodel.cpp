@@ -28,6 +28,12 @@
 FileModel::FileModel(QObject *parent) :
     QAbstractItemModel(parent)
 {
+    m_iconProvider = new FileIconProvider();
+}
+
+FileModel::~FileModel()
+{
+    delete m_iconProvider;
 }
 
 QModelIndex FileModel::index(int row, int column,
@@ -70,6 +76,10 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
     else if (col == 0 && role == Qt::DisplayRole)
     {
         return m_data.at(index.row()).fileName();
+    }
+    else if (col == 0 && role == Qt::DecorationRole)
+    {
+        return m_iconProvider->icon(m_data.at(index.row()));
     }
     // custom columns:
     // thumbnail
