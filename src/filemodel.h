@@ -21,21 +21,25 @@
 #ifndef FILEMODEL_H
 #define FILEMODEL_H
 
-#include <QFileSystemModel>
+#include <QAbstractItemModel>
 #include <QFileIconProvider>
-#include <QSortFilterProxyModel>
+//#include <QSortFilterProxyModel>
 #include "metadata.h"
 
 
 /*! A "list files" tree. This class is used inside FileView only
  */
-class FileModel : public QFileSystemModel
+class FileModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
     explicit FileModel(QObject *parent = 0);
 
+    QModelIndex index(int row, int column,
+                      const QModelIndex &parent = QModelIndex()) const;
+    QModelIndex parent(const QModelIndex &child) const;
     int columnCount(const QModelIndex & parent = QModelIndex()) const;
+    int rowCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
@@ -50,7 +54,10 @@ public:
 
     QString path() const { return m_path; }
 
+    QFileInfo fileInfo(const QModelIndex &ix);
+
 private:
+    QFileInfoList m_data;
     QString m_path;
     QStringList m_columnLabels;
     QHash<QModelIndex,Qt::CheckState> m_checked;
@@ -59,6 +66,7 @@ private:
 
 private slots:
     void loadThumbnails(const QString &path);
+    void loadFiles(const QString &path);
 };
 
 /*! An icon provider for FileModel. It contains additional

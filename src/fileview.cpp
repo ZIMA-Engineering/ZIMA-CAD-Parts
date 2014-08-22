@@ -12,8 +12,9 @@ FileView::FileView(QWidget *parent) :
     m_model = new FileModel(this);
     m_proxy = new FileFilterModel(this);
 
-    m_proxy->setSourceModel(m_model);
-    setModel(m_proxy);
+    //m_proxy->setSourceModel(m_model);
+    //setModel(m_proxy);
+    setModel(m_model);
 
     connect(m_model, SIGNAL(directoryLoaded(QString)),
             this, SLOT(resizeColumnToContents()));
@@ -31,7 +32,7 @@ void FileView::setDirectory(const QString &path)
     // it has to be reset here because calling QFileSystemModel's reset
     // or begin/end alternatives results in "/" as a root path
     m_model->setDirectory(m_path);
-    setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
+    //setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
     resizeColumnToContents();
 }
 

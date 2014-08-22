@@ -145,6 +145,8 @@ QStringList Metadata::columnLabels()
     if(m_columnLabels.count())
         return m_columnLabels;
 
+    m_columnLabels << tr("Part Name") << tr("Thumbnail");
+
 	QRegExp colRx("^\\d+$");
 	int colIndex = 1;
 
