@@ -201,21 +201,20 @@ void FileModel::deleteParts()
         if (!Settings::get()->ShowProeVersions
                 && MetadataCache::get()->partVersions(m_path).contains(key.completeBaseName()))
         {
-            QDir d;
-            bool hasErrors = false;
+            QDir d(m_path);
             QFileInfoList fil = d.entryInfoList(QStringList() << key.completeBaseName()+".*");
             foreach (QFileInfo fi, fil)
             {
                 if (!f.remove(fi.absoluteFilePath()))
                 {
-                    hasErrors = true;
                     errors[fi.absoluteFilePath()] = f.errorString();
                 }
-            }
-            if (!hasErrors)
-            {
-                MetadataCache::get()->deletePart(m_path, key.baseName());
-                m_checked[it.key()] = Qt::Unchecked;
+                else
+                {
+                    m_data.removeAll(key);
+                    MetadataCache::get()->deletePart(m_path, key.baseName());
+                    m_checked[it.key()] = Qt::Unchecked;
+                }
             }
         }
         else
@@ -224,6 +223,7 @@ void FileModel::deleteParts()
                 errors[key.absoluteFilePath()] = f.errorString();
             else
             {
+                m_data.removeAll(key);
                 MetadataCache::get()->deletePart(m_path, key.baseName());
                 m_checked[it.key()] = Qt::Unchecked;
             }
