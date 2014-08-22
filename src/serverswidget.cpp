@@ -58,11 +58,11 @@ void ServersWidget::settingsChanged()
 
         serversToolBox->setVisibleRows(serversToolBox->count());
 
+        goToWorkingDirectory();
+
 	} // Settings::get()->DataSourcesNeedsUpdate
 
     partsWidget->settingsChanged();
-
-    goToWorkingDirectory();
 }
 
 void ServersWidget::expand(const QModelIndex & index)
