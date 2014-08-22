@@ -90,7 +90,6 @@ ServerTabWidget::~ServerTabWidget()
 
 void ServerTabWidget::setDirectory(const QString &rootPath)
 {
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     setEnabled(false);
 
     // set the directory to the file model
@@ -101,7 +100,6 @@ void ServerTabWidget::setDirectory(const QString &rootPath)
     loadIndexHtml(rootPath, ui->techSpec, "index", false);
 
     setEnabled(true);
-    QApplication::restoreOverrideCursor();
 }
 
 void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound)

@@ -20,6 +20,7 @@
 
 #include <QDebug>
 #include <QMessageBox>
+#include <QApplication>
 
 #include "filemodel.h"
 #include "settings.h"
@@ -164,6 +165,7 @@ void FileModel::setDirectory(const QString &path)
 
     if (path != m_path)
     {
+        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
         m_checked.clear();
 
         loadFiles(path);
@@ -172,6 +174,8 @@ void FileModel::setDirectory(const QString &path)
 
         beginResetModel();
         endResetModel();
+
+        QApplication::restoreOverrideCursor();
     }
 
     // simulating "directory loaded" signal even when is the path the
