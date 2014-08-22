@@ -68,7 +68,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     connect(ui->actionRefresh, SIGNAL(triggered()),
             MetadataCache::get(), SLOT(clear()));
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     // do not display menu bar for now on Windows. It contains only one "File" item now.
 	// On th eother side it's mandatory to allow user to quit the app in some
 	// X11 window manager (and mac)
