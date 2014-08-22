@@ -231,7 +231,7 @@ MetadataThumbnailMap Metadata::partThumbnailPaths()
     // includes first because local dir overrides it
     foreach(Metadata *include, includes)
     {
-        QHashIterator<QString,QString> it(include->partThumbnailPaths());
+        MetadataThumbnailMapIterator it(include->partThumbnailPaths());
         while (it.hasNext())
         {
             it.next();
@@ -240,10 +240,12 @@ MetadataThumbnailMap Metadata::partThumbnailPaths()
         }
     }
 
+    QString pmPath;
     foreach (QString i, thumbs)
     {
         fi.setFile(i);
-        m_thumbnailsCache[fi.baseName()] = m_path + "/" + THUMBNAILS_DIR + "/" + i;
+        pmPath = m_path + "/" + THUMBNAILS_DIR + "/" + i;
+        m_thumbnailsCache[fi.baseName()] = qMakePair(pmPath, QPixmap(pmPath));
     }
 
     return m_thumbnailsCache;

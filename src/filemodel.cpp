@@ -77,22 +77,22 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
         switch( role )
         {
         case Qt::DecorationRole:
-            if (m_thumbnails.contains(key))
-                return m_thumbnails[key].scaled(Settings::get()->GUIThumbWidth,
-                                                Settings::get()->GUIThumbWidth);
+            if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
+                return MetadataCache::get()->partThumbnailPaths(m_path)[key].second.scaled(Settings::get()->GUIThumbWidth,
+                                                                                           Settings::get()->GUIThumbWidth);
             break;
         case Qt::SizeHintRole:
-            if (m_thumbnails.contains(key))
+            if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
             {
                 return QSize(Settings::get()->GUIThumbWidth,
                              Settings::get()->GUIThumbWidth);
             }
             break;
         case Qt::ToolTipRole:
-            if (m_thumbnails.contains(key))
+            if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
             {
                 return QString("<img src=\"%1\" width=\"%2\">")
-                        .arg(m_thumbnailPath[key])
+                        .arg(MetadataCache::get()->partThumbnailPaths(m_path)[key].first)
                         .arg(Settings::get()->GUIPreviewWidth);
             }
             break;
@@ -106,26 +106,6 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
-}
-
-void FileModel::loadThumbnails(const QString &path)
-{
-    if (m_thumbnails.size() && path == m_path)
-        return;
-
-    // Warning: do not use m_path here. Path is assigned to m_path
-    // after the call of loadThumbnails()
-    QHashIterator<QString,QString> it(MetadataCache::get()->partThumbnailPaths(path));
-    while (it.hasNext())
-    {
-        it.next();
-        QPixmap pm(it.value());
-        if (!pm.isNull())
-        {
-            m_thumbnails[it.key()] = pm;
-            m_thumbnailPath[it.key()] = it.value();
-        }
-    }
 }
 
 void FileModel::loadFiles(const QString &path)
@@ -171,12 +151,10 @@ void FileModel::setDirectory(const QString &path)
 
     if (path != m_path)
     {
-        m_thumbnailPath.clear();
-        m_thumbnails.clear();
         m_checked.clear();
 
         loadFiles(path);
-        loadThumbnails(path);
+        MetadataCache::get()->partThumbnailPaths(path);
         m_path = path;
 
         beginResetModel();

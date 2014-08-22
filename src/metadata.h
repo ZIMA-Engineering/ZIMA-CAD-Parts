@@ -29,7 +29,8 @@
 
 
 //! \brief Thumbnail map: baseName -> full path to the file (including the file name)
-typedef QHash<QString,QString> MetadataThumbnailMap;
+typedef QHash<QString,QPair<QString,QPixmap> > MetadataThumbnailMap;
+typedef QHashIterator<QString,QPair<QString,QPixmap> > MetadataThumbnailMapIterator;
 
 //! \brief Version map: completeBaseName -> fileName, only the latest version is stored in this map
 typedef QHash<QString,QString> MetadataVersionsMap;

@@ -61,11 +61,8 @@ private:
     QString m_path;
     QStringList m_columnLabels;
     QHash<QModelIndex,Qt::CheckState> m_checked;
-    QHash<QString,QPixmap> m_thumbnails;
-    MetadataThumbnailMap m_thumbnailPath;
 
 private slots:
-    void loadThumbnails(const QString &path);
     void loadFiles(const QString &path);
 };
 
