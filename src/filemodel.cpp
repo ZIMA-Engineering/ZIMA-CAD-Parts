@@ -31,9 +31,6 @@ FileModel::FileModel(QObject *parent) :
     setReadOnly(true);
     setFilter(QDir::Files | QDir::NoDotAndDotDot);
     setIconProvider(new FileIconProvider());
-
-    connect(this, SIGNAL(directoryLoaded(QString)),
-            this, SLOT(loadThumbnails(QString)));
 }
 
 int FileModel::columnCount(const QModelIndex & parent) const
@@ -158,11 +155,21 @@ QVariant FileModel::headerData (int section, Qt::Orientation orientation, int ro
 
 void FileModel::setDirectory(const QString &path)
 {
-    m_thumbnailPath.clear();
-    m_thumbnails.clear();
-    m_checked.clear();
-    m_path = path;
-    m_columnLabels = MetadataCache::get()->columnLabels(m_path);
+    if (path != m_path)
+    {
+        m_thumbnailPath.clear();
+        m_thumbnails.clear();
+        m_checked.clear();
+
+        m_columnLabels = MetadataCache::get()->columnLabels(path);
+        loadThumbnails(path);
+
+        m_path = path;
+    }
+
+    // simulating "directory loaded" signal even when is the path the
+    // same as before to recalculate the column sizes in view
+    emit directoryLoaded(m_path);
 }
 
 void FileModel::settingsChanged()

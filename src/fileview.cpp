@@ -5,7 +5,6 @@
 
 #include <QMessageBox>
 
-#define RELOAD_FLAG "reload"
 
 FileView::FileView(QWidget *parent) :
     QTreeView(parent)
@@ -19,35 +18,33 @@ FileView::FileView(QWidget *parent) :
     connect(m_model, SIGNAL(directoryLoaded(QString)),
             this, SLOT(resizeColumnToContents()));
 
-
     connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(refreshModel()));
 }
 
 void FileView::setDirectory(const QString &path)
 {
-    if (!m_path.isNull() && m_path != RELOAD_FLAG && m_path == path)
-    {
-        return;
-    }
-
     // it has to be reset here because calling QFileSystemModel's reset
     // or begin/end alternatives results in "/" as a root path
     m_model->setDirectory(path);
     m_path = path;
-    setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(path)));
+    setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
+    resizeColumnToContents();
 }
 
 void FileView::refreshModel()
 {
-    m_path = RELOAD_FLAG; // enforce setDirectory reload
     setDirectory(m_path);
 }
-
 void FileView::resizeColumnToContents()
 {
     int columnCnt = m_model->columnCount(QModelIndex());
     for (int i = 0; i < columnCnt; i++)
+    {
         QTreeView::resizeColumnToContents(i);
+        // hack. Probably some QFontMetrics for header should be used. But not urgent for now.
+        if (columnWidth(i) < 50)
+            setColumnWidth(i, 50);
+    }
 }
 
 void FileView::settingsChanged()
