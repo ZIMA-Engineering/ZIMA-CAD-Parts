@@ -56,8 +56,9 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
 bool FileFilterModel::filterAcceptsColumn(int source_column, const QModelIndex & source_parent) const
 {
     Q_UNUSED(source_parent);
+    Q_UNUSED(source_column)
     // hide all QFileSystemModel "meta" columns and use only extended ones
-    if (source_column >=1 && source_column < 4)
-        return false;
+//    if (source_column >=1 && source_column < 4)
+//        return false;
     return true;
 }

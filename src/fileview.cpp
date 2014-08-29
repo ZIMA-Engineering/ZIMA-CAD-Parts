@@ -12,9 +12,9 @@ FileView::FileView(QWidget *parent) :
     m_model = new FileModel(this);
     m_proxy = new FileFilterModel(this);
 
-    //m_proxy->setSourceModel(m_model);
-    //setModel(m_proxy);
-    setModel(m_model);
+    m_proxy->setSourceModel(m_model);
+    setModel(m_proxy);
+    //setModel(m_model);
 
     connect(m_model, SIGNAL(directoryLoaded(QString)),
             this, SLOT(resizeColumnToContents()));
