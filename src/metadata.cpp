@@ -166,8 +166,12 @@ QStringList Metadata::columnLabels()
 	}
     m_settings->endGroup();
 
-	foreach(Metadata *include, includes)
-        m_columnLabels << include->columnLabels();
+    if (includes.size())
+    {
+        m_columnLabels.clear();
+        foreach(Metadata *include, includes)
+            m_columnLabels << include->columnLabels();
+    }
 
     return m_columnLabels;
 }

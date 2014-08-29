@@ -183,8 +183,14 @@
           </property>
          </widget>
          <widget class="FileView" name="partsTreeView">
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
           <property name="verticalScrollMode">
            <enum>QAbstractItemView::ScrollPerPixel</enum>
+          </property>
+          <property name="rootIsDecorated">
+           <bool>false</bool>
           </property>
           <property name="itemsExpandable">
            <bool>false</bool>

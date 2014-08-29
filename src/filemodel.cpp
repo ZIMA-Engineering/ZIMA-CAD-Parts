@@ -44,12 +44,12 @@ QModelIndex FileModel::parent(const QModelIndex &child) const
 int FileModel::columnCount(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
-    return 3 + m_columnLabels.count();
+    return m_columnLabels.count();
 }
 
 int FileModel::rowCount(const QModelIndex & parent) const
 {
-    Q_UNUSED(parent);
+    if (!parent.column()) return 0;
     return m_data.size();
 }
 
@@ -92,7 +92,6 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
             if (m_thumbnails.contains(key))
             {
                 return QString("<img src=\"%1\" width=\"%2\">")
-                        //.arg(MetadataCache::get()->partThumbnailPaths(m_path, fileInfo(index).absoluteFilePath()))
                         .arg(m_thumbnailPath[key])
                         .arg(Settings::get()->GUIPreviewWidth);
             }
@@ -133,9 +132,7 @@ void FileModel::loadFiles(const QString &path)
 {
     m_data.clear();
     QDir d(path);
-    qDebug() << "loadFiles" << path;
     m_data = d.entryInfoList(QDir::Files|QDir::Readable, QDir::Name);
-    qDebug() << "loadFiles" << "end" << m_data.size();
 }
 
 QFileInfo FileModel::fileInfo(const QModelIndex &ix)
@@ -169,13 +166,15 @@ QVariant FileModel::headerData (int section, Qt::Orientation orientation, int ro
 
 void FileModel::setDirectory(const QString &path)
 {
+    // this has to go before path != m_path check to reload the header translations
+    m_columnLabels = MetadataCache::get()->columnLabels(path);
+
     if (path != m_path)
     {
         m_thumbnailPath.clear();
         m_thumbnails.clear();
         m_checked.clear();
 
-        m_columnLabels = MetadataCache::get()->columnLabels(path);
         loadFiles(path);
         loadThumbnails(path);
         m_path = path;
