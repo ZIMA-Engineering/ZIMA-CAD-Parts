@@ -33,11 +33,13 @@ FileModel::FileModel(QObject *parent) :
 QModelIndex FileModel::index(int row, int column,
                              const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return createIndex(row, column);
 }
 
 QModelIndex FileModel::parent(const QModelIndex &child) const
 {
+    Q_UNUSED(child);
     return QModelIndex();
 }
 
@@ -122,6 +124,7 @@ QFileInfo FileModel::fileInfo(const QModelIndex &ix)
 
 Qt::ItemFlags FileModel::flags(const QModelIndex& index) const
 {
+    Q_UNUSED(index);
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
 }
 
@@ -163,7 +166,7 @@ void FileModel::setDirectory(const QString &path)
 
     // simulating "directory loaded" signal even when is the path the
     // same as before to recalculate the column sizes in view
-#warning    emit directoryLoaded(m_path);
+    emit directoryLoaded(m_path);
 }
 
 void FileModel::settingsChanged()
@@ -174,27 +177,61 @@ void FileModel::settingsChanged()
 void FileModel::deleteParts()
 {
     QHashIterator<QModelIndex,Qt::CheckState> it(m_checked);
+    QFile f;
+    QHash<QString,QString> errors;
+    QFileInfo key;
+
     while (it.hasNext())
     {
         it.next();
         if (it.value() == Qt::Unchecked)
             continue;
-        if (Settings::get()->ShowProeVersions)
+        key = m_data.at(it.key().row());
+
+        if (!Settings::get()->ShowProeVersions
+                && MetadataCache::get()->partVersions(m_path).contains(key.completeBaseName()))
         {
-#warning TODO/FIXME: delete versioned parts
-            // delete all "versioned" files
+            QDir d;
+            bool hasErrors = false;
+            QFileInfoList fil = d.entryInfoList(QStringList() << key.completeBaseName()+".*");
+            foreach (QFileInfo fi, fil)
+            {
+                if (!f.remove(fi.absoluteFilePath()))
+                {
+                    hasErrors = true;
+                    errors[fi.absoluteFilePath()] = f.errorString();
+                }
+            }
+            if (!hasErrors)
+            {
+                MetadataCache::get()->deletePart(m_path, key.baseName());
+                m_checked[it.key()] = Qt::Unchecked;
+            }
         }
         else
         {
-#warning            qDebug() << remove(it.key());
+            if (!f.remove(key.absoluteFilePath()))
+                errors[key.absoluteFilePath()] = f.errorString();
+            else
+            {
+                MetadataCache::get()->deletePart(m_path, key.baseName());
+                m_checked[it.key()] = Qt::Unchecked;
+            }
         }
     }
-    m_checked.clear();
+
+    if (errors.count())
+    {
+        ErrorDialog dlg;
+        dlg.setErrors(tr("File deletion error(s):"), errors);
+        dlg.exec();
+    }
+    else
+        m_checked.clear();
 }
 
 void FileModel::copyToWorkingDir()
 {
-#if 0
     QHashIterator<QModelIndex,Qt::CheckState> it(m_checked);
     bool overwrite = false;
     QHash<QString,QString> errors;
@@ -250,7 +287,8 @@ void FileModel::copyToWorkingDir()
         dlg.setErrors(tr("File copying error(s):"), errors);
         dlg.exec();
     }
-#endif
+    else
+        m_checked.clear();
 }
 
 

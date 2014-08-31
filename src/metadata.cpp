@@ -96,6 +96,12 @@ MetadataVersionsMap MetadataCache::partVersions(const QString &path)
     return m_map[path]->partVersions();
 }
 
+void MetadataCache::deletePart(const QString &path, const QString &part)
+{
+    if (!m_map.contains(path))
+        load(path);
+    return m_map[path]->deletePart(part);
+}
 
 Metadata::Metadata(const QString &path, QObject *parent)
 	: QObject(parent),
@@ -289,7 +295,6 @@ MetadataVersionsMap Metadata::partVersions()
 
 void Metadata::deletePart(const QString &part)
 {
-#warning TODO/FIXME: implementation
 	QString grp = part.section('.', 0, 0);
 
 	if(grp.isEmpty())

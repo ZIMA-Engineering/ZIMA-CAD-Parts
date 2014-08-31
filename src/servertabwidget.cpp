@@ -65,14 +65,6 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	connect(ui->partsWebView, SIGNAL(urlChanged(QUrl)),
 	        this, SLOT(partsWebView_urlChanged(QUrl)));
 
-#warning todo
-#if 0
-	connect(m_serversModel, SIGNAL(filesDeleted()),
-	        this, SLOT(filesDeleted()));
-	connect(m_serversModel, SIGNAL(partsIndexAlreadyExists(Item*)),
-	        this, SLOT(partsIndexOverwrite(Item*)));
-#endif
-
     connect(ui->copyToWorkingDirButton, SIGNAL(clicked()),
             ui->partsTreeView, SLOT(copyToWorkingDir()));
 	connect(ui->btnDelete, SIGNAL(clicked()),

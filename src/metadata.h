@@ -111,6 +111,7 @@ public:
     QString partParam(const QString &path, const QString &fname, int column);
     MetadataThumbnailMap partThumbnailPaths(const QString &path);
     MetadataVersionsMap partVersions(const QString &path);
+    void deletePart(const QString &path, const QString &part);
 
 signals:
     //! Emitted when is the cache content invalidated. All dependent objects should reset themself.
