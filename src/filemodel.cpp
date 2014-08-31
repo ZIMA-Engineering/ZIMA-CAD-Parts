@@ -278,7 +278,17 @@ void FileModel::copyToWorkingDir()
         if (!f.copy(target))
             errors[target] = f.errorString();
         else
+        {
+            // copy the thumbnail too
+            if (QDir().mkpath(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR))
+            {
+                QFileInfo thumbFi;
+                thumbFi.setFile(MetadataCache::get()->partThumbnailPaths(m_path)[fi.baseName()].first);
+                QFile thumb(thumbFi.absoluteFilePath());
+                thumb.copy(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
+            }
             m_checked[it.key()] = Qt::Unchecked;
+        }
     } // while
 
     if (errors.count())
