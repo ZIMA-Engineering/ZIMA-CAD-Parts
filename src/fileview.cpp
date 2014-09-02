@@ -73,7 +73,8 @@ void FileView::createIndexHtmlFile(const QString &text, const QString &fileBase)
         techSpecDir.mkdir(techSpecDir.absolutePath());
 
     QString lang = Settings::get()->getCurrentLanguageCode().left(2);
-    QFile indexFile(techSpecDir + "/" + fileBase + "_" + lang + ".html");
+    QString htmlFile = techSpecDir.absolutePath() + "/" + fileBase + "_" + lang + ".html";
+    QFile indexFile(htmlFile);
 
     if(indexFile.exists())
     {
