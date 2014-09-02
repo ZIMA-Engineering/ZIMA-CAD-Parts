@@ -28,7 +28,9 @@ ServersModel::ServersModel(QObject *parent) :
 {
     setReadOnly(true);
     setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
-    setIconProvider(new ServersIconProvider());
+    m_iconProvider = new ServersIconProvider();
+    // do not install icon provider. The icon handling is quite complex. See ServersIconProvider
+    //setIconProvider(m_iconProvider);
 }
 
 int ServersModel::columnCount(const QModelIndex & parent) const
@@ -45,12 +47,21 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
     switch(role)
     {
     case Qt::DisplayRole:
-        if (MetadataCache::get()->label(filePath(index)).isEmpty())
+        if (!MetadataCache::get()->showLabel(filePath(index)))
+        {
+            return QVariant();
+        }
+        else if (MetadataCache::get()->label(filePath(index)).isEmpty())
             return QFileSystemModel::data(index, role);
         else
             return MetadataCache::get()->label(filePath(index));
+        break;
     case Qt::ToolTipRole:
         return fileInfo(index).absoluteFilePath();
+        break;
+    case Qt::DecorationRole:
+        return m_iconProvider->pixmap(fileInfo(index));
+        break;
     default:
         ;
     }
@@ -99,6 +110,23 @@ QIcon ServersIconProvider::icon ( const QFileInfo & info ) const
     }
     else
         return QFileIconProvider::icon(info);
+}
+
+QPixmap ServersIconProvider::pixmap(const QFileInfo &info) const
+{
+    QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
+    if (QFile::exists(logoPath + LOGO_FILE))
+    {
+        return QPixmap(logoPath + LOGO_FILE);
+    }
+    else if (QFile::exists(logoPath + LOGO_TEXT_FILE))
+    {
+        return QPixmap(logoPath + LOGO_TEXT_FILE);
+    }
+    else
+    {
+        return QFileIconProvider::icon(info).pixmap(32, 32);
+    }
 }
 
 QString ServersIconProvider::type ( const QFileInfo & info ) const

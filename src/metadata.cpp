@@ -67,6 +67,11 @@ void MetadataCache::load(const QString &path)
     m_map[path] = new Metadata(path);
 }
 
+bool MetadataCache::showLabel(const QString &path)
+{
+    return !QDir().exists(path + "/" + TECHSPEC_DIR + "/" + LOGO_FILE);
+}
+
 QString MetadataCache::label(const QString &path)
 {
     // avoid creation of empty Metadata instances

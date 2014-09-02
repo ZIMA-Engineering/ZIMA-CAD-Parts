@@ -30,6 +30,8 @@
 #include <QSortFilterProxyModel>
 #include <QFileIconProvider>
 
+class ServersIconProvider;
+
 
 /*! A "datasource" tree. This class is used inside ServersView only
  */
@@ -41,10 +43,14 @@ public:
 
     int columnCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
+
+private:
+    ServersIconProvider *m_iconProvider;
 };
 
-/*! An icon provider for ServersModel. It contains additional
+/*! \brief An icon provider for ServersModel. It contains additional
  * handling of LOGO_FILE and LOGO_FILE_TEXT files in the TECHSPEC_DIR directory
+ * The main method to be used is custom pixmap().
  */
 class ServersIconProvider : public QFileIconProvider
 {
@@ -54,6 +60,13 @@ public:
     virtual QIcon   icon ( IconType type ) const;
     virtual QIcon   icon ( const QFileInfo & info ) const;
     virtual QString type ( const QFileInfo & info ) const;
+
+    /*! \brief Handle custom logo files or standard file browser icons as QPixmaps.
+     * The request is simple - to allow various sized pixmaps to be displayed.
+     * Basically there is no image resizing allowed. Logo files are used as-is,
+     * standard icons are resized to 32x32
+     */
+    QPixmap pixmap(const QFileInfo &info) const;
 };
 
 /*! A filter proxy for ServersModel. Its main task is to filter out

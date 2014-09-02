@@ -10,7 +10,9 @@
 
 #define TECHSPEC_DIR "0000-index"
 #define THUMBNAILS_DIR "0000-index/thumbnails"
+// If presented - display only the logo
 #define LOGO_FILE "logo.png"
+// if presented - display logo and text
 #define LOGO_TEXT_FILE "logo-text.png"
 #define METADATA_FILE "metadata.ini"
 

@@ -106,6 +106,7 @@ public:
     //! The main access method to Metadata
     static MetadataCache *get();
 
+    bool showLabel(const QString &path);
     QString label(const QString &path);
     QStringList columnLabels(const QString &path);
     QString partParam(const QString &path, const QString &fname, int column);
