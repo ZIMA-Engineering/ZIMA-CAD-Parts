@@ -19,6 +19,11 @@ FileView::FileView(QWidget *parent) :
     connect(m_model, SIGNAL(directoryLoaded(QString)),
             this, SLOT(resizeColumnToContents()));
 
+    connect(this, SIGNAL(activated(QModelIndex)),
+            this, SLOT(handleActivated(QModelIndex)));
+    connect(this, SIGNAL(clicked(QModelIndex)),
+            this, SLOT(handleActivated(QModelIndex)));
+
     connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(refreshModel()));
 }
 
@@ -116,4 +121,11 @@ void FileView::copyToWorkingDir()
         return;
 
     m_model->copyToWorkingDir();
+}
+
+void FileView::handleActivated(const QModelIndex &index)
+{
+    // open productview only when user clicks on the thumbnail
+    if (index.column() == 1)
+        emit previewProductView(fileInfo(index));
 }

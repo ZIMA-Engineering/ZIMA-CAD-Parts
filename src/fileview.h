@@ -20,6 +20,7 @@ public:
     void refreshRequested();
 
 signals:
+    void previewProductView(const QFileInfo &fi);
 
 public slots:
     void setDirectory(const QString &path);
@@ -34,6 +35,7 @@ private:
 private slots:
     void resizeColumnToContents();
     void refreshModel();
+    void handleActivated(const QModelIndex &index);
 };
 
 #endif // FILEVIEW_H

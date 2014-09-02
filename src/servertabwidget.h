@@ -64,7 +64,7 @@ private slots:
 	void techSpec_urlChanged(const QUrl &url);
 	void partsWebView_urlChanged(const QUrl &url);
 
-	void previewInProductView(const QModelIndex &index);
+    void previewInProductView(const QFileInfo &fi);
 	void partsTreeView_doubleClicked(const QModelIndex &index);
 
 	void deleteSelectedParts();

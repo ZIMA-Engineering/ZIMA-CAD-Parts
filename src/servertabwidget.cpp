@@ -72,10 +72,8 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
 	        this, SLOT(adjustThumbColumnWidth(int)));
 
-	connect(ui->partsTreeView, SIGNAL(activated(QModelIndex)),
-	        this, SLOT(previewInProductView(QModelIndex)));
-	connect(ui->partsTreeView, SIGNAL(clicked(QModelIndex)),
-	        this, SLOT(previewInProductView(QModelIndex)));
+    connect(ui->partsTreeView, SIGNAL(previewProductView(QFileInfo)),
+            this, SLOT(previewInProductView(QFileInfo)));
 	connect(ui->partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
 	        this, SLOT(partsTreeView_doubleClicked(QModelIndex)));
 
@@ -248,9 +246,8 @@ void ServerTabWidget::adjustThumbColumnWidth(int width)
     ui->partsTreeView->settingsChanged();
 }
 
-void ServerTabWidget::previewInProductView(const QModelIndex &index)
+void ServerTabWidget::previewInProductView(const QFileInfo &fi)
 {
-    QFileInfo fi(ui->partsTreeView->fileInfo(index));
     FileMetadata f(fi);
 
     if (!m_productView->canHandle(f.type))
