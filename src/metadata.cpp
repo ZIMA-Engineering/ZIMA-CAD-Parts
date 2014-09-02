@@ -54,6 +54,12 @@ void MetadataCache::clear()
     emit cleared();
 }
 
+void MetadataCache::clear(const QString &path)
+{
+    delete m_map.take(path);
+    emit cleared();
+}
+
 void MetadataCache::load(const QString &path)
 {
     if (m_map.contains(path))

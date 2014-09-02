@@ -105,6 +105,11 @@ void FileView::deleteParts()
     m_model->deleteParts();
 }
 
+void FileView::refreshRequested()
+{
+    MetadataCache::get()->clear(m_path);
+}
+
 void FileView::copyToWorkingDir()
 {
     if (m_path == Settings::get()->WorkingDir)

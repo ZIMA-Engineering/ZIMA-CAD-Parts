@@ -119,6 +119,7 @@ signals:
 
 public slots:
      void clear();
+     void clear(const QString &path);
 
 private:
     //! Singleton handling
