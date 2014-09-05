@@ -146,8 +146,11 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-	Settings::get()->MainWindowState = saveState();
-	Settings::get()->MainWindowGeometry = saveGeometry();
+    if (!e->spontaneous())
+    {
+        Settings::get()->MainWindowState = saveState();
+        Settings::get()->MainWindowGeometry = saveGeometry();
+    }
 
 	QMainWindow::closeEvent(e);
 }

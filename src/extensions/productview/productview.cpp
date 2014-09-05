@@ -71,16 +71,22 @@ bool ProductView::canHandle(FileType::FileType t)
 
 void ProductView::hideEvent(QHideEvent * e)
 {
-	saveSettings();
+    if (!e->spontaneous())
+    {
+        saveSettings();
+    }
 	QDialog::hideEvent(e);
 }
 
 void ProductView::showEvent(QShowEvent *e)
 {
-	restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
-	QPoint pt = Settings::get()->ExtensionsProductViewPosition;
-	if (!pt.isNull())
-		move(pt);
+    if (!e->spontaneous())
+    {
+        restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
+        QPoint pt = Settings::get()->ExtensionsProductViewPosition;
+        if (!pt.isNull())
+            move(pt);
+    }
 
 	QDialog::showEvent(e);
 }
