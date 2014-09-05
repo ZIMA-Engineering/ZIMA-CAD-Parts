@@ -241,7 +241,11 @@ void FileModel::deleteParts()
         dlg.exec();
     }
     else
+    {
         m_checked.clear();
+        beginResetModel();
+        endResetModel();
+    }
 }
 
 void FileModel::copyToWorkingDir()
