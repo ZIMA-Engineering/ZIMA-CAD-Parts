@@ -2,8 +2,6 @@
 #include <QWebHistory>
 #include <QtDebug>
 #include <QMessageBox>
-#include <QProcess>
-#include <QDesktopServices>
 
 #include "servertabwidget.h"
 #include "ui_servertabwidget.h"
@@ -74,8 +72,6 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 
     connect(ui->partsTreeView, SIGNAL(previewProductView(QFileInfo)),
             this, SLOT(previewInProductView(QFileInfo)));
-	connect(ui->partsTreeView, SIGNAL(doubleClicked(QModelIndex)),
-	        this, SLOT(partsTreeView_doubleClicked(QModelIndex)));
 
 	connect(ui->filterButton, SIGNAL(clicked()),
 	        this, SLOT(setFiltersDialog()));
@@ -260,33 +256,6 @@ void ServerTabWidget::previewInProductView(const QFileInfo &fi)
 	m_productView->show();
 	// keep focus on the main window - keyboard handling
 	activateWindow();
-}
-
-void ServerTabWidget::partsTreeView_doubleClicked(const QModelIndex &index)
-{
-    QFileInfo fi(ui->partsTreeView->fileInfo(index));
-    FileMetadata f(fi);
-
-    switch (f.type)
-	{
-    case FileType::PRT_PROE:
-    case FileType::ASM:
-    case FileType::DRW:
-    case FileType::FRM:
-    case FileType::NEU_PROE:
-	{
-		QString exe = Settings::get()->ProeExecutable;
-        qDebug() << "Starting ProE:" << exe << f.fileInfo.absoluteFilePath() << "; working dir" << Settings::get()->WorkingDir;
-        bool ret = QProcess::startDetached(exe, QStringList() << f.fileInfo.absoluteFilePath(), Settings::get()->WorkingDir);
-		if (!ret)
-			QMessageBox::information(this, tr("ProE Startup Error"),
-			                         tr("An error occured while ProE has been requested to start"),
-			                         QMessageBox::Ok);
-		break;
-	}
-	default:
-        QDesktopServices::openUrl(QUrl::fromLocalFile(f.fileInfo.absoluteFilePath()));
-	}
 }
 
 void ServerTabWidget::setFiltersDialog()

@@ -4,6 +4,10 @@
 #include "settings.h"
 
 #include <QMessageBox>
+#include <QProcess>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QtDebug>
 
 
 FileView::FileView(QWidget *parent) :
@@ -23,6 +27,8 @@ FileView::FileView(QWidget *parent) :
             this, SLOT(handleActivated(QModelIndex)));
     connect(this, SIGNAL(clicked(QModelIndex)),
             this, SLOT(handleActivated(QModelIndex)));
+    connect(this, SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(openInProE(QModelIndex)));
 
     connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(refreshModel()));
 }
@@ -128,4 +134,32 @@ void FileView::handleActivated(const QModelIndex &index)
     // open productview only when user clicks on the thumbnail
     if (index.column() == 1)
         emit previewProductView(fileInfo(index));
+}
+
+void FileView::openInProE(const QModelIndex &index)
+{
+    QFileInfo fi(fileInfo(index));
+    FileMetadata f(fi);
+
+    switch (f.type)
+    {
+    case FileType::PRT_PROE:
+    case FileType::ASM:
+    case FileType::DRW:
+    case FileType::FRM:
+    case FileType::NEU_PROE:
+    {
+        QString exe = Settings::get()->ProeExecutable;
+        qDebug() << "Starting ProE:" << exe << f.fileInfo.absoluteFilePath() << "; working dir" << m_path;
+        bool ret = QProcess::startDetached(exe, QStringList() << f.fileInfo.absoluteFilePath(),
+                                           m_path);
+        if (!ret)
+            QMessageBox::information(this, tr("ProE Startup Error"),
+                                     tr("An error occured while ProE has been requested to start"),
+                                     QMessageBox::Ok);
+        break;
+    }
+    default:
+        QDesktopServices::openUrl(QUrl::fromLocalFile(f.fileInfo.absoluteFilePath()));
+    }
 }

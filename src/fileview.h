@@ -36,6 +36,7 @@ private slots:
     void resizeColumnToContents();
     void refreshModel();
     void handleActivated(const QModelIndex &index);
+    void openInProE(const QModelIndex &index);
 };
 
 #endif // FILEVIEW_H
