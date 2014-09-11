@@ -30,7 +30,8 @@ FileTypeList ProEProductView::canHandle()
 {
 #ifdef Q_OS_WIN
 	// ProductView Express is available for windows only
-    return FileTypeList() << FileType::PRT_PROE << FileType::PRT_NX;
+    return FileTypeList() << FileType::PRT_PROE << FileType::PRT_NX
+                          << FileType::ASM << FileType::DRW;
 #else
     return FileTypeList();
 #endif
