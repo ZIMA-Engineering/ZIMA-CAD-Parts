@@ -99,7 +99,14 @@
         </widget>
        </item>
        <item>
-        <widget class="TechSpecsWebView" name="techSpec"/>
+        <widget class="TechSpecsWebView" name="techSpec">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
