@@ -99,22 +99,7 @@
         </widget>
        </item>
        <item>
-        <widget class="TechSpecsWebView" name="techSpec">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="contextMenuPolicy">
-          <enum>Qt::DefaultContextMenu</enum>
-         </property>
-         <property name="url">
-          <url>
-           <string>about:blank</string>
-          </url>
-         </property>
-        </widget>
+        <widget class="TechSpecsWebView" name="techSpec"/>
        </item>
       </layout>
      </widget>

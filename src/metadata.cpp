@@ -124,10 +124,10 @@ Metadata::Metadata(const QString &path, QObject *parent)
       m_path(path),
       m_loadedIncludes(0)
 {
-    qDebug() << "Metadata constructor for" << path;
+//    qDebug() << "Metadata constructor for" << path;
     m_settings = new QSettings(m_path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE, QSettings::IniFormat);
     m_settings->setIniCodec("utf-8");
-    qDebug() << "ini file" << m_settings->fileName();
+//    qDebug() << "ini file" << m_settings->fileName();
 
     m_settings->beginGroup("include");
     {
@@ -325,7 +325,6 @@ QString Metadata::buildIncludePath(const QString &raw)
         return QDir::cleanPath(raw);
 	else
     {
-        qDebug() << QDir::cleanPath(m_path + "/" + raw);
         return QDir::cleanPath(m_path + "/" + raw);
     }
 }

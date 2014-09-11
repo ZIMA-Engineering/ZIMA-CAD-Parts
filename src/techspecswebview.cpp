@@ -38,14 +38,14 @@ TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
     QWebView(parent),
     m_downloader(0)
 {
-	loadAboutPage();
-
 	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
 
 	page()->setForwardUnsupportedContent(true);
     connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)),
             this, SLOT(downloadFile(QNetworkReply*)));
+
+    loadAboutPage();
 }
 
 void TechSpecsWebView::setRootPath(QString path)
@@ -55,10 +55,11 @@ void TechSpecsWebView::setRootPath(QString path)
 
 void TechSpecsWebView::loadAboutPage()
 {
+    qDebug() << "LOAD ABOUT";
 	QString url = ":/data/zima-cad-parts%1.html";
 	QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
 	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
-
+qDebug() << filename;
 	QFile f(filename);
 	f.open(QIODevice::ReadOnly);
 	QTextStream stream(&f);
@@ -66,6 +67,7 @@ void TechSpecsWebView::loadAboutPage()
     stream.setCodec(QTextCodec::codecForName("utf8"));
 
 	setHtml( stream.readAll().replace("%VERSION%", VERSION) );
+    qDebug() << title();
 }
 
 TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
@@ -91,7 +93,7 @@ void TechSpecsWebView::urlChange(const QUrl &url)
 {
 	if(this->url() == url)
 		return;
-
+qDebug() << "LOAD URL" << url;
 	if(url.scheme() == "about" || url.scheme() == "ZIMA-CAD-Parts")
 		loadAboutPage();
 }

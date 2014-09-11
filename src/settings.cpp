@@ -59,7 +59,7 @@ void Settings::load()
 	foreach (QVariant i, s.value("Server/SplitterSizes").toList())
         ServersSplitterSizes << i.toInt();
 
-	WorkingDir = s.value("WorkingDir", QDir::homePath() + "/ZIMA-CAD-Parts").toString();
+    WorkingDir = s.value("WorkingDir", DEFAULT_WDIR).toString();
 
     GUIThumbWidth = s.value("GUIThumbWidth", 32).toInt();
     GUIPreviewWidth = s.value("GUIPreviewWidth", 256).toInt();

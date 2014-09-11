@@ -75,6 +75,8 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 
 	connect(ui->filterButton, SIGNAL(clicked()),
 	        this, SLOT(setFiltersDialog()));
+
+    ui->techSpec->loadAboutPage();
 }
 
 ServerTabWidget::~ServerTabWidget()
@@ -111,6 +113,9 @@ void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebView *webView, 
     {
         webView->setHtml("");
         if (hideIfNotFound) webView->hide();
+        // load aboutPage only when there is no custom index.html and there is no WD specified
+        if (rootPath == DEFAULT_WDIR && webView == ui->techSpec)
+            ui->techSpec->loadAboutPage();
         return;
     }
 
@@ -149,7 +154,6 @@ void ServerTabWidget::settingsChanged()
 	ui->techSpecDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled
 	                                        && Settings::get()->DeveloperTechSpecToolBar);
 	ui->partsIndexDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled);
-	ui->techSpec->loadAboutPage();
 	ui->thumbnailSizeSlider->setValue(Settings::get()->GUIThumbWidth);
 
     ui->partsTreeView->settingsChanged();
