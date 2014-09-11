@@ -72,6 +72,8 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 
     connect(ui->partsTreeView, SIGNAL(previewProductView(QFileInfo)),
             this, SLOT(previewInProductView(QFileInfo)));
+    connect(ui->partsTreeView, SIGNAL(hideProductView()),
+            m_productView, SLOT(hide()));
 
 	connect(ui->filterButton, SIGNAL(clicked()),
 	        this, SLOT(setFiltersDialog()));

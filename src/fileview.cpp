@@ -134,6 +134,8 @@ void FileView::handleActivated(const QModelIndex &index)
     // open productview only when user clicks on the thumbnail
     if (index.column() == 1)
         emit previewProductView(fileInfo(index));
+    else
+        emit hideProductView();
 }
 
 void FileView::openInProE(const QModelIndex &index)

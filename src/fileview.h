@@ -21,6 +21,7 @@ public:
 
 signals:
     void previewProductView(const QFileInfo &fi);
+    void hideProductView();
 
 public slots:
     void setDirectory(const QString &path);
