@@ -65,7 +65,16 @@ private:
     QFileInfoList m_data;
     QString m_path;
     QStringList m_columnLabels;
-    QHash<QModelIndex,Qt::CheckState> m_checked;
+    /*! List of checked files for "Download to Working Directory".
+     * It shares information between directories. The map is cleared
+     * when is the "Download" button clicked and processed
+     */
+    QHash<QModelIndex,Qt::CheckState> m_checkedWD;
+    /*! List of checked files for "Delete".
+     * It's persistent per setDirectory() only. Or until the "Delete"
+     * button is pressed and processed.
+     */
+    QHash<QModelIndex,Qt::CheckState> m_checkedDelete;
     FileIconProvider *m_iconProvider;
 
 private slots:

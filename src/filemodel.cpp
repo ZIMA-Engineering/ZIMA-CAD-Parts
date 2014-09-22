@@ -72,7 +72,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
     // first handle standard QFileSystemModel data
     if (col == 0 && role == Qt::CheckStateRole)
     {
-        return m_checked[index];
+        return m_checkedDelete[index];
     }
     else if (col == 0 && role == Qt::DisplayRole)
     {
@@ -143,7 +143,8 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 {
     if (role == Qt::CheckStateRole)
     {
-        m_checked[index] = value.toBool() ? Qt::Checked : Qt::Unchecked;
+        m_checkedWD[index] = value.toBool() ? Qt::Checked : Qt::Unchecked;
+        m_checkedDelete[index] = value.toBool() ? Qt::Checked : Qt::Unchecked;
         emit dataChanged(index, index);
         return true;
     }
@@ -166,9 +167,8 @@ void FileModel::setDirectory(const QString &path)
     if (path != m_path)
     {
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-        // do not remove original checked items. It's required to "remember history"
-        // until the delete or copy/download button is pressed
-        //m_checked.clear();
+
+        m_checkedDelete.clear();
 
         loadFiles(path);
         MetadataCache::get()->partThumbnailPaths(path);
@@ -192,7 +192,7 @@ void FileModel::settingsChanged()
 
 void FileModel::deleteParts()
 {
-    QHashIterator<QModelIndex,Qt::CheckState> it(m_checked);
+    QHashIterator<QModelIndex,Qt::CheckState> it(m_checkedDelete);
     QFile f;
     QHash<QString,QString> errors;
     QFileInfo key;
@@ -202,6 +202,7 @@ void FileModel::deleteParts()
         it.next();
         if (it.value() == Qt::Unchecked)
             continue;
+
         key = m_data.at(it.key().row());
 
         if (!Settings::get()->ShowProeVersions
@@ -219,7 +220,7 @@ void FileModel::deleteParts()
                 {
                     m_data.removeAll(key);
                     MetadataCache::get()->deletePart(m_path, key.baseName());
-                    m_checked[it.key()] = Qt::Unchecked;
+                    m_checkedDelete[it.key()] = Qt::Unchecked;
                 }
             }
         }
@@ -231,7 +232,7 @@ void FileModel::deleteParts()
             {
                 m_data.removeAll(key);
                 MetadataCache::get()->deletePart(m_path, key.baseName());
-                m_checked[it.key()] = Qt::Unchecked;
+                m_checkedDelete[it.key()] = Qt::Unchecked;
             }
         }
     }
@@ -244,7 +245,7 @@ void FileModel::deleteParts()
     }
     else
     {
-        m_checked.clear();
+        m_checkedDelete.clear();
         beginResetModel();
         endResetModel();
     }
@@ -252,7 +253,7 @@ void FileModel::deleteParts()
 
 void FileModel::copyToWorkingDir()
 {
-    QHashIterator<QModelIndex,Qt::CheckState> it(m_checked);
+    QHashIterator<QModelIndex,Qt::CheckState> it(m_checkedWD);
     bool overwrite = false;
     QHash<QString,QString> errors;
     QDir d;
@@ -321,7 +322,7 @@ void FileModel::copyToWorkingDir()
                 QFile thumb(thumbFi.absoluteFilePath());
                 thumb.copy(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
             }
-            m_checked[it.key()] = Qt::Unchecked;
+            m_checkedWD[it.key()] = Qt::Unchecked;
         }
     } // while
 
@@ -332,7 +333,7 @@ void FileModel::copyToWorkingDir()
         dlg.exec();
     }
     else
-        m_checked.clear();
+        m_checkedWD.clear();
 }
 
 
