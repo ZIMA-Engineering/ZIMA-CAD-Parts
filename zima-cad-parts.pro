@@ -147,7 +147,6 @@ FORMS += mainwindow.ui \
     src/filtersdialog.ui \
     src/errordialog.ui \
     src/extensions/productview/proeproductview.ui \
-    src/extensions/productview/productview.ui \
     src/extensions/productview/dxfproductview.ui \
     src/extensions/productview/pdfproductview.ui \
     src/extensions/productview/failbackproductview.ui \

@@ -23,16 +23,13 @@
 
 #include "../../zima-cad-parts.h"
 
-#include <QWidget>
+#include <QObject>
 #include "ui_productview.h"
 #include "abstractproductview.h"
 #include "failbackproductview.h"
 
 class FileMetadata;
 
-namespace Ui {
-class ProductView;
-}
 
 /**
  * @brief The user interface for Product Views
@@ -41,39 +38,36 @@ class ProductView;
  * Each product view must register itself in the ProductView constructor
  * to be used.
  */
-class ProductView : public QDialog
+class ProductView : public QObject
 {
 	Q_OBJECT
 
 public:
-	explicit ProductView(QWidget *parent = 0);
+    //! The parent cannot be 0/null because it's used in addProviders call
+    explicit ProductView(QWidget *parent);
 	~ProductView();
-
-    //! Returns true if the one of registered product views can handle given file type
-    bool canHandle(FileType::FileType t);
 
 public slots:
     /** \brief Set the file which will be displayed
      */
     void setFile(FileMetadata* f);
-
-protected:
-	void hideEvent(QHideEvent *e);
-	void showEvent(QShowEvent *e);
+    void hide();
 
 private:
 	Ui::ProductView *ui;
     QHash<FileType::FileType, AbstractProductView*> providers;
-	AbstractProductView *currentProvider;
-	FailbackProductView *failbackProvider;
+    AbstractProductView *m_current;
+//	FailbackProductView *failbackProvider;
 
     //! The main registration function
 	template <class T> void addProviders()
 	{
-		T *provider = new T(this);
-		provider->hide();
+        T *provider = new T(qobject_cast<QWidget*>(parent()));
+        provider->hide();
         foreach(FileType::FileType i, provider->canHandle())
+        {
             providers[i] = provider;
+        }
 	}
 
 	void saveSettings();

@@ -1,7 +1,7 @@
 #ifndef ABSTRACTPRODUCTVIEW_H
 #define ABSTRACTPRODUCTVIEW_H
 
-#include <QWidget>
+#include <QDialog>
 
 #include "file.h"
 
@@ -14,7 +14,7 @@
  * it has to register itself in ProductView constructor as
  * template <class T> void addProviders()
  */
-class AbstractProductView : public QWidget
+class AbstractProductView : public QDialog
 {
 	Q_OBJECT
 public:

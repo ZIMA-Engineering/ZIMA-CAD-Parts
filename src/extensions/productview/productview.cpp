@@ -30,14 +30,9 @@
 
 
 ProductView::ProductView(QWidget *parent) :
-	QDialog(parent),
-	ui(new Ui::ProductView()),
-	currentProvider(0)
+    QObject(parent),
+    m_current(0)
 {
-	ui->setupUi(this);
-//	ui->statusLabel->setText(tr("Double click any part."));
-	setWindowFlags(Qt::Window);
-
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
 #ifdef HAVE_POPPLER
@@ -45,7 +40,7 @@ ProductView::ProductView(QWidget *parent) :
 #endif
 	//failbackProvider = new FailbackProductView(this);
 	//failbackProvider->hide();
-	failbackProvider = 0;
+//	failbackProvider = 0;
 }
 
 ProductView::~ProductView()
@@ -64,64 +59,47 @@ ProductView::~ProductView()
 	providers.clear();
 }
 
-bool ProductView::canHandle(FileType::FileType t)
-{
-	return providers.contains(t);
-}
-
-void ProductView::hideEvent(QHideEvent * e)
-{
-    if (!e->spontaneous())
-    {
-        saveSettings();
-    }
-	QDialog::hideEvent(e);
-}
-
-void ProductView::showEvent(QShowEvent *e)
-{
-    if (!e->spontaneous())
-    {
-        restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
-        QPoint pt = Settings::get()->ExtensionsProductViewPosition;
-        if (!pt.isNull())
-            move(pt);
-    }
-
-	QDialog::showEvent(e);
-}
-
 void ProductView::saveSettings()
 {
-	Settings::get()->ExtensionsProductViewGeometry = saveGeometry();
-	Settings::get()->ExtensionsProductViewPosition = pos();
+    if (m_current)
+    {
+        Settings::get()->ExtensionsProductViewGeometry = m_current->saveGeometry();
+        Settings::get()->ExtensionsProductViewPosition = m_current->pos();
+    }
+}
+
+void ProductView::hide()
+{
+    if (!m_current)
+        return;
+
+    saveSettings();
+    m_current->hide();
 }
 
 void ProductView::setFile(FileMetadata* f)
 {
-	if (currentProvider)
-	{
-		currentProvider->hide();
-		ui->verticalLayout->removeWidget(currentProvider);
-	}
-
 	if (!providers.contains(f->type))
 	{
-		//currentProvider = failbackProvider;
-		currentProvider = 0;
+        if (m_current)
+            m_current->hide();
+        m_current = 0;
 		return;
 	}
-	else
-	{
-		currentProvider = providers.value(f->type);
-	}
 
-    setWindowTitle(f->fileInfo.baseName() + " " + currentProvider->title());
+    if (m_current && m_current != providers.value(f->type))
+    {
+        saveSettings();
+        m_current->hide();
+    }
 
-	//qDebug() << "PTH" << f->path << f->targetPath;
-	//ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
-	currentProvider->handle(f);
-	//ui->verticalLayout->insertWidget(1, currentProvider);
-	ui->verticalLayout->addWidget(currentProvider);
-	currentProvider->show();
+    m_current = providers.value(f->type);
+    m_current->restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
+    QPoint pt = Settings::get()->ExtensionsProductViewPosition;
+    if (!pt.isNull())
+        m_current->move(pt);
+
+    m_current->setWindowTitle(f->fileInfo.baseName() + " " + m_current->title());
+    m_current->handle(f);
+    m_current->show();
 }

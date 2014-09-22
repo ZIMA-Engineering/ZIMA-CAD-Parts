@@ -258,15 +258,7 @@ void ServerTabWidget::adjustThumbColumnWidth(int width)
 void ServerTabWidget::previewInProductView(const QFileInfo &fi)
 {
     FileMetadata f(fi);
-
-    if (!m_productView->canHandle(f.type))
-	{
-		m_productView->hide();
-		return;
-	}
-
     m_productView->setFile(&f);
-	m_productView->show();
 	// keep focus on the main window - keyboard handling
 	activateWindow();
 }

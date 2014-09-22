@@ -12,13 +12,13 @@ ProEProductView::ProEProductView(QWidget *parent) :
 	ui(new Ui::ProEProductView())
 {
 	ui->setupUi(this);
-	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavaEnabled, true);
-	QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::JavaEnabled, true);
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
 }
 
 ProEProductView::~ProEProductView()
 {
-	delete ui;
+    delete ui;
 }
 
 QString ProEProductView::title()
@@ -29,7 +29,7 @@ QString ProEProductView::title()
 FileTypeList ProEProductView::canHandle()
 {
 #ifdef Q_OS_WIN
-	// ProductView Express is available for windows only
+    // ProductView Express is available for windows only
     return FileTypeList() << FileType::PRT_PROE << FileType::PRT_NX
                           << FileType::DRW;
 #else
@@ -51,7 +51,7 @@ bool ProEProductView::handle(FileMetadata *f)
 
     QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->fileInfo.fileName() + ".html");
 
-	if(tmp.open())
+    if(tmp.open())
 	{
 		QTextStream out(&tmp);
 		out << html;

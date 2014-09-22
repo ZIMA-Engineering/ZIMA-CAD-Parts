@@ -115,6 +115,8 @@ void Settings::save()
 	s.setValue("DeveloperTechSpecToolBar", DeveloperTechSpecToolBar);
 	s.setValue("ExtensionsProductViewPath", ExtensionsProductViewPath);
 	s.setValue("ExternalPrograms/ProE/Executable", ProeExecutable);
+    s.setValue("Extensions/ProductView/geometry", ExtensionsProductViewGeometry);
+    s.setValue("Extensions/ProductView/position", ExtensionsProductViewPosition);
 
 	saveDataSources();
 	saveFilters();
