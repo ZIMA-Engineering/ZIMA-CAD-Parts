@@ -166,7 +166,9 @@ void FileModel::setDirectory(const QString &path)
     if (path != m_path)
     {
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-        m_checked.clear();
+        // do not remove original checked items. It's required to "remember history"
+        // until the delete or copy/download button is pressed
+        //m_checked.clear();
 
         loadFiles(path);
         MetadataCache::get()->partThumbnailPaths(path);
