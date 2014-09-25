@@ -92,7 +92,9 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
         case Qt::DecorationRole:
             if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
                 return MetadataCache::get()->partThumbnailPaths(m_path)[key].second.scaled(Settings::get()->GUIThumbWidth,
-                                                                                           Settings::get()->GUIThumbWidth);
+                                                                                           Settings::get()->GUIThumbWidth,
+                                                                                           Qt::KeepAspectRatio
+                                                                                          );
             break;
         case Qt::SizeHintRole:
             if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
