@@ -190,6 +190,20 @@ void FileModel::setDirectory(const QString &path)
 	emit directoryLoaded(m_path);
 }
 
+void FileModel::refreshModel()
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+    m_columnLabels = MetadataCache::get()->columnLabels(m_path);
+    loadFiles(m_path);
+    MetadataCache::get()->partThumbnailPaths(m_path);
+
+    beginResetModel();
+    endResetModel();
+
+    QApplication::restoreOverrideCursor();
+}
+
 void FileModel::settingsChanged()
 {
 	//setDirectory(m_path);

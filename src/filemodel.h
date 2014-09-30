@@ -48,6 +48,7 @@ public:
 
 	void settingsChanged();
 	void setDirectory(const QString &path);
+    void refreshModel();
 
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 

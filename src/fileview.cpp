@@ -50,7 +50,9 @@ void FileView::setDirectory(const QString &path)
 void FileView::refreshModel()
 {
 	setDirectory(m_path);
+    m_model->refreshModel();
 }
+
 void FileView::resizeColumnToContents()
 {
 	int columnCnt = m_model->columnCount(QModelIndex());
