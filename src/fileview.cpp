@@ -123,9 +123,6 @@ void FileView::refreshRequested()
 
 void FileView::copyToWorkingDir()
 {
-    if (m_path == Settings::get()->WorkingDir)
-        return;
-
     m_model->copyToWorkingDir();
 }
 

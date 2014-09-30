@@ -57,7 +57,6 @@ public:
 private:
 	Ui::MainWindowClass *ui;
 
-	QLabel              *statusDir; // status bar
 	QTranslator *translator;// app ui
 	WorkingDirWidget *m_wdirWidget;
 

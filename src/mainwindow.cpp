@@ -90,9 +90,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->actionHome, SIGNAL(triggered()),
 	        ui->serversWidget, SLOT(goToWorkingDirectory()));
 
-	statusDir = new QLabel(tr("Ready"), this);
-	statusDir->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	statusBar()->addWidget(statusDir, 100);
+    updateStatus(tr("Ready"));
 
 	restoreState(Settings::get()->MainWindowState);
 	restoreGeometry(Settings::get()->MainWindowGeometry);
@@ -200,7 +198,7 @@ void MainWindow::settingsChanged()
 
 void MainWindow::updateStatus(const QString &message)
 {
-	statusDir->setText(message);
+    statusBar()->showMessage(message, 5000);
 }
 
 void MainWindow::trackHistory(const QString &path)

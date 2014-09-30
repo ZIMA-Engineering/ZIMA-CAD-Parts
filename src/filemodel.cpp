@@ -72,7 +72,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
     // first handle standard QFileSystemModel data
     if (col == 0 && role == Qt::CheckStateRole)
     {
-        return m_checkedDelete[index];
+        return m_checked[m_path].contains(m_data.at(index.row()).absoluteFilePath());
     }
     else if (col == 0 && role == Qt::DisplayRole)
     {
@@ -145,8 +145,13 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 {
     if (role == Qt::CheckStateRole)
     {
-        m_checkedWD[index] = value.toBool() ? Qt::Checked : Qt::Unchecked;
-        m_checkedDelete[index] = value.toBool() ? Qt::Checked : Qt::Unchecked;
+        QString path = m_data.at(index.row()).absoluteFilePath();
+
+        if (m_checked[m_path].contains(path))
+            m_checked[m_path].removeAll(path);
+        else
+            m_checked[m_path].append(path);
+
         emit dataChanged(index, index);
         return true;
     }
@@ -170,8 +175,6 @@ void FileModel::setDirectory(const QString &path)
     {
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-        m_checkedDelete.clear();
-
         loadFiles(path);
         MetadataCache::get()->partThumbnailPaths(path);
         m_path = path;
@@ -194,18 +197,13 @@ void FileModel::settingsChanged()
 
 void FileModel::deleteParts()
 {
-    QHashIterator<QModelIndex,Qt::CheckState> it(m_checkedDelete);
     QFile f;
     QHash<QString,QString> errors;
     QFileInfo key;
 
-    while (it.hasNext())
+    foreach (QString fname, m_checked[m_path])
     {
-        it.next();
-        if (it.value() == Qt::Unchecked)
-            continue;
-
-        key = m_data.at(it.key().row());
+        key.setFile(fname);
 
         if (!Settings::get()->ShowProeVersions
                 && MetadataCache::get()->partVersions(m_path).contains(key.completeBaseName()))
@@ -222,7 +220,7 @@ void FileModel::deleteParts()
                 {
                     m_data.removeAll(key);
                     MetadataCache::get()->deletePart(m_path, key.baseName());
-                    m_checkedDelete[it.key()] = Qt::Unchecked;
+                    m_checked[m_path].removeAll(fname);
                 }
             }
         }
@@ -234,7 +232,7 @@ void FileModel::deleteParts()
             {
                 m_data.removeAll(key);
                 MetadataCache::get()->deletePart(m_path, key.baseName());
-                m_checkedDelete[it.key()] = Qt::Unchecked;
+                m_checked[m_path].removeAll(fname);
             }
         }
     }
@@ -247,7 +245,7 @@ void FileModel::deleteParts()
     }
     else
     {
-        m_checkedDelete.clear();
+        m_checked[m_path].clear();
         beginResetModel();
         endResetModel();
     }
@@ -255,7 +253,6 @@ void FileModel::deleteParts()
 
 void FileModel::copyToWorkingDir()
 {
-    QHashIterator<QModelIndex,Qt::CheckState> it(m_checkedWD);
     bool overwrite = false;
     QHash<QString,QString> errors;
     QDir d;
@@ -272,61 +269,72 @@ void FileModel::copyToWorkingDir()
             errors[Settings::get()->WorkingDir] = "Cannot create directory: " + Settings::get()->WorkingDir;
     }
 
+    QHashIterator<QString,QStringList> it(m_checked);
     while (it.hasNext())
     {
         it.next();
-        if (it.value() != Qt::Checked)
-            continue;
+        QString key = it.key();
 
-        QFileInfo fi = fileInfo(it.key());
-        QFile f(fi.absoluteFilePath());
-        QString target = Settings::get()->WorkingDir + "/" + fi.fileName();
-
-        if (!overwrite && QDir().exists(target))
+        // do not copy files from WD into WD
+        if (key == Settings::get()->WorkingDir)
         {
-            QMessageBox::StandardButton ret = QMessageBox::question(0, tr("Overwrite file?"),
-                                          tr("File %1 already exists. Overwrite?").arg(target),
-                                          QMessageBox::Yes|QMessageBox::No|QMessageBox::YesAll|QMessageBox::Cancel
-                                          );
-            switch (ret)
+            m_checked[key].clear();
+            continue;
+        }
+
+        foreach (QString fname, it.value())
+        {
+            QFileInfo fi(fname);
+            QFile f(fi.absoluteFilePath());
+            QString target = Settings::get()->WorkingDir + "/" + fi.fileName();
+
+            if (!overwrite && QDir().exists(target))
             {
-            case QMessageBox::Yes:
-                break;
-            case QMessageBox::No:
+                QMessageBox::StandardButton ret = QMessageBox::question(0, tr("Overwrite file?"),
+                                              tr("File %1 already exists. Overwrite?").arg(target),
+                                              QMessageBox::Yes|QMessageBox::No|QMessageBox::YesAll|QMessageBox::Cancel
+                                              );
+                switch (ret)
+                {
+                case QMessageBox::Yes:
+                    break;
+                case QMessageBox::No:
+                    continue;
+                    break;
+                case QMessageBox::YesAll:
+                    overwrite = true;
+                    break;
+                case QMessageBox::Cancel:
+                    return;
+                    break;
+                default:
+                    break;
+                } // switch
+
+            } // if !overwrite
+
+            if (f.exists(target) && !f.remove(target))
+            {
+                errors[target] = f.errorString();
                 continue;
-                break;
-            case QMessageBox::YesAll:
-                overwrite = true;
-                break;
-            case QMessageBox::Cancel:
-                return;
-                break;
-            default:
-                break;
-            } // switch
-
-        } // if !overwrite
-
-        if (f.exists(target) && !f.remove(target))
-        {
-            errors[target] = f.errorString();
-            continue;
-        }
-        if (!f.copy(target))
-            errors[target] = f.errorString();
-        else
-        {
-            // copy the thumbnail too
-            if (QDir().mkpath(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR))
-            {
-                QFileInfo thumbFi;
-                thumbFi.setFile(MetadataCache::get()->partThumbnailPaths(m_path)[fi.baseName()].first);
-                QFile thumb(thumbFi.absoluteFilePath());
-                thumb.copy(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
             }
-            m_checkedWD[it.key()] = Qt::Unchecked;
-        }
-    } // while
+            if (!f.copy(target))
+                errors[target] = f.errorString();
+            else
+            {
+                // copy the thumbnail too
+                if (QDir().mkpath(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR))
+                {
+                    QFileInfo thumbFi;
+                    thumbFi.setFile(MetadataCache::get()->partThumbnailPaths(m_path)[fi.baseName()].first);
+                    QFile thumb(thumbFi.absoluteFilePath());
+                    thumb.copy(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
+                }
+                m_checked[key].removeAll(fname);
+            }
+        } // while
+
+    }
 
     if (errors.count())
     {
@@ -335,7 +343,11 @@ void FileModel::copyToWorkingDir()
         dlg.exec();
     }
     else
-        m_checkedWD.clear();
+    {
+        m_checked.clear();
+        beginResetModel();
+        endResetModel();
+    }
 }
 
 
