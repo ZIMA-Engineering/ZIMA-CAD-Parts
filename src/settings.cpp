@@ -39,7 +39,7 @@ void Settings::load()
 
 	Languages << "en_US" << "cs_CZ" << "de_DE" << "ru_RU";
 	Language = s.value("Language", "detect").toString();
-    LanguageMetadata = s.value("LanguageMetadata", "en").toString();
+	LanguageMetadata = s.value("LanguageMetadata", "en").toString();
 
 	// zima utils
 	s.beginGroup("ExternalPrograms");
@@ -57,17 +57,17 @@ void Settings::load()
 	MainWindowGeometry = s.value("geometry").toByteArray();
 
 	foreach (QVariant i, s.value("Server/SplitterSizes").toList())
-        ServersSplitterSizes << i.toInt();
+	ServersSplitterSizes << i.toInt();
 
-    WorkingDir = s.value("WorkingDir", DEFAULT_WDIR).toString();
+	WorkingDir = s.value("WorkingDir", DEFAULT_WDIR).toString();
 
-    GUIThumbWidth = s.value("GUIThumbWidth", 32).toInt();
-    GUIPreviewWidth = s.value("GUIPreviewWidth", 256).toInt();
-    GUISplashEnabled = s.value("GUISplashEnabled", true).toBool();
-    GUISplashDuration = s.value("GUISplashDuration", 1500).toInt();
-    DeveloperEnabled = s.value("DeveloperEnabled", false).toBool();
-    DeveloperTechSpecToolBar = s.value("DeveloperTechSpecToolBar", true).toBool();
-    ExtensionsProductViewPath = s.value("ExtensionsProductViewPath", PRODUCT_VIEW_DEFAULT_PATH).toString();
+	GUIThumbWidth = s.value("GUIThumbWidth", 32).toInt();
+	GUIPreviewWidth = s.value("GUIPreviewWidth", 256).toInt();
+	GUISplashEnabled = s.value("GUISplashEnabled", true).toBool();
+	GUISplashDuration = s.value("GUISplashDuration", 1500).toInt();
+	DeveloperEnabled = s.value("DeveloperEnabled", false).toBool();
+	DeveloperTechSpecToolBar = s.value("DeveloperTechSpecToolBar", true).toBool();
+	ExtensionsProductViewPath = s.value("ExtensionsProductViewPath", PRODUCT_VIEW_DEFAULT_PATH).toString();
 	ExtensionsProductViewGeometry = s.value("Extensions/ProductView/geometry").toByteArray();
 	ExtensionsProductViewPosition = s.value("Extensions/ProductView/position").toPoint();
 	ProeExecutable = s.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
@@ -81,7 +81,7 @@ void Settings::save()
 	QSettings s;
 
 	s.setValue("Language", Language);
-    s.setValue("LanguageMetadata", LanguageMetadata);
+	s.setValue("LanguageMetadata", LanguageMetadata);
 
 	// zima utils
 	s.beginGroup("ExternalPrograms");
@@ -115,8 +115,8 @@ void Settings::save()
 	s.setValue("DeveloperTechSpecToolBar", DeveloperTechSpecToolBar);
 	s.setValue("ExtensionsProductViewPath", ExtensionsProductViewPath);
 	s.setValue("ExternalPrograms/ProE/Executable", ProeExecutable);
-    s.setValue("Extensions/ProductView/geometry", ExtensionsProductViewGeometry);
-    s.setValue("Extensions/ProductView/position", ExtensionsProductViewPosition);
+	s.setValue("Extensions/ProductView/geometry", ExtensionsProductViewGeometry);
+	s.setValue("Extensions/ProductView/position", ExtensionsProductViewPosition);
 
 	saveDataSources();
 	saveFilters();
@@ -125,29 +125,29 @@ void Settings::save()
 void Settings::loadDataSources()
 {
 	QSettings settings;
-    //qDebug(settings.fileName().toLocal8Bit().constData());
+	//qDebug(settings.fileName().toLocal8Bit().constData());
 
 	settings.beginGroup("DataSources");
 	foreach(QString str, settings.childGroups())
 	{
 		settings.beginGroup(str);
 
-        QString name = settings.value("Label", QString()).toString();
-        QString path = settings.value("Path", QString()).toString();
-        if (path.isNull())
-        {
-            qDebug() << "Datasource" << name << "has an empty path. Skipping.";
-            continue;
-        }
+		QString name = settings.value("Label", QString()).toString();
+		QString path = settings.value("Path", QString()).toString();
+		if (path.isNull())
+		{
+			qDebug() << "Datasource" << name << "has an empty path. Skipping.";
+			continue;
+		}
 
-        DataSource *ds = new DataSource(name, path);
-        DataSources.append(ds);
+		DataSource *ds = new DataSource(name, path);
+		DataSources.append(ds);
 
 		settings.endGroup();
 	}
 	settings.endGroup();
 
-    qDebug() << "All datasources count:" << DataSources.size();
+	qDebug() << "All datasources count:" << DataSources.size();
 }
 
 
@@ -158,12 +158,12 @@ void Settings::saveDataSources()
 
 	settings.remove("DataSources");
 	settings.beginGroup("DataSources");
-    foreach(DataSource *ds, DataSources)
+	foreach(DataSource *ds, DataSources)
 	{
 		settings.beginGroup(QString::number(i++));
 
-        settings.setValue("Label", ds->name);
-        settings.setValue("Path", ds->rootPath);
+		settings.setValue("Label", ds->name);
+		settings.setValue("Path", ds->rootPath);
 		settings.endGroup();
 	}
 	settings.endGroup();
@@ -173,60 +173,60 @@ void Settings::setupFilterGroups()
 {
 	FilterGroups << FilterGroup("ProE", "Pro/Engineer");
 	FilterGroups.last()
-            << new ExtensionFilter(FileType::PRT_PROE)
-            << new ExtensionFilter(FileType::ASM)
-            << new ExtensionFilter(FileType::DRW)
-            << new ExtensionFilter(FileType::FRM)
-            << new ExtensionFilter(FileType::NEU_PROE)
+	        << new ExtensionFilter(FileType::PRT_PROE)
+	        << new ExtensionFilter(FileType::ASM)
+	        << new ExtensionFilter(FileType::DRW)
+	        << new ExtensionFilter(FileType::FRM)
+	        << new ExtensionFilter(FileType::NEU_PROE)
 	        << new VersionFilter();
 
 	FilterGroups << FilterGroup("CATIA", "CATIA");
 	FilterGroups.last()
-            << new ExtensionFilter(FileType::CATPART)
-            << new ExtensionFilter(FileType::CATPRODUCT)
-            << new ExtensionFilter(FileType::CATDRAWING);
+	        << new ExtensionFilter(FileType::CATPART)
+	        << new ExtensionFilter(FileType::CATPRODUCT)
+	        << new ExtensionFilter(FileType::CATDRAWING);
 
 	FilterGroups << FilterGroup("NX", "NX (UGS)");
 	FilterGroups.last()
-            << new ExtensionFilter(FileType::PRT_NX);
+	        << new ExtensionFilter(FileType::PRT_NX);
 
 	FilterGroups << FilterGroup("SolidWorks", "SolidWorks");
 	FilterGroups.last().filters
-            << new ExtensionFilter(FileType::SLDPRT)
-            << new ExtensionFilter(FileType::SLDASM)
-            << new ExtensionFilter(FileType::SLDDRW);
+	        << new ExtensionFilter(FileType::SLDPRT)
+	        << new ExtensionFilter(FileType::SLDASM)
+	        << new ExtensionFilter(FileType::SLDDRW);
 
 	FilterGroups << FilterGroup("SolidEdge", "Solid Edge");
 	FilterGroups.last()
-            << new ExtensionFilter(FileType::PAR)
-            << new ExtensionFilter(FileType::PSM)
-            << new ExtensionFilter(FileType::ASM)
-            << new ExtensionFilter(FileType::DFT);
+	        << new ExtensionFilter(FileType::PAR)
+	        << new ExtensionFilter(FileType::PSM)
+	        << new ExtensionFilter(FileType::ASM)
+	        << new ExtensionFilter(FileType::DFT);
 
 	FilterGroups << FilterGroup("Invertor", "INVERTOR");
 	FilterGroups.last()
-            << new ExtensionFilter(FileType::IPT)
-            << new ExtensionFilter(FileType::IAM)
-            << new ExtensionFilter(FileType::IDW);
+	        << new ExtensionFilter(FileType::IPT)
+	        << new ExtensionFilter(FileType::IAM)
+	        << new ExtensionFilter(FileType::IDW);
 
 	FilterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
 	FilterGroups.last()
-            << new ExtensionFilter(FileType::STEP)
-            << new ExtensionFilter(FileType::IGES)
-            << new ExtensionFilter(FileType::DWG)
-            << new ExtensionFilter(FileType::DXF);
+	        << new ExtensionFilter(FileType::STEP)
+	        << new ExtensionFilter(FileType::IGES)
+	        << new ExtensionFilter(FileType::DWG)
+	        << new ExtensionFilter(FileType::DXF);
 
 	FilterGroups << FilterGroup("NonCAD", "NonCAD");
 	FilterGroups.last()
-            << new ExtensionFilter(FileType::STL)
-            << new ExtensionFilter(FileType::BLEND)
-            << new ExtensionFilter(FileType::PDF)
-            << new ExtensionFilter(FileType::OFFICE_BASE)
-            << new ExtensionFilter(FileType::OFFICE_CALC)
-            << new ExtensionFilter(FileType::OFFICE_DRAW)
-            << new ExtensionFilter(FileType::OFFICE_IMPRESS)
-            << new ExtensionFilter(FileType::OFFICE_PROJECT)
-            << new ExtensionFilter(FileType::OFFICE_WRITER);
+	        << new ExtensionFilter(FileType::STL)
+	        << new ExtensionFilter(FileType::BLEND)
+	        << new ExtensionFilter(FileType::PDF)
+	        << new ExtensionFilter(FileType::OFFICE_BASE)
+	        << new ExtensionFilter(FileType::OFFICE_CALC)
+	        << new ExtensionFilter(FileType::OFFICE_DRAW)
+	        << new ExtensionFilter(FileType::OFFICE_IMPRESS)
+	        << new ExtensionFilter(FileType::OFFICE_PROJECT)
+	        << new ExtensionFilter(FileType::OFFICE_WRITER);
 
 	QSettings settings;
 	settings.beginGroup("PartFilters");
@@ -293,7 +293,7 @@ void Settings::recalculateFilters()
 			{
 			case FileFilter::Extension:
 				if(FilterGroups[i].filters[j]->enabled)
-                    expressions << File::getRxForFileType(FilterGroups[i].filters[j]->type);
+					expressions << File::getRxForFileType(FilterGroups[i].filters[j]->type);
 				break;
 
 			case FileFilter::Version:

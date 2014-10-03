@@ -62,7 +62,7 @@ void FiltersDialog::accept()
 	for(int i = 0; i < cnt; i++)
 		Settings::get()->FilterGroups[i].apply();
 
-    Settings::get()->recalculateFilters();
+	Settings::get()->recalculateFilters();
 	QDialog::accept();
 }
 

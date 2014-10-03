@@ -32,50 +32,52 @@ class FileIconProvider;
  */
 class FileModel : public QAbstractItemModel
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit FileModel(QObject *parent = 0);
-    ~FileModel();
+	explicit FileModel(QObject *parent = 0);
+	~FileModel();
 
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &child) const;
-    int columnCount(const QModelIndex & parent = QModelIndex()) const;
-    int rowCount(const QModelIndex & parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-    QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+	QModelIndex index(int row, int column,
+	                  const QModelIndex &parent = QModelIndex()) const;
+	QModelIndex parent(const QModelIndex &child) const;
+	int columnCount(const QModelIndex & parent = QModelIndex()) const;
+	int rowCount(const QModelIndex & parent = QModelIndex()) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+	QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-    void settingsChanged();
-    void setDirectory(const QString &path);
+	void settingsChanged();
+	void setDirectory(const QString &path);
 
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+	Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    void deleteParts();
-    void copyToWorkingDir();
+	void deleteParts();
+	void copyToWorkingDir();
 
-    QString path() const { return m_path; }
+	QString path() const {
+		return m_path;
+	}
 
-    QFileInfo fileInfo(const QModelIndex &ix);
+	QFileInfo fileInfo(const QModelIndex &ix);
 
 signals:
-    void directoryLoaded(const QString &path);
+	void directoryLoaded(const QString &path);
 
 private:
-    QFileInfoList m_data;
-    QString m_path;
-    QStringList m_columnLabels;
-    /*! List of checked files. Key = root directory, values are full
-     * paths of files (checked).
-     * It shares information between directories. The map is cleared
-     * when is the "Download" button clicked and processed.
-     * Also "root dir" is cleared when there is "Delete" action processed.
-     */
-    QHash<QString,QStringList> m_checked;
-    FileIconProvider *m_iconProvider;
+	QFileInfoList m_data;
+	QString m_path;
+	QStringList m_columnLabels;
+	/*! List of checked files. Key = root directory, values are full
+	 * paths of files (checked).
+	 * It shares information between directories. The map is cleared
+	 * when is the "Download" button clicked and processed.
+	 * Also "root dir" is cleared when there is "Delete" action processed.
+	 */
+	QHash<QString,QStringList> m_checked;
+	FileIconProvider *m_iconProvider;
 
 private slots:
-    void loadFiles(const QString &path);
+	void loadFiles(const QString &path);
 };
 
 /*! An icon provider for FileModel. It contains additional
@@ -84,11 +86,11 @@ private slots:
 class FileIconProvider : public QFileIconProvider
 {
 public:
-    FileIconProvider();
+	FileIconProvider();
 
-    virtual QIcon   icon ( IconType type ) const;
-    virtual QIcon   icon ( const QFileInfo & info ) const;
-    virtual QString type ( const QFileInfo & info ) const;
+	virtual QIcon   icon ( IconType type ) const;
+	virtual QIcon   icon ( const QFileInfo & info ) const;
+	virtual QString type ( const QFileInfo & info ) const;
 };
 
 #endif // FILEMODEL_H

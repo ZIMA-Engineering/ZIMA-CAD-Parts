@@ -16,35 +16,35 @@ class QFileInfo;
  */
 class ServersView : public QTreeView
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit ServersView(const QString &rootPath, QWidget *parent = 0);
+	explicit ServersView(const QString &rootPath, QWidget *parent = 0);
 
-    /*! try to find the path.
-     * @returns true if the path can be found
-     */
-    bool navigateToDirectory(const QString &path);
+	/*! try to find the path.
+	 * @returns true if the path can be found
+	 */
+	bool navigateToDirectory(const QString &path);
 
 signals:
-    void showSettings(SettingsDialog::Section);
-    void workingDirChanged();
-    void directorySelected(const QString &path);
+	void showSettings(SettingsDialog::Section);
+	void workingDirChanged();
+	void directorySelected(const QString &path);
 
 private:
-    QString m_path;
-    ServersModel *m_model;
-    ServersProxyModel *m_proxy;
-    QSignalMapper *m_signalMapper;
+	QString m_path;
+	ServersModel *m_model;
+	ServersProxyModel *m_proxy;
+	QSignalMapper *m_signalMapper;
 
-    QFileInfo currentFileInfo();
+	QFileInfo currentFileInfo();
 
 private slots:
-    void refreshModel();
-    void modelClicked(const QModelIndex &index);
-    void showContextMenu(const QPoint &point);
-    void spawnZimaUtilityOnDir(const QString &label);
-    void indexOpenPath();
-    void setWorkingDirectory();
+	void refreshModel();
+	void modelClicked(const QModelIndex &index);
+	void showContextMenu(const QPoint &point);
+	void spawnZimaUtilityOnDir(const QString &label);
+	void indexOpenPath();
+	void setWorkingDirectory();
 };
 
 #endif // SERVERSVIEW_H

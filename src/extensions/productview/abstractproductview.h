@@ -20,12 +20,12 @@ class AbstractProductView : public QDialog
 public:
 	explicit AbstractProductView(QWidget *parent = 0);
 
-    //! Returns title for current product view
+	//! Returns title for current product view
 	virtual QString title() = 0;
-    //! Returns a list with file types available in current product type
-    virtual FileTypeList canHandle() = 0;
-    //! Display the file
-    virtual bool handle(FileMetadata *f) = 0;
+	//! Returns a list with file types available in current product type
+	virtual FileTypeList canHandle() = 0;
+	//! Display the file
+	virtual bool handle(FileMetadata *f) = 0;
 
 signals:
 

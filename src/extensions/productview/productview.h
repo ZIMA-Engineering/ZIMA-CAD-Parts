@@ -43,31 +43,30 @@ class ProductView : public QObject
 	Q_OBJECT
 
 public:
-    //! The parent cannot be 0/null because it's used in addProviders call
-    explicit ProductView(QWidget *parent);
+	//! The parent cannot be 0/null because it's used in addProviders call
+	explicit ProductView(QWidget *parent);
 	~ProductView();
 
 public slots:
-    /** \brief Set the file which will be displayed
-     */
-    void setFile(FileMetadata* f);
-    void hide();
+	/** \brief Set the file which will be displayed
+	 */
+	void setFile(FileMetadata* f);
+	void hide();
 
 private:
-	Ui::ProductView *ui;
-    QHash<FileType::FileType, AbstractProductView*> providers;
-    AbstractProductView *m_current;
+	QHash<FileType::FileType, AbstractProductView*> providers;
+	AbstractProductView *m_current;
 //	FailbackProductView *failbackProvider;
 
-    //! The main registration function
+	//! The main registration function
 	template <class T> void addProviders()
 	{
-        T *provider = new T(qobject_cast<QWidget*>(parent()));
-        provider->hide();
-        foreach(FileType::FileType i, provider->canHandle())
-        {
-            providers[i] = provider;
-        }
+		T *provider = new T(qobject_cast<QWidget*>(parent()));
+		provider->hide();
+		foreach(FileType::FileType i, provider->canHandle())
+		{
+			providers[i] = provider;
+		}
 	}
 
 	void saveSettings();

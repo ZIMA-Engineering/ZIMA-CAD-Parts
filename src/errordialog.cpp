@@ -15,18 +15,18 @@ ErrorDialog::~ErrorDialog()
 
 void ErrorDialog::setErrors(const QString &label, const ErrorsMap &errors)
 {
-    ui->label->setText(label);
+	ui->label->setText(label);
 
-    QString str = "<html><body><dl>";
-    ErrorsMapIterator it(errors);
-    while (it.hasNext())
-    {
-        it.next();
-        str += "<dt>" + it.key() + ":</dt>";
-        str += "<dd>" + it.value() + ":</dd>";
-    }
-    str += "</dl></body></html>";
+	QString str = "<html><body><dl>";
+	ErrorsMapIterator it(errors);
+	while (it.hasNext())
+	{
+		it.next();
+		str += "<dt>" + it.key() + ":</dt>";
+		str += "<dd>" + it.value() + ":</dd>";
+	}
+	str += "</dl></body></html>";
 
-    ui->textEdit->setHtml(str);
+	ui->textEdit->setHtml(str);
 }
 

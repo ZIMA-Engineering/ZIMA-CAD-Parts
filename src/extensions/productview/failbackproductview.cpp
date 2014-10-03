@@ -20,18 +20,18 @@ QString FailbackProductView::title()
 
 FileTypeList FailbackProductView::canHandle()
 {
-    return FileTypeList();
+	return FileTypeList();
 }
 
 bool FailbackProductView::handle(FileMetadata *f)
 {
-    QString lastModified = f->fileInfo.lastModified().toString();
+	QString lastModified = f->fileInfo.lastModified().toString();
 
 	QString html = "<html><body><table width=\"100%\" border=\"0\">";
 	html += "<tr><th>" + tr("Property") + "</th><th>" + tr("Value") + "</th></tr>";
-    html += "<tr><td>" + tr("Name") + "</td><td>" + f->fileInfo.baseName() + "</td></tr>";
+	html += "<tr><td>" + tr("Name") + "</td><td>" + f->fileInfo.baseName() + "</td></tr>";
 	html += "<tr><td>" + tr("Last Modified") + "</td><td>" + lastModified + "</td></tr>";
-    html += "<tr><td>" + tr("Size") + "</td><td>" + QString("%1").arg(f->fileInfo.size()) + "</td></tr>";
+	html += "<tr><td>" + tr("Size") + "</td><td>" + QString("%1").arg(f->fileInfo.size()) + "</td></tr>";
 	html += "</table></body></html>";
 
 	ui->textBrowser->setHtml(html);

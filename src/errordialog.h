@@ -18,7 +18,7 @@ class ErrorDialog : public QDialog
 public:
 	explicit ErrorDialog(QWidget *parent = 0);
 	~ErrorDialog();
-    void setErrors(const QString &label, const ErrorsMap &errors);
+	void setErrors(const QString &label, const ErrorsMap &errors);
 
 private:
 	Ui::ErrorDialog *ui;

@@ -21,7 +21,6 @@
 #include "productview.h"
 #include "settings.h"
 
-#include "ui_productview.h"
 #include "proeproductview.h"
 #include "dxfproductview.h"
 #include "pdfproductview.h"
@@ -30,13 +29,13 @@
 
 
 ProductView::ProductView(QWidget *parent) :
-    QObject(parent),
-    m_current(0)
+	QObject(parent),
+	m_current(0)
 {
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
 #ifdef HAVE_POPPLER
-    addProviders<PDFProductView>();
+	addProviders<PDFProductView>();
 #endif
 	//failbackProvider = new FailbackProductView(this);
 	//failbackProvider->hide();
@@ -46,60 +45,50 @@ ProductView::ProductView(QWidget *parent) :
 ProductView::~ProductView()
 {
 	saveSettings();
-
-	delete ui;
-
-    QHashIterator<FileType::FileType, AbstractProductView*> i(providers);
-	while (i.hasNext())
-	{
-		i.next();
-		i.value()->deleteLater();
-	}
-
 	providers.clear();
 }
 
 void ProductView::saveSettings()
 {
-    if (m_current)
-    {
-        Settings::get()->ExtensionsProductViewGeometry = m_current->saveGeometry();
-        Settings::get()->ExtensionsProductViewPosition = m_current->pos();
-    }
+	if (m_current)
+	{
+		Settings::get()->ExtensionsProductViewGeometry = m_current->saveGeometry();
+		Settings::get()->ExtensionsProductViewPosition = m_current->pos();
+	}
 }
 
 void ProductView::hide()
 {
-    if (!m_current)
-        return;
+	if (!m_current)
+		return;
 
-    saveSettings();
-    m_current->hide();
+	saveSettings();
+	m_current->hide();
 }
 
 void ProductView::setFile(FileMetadata* f)
 {
 	if (!providers.contains(f->type))
 	{
-        if (m_current)
-            m_current->hide();
-        m_current = 0;
+		if (m_current)
+			m_current->hide();
+		m_current = 0;
 		return;
 	}
 
-    if (m_current && m_current != providers.value(f->type))
-    {
-        saveSettings();
-        m_current->hide();
-    }
+	if (m_current && m_current != providers.value(f->type))
+	{
+		saveSettings();
+		m_current->hide();
+	}
 
-    m_current = providers.value(f->type);
-    m_current->restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
-    QPoint pt = Settings::get()->ExtensionsProductViewPosition;
-    if (!pt.isNull())
-        m_current->move(pt);
+	m_current = providers.value(f->type);
+	m_current->restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
+	QPoint pt = Settings::get()->ExtensionsProductViewPosition;
+	if (!pt.isNull())
+		m_current->move(pt);
 
-    m_current->setWindowTitle(f->fileInfo.baseName() + " " + m_current->title());
-    m_current->handle(f);
-    m_current->show();
+	m_current->setWindowTitle(f->fileInfo.baseName() + " " + m_current->title());
+	m_current->handle(f);
+	m_current->show();
 }

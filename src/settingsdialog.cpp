@@ -71,7 +71,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	connect(m_ui->productViewButton, SIGNAL(clicked()),
 	        this, SLOT(productViewButton_clicked()));
 
-    m_editedDS = Settings::get()->DataSources;
+	m_editedDS = Settings::get()->DataSources;
 	setupDatasourceList();
 
 	m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
@@ -187,12 +187,12 @@ void SettingsDialog::accept()
 
 	Settings::get()->ProeExecutable = m_ui->proeEdit->text();
 
-    if (m_editedDS != Settings::get()->DataSources)
-    {
+	if (m_editedDS != Settings::get()->DataSources)
+	{
 		// Note: do not delete datasources here. It will be handled in ServersWidget::settingsChanged()
-        Settings::get()->DataSources.clear();
-        Settings::get()->DataSources = m_editedDS;
-        Settings::get()->DataSourcesNeedsUpdate = true;
+		Settings::get()->DataSources.clear();
+		Settings::get()->DataSources = m_editedDS;
+		Settings::get()->DataSourcesNeedsUpdate = true;
 	}
 
 	QDialog::accept();
@@ -200,18 +200,18 @@ void SettingsDialog::accept()
 
 void SettingsDialog::addDataSource()
 {
-    AddEditDataSource addEdit(m_editedDS, 0, AddEditDataSource::ADD);
+	AddEditDataSource addEdit(m_editedDS, 0, AddEditDataSource::ADD);
 
-    if (addEdit.exec() == QDialog::Accepted )
-    {
-        DataSource *ds = addEdit.dataSource();
-        QListWidgetItem *item =  new QListWidgetItem(ds->icon, ds->name);
-        item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
-        item->setData(UNUSED_ROLE, true);
-        m_ui->datasourceList->addItem(item);
-        m_ui->datasourceList->setCurrentItem(item);
-        m_editedDS.append(ds);
-    }
+	if (addEdit.exec() == QDialog::Accepted )
+	{
+		DataSource *ds = addEdit.dataSource();
+		QListWidgetItem *item =  new QListWidgetItem(ds->icon, ds->name);
+		item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
+		item->setData(UNUSED_ROLE, true);
+		m_ui->datasourceList->addItem(item);
+		m_ui->datasourceList->setCurrentItem(item);
+		m_editedDS.append(ds);
+	}
 }
 
 void SettingsDialog::editDataSource()
@@ -223,20 +223,20 @@ void SettingsDialog::editDataSource()
 	if (!item)
 		return;
 
-    DataSource *ds = PtrVariant<DataSource>::asPtr(item->data(DATASOURCE_ROLE));
-    AddEditDataSource addEdit(m_editedDS, ds, AddEditDataSource::EDIT);
+	DataSource *ds = PtrVariant<DataSource>::asPtr(item->data(DATASOURCE_ROLE));
+	AddEditDataSource addEdit(m_editedDS, ds, AddEditDataSource::EDIT);
 
-    if (addEdit.exec())
+	if (addEdit.exec())
 	{
-        m_editedDS.removeAll(ds);
-        ds = addEdit.dataSource();
+		m_editedDS.removeAll(ds);
+		ds = addEdit.dataSource();
 
-        item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
-        item->setIcon(ds->icon);
-        item->setText(ds->name);
-        m_editedDS.append(ds);
-        Settings::get()->DataSourcesNeedsUpdate = true;
-    }
+		item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
+		item->setIcon(ds->icon);
+		item->setText(ds->name);
+		m_editedDS.append(ds);
+		Settings::get()->DataSourcesNeedsUpdate = true;
+	}
 }
 
 void SettingsDialog::removeDataSource()
@@ -248,16 +248,16 @@ void SettingsDialog::removeDataSource()
 	if (!it)
 		return;
 
-    DataSource *ds = PtrVariant<DataSource>::asPtr(it->data(DATASOURCE_ROLE));
+	DataSource *ds = PtrVariant<DataSource>::asPtr(it->data(DATASOURCE_ROLE));
 	if (it->data(UNUSED_ROLE).toBool())
 	{
-        m_editedDS.removeAll(ds);
-        delete ds;
+		m_editedDS.removeAll(ds);
+		delete ds;
 	}
 
 	int row = m_ui->datasourceList->currentRow();
 	m_ui->datasourceList->takeItem(row);
-    delete m_editedDS.takeAt(row);
+	delete m_editedDS.takeAt(row);
 
 	delete it;
 }
@@ -272,7 +272,7 @@ void SettingsDialog::datasourceUpButton_clicked()
 		QListWidgetItem *temp = lw->takeItem(ix);
 		lw->insertItem(ix-1, temp);
 		lw->setCurrentRow(ix-1);
-        m_editedDS.swap(ix, ix-1);
+		m_editedDS.swap(ix, ix-1);
 	}
 }
 
@@ -286,20 +286,20 @@ void SettingsDialog::datasourceDownButton_clicked()
 		QListWidgetItem *temp = lw->takeItem(ix);
 		lw->insertItem(ix+1, temp);
 		lw->setCurrentRow(ix+1);
-        m_editedDS.swap(ix, ix+1);
+		m_editedDS.swap(ix, ix+1);
 	}
 }
 
 void SettingsDialog::setupDatasourceList()
 {
 	m_ui->datasourceList->clear();
-    if (!m_editedDS.count())
+	if (!m_editedDS.count())
 		return;
 
-    foreach(DataSource *s, m_editedDS)
+	foreach(DataSource *s, m_editedDS)
 	{
-        QListWidgetItem *i = new QListWidgetItem(s->icon, s->name);
-        i->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(s));
+		QListWidgetItem *i = new QListWidgetItem(s->icon, s->name);
+		i->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(s));
 		i->setData(UNUSED_ROLE, false);
 		m_ui->datasourceList->addItem(i);
 	}

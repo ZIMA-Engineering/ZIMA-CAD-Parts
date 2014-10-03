@@ -43,13 +43,13 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
 	  ui(new Ui::MainWindowClass),
 	  translator(translator),
-      m_historyCurrent(-1)
+	  m_historyCurrent(-1)
 {
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
 	QSplashScreen *splash = 0;
 
-    if (Settings::get()->GUISplashEnabled)
+	if (Settings::get()->GUISplashEnabled)
 	{
 		QPixmap pixmap(":/gfx/splash.png");
 
@@ -62,14 +62,14 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    ui->actionRefresh->setShortcut(QKeySequence::Refresh);
-    ui->actionRefresh->setShortcutContext(Qt::ApplicationShortcut);
-    ui->actionRefresh->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
-    connect(ui->actionRefresh, SIGNAL(triggered()),
-            MetadataCache::get(), SLOT(clear()));
+	ui->actionRefresh->setShortcut(QKeySequence::Refresh);
+	ui->actionRefresh->setShortcutContext(Qt::ApplicationShortcut);
+	ui->actionRefresh->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
+	connect(ui->actionRefresh, SIGNAL(triggered()),
+	        MetadataCache::get(), SLOT(clear()));
 
 #ifdef Q_OS_WIN
-    // do not display menu bar for now on Windows. It contains only one "File" item now.
+	// do not display menu bar for now on Windows. It contains only one "File" item now.
 	// On th eother side it's mandatory to allow user to quit the app in some
 	// X11 window manager (and mac)
 	ui->menuBar->hide();
@@ -81,8 +81,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->serversWidget, SIGNAL(showSettings(SettingsDialog::Section)),
 	        this, SLOT(showSettings(SettingsDialog::Section)));
 
-    connect(ui->serversWidget, SIGNAL(directorySelected(QString)),
-            this, SLOT(trackHistory(QString)));
+	connect(ui->serversWidget, SIGNAL(directorySelected(QString)),
+	        this, SLOT(trackHistory(QString)));
 
 	connect(ui->actionHistoryBack, SIGNAL(triggered()), this, SLOT(historyBack()));
 	connect(ui->actionHistoryForward, SIGNAL(triggered()), this, SLOT(historyForward()));
@@ -90,7 +90,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->actionHome, SIGNAL(triggered()),
 	        ui->serversWidget, SLOT(goToWorkingDirectory()));
 
-    updateStatus(tr("Ready"));
+	updateStatus(tr("Ready"));
 
 	restoreState(Settings::get()->MainWindowState);
 	restoreGeometry(Settings::get()->MainWindowGeometry);
@@ -121,7 +121,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	settingsChanged();
 
-    if (Settings::get()->GUISplashEnabled)
+	if (Settings::get()->GUISplashEnabled)
 	{
 		SleeperThread::msleep(Settings::get()->GUISplashDuration);
 		splash->finish(this);
@@ -144,11 +144,11 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    if (!e->spontaneous())
-    {
-        Settings::get()->MainWindowState = saveState();
-        Settings::get()->MainWindowGeometry = saveGeometry();
-    }
+	if (!e->spontaneous())
+	{
+		Settings::get()->MainWindowState = saveState();
+		Settings::get()->MainWindowGeometry = saveGeometry();
+	}
 
 	QMainWindow::closeEvent(e);
 }
@@ -189,8 +189,8 @@ void MainWindow::settingsChanged()
 	m_wdirWidget->settingsChanged();
 
 	// Prune tree history
-    m_history.clear();
-    m_historyCurrent = -1;
+	m_history.clear();
+	m_historyCurrent = -1;
 
 	ui->actionHistoryBack->setEnabled(false);
 	ui->actionHistoryForward->setEnabled(false);
@@ -198,43 +198,43 @@ void MainWindow::settingsChanged()
 
 void MainWindow::updateStatus(const QString &message)
 {
-    statusBar()->showMessage(message, 5000);
+	statusBar()->showMessage(message, 5000);
 }
 
 void MainWindow::trackHistory(const QString &path)
 {
-    if (m_history.count() && m_history.at(0) == path)
-        return;
-    else
-    {
-        m_history << path;
-        m_historyCurrent++;
-    }
+	if (m_history.count() && m_history.at(0) == path)
+		return;
+	else
+	{
+		m_history << path;
+		m_historyCurrent++;
+	}
 
-    if (m_historyCurrent == 0)
+	if (m_historyCurrent == 0)
 		ui->actionHistoryForward->setEnabled(false);
-    else if (m_historyCurrent > 0)
+	else if (m_historyCurrent > 0)
 		ui->actionHistoryBack->setEnabled(true);
 }
 
 void MainWindow::historyBack()
 {
-    --m_historyCurrent;
-    handleHistory();
+	--m_historyCurrent;
+	handleHistory();
 }
 
 void MainWindow::historyForward()
 {
-    ++m_historyCurrent;
-    handleHistory();
+	++m_historyCurrent;
+	handleHistory();
 }
 
 void MainWindow::handleHistory()
 {
-    qDebug() << "handle history" << m_historyCurrent << m_history.at(m_historyCurrent);
-    QString path = m_history.at(m_historyCurrent);
-    ui->serversWidget->setDirectory(path);
+	qDebug() << "handle history" << m_historyCurrent << m_history.at(m_historyCurrent);
+	QString path = m_history.at(m_historyCurrent);
+	ui->serversWidget->setDirectory(path);
 
-    ui->actionHistoryBack->setEnabled(m_historyCurrent != 0);
-    ui->actionHistoryForward->setEnabled(m_historyCurrent != m_history.count()-1);
+	ui->actionHistoryBack->setEnabled(m_historyCurrent != 0);
+	ui->actionHistoryForward->setEnabled(m_historyCurrent != m_history.count()-1);
 }

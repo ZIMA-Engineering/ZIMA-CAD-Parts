@@ -20,7 +20,7 @@ public:
 	explicit ServersWidget(QWidget *parent = 0);
 
 	QModelIndex currentIndex();
-    void setDirectory(const QString &path);
+	void setDirectory(const QString &path);
 
 signals:
 	void statusUpdated(const QString &message);
@@ -33,7 +33,7 @@ signals:
 	void techSpecAvailable(const QUrl&);
 
 	void workingDirChanged();
-    void directorySelected(const QString&);
+	void directorySelected(const QString&);
 
 public slots:
 	void expand(const QModelIndex & index);

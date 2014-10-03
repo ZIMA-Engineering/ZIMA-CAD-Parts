@@ -61,15 +61,15 @@ private:
 	WorkingDirWidget *m_wdirWidget;
 
 	// History
-    QList<QString> m_history;
-    int m_historyCurrent;
+	QList<QString> m_history;
+	int m_historyCurrent;
 
 	QModelIndex lastFoundIndex;
 
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
-    void handleHistory();
+	void handleHistory();
 
 public slots:
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
@@ -77,7 +77,7 @@ public slots:
 
 private slots:
 	void settingsChanged();
-    void trackHistory(const QString &index);
+	void trackHistory(const QString &index);
 	void historyBack();
 	void historyForward();
 };

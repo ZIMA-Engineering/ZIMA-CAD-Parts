@@ -22,17 +22,17 @@
 class DataSource
 {
 public:
-    DataSource(const QString &name, const QString &path)
-    {
-        this->name = name;
-        this->rootPath = path;
-        ServersIconProvider ip;
-        icon = ip.icon(QFileInfo(path));
-    }
+	DataSource(const QString &name, const QString &path)
+	{
+		this->name = name;
+		this->rootPath = path;
+		ServersIconProvider ip;
+		icon = ip.icon(QFileInfo(path));
+	}
 
-    QString name;
-    QString rootPath;
-    QIcon icon;
+	QString name;
+	QString rootPath;
+	QIcon icon;
 };
 
 
@@ -55,9 +55,9 @@ class Settings
 {
 public:
 	enum Languages {
-	    DETECT=0,
-	    ENGLISH,
-	    CZECH
+		DETECT=0,
+		ENGLISH,
+		CZECH
 	};
 
 	//! The main access method to settings
@@ -138,8 +138,8 @@ public:
 	//! Map Languages enum to string code
 	QString langIndexToName(int lang);
 
-    //! A language shortcode for Metadata. 'en', 'cs', ...
-    QString LanguageMetadata;
+	//! A language shortcode for Metadata. 'en', 'cs', ...
+	QString LanguageMetadata;
 
 private:
 	//! cannot access it directly. Use getCurrentLanguageCode()

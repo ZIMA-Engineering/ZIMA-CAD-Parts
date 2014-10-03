@@ -27,327 +27,327 @@
 #include "errordialog.h"
 
 FileModel::FileModel(QObject *parent) :
-    QAbstractItemModel(parent)
+	QAbstractItemModel(parent)
 {
-    m_iconProvider = new FileIconProvider();
+	m_iconProvider = new FileIconProvider();
 }
 
 FileModel::~FileModel()
 {
-    delete m_iconProvider;
+	delete m_iconProvider;
 }
 
 QModelIndex FileModel::index(int row, int column,
                              const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
-    return createIndex(row, column);
+	Q_UNUSED(parent);
+	return createIndex(row, column);
 }
 
 QModelIndex FileModel::parent(const QModelIndex &child) const
 {
-    Q_UNUSED(child);
-    return QModelIndex();
+	Q_UNUSED(child);
+	return QModelIndex();
 }
 
 int FileModel::columnCount(const QModelIndex & parent) const
 {
-    Q_UNUSED(parent);
-    return m_columnLabels.count();
+	Q_UNUSED(parent);
+	return m_columnLabels.count();
 }
 
 int FileModel::rowCount(const QModelIndex & parent) const
 {
-    if (!parent.column()) return 0;
-    return m_data.size();
+	if (!parent.column()) return 0;
+	return m_data.size();
 }
 
 QVariant FileModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || m_path.isEmpty() || !m_data.size())
-        return QVariant();
+	if (!index.isValid() || m_path.isEmpty() || !m_data.size())
+		return QVariant();
 
-    const int col = index.column();
+	const int col = index.column();
 
-    // first handle standard QFileSystemModel data
-    if (col == 0 && role == Qt::CheckStateRole)
-    {
-        return m_checked[m_path].contains(m_data.at(index.row()).absoluteFilePath());
-    }
-    else if (col == 0 && role == Qt::DisplayRole)
-    {
-        return m_data.at(index.row()).fileName();
-    }
-    else if (col == 0 && role == Qt::DecorationRole)
-    {
-        return m_iconProvider->icon(m_data.at(index.row()));
-    }
-    // custom columns:
-    // thumbnail
-    else if (col == 1)
-    {
-        QString key(m_data.at(index.row()).baseName());
-        switch( role )
-        {
-        case Qt::DecorationRole:
-            if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
-                return MetadataCache::get()->partThumbnailPaths(m_path)[key].second.scaled(Settings::get()->GUIThumbWidth,
-                                                                                           Settings::get()->GUIThumbWidth,
-                                                                                           Qt::KeepAspectRatio
-                                                                                          );
-            break;
-        case Qt::SizeHintRole:
-            if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
-            {
-                return QSize(Settings::get()->GUIThumbWidth,
-                             Settings::get()->GUIThumbWidth);
-            }
-            break;
-        case Qt::ToolTipRole:
-            if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
-            {
-                return QString("<img src=\"%1\" width=\"%2\">")
-                        .arg(MetadataCache::get()->partThumbnailPaths(m_path)[key].first)
-                        .arg(Settings::get()->GUIPreviewWidth);
-            }
-            break;
-        }
-    } // additional metadata
-    else if (role == Qt::DisplayRole && col > 1)
-    {
-        return MetadataCache::get()->partParam(m_path,
-                                               m_data.at(index.row()).fileName(),
-                                               col-1);
-    }
+	// first handle standard QFileSystemModel data
+	if (col == 0 && role == Qt::CheckStateRole)
+	{
+        return QVariant(m_checked[m_path].contains(m_data.at(index.row()).absoluteFilePath()));
+	}
+	else if (col == 0 && role == Qt::DisplayRole)
+	{
+		return m_data.at(index.row()).fileName();
+	}
+	else if (col == 0 && role == Qt::DecorationRole)
+	{
+		return m_iconProvider->icon(m_data.at(index.row()));
+	}
+	// custom columns:
+	// thumbnail
+	else if (col == 1)
+	{
+		QString key(m_data.at(index.row()).baseName());
+		switch( role )
+		{
+		case Qt::DecorationRole:
+			if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
+				return MetadataCache::get()->partThumbnailPaths(m_path)[key].second.scaled(Settings::get()->GUIThumbWidth,
+				        Settings::get()->GUIThumbWidth,
+				        Qt::KeepAspectRatio
+				                                                                          );
+			break;
+		case Qt::SizeHintRole:
+			if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
+			{
+				return QSize(Settings::get()->GUIThumbWidth,
+				             Settings::get()->GUIThumbWidth);
+			}
+			break;
+		case Qt::ToolTipRole:
+			if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
+			{
+				return QString("<img src=\"%1\" width=\"%2\">")
+				       .arg(MetadataCache::get()->partThumbnailPaths(m_path)[key].first)
+				       .arg(Settings::get()->GUIPreviewWidth);
+			}
+			break;
+		}
+	} // additional metadata
+	else if (role == Qt::DisplayRole && col > 1)
+	{
+		return MetadataCache::get()->partParam(m_path,
+		                                       m_data.at(index.row()).fileName(),
+		                                       col-1);
+	}
 
-    return QVariant();
+	return QVariant();
 }
 
 void FileModel::loadFiles(const QString &path)
 {
-    m_data.clear();
-    QDir d(path);
-    m_data = d.entryInfoList(QDir::Files|QDir::Readable, QDir::Name);
+	m_data.clear();
+	QDir d(path);
+	m_data = d.entryInfoList(QDir::Files|QDir::Readable, QDir::Name);
 }
 
 QFileInfo FileModel::fileInfo(const QModelIndex &ix)
 {
-    return m_data.at(ix.row());
+	return m_data.at(ix.row());
 }
 
 Qt::ItemFlags FileModel::flags(const QModelIndex& index) const
 {
-    Q_UNUSED(index);
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+	Q_UNUSED(index);
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
 }
 
 bool FileModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role == Qt::CheckStateRole)
-    {
-        QString path = m_data.at(index.row()).absoluteFilePath();
+	if (role == Qt::CheckStateRole)
+	{
+		QString path = m_data.at(index.row()).absoluteFilePath();
 
-        if (m_checked[m_path].contains(path))
-            m_checked[m_path].removeAll(path);
-        else
-            m_checked[m_path].append(path);
+		if (m_checked[m_path].contains(path))
+			m_checked[m_path].removeAll(path);
+		else
+			m_checked[m_path].append(path);
 
-        emit dataChanged(index, index);
-        return true;
-    }
-    return QAbstractItemModel::setData(index, value, role);
+		emit dataChanged(index, index);
+		return true;
+	}
+	return QAbstractItemModel::setData(index, value, role);
 }
 
 QVariant FileModel::headerData (int section, Qt::Orientation orientation, int role) const
 {
-    if( role != Qt::DisplayRole || orientation != Qt::Horizontal || !m_columnLabels.size())
-        return QVariant();
+	if( role != Qt::DisplayRole || orientation != Qt::Horizontal || !m_columnLabels.size())
+		return QVariant();
 
-    return m_columnLabels[section];
+	return m_columnLabels[section];
 }
 
 void FileModel::setDirectory(const QString &path)
 {
-    // this has to go before path != m_path check to reload the header translations
-    m_columnLabels = MetadataCache::get()->columnLabels(path);
+	// this has to go before path != m_path check to reload the header translations
+	m_columnLabels = MetadataCache::get()->columnLabels(path);
 
-    if (path != m_path)
-    {
-        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	if (path != m_path)
+	{
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-        loadFiles(path);
-        MetadataCache::get()->partThumbnailPaths(path);
-        m_path = path;
+		loadFiles(path);
+		MetadataCache::get()->partThumbnailPaths(path);
+		m_path = path;
 
-        beginResetModel();
-        endResetModel();
+		beginResetModel();
+		endResetModel();
 
-        QApplication::restoreOverrideCursor();
-    }
+		QApplication::restoreOverrideCursor();
+	}
 
-    // simulating "directory loaded" signal even when is the path the
-    // same as before to recalculate the column sizes in view
-    emit directoryLoaded(m_path);
+	// simulating "directory loaded" signal even when is the path the
+	// same as before to recalculate the column sizes in view
+	emit directoryLoaded(m_path);
 }
 
 void FileModel::settingsChanged()
 {
-    //setDirectory(m_path);
+	//setDirectory(m_path);
 }
 
 void FileModel::deleteParts()
 {
-    QFile f;
-    QHash<QString,QString> errors;
-    QFileInfo key;
+	QFile f;
+	QHash<QString,QString> errors;
+	QFileInfo key;
 
-    foreach (QString fname, m_checked[m_path])
-    {
-        key.setFile(fname);
+	foreach (QString fname, m_checked[m_path])
+	{
+		key.setFile(fname);
 
-        if (!Settings::get()->ShowProeVersions
-                && MetadataCache::get()->partVersions(m_path).contains(key.completeBaseName()))
-        {
-            QDir d(m_path);
-            QFileInfoList fil = d.entryInfoList(QStringList() << key.completeBaseName()+".*");
-            foreach (QFileInfo fi, fil)
-            {
-                if (!f.remove(fi.absoluteFilePath()))
-                {
-                    errors[fi.absoluteFilePath()] = f.errorString();
-                }
-                else
-                {
-                    m_data.removeAll(key);
-                    MetadataCache::get()->deletePart(m_path, key.baseName());
-                    m_checked[m_path].removeAll(fname);
-                }
-            }
-        }
-        else
-        {
-            if (!f.remove(key.absoluteFilePath()))
-                errors[key.absoluteFilePath()] = f.errorString();
-            else
-            {
-                m_data.removeAll(key);
-                MetadataCache::get()->deletePart(m_path, key.baseName());
-                m_checked[m_path].removeAll(fname);
-            }
-        }
-    }
+		if (!Settings::get()->ShowProeVersions
+		        && MetadataCache::get()->partVersions(m_path).contains(key.completeBaseName()))
+		{
+			QDir d(m_path);
+			QFileInfoList fil = d.entryInfoList(QStringList() << key.completeBaseName()+".*");
+			foreach (QFileInfo fi, fil)
+			{
+				if (!f.remove(fi.absoluteFilePath()))
+				{
+					errors[fi.absoluteFilePath()] = f.errorString();
+				}
+				else
+				{
+					m_data.removeAll(key);
+					MetadataCache::get()->deletePart(m_path, key.baseName());
+					m_checked[m_path].removeAll(fname);
+				}
+			}
+		}
+		else
+		{
+			if (!f.remove(key.absoluteFilePath()))
+				errors[key.absoluteFilePath()] = f.errorString();
+			else
+			{
+				m_data.removeAll(key);
+				MetadataCache::get()->deletePart(m_path, key.baseName());
+				m_checked[m_path].removeAll(fname);
+			}
+		}
+	}
 
-    if (errors.count())
-    {
-        ErrorDialog dlg;
-        dlg.setErrors(tr("File deletion error(s):"), errors);
-        dlg.exec();
-    }
-    else
-    {
-        m_checked[m_path].clear();
-        beginResetModel();
-        endResetModel();
-    }
+	if (errors.count())
+	{
+		ErrorDialog dlg;
+		dlg.setErrors(tr("File deletion error(s):"), errors);
+		dlg.exec();
+	}
+	else
+	{
+		m_checked[m_path].clear();
+		beginResetModel();
+		endResetModel();
+	}
 }
 
 void FileModel::copyToWorkingDir()
 {
-    bool overwrite = false;
-    QHash<QString,QString> errors;
-    QDir d;
+	bool overwrite = false;
+	QHash<QString,QString> errors;
+	QDir d;
 
-    if (!d.exists(Settings::get()->WorkingDir))
-    {
-        if (QMessageBox::question(0, tr("Working Dir does not exist"),
-                                  tr("Working directory %1 does not exist. Create it?").arg(Settings::get()->WorkingDir),
-                                  QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-        {
-            return;
-        }
-        if (!d.mkpath(Settings::get()->WorkingDir))
-            errors[Settings::get()->WorkingDir] = "Cannot create directory: " + Settings::get()->WorkingDir;
-    }
+	if (!d.exists(Settings::get()->WorkingDir))
+	{
+		if (QMessageBox::question(0, tr("Working Dir does not exist"),
+		                          tr("Working directory %1 does not exist. Create it?").arg(Settings::get()->WorkingDir),
+		                          QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+		{
+			return;
+		}
+		if (!d.mkpath(Settings::get()->WorkingDir))
+			errors[Settings::get()->WorkingDir] = "Cannot create directory: " + Settings::get()->WorkingDir;
+	}
 
-    QHashIterator<QString,QStringList> it(m_checked);
-    while (it.hasNext())
-    {
-        it.next();
-        QString key = it.key();
+	QHashIterator<QString,QStringList> it(m_checked);
+	while (it.hasNext())
+	{
+		it.next();
+		QString key = it.key();
 
-        // do not copy files from WD into WD
-        if (key == Settings::get()->WorkingDir)
-        {
-            m_checked[key].clear();
-            continue;
-        }
+		// do not copy files from WD into WD
+		if (key == Settings::get()->WorkingDir)
+		{
+			m_checked[key].clear();
+			continue;
+		}
 
-        foreach (QString fname, it.value())
-        {
-            QFileInfo fi(fname);
-            QFile f(fi.absoluteFilePath());
-            QString target = Settings::get()->WorkingDir + "/" + fi.fileName();
+		foreach (QString fname, it.value())
+		{
+			QFileInfo fi(fname);
+			QFile f(fi.absoluteFilePath());
+			QString target = Settings::get()->WorkingDir + "/" + fi.fileName();
 
-            if (!overwrite && QDir().exists(target))
-            {
-                QMessageBox::StandardButton ret = QMessageBox::question(0, tr("Overwrite file?"),
-                                              tr("File %1 already exists. Overwrite?").arg(target),
-                                              QMessageBox::Yes|QMessageBox::No|QMessageBox::YesAll|QMessageBox::Cancel
-                                              );
-                switch (ret)
-                {
-                case QMessageBox::Yes:
-                    break;
-                case QMessageBox::No:
-                    continue;
-                    break;
-                case QMessageBox::YesAll:
-                    overwrite = true;
-                    break;
-                case QMessageBox::Cancel:
-                    return;
-                    break;
-                default:
-                    break;
-                } // switch
+			if (!overwrite && QDir().exists(target))
+			{
+				QMessageBox::StandardButton ret = QMessageBox::question(0, tr("Overwrite file?"),
+				                                  tr("File %1 already exists. Overwrite?").arg(target),
+				                                  QMessageBox::Yes|QMessageBox::No|QMessageBox::YesAll|QMessageBox::Cancel
+				                                                       );
+				switch (ret)
+				{
+				case QMessageBox::Yes:
+					break;
+				case QMessageBox::No:
+					continue;
+					break;
+				case QMessageBox::YesAll:
+					overwrite = true;
+					break;
+				case QMessageBox::Cancel:
+					return;
+					break;
+				default:
+					break;
+				} // switch
 
-            } // if !overwrite
+			} // if !overwrite
 
-            if (f.exists(target) && !f.remove(target))
-            {
-                errors[target] = f.errorString();
-                continue;
-            }
-            if (!f.copy(target))
-                errors[target] = f.errorString();
-            else
-            {
-                // copy the thumbnail too
-                if (QDir().mkpath(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR))
-                {
-                    QFileInfo thumbFi;
-                    thumbFi.setFile(MetadataCache::get()->partThumbnailPaths(m_path)[fi.baseName()].first);
-                    QFile thumb(thumbFi.absoluteFilePath());
-                    thumb.copy(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
-                }
-                m_checked[key].removeAll(fname);
-            }
-        } // while
+			if (f.exists(target) && !f.remove(target))
+			{
+				errors[target] = f.errorString();
+				continue;
+			}
+			if (!f.copy(target))
+				errors[target] = f.errorString();
+			else
+			{
+				// copy the thumbnail too
+				if (QDir().mkpath(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR))
+				{
+					QFileInfo thumbFi;
+					thumbFi.setFile(MetadataCache::get()->partThumbnailPaths(m_path)[fi.baseName()].first);
+					QFile thumb(thumbFi.absoluteFilePath());
+					thumb.copy(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
+				}
+				m_checked[key].removeAll(fname);
+			}
+		} // while
 
-    }
+	}
 
-    if (errors.count())
-    {
-        ErrorDialog dlg;
-        dlg.setErrors(tr("File copying error(s):"), errors);
-        dlg.exec();
-    }
-    else
-    {
-        m_checked.clear();
-        beginResetModel();
-        endResetModel();
-    }
+	if (errors.count())
+	{
+		ErrorDialog dlg;
+		dlg.setErrors(tr("File copying error(s):"), errors);
+		dlg.exec();
+	}
+	else
+	{
+		m_checked.clear();
+		beginResetModel();
+		endResetModel();
+	}
 }
 
 
@@ -357,21 +357,21 @@ FileIconProvider::FileIconProvider()
 
 QIcon FileIconProvider::icon ( IconType type ) const
 {
-    return QFileIconProvider::icon(type);
+	return QFileIconProvider::icon(type);
 }
 
 QIcon FileIconProvider::icon ( const QFileInfo & info ) const
 {
-    FileMetadata fi(info);
-    QString s = QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(fi.type));
+	FileMetadata fi(info);
+	QString s = QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(fi.type));
 
-    if (QFile::exists(s))
-        return QPixmap(s);
+	if (QFile::exists(s))
+		return QPixmap(s);
 
-    return QFileIconProvider().icon(info).pixmap(64);
+	return QFileIconProvider().icon(info).pixmap(64);
 }
 
 QString FileIconProvider::type ( const QFileInfo & info ) const
 {
-    return QFileIconProvider::type(info);
+	return QFileIconProvider::type(info);
 }

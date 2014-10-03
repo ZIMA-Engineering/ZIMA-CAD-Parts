@@ -32,48 +32,48 @@
 namespace FileType {
 
 typedef enum {
-    // Pro/e
-    PRT_PROE=0,
-    ASM,
-    DRW,
-    FRM,
-    NEU_PROE,
-    // CATIA
-    CATPART,
-    CATPRODUCT,
-    CATDRAWING,
-    // NX
-    PRT_NX,
-    // SolidWorks
-    SLDPRT,
-    SLDASM,
-    SLDDRW,
-    // Solid Edge
-    PAR,
-    PSM,
+	// Pro/e
+	PRT_PROE=0,
+	ASM,
+	DRW,
+	FRM,
+	NEU_PROE,
+	// CATIA
+	CATPART,
+	CATPRODUCT,
+	CATDRAWING,
+	// NX
+	PRT_NX,
+	// SolidWorks
+	SLDPRT,
+	SLDASM,
+	SLDDRW,
+	// Solid Edge
+	PAR,
+	PSM,
 //		FileType::ASM,
-    DFT,
-    // Inventor
-    IPT,
-    IAM,
-    IDW,
-    // CAD NEUTRAL
-    STEP,
-    IGES,
-    DWG,
-    DXF,
-    // NonCAD
-    STL,
-    BLEND,
-    PDF,
-    OFFICE_WRITER,
-    OFFICE_CALC,
-    OFFICE_IMPRESS,
-    OFFICE_DRAW,
-    OFFICE_PROJECT,
-    OFFICE_BASE,
-    TYPES_COUNT,
-    UNDEFINED
+	DFT,
+	// Inventor
+	IPT,
+	IAM,
+	IDW,
+	// CAD NEUTRAL
+	STEP,
+	IGES,
+	DWG,
+	DXF,
+	// NonCAD
+	STL,
+	BLEND,
+	PDF,
+	OFFICE_WRITER,
+	OFFICE_CALC,
+	OFFICE_IMPRESS,
+	OFFICE_DRAW,
+	OFFICE_PROJECT,
+	OFFICE_BASE,
+	TYPES_COUNT,
+	UNDEFINED
 } FileType;
 
 } // namespace FileType
@@ -87,27 +87,27 @@ class File
 {
 
 public:
-    static FileTypeList versionedTypes();
-    static QString getInternalNameForFileType(FileType::FileType type);
-    static QString getLabelForFileType(FileType::FileType type);
-    static QString getRxForFileType(FileType::FileType type);
-    static QString getRxFromStringList(const QStringList &extensions);
+	static FileTypeList versionedTypes();
+	static QString getInternalNameForFileType(FileType::FileType type);
+	static QString getLabelForFileType(FileType::FileType type);
+	static QString getRxForFileType(FileType::FileType type);
+	static QString getRxFromStringList(const QStringList &extensions);
 };
 
 
 class FileMetadata
 {
 public:
-    FileMetadata(const QFileInfo &fi);
-    ~FileMetadata();
+	FileMetadata(const QFileInfo &fi);
+	~FileMetadata();
 
-    //! CAD type of the file
-    FileType::FileType type;
+	//! CAD type of the file
+	FileType::FileType type;
 
-    QFileInfo fileInfo;
+	QFileInfo fileInfo;
 
 private:
-    void detectFileType();
+	void detectFileType();
 
 };
 

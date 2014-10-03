@@ -37,29 +37,29 @@ class AddEditDataSource : public QDialog
 
 public:
 	enum Actions {
-	    ADD=0,
-	    EDIT
+		ADD=0,
+		EDIT
 	};
 
-    explicit AddEditDataSource(const DataSourceList &names, DataSource *dataSource, Actions action, QWidget *parent = 0);
+	explicit AddEditDataSource(const DataSourceList &names, DataSource *dataSource, Actions action, QWidget *parent = 0);
 	~AddEditDataSource();
 
-    DataSource *dataSource();
+	DataSource *dataSource();
 
 private:
 	Ui::AddEditDataSource *ui;
-    DataSource *m_ds;
-    QStringList m_names;
-    QString m_originalName;
-    Actions m_action;
+	DataSource *m_ds;
+	QStringList m_names;
+	QString m_originalName;
+	Actions m_action;
 
-    //! \brief User data validations
-    void checkEnable();
+	//! \brief User data validations
+	void checkEnable();
 
 private slots:
 	void openFileDialog();
-    void labelLineEdit_textEdited(const QString &text);
-    void pathLineEdit_textEdited(const QString &text);
+	void labelLineEdit_textEdited(const QString &text);
+	void pathLineEdit_textEdited(const QString &text);
 };
 
 #endif // ADDEDITDATASOURCE_H

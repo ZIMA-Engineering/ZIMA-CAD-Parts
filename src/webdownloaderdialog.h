@@ -16,19 +16,19 @@ class WebDownloaderDialog;
 
 class WebDownloaderDialog : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit WebDownloaderDialog(QWidget *parent = 0);
-    ~WebDownloaderDialog();
+	explicit WebDownloaderDialog(QWidget *parent = 0);
+	~WebDownloaderDialog();
 
-    void enqueue(const QString &fileName, QNetworkReply *reply);
+	void enqueue(const QString &fileName, QNetworkReply *reply);
 
 private:
-    Ui::WebDownloaderDialog *ui;
+	Ui::WebDownloaderDialog *ui;
 
-    QHash<QString,WebDownloaderWidget*> m_map;
-    QVBoxLayout *m_layout;
+	QHash<QString,WebDownloaderWidget*> m_map;
+	QVBoxLayout *m_layout;
 };
 
 #endif // WEBDOWLOADERDIALOG_H

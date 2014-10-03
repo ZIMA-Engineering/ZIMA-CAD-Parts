@@ -25,7 +25,7 @@ public:
 
 	QString title();
 	QList<File::FileTypes> canHandle();
-    bool handle(FileMetadata *f);
+	bool handle(FileMetadata *f);
 
 private:
 	Ui::PDFProductView *ui;

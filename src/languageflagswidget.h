@@ -20,7 +20,7 @@ private:
 	QButtonGroup *m_buttons;
 
 private slots:
-    void changeLanguage(int langIndex);
+	void changeLanguage(int langIndex);
 };
 
 #endif // LANGUAGEFLAGSWIDGET_H

@@ -25,7 +25,7 @@ QString DxfProductView::title()
 
 FileTypeList DxfProductView::canHandle()
 {
-    return FileTypeList() << FileType::DXF;
+	return FileTypeList() << FileType::DXF;
 }
 
 bool DxfProductView::handle(FileMetadata *f)
@@ -36,7 +36,7 @@ bool DxfProductView::handle(FileMetadata *f)
 		dxf = 0;
 	}
 
-    dxf = new DXFInterface(f->fileInfo.absoluteFilePath());
+	dxf = new DXFInterface(f->fileInfo.absoluteFilePath());
 
 	ui->view->setScene(dxf->scene());
 	ui->view->fitInView(dxf->scene()->itemsBoundingRect(), Qt::KeepAspectRatio);

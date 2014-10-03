@@ -21,8 +21,8 @@ public:
 	~FailbackProductView();
 
 	QString title();
-    FileTypeList canHandle();
-    bool handle(FileMetadata *f);
+	FileTypeList canHandle();
+	bool handle(FileMetadata *f);
 
 private:
 	Ui::FailbackProductView *ui;

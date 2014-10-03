@@ -24,11 +24,11 @@ class ServerTabWidget : public QWidget
 	Q_OBJECT
 
 public:
-    explicit ServerTabWidget(QWidget *parent = 0);
+	explicit ServerTabWidget(QWidget *parent = 0);
 	~ServerTabWidget();
 
 public slots:
-    void setDirectory(const QString &rootPath);
+	void setDirectory(const QString &rootPath);
 
 	void settingsChanged();
 
@@ -41,16 +41,16 @@ protected:
 private:
 
 	enum Tabs {
-	    TECH_SPECS,
-	    PARTS,
-	    TABS_COUNT
+		TECH_SPECS,
+		PARTS,
+		TABS_COUNT
 	};
 
 	Ui::ServerTabWidget *ui;
 
 	ProductView *m_productView;
 
-    void loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound);
+	void loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound);
 
 private slots:
 	void techSpecUrlLineEdit_returnPressed();
@@ -59,12 +59,12 @@ private slots:
 	void partsIndexUrlLineEdit_returnPressed();
 	void partsIndexGoButton_clicked();
 	void partsIndexPinButton_clicked();
-    void refreshButton_clicked();
+	void refreshButton_clicked();
 
 	void techSpec_urlChanged(const QUrl &url);
 	void partsWebView_urlChanged(const QUrl &url);
 
-    void previewInProductView(const QFileInfo &fi);
+	void previewInProductView(const QFileInfo &fi);
 
 	void deleteSelectedParts();
 

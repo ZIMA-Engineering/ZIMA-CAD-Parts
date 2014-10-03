@@ -45,11 +45,11 @@ protected:
 private slots:
 	void pageLoaded(bool ok);
 	void urlChange(const QUrl &url);
-    void downloadFile(QNetworkReply *reply);
+	void downloadFile(QNetworkReply *reply);
 
 private:
 	QString m_rootPath;
-    WebDownloaderDialog *m_downloader;
+	WebDownloaderDialog *m_downloader;
 };
 
 #endif // TECHSPECSWEBVIEW_H

@@ -24,63 +24,63 @@
 #include "settings.h"
 
 ServersModel::ServersModel(QObject *parent) :
-    QFileSystemModel(parent)
+	QFileSystemModel(parent)
 {
-    setReadOnly(true);
-    setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
-    m_iconProvider = new ServersIconProvider();
-    // do not install icon provider. The icon handling is quite complex. See ServersIconProvider
-    //setIconProvider(m_iconProvider);
+	setReadOnly(true);
+	setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
+	m_iconProvider = new ServersIconProvider();
+	// do not install icon provider. The icon handling is quite complex. See ServersIconProvider
+	//setIconProvider(m_iconProvider);
 }
 
 int ServersModel::columnCount(const QModelIndex & parent) const
 {
-    Q_UNUSED(parent);
-    return 1;
+	Q_UNUSED(parent);
+	return 1;
 }
 
 QVariant ServersModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
-        return QVariant();
+	if (!index.isValid())
+		return QVariant();
 
-    switch(role)
-    {
-    case Qt::DisplayRole:
-        if (!MetadataCache::get()->showLabel(filePath(index)))
-        {
-            return QVariant();
-        }
-        else if (MetadataCache::get()->label(filePath(index)).isEmpty())
-            return QFileSystemModel::data(index, role);
-        else
-            return MetadataCache::get()->label(filePath(index));
-        break;
-    case Qt::ToolTipRole:
-        return fileInfo(index).absoluteFilePath();
-        break;
-    case Qt::DecorationRole:
-        return m_iconProvider->pixmap(fileInfo(index));
-        break;
-    default:
-        ;
-    }
+	switch(role)
+	{
+	case Qt::DisplayRole:
+		if (!MetadataCache::get()->showLabel(filePath(index)))
+		{
+			return QVariant();
+		}
+		else if (MetadataCache::get()->label(filePath(index)).isEmpty())
+			return QFileSystemModel::data(index, role);
+		else
+			return MetadataCache::get()->label(filePath(index));
+		break;
+	case Qt::ToolTipRole:
+		return fileInfo(index).absoluteFilePath();
+		break;
+	case Qt::DecorationRole:
+		return m_iconProvider->pixmap(fileInfo(index));
+		break;
+	default:
+		;
+	}
 
-    return QFileSystemModel::data(index, role);
+	return QFileSystemModel::data(index, role);
 }
 
 
 ServersProxyModel::ServersProxyModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
+	: QSortFilterProxyModel(parent)
 {
 }
 
 
 bool ServersProxyModel::filterAcceptsRow(int sourceRow,
-                                            const QModelIndex &sourceParent) const
+        const QModelIndex &sourceParent) const
 {
-    QModelIndex ix = sourceModel()->index(sourceRow, 0, sourceParent);
-    return ix.data().toString() != TECHSPEC_DIR;
+	QModelIndex ix = sourceModel()->index(sourceRow, 0, sourceParent);
+	return ix.data().toString() != TECHSPEC_DIR;
 }
 
 ServersIconProvider::ServersIconProvider()
@@ -89,47 +89,47 @@ ServersIconProvider::ServersIconProvider()
 
 QIcon ServersIconProvider::icon ( IconType type ) const
 {
-    return QFileIconProvider::icon(type);
+	return QFileIconProvider::icon(type);
 }
 
 QIcon ServersIconProvider::icon ( const QFileInfo & info ) const
 {
-    QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
+	QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
 
-    if (!info.isDir())
-    {
-        return QFileIconProvider::icon(info);
-    }
-    else if (QFile::exists(logoPath + LOGO_FILE))
-    {
-        return QIcon(logoPath + LOGO_FILE);
-    }
-    else if (QFile::exists(logoPath + LOGO_TEXT_FILE))
-    {
-        return QIcon(logoPath + LOGO_TEXT_FILE);
-    }
-    else
-        return QFileIconProvider::icon(info);
+	if (!info.isDir())
+	{
+		return QFileIconProvider::icon(info);
+	}
+	else if (QFile::exists(logoPath + LOGO_FILE))
+	{
+		return QIcon(logoPath + LOGO_FILE);
+	}
+	else if (QFile::exists(logoPath + LOGO_TEXT_FILE))
+	{
+		return QIcon(logoPath + LOGO_TEXT_FILE);
+	}
+	else
+		return QFileIconProvider::icon(info);
 }
 
 QPixmap ServersIconProvider::pixmap(const QFileInfo &info) const
 {
-    QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
-    if (QFile::exists(logoPath + LOGO_FILE))
-    {
-        return QPixmap(logoPath + LOGO_FILE);
-    }
-    else if (QFile::exists(logoPath + LOGO_TEXT_FILE))
-    {
-        return QPixmap(logoPath + LOGO_TEXT_FILE);
-    }
-    else
-    {
-        return QFileIconProvider::icon(info).pixmap(32, 32);
-    }
+	QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
+	if (QFile::exists(logoPath + LOGO_FILE))
+	{
+		return QPixmap(logoPath + LOGO_FILE);
+	}
+	else if (QFile::exists(logoPath + LOGO_TEXT_FILE))
+	{
+		return QPixmap(logoPath + LOGO_TEXT_FILE);
+	}
+	else
+	{
+		return QFileIconProvider::icon(info).pixmap(32, 32);
+	}
 }
 
 QString ServersIconProvider::type ( const QFileInfo & info ) const
 {
-    return QFileIconProvider::type(info);
+	return QFileIconProvider::type(info);
 }

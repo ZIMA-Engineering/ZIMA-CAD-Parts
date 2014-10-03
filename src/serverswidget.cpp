@@ -14,8 +14,8 @@ ServersWidget::ServersWidget(QWidget *parent)
 
 	splitter->setSizes(Settings::get()->ServersSplitterSizes);
 
-    connect(splitter, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)));
-    connect(partsWidget, SIGNAL(changeSettings()), this, SLOT(settingsChanged()));
+	connect(splitter, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)));
+	connect(partsWidget, SIGNAL(changeSettings()), this, SLOT(settingsChanged()));
 }
 
 void ServersWidget::splitterMoved(int, int)
@@ -31,38 +31,38 @@ void ServersWidget::settingsChanged()
 
 		// Datasources
 		// firstly delete all stuff used. Remember "the reset"
-        while (serversToolBox->count())
-        {
-            serversToolBox->widget(0)->deleteLater();
-            serversToolBox->removePage(0);
-        }
+		while (serversToolBox->count())
+		{
+			serversToolBox->widget(0)->deleteLater();
+			serversToolBox->removePage(0);
+		}
 
 		qApp->processEvents();
 
 		// now setup all item==group again
-        foreach(DataSource *ds, Settings::get()->DataSources)
+		foreach(DataSource *ds, Settings::get()->DataSources)
 		{
-            ServersView *view = new ServersView(ds->rootPath, this);
+			ServersView *view = new ServersView(ds->rootPath, this);
 
-            connect(view, SIGNAL(showSettings(SettingsDialog::Section)),
-                    this, SIGNAL(showSettings(SettingsDialog::Section)));
-            connect(view, SIGNAL(workingDirChanged()),
-                    this, SIGNAL(workingDirChanged()));
-            connect(view, SIGNAL(directorySelected(QString)),
-                    partsWidget, SLOT(setDirectory(QString)));
-            connect(view, SIGNAL(directorySelected(QString)),
-                    this, SIGNAL(directorySelected(QString)));
+			connect(view, SIGNAL(showSettings(SettingsDialog::Section)),
+			        this, SIGNAL(showSettings(SettingsDialog::Section)));
+			connect(view, SIGNAL(workingDirChanged()),
+			        this, SIGNAL(workingDirChanged()));
+			connect(view, SIGNAL(directorySelected(QString)),
+			        partsWidget, SLOT(setDirectory(QString)));
+			connect(view, SIGNAL(directorySelected(QString)),
+			        this, SIGNAL(directorySelected(QString)));
 
-            serversToolBox->addPage(view, ds->name, ds->icon);
+			serversToolBox->addPage(view, ds->name, ds->icon);
 		}
 
-        serversToolBox->setVisibleRows(serversToolBox->count());
+		serversToolBox->setVisibleRows(serversToolBox->count());
 
-        goToWorkingDirectory();
+		goToWorkingDirectory();
 
 	} // Settings::get()->DataSourcesNeedsUpdate
 
-    partsWidget->settingsChanged();
+	partsWidget->settingsChanged();
 }
 
 void ServersWidget::expand(const QModelIndex & index)
@@ -77,18 +77,18 @@ QModelIndex ServersWidget::currentIndex()
 
 void ServersWidget::setDirectory(const QString &path)
 {
-    for (int i = 0; i < serversToolBox->count(); ++i)
-    {
-        ServersView *w = qobject_cast<ServersView*>(serversToolBox->widget(i));
-        if (w->navigateToDirectory(path))
-        {
-            serversToolBox->setCurrentIndex(i);
-            partsWidget->setDirectory(path);
-        }
-    }
+	for (int i = 0; i < serversToolBox->count(); ++i)
+	{
+		ServersView *w = qobject_cast<ServersView*>(serversToolBox->widget(i));
+		if (w->navigateToDirectory(path))
+		{
+			serversToolBox->setCurrentIndex(i);
+			partsWidget->setDirectory(path);
+		}
+	}
 }
 
 void ServersWidget::goToWorkingDirectory()
 {
-    setDirectory(Settings::get()->WorkingDir);
+	setDirectory(Settings::get()->WorkingDir);
 }

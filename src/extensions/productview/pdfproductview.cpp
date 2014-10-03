@@ -32,10 +32,10 @@ QList<File::FileTypes> PDFProductView::canHandle()
 
 bool PDFProductView::handle(File *f)
 {
-    Poppler::Document* document = Poppler::Document::load(f->path);
+	Poppler::Document* document = Poppler::Document::load(f->path);
 	if (!document || document->isLocked())
 	{
-        ui->imageLabel->setText(tr("Unable to load: %1").arg(f->path));
+		ui->imageLabel->setText(tr("Unable to load: %1").arg(f->path));
 		delete document;
 		return false;
 	}
@@ -43,14 +43,14 @@ bool PDFProductView::handle(File *f)
 	int pageNumber = 0;
 	Poppler::Page* pdfPage = document->page(pageNumber);  // Document starts at page 0
 	if (pdfPage == 0) {
-        ui->imageLabel->setText(tr("Unable to load page %1 from %2").arg(pageNumber).arg(f->path));
+		ui->imageLabel->setText(tr("Unable to load page %1 from %2").arg(pageNumber).arg(f->path));
 		delete document;
 		return false;
 	}
 
 	QImage image = pdfPage->renderToImage();
 	if (image.isNull()) {
-        ui->imageLabel->setText(tr("Unable to load page %1 from %2").arg(pageNumber).arg(f->path));
+		ui->imageLabel->setText(tr("Unable to load page %1 from %2").arg(pageNumber).arg(f->path));
 		delete document;
 		return false;
 	}

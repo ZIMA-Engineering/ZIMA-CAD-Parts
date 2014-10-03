@@ -12,23 +12,23 @@ class WebDownloaderWidget;
 
 class WebDownloaderWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit WebDownloaderWidget(const QString &fileName, QNetworkReply *reply, QWidget *parent = 0);
-    ~WebDownloaderWidget();
+	explicit WebDownloaderWidget(const QString &fileName, QNetworkReply *reply, QWidget *parent = 0);
+	~WebDownloaderWidget();
 
 private:
-    Ui::WebDownloaderWidget *ui;
+	Ui::WebDownloaderWidget *ui;
 
-    QNetworkReply *m_reply;
-    QFile *m_file;
+	QNetworkReply *m_reply;
+	QFile *m_file;
 
 private slots:
-    void error(QNetworkReply::NetworkError code);
-    void abort();
-    void finished();
-    void downloadProgress(qint64 received, qint64 total);
+	void error(QNetworkReply::NetworkError code);
+	void abort();
+	void finished();
+	void downloadProgress(qint64 received, qint64 total);
 
 };
 

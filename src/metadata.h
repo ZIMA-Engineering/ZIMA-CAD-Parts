@@ -58,40 +58,40 @@ class Metadata : public QObject
 {
 	Q_OBJECT
 public:
-    explicit Metadata(const QString &path, QObject *parent = 0);
+	explicit Metadata(const QString &path, QObject *parent = 0);
 	~Metadata();
 
-    //! Label for current directory (tree)
+	//! Label for current directory (tree)
 	QString getLabel();
-    //! Labels for FileModel
-    QStringList columnLabels();
-    //! Value for FileModel
-    QString partParam(const QString &partName, int col);
-    //! Thumbnail paths for FileModel
-    MetadataThumbnailMap partThumbnailPaths();
+	//! Labels for FileModel
+	QStringList columnLabels();
+	//! Value for FileModel
+	QString partParam(const QString &partName, int col);
+	//! Thumbnail paths for FileModel
+	MetadataThumbnailMap partThumbnailPaths();
 
-    void deletePart(const QString &part);
-    /*! Load part versions.
-     * Implementation: list name-ordered directory and use only the latest
-     * file name for its completeBaseName
-     */
-    MetadataVersionsMap partVersions();
+	void deletePart(const QString &part);
+	/*! Load part versions.
+	 * Implementation: list name-ordered directory and use only the latest
+	 * file name for its completeBaseName
+	 */
+	MetadataVersionsMap partVersions();
 
 private:
-    QSettings *m_settings;
+	QSettings *m_settings;
 
-    QString m_path;
+	QString m_path;
 	QList<Metadata*> includes;
 	int m_loadedIncludes;
-    QStringList m_columnLabels;
-    QString label;
+	QStringList m_columnLabels;
+	QString label;
 
-    MetadataThumbnailMap m_thumbnailsCache;
-    MetadataVersionsMap m_versionsCache;
+	MetadataThumbnailMap m_thumbnailsCache;
+	MetadataVersionsMap m_versionsCache;
 
-    QString buildIncludePath(const QString &raw);
-    QStringList buildIncludePaths(const QStringList &raw);
-    bool partVersionType(FileType::FileType t, const QFileInfo &fi);
+	QString buildIncludePath(const QString &raw);
+	QStringList buildIncludePaths(const QStringList &raw);
+	bool partVersionType(FileType::FileType t, const QFileInfo &fi);
 };
 
 /*! An access singleton to the Metadata cache.
@@ -100,38 +100,38 @@ private:
  */
 class MetadataCache : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-    //! The main access method to Metadata
-    static MetadataCache *get();
+	//! The main access method to Metadata
+	static MetadataCache *get();
 
-    bool showLabel(const QString &path);
-    QString label(const QString &path);
-    QStringList columnLabels(const QString &path);
-    QString partParam(const QString &path, const QString &fname, int column);
-    MetadataThumbnailMap partThumbnailPaths(const QString &path);
-    MetadataVersionsMap partVersions(const QString &path);
-    void deletePart(const QString &path, const QString &part);
+	bool showLabel(const QString &path);
+	QString label(const QString &path);
+	QStringList columnLabels(const QString &path);
+	QString partParam(const QString &path, const QString &fname, int column);
+	MetadataThumbnailMap partThumbnailPaths(const QString &path);
+	MetadataVersionsMap partVersions(const QString &path);
+	void deletePart(const QString &path, const QString &part);
 
 signals:
-    //! Emitted when is the cache content invalidated. All dependent objects should reset themself.
-    void cleared();
+	//! Emitted when is the cache content invalidated. All dependent objects should reset themself.
+	void cleared();
 
 public slots:
-     void clear();
-     void clear(const QString &path);
+	void clear();
+	void clear(const QString &path);
 
 private:
-    //! Singleton handling
-    static MetadataCache *m_instance;
+	//! Singleton handling
+	static MetadataCache *m_instance;
 
-    MetadataCache();
-    //MetadataCache(const MetadataCache &) {};
-    ~MetadataCache();
+	MetadataCache();
+	//MetadataCache(const MetadataCache &) {};
+	~MetadataCache();
 
-    QHash<QString,Metadata*> m_map;
-    void load(const QString &path);
+	QHash<QString,Metadata*> m_map;
+	void load(const QString &path);
 };
 
 #endif // METADATA_H

@@ -35,17 +35,17 @@
 
 
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
-    QWebView(parent),
-    m_downloader(0)
+	QWebView(parent),
+	m_downloader(0)
 {
 	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
 
 	page()->setForwardUnsupportedContent(true);
-    connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)),
-            this, SLOT(downloadFile(QNetworkReply*)));
+	connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)),
+	        this, SLOT(downloadFile(QNetworkReply*)));
 
-    loadAboutPage();
+	loadAboutPage();
 }
 
 void TechSpecsWebView::setRootPath(QString path)
@@ -62,8 +62,8 @@ void TechSpecsWebView::loadAboutPage()
 	QFile f(filename);
 	f.open(QIODevice::ReadOnly);
 	QTextStream stream(&f);
-    // resource/bundled html files are UTF-8 encoded for sure
-    stream.setCodec(QTextCodec::codecForName("utf8"));
+	// resource/bundled html files are UTF-8 encoded for sure
+	stream.setCodec(QTextCodec::codecForName("utf8"));
 
 	setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
@@ -125,46 +125,46 @@ void TechSpecsWebView::pageLoaded(bool ok)
 
 void TechSpecsWebView::downloadFile(QNetworkReply *reply)
 {
-    QString fileName = Settings::get()->WorkingDir + "/" + reply->url().path().split('/').last();
-    if (QDir().exists(fileName))
-    {
-        if (QMessageBox::question(this, tr("File Exists"),
-                              tr("File %1 already exists. Overwrite?").arg(fileName),
-                              QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-        {
-            reply->close();
-            reply->deleteLater();
-            return;
-        }
-    }
+	QString fileName = Settings::get()->WorkingDir + "/" + reply->url().path().split('/').last();
+	if (QDir().exists(fileName))
+	{
+		if (QMessageBox::question(this, tr("File Exists"),
+		                          tr("File %1 already exists. Overwrite?").arg(fileName),
+		                          QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+		{
+			reply->close();
+			reply->deleteLater();
+			return;
+		}
+	}
 
-    if(reply->hasRawHeader("Content-Disposition"))
-    {
-        QStringList patterns;
-        patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
+	if(reply->hasRawHeader("Content-Disposition"))
+	{
+		QStringList patterns;
+		patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
 
-        QRegExp rx;
+		QRegExp rx;
 
-        foreach(QString pattern, patterns)
-        {
-            rx.setPattern(pattern);
+		foreach(QString pattern, patterns)
+		{
+			rx.setPattern(pattern);
 
-            if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
-            {
-                fileName = rx.cap(1).replace('\\', '/').split('/').last();
+			if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
+			{
+				fileName = rx.cap(1).replace('\\', '/').split('/').last();
 
-                if(fileName.endsWith(';'))
-                    fileName.chop(1);
+				if(fileName.endsWith(';'))
+					fileName.chop(1);
 
-                break;
-            }
-        }
-    }
+				break;
+			}
+		}
+	}
 
-    if (!m_downloader)
-    {
-        m_downloader = new WebDownloaderDialog(this);
-    }
-    m_downloader->enqueue(fileName, reply);
-    m_downloader->show();
+	if (!m_downloader)
+	{
+		m_downloader = new WebDownloaderDialog(this);
+	}
+	m_downloader->enqueue(fileName, reply);
+	m_downloader->show();
 }

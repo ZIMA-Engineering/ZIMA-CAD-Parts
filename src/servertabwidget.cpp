@@ -14,14 +14,14 @@
 
 ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	QWidget(parent),
-    ui(new Ui::ServerTabWidget)
+	ui(new Ui::ServerTabWidget)
 {
 	ui->setupUi(this);
 
 	m_productView = new ProductView(this);
 
-    connect(ui->refreshButton, SIGNAL(clicked()),
-            this, SLOT(refreshButton_clicked()));
+	connect(ui->refreshButton, SIGNAL(clicked()),
+	        this, SLOT(refreshButton_clicked()));
 
 	ui->techSpecBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 	ui->techSpecForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
@@ -63,22 +63,22 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	connect(ui->partsWebView, SIGNAL(urlChanged(QUrl)),
 	        this, SLOT(partsWebView_urlChanged(QUrl)));
 
-    connect(ui->copyToWorkingDirButton, SIGNAL(clicked()),
-            ui->partsTreeView, SLOT(copyToWorkingDir()));
+	connect(ui->copyToWorkingDirButton, SIGNAL(clicked()),
+	        ui->partsTreeView, SLOT(copyToWorkingDir()));
 	connect(ui->btnDelete, SIGNAL(clicked()),
 	        this, SLOT(deleteSelectedParts()));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
 	        this, SLOT(adjustThumbColumnWidth(int)));
 
-    connect(ui->partsTreeView, SIGNAL(previewProductView(QFileInfo)),
-            this, SLOT(previewInProductView(QFileInfo)));
-    connect(ui->partsTreeView, SIGNAL(hideProductView()),
-            m_productView, SLOT(hide()));
+	connect(ui->partsTreeView, SIGNAL(previewProductView(QFileInfo)),
+	        this, SLOT(previewInProductView(QFileInfo)));
+	connect(ui->partsTreeView, SIGNAL(hideProductView()),
+	        m_productView, SLOT(hide()));
 
 	connect(ui->filterButton, SIGNAL(clicked()),
 	        this, SLOT(setFiltersDialog()));
 
-    ui->techSpec->loadAboutPage();
+	ui->techSpec->loadAboutPage();
 }
 
 ServerTabWidget::~ServerTabWidget()
@@ -88,61 +88,61 @@ ServerTabWidget::~ServerTabWidget()
 
 void ServerTabWidget::setDirectory(const QString &rootPath)
 {
-    setEnabled(false);
+	setEnabled(false);
 
-    // set the directory to the file model
-    ui->partsTreeView->setDirectory(rootPath);
-    // handle the ui->partsWebView, custom index-parts*.html page in "parts" tab
-    loadIndexHtml(rootPath, ui->partsWebView, "index-parts", true);
-    // handle the ui->partsWebView, custom index*.html page in "parts" tab
-    loadIndexHtml(rootPath, ui->techSpec, "index", false);
+	// set the directory to the file model
+	ui->partsTreeView->setDirectory(rootPath);
+	// handle the ui->partsWebView, custom index-parts*.html page in "parts" tab
+	loadIndexHtml(rootPath, ui->partsWebView, "index-parts", true);
+	// handle the ui->partsWebView, custom index*.html page in "parts" tab
+	loadIndexHtml(rootPath, ui->techSpec, "index", false);
 
-    setEnabled(true);
+	setEnabled(true);
 }
 
 void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound)
 {
-    QStringList filters;
-    filters << filterBase + "_??.html"
-            << filterBase + "_??.htm"
-            << filterBase + ".html"
-            << filterBase + ".htm";
+	QStringList filters;
+	filters << filterBase + "_??.html"
+	        << filterBase + "_??.htm"
+	        << filterBase + ".html"
+	        << filterBase + ".htm";
 
-    QDir dir(rootPath + "/" + TECHSPEC_DIR);
-    QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
+	QDir dir(rootPath + "/" + TECHSPEC_DIR);
+	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
 
-    if (indexes.isEmpty())
-    {
-        webView->setHtml("");
-        if (hideIfNotFound) webView->hide();
-        // load aboutPage only when there is no custom index.html and there is no WD specified
-        if (rootPath == DEFAULT_WDIR && webView == ui->techSpec)
-        {
-            ui->techSpec->loadAboutPage();
-            return;
-        }
-        QDir d(rootPath);
-        if (!d.cdUp())
-            return;
-        loadIndexHtml(d.absolutePath(), webView, filterBase, hideIfNotFound);
-        return;
-    }
+	if (indexes.isEmpty())
+	{
+		webView->setHtml("");
+		if (hideIfNotFound) webView->hide();
+		// load aboutPage only when there is no custom index.html and there is no WD specified
+		if (rootPath == DEFAULT_WDIR && webView == ui->techSpec)
+		{
+			ui->techSpec->loadAboutPage();
+			return;
+		}
+		QDir d(rootPath);
+		if (!d.cdUp())
+			return;
+		loadIndexHtml(d.absolutePath(), webView, filterBase, hideIfNotFound);
+		return;
+	}
 
-    QString selectedIndex = indexes.first();
-    indexes.removeFirst();
+	QString selectedIndex = indexes.first();
+	indexes.removeFirst();
 
-    foreach(QString index, indexes)
-    {
-        QString prefix = index.section('.', 0, 0);
-        if(prefix.lastIndexOf('_') == prefix.count()-3
-                && prefix.right(2) == Settings::get()->getCurrentLanguageCode().left(2))
-        {
-            selectedIndex = index;
-        }
-    }
+	foreach(QString index, indexes)
+	{
+		QString prefix = index.section('.', 0, 0);
+		if(prefix.lastIndexOf('_') == prefix.count()-3
+		        && prefix.right(2) == Settings::get()->getCurrentLanguageCode().left(2))
+		{
+			selectedIndex = index;
+		}
+	}
 
-    webView->show();
-    webView->load(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
+	webView->show();
+	webView->load(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
 }
 
 void ServerTabWidget::changeEvent(QEvent *e)
@@ -165,7 +165,7 @@ void ServerTabWidget::settingsChanged()
 	ui->partsIndexDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled);
 	ui->thumbnailSizeSlider->setValue(Settings::get()->GUIThumbWidth);
 
-    ui->partsTreeView->settingsChanged();
+	ui->partsTreeView->settingsChanged();
 }
 
 void ServerTabWidget::techSpecUrlLineEdit_returnPressed()
@@ -202,17 +202,17 @@ void ServerTabWidget::partsIndexGoButton_clicked()
 
 void ServerTabWidget::partsIndexPinButton_clicked()
 {
-    ui->partsTreeView->createIndexHtmlFile(ui->partsIndexUrlLineEdit->text(), "index-parts");
+	ui->partsTreeView->createIndexHtmlFile(ui->partsIndexUrlLineEdit->text(), "index-parts");
 }
 
 void ServerTabWidget::techSpecPinButton_clicked()
 {
-    ui->partsTreeView->createIndexHtmlFile(ui->techSpecUrlLineEdit->text(), "index");
+	ui->partsTreeView->createIndexHtmlFile(ui->techSpecUrlLineEdit->text(), "index");
 }
 
 void ServerTabWidget::refreshButton_clicked()
 {
-    ui->partsTreeView->refreshRequested();
+	ui->partsTreeView->refreshRequested();
 }
 
 void ServerTabWidget::techSpec_urlChanged(const QUrl &url)
@@ -244,21 +244,21 @@ void ServerTabWidget::deleteSelectedParts()
 	                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
 	        ==  QMessageBox::Yes)
 	{
-        ui->partsTreeView->deleteParts();
+		ui->partsTreeView->deleteParts();
 	}
 }
 
 void ServerTabWidget::adjustThumbColumnWidth(int width)
 {
 	ui->partsTreeView->setColumnWidth(1, width);
-    Settings::get()->GUIThumbWidth = width;
-    ui->partsTreeView->settingsChanged();
+	Settings::get()->GUIThumbWidth = width;
+	ui->partsTreeView->settingsChanged();
 }
 
 void ServerTabWidget::previewInProductView(const QFileInfo &fi)
 {
-    FileMetadata f(fi);
-    m_productView->setFile(&f);
+	FileMetadata f(fi);
+	m_productView->setFile(&f);
 	// keep focus on the main window - keyboard handling
 	activateWindow();
 }
