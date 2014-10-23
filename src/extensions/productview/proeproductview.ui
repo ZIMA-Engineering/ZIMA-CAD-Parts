@@ -1,46 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-                             <ui version="4.0">
-                                     <class>ProEProductView</class>
-		                                     <widget class="QWidget" name="ProEProductView">
-			                                             <property name="geometry">
-			                                                     <rect>
-			                                                     <x>0</x>
-			                                                     <y>0</y>
-			                                                     <width>473</width>
-			                                                     <height>368</height>
-			                                                     </rect>
-			                                                     </property>
-			                                                     <property name="windowTitle">
-			                                                             <string>s</string>
-			                                                             </property>
-			                                                             <layout class="QVBoxLayout" name="verticalLayout">
-				                                                                     <item>
-				                                                                     <widget class="QWebView" name="appletWebView">
-					                                                                             <property name="sizePolicy">
-					                                                                                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-					                                                                                             <horstretch>0</horstretch>
-					                                                                                             <verstretch>0</verstretch>
-					                                                                                             </sizepolicy>
-					                                                                                             </property>
-					                                                                                             <property name="contextMenuPolicy">
-					                                                                                                     <enum>Qt::NoContextMenu</enum>
-					                                                                                                     </property>
-					                                                                                                     <property name="url">
-					                                                                                                             <url>
-					                                                                                                             <string>about:blank</string>
-					                                                                                                             </url>
-					                                                                                                             </property>
-					                                                                                                             </widget>
-					                                                                                                             </item>
-					                                                                                                             </layout>
-					                                                                                                             </widget>
-					                                                                                                             <customwidgets>
-					                                                                                                             <customwidget>
-					                                                                                                             <class>QWebView</class>
-					                                                                                                             <extends>QWidget</extends>
-					                                                                                                             <header>QtWebKitWidgets/QWebView</header>
-					                                                                                                             </customwidget>
-					                                                                                                             </customwidgets>
-					                                                                                                             <resources/>
-					                                                                                                             <connections/>
-					                                                                                                             </ui>
+<ui version="4.0">
+ <class>ProEProductView</class>
+ <widget class="QWidget" name="ProEProductView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>473</width>
+    <height>368</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWebView" name="appletWebView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::NoContextMenu</enum>
+     </property>
+     <property name="url">
+      <url>
+       <string>about:blank</string>
+      </url>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKitWidgets/QWebView</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
