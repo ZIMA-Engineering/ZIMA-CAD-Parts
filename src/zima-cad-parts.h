@@ -21,7 +21,7 @@
 #ifndef ZIMAPARTS_H
 #define ZIMAPARTS_H
 
-#define VERSION "0.5.0-beta1"
+#define VERSION "0.5.0"
 
 // Extensions
 //#ifdef Q_OS_WIN32
