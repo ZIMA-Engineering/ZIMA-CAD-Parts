@@ -8,6 +8,10 @@ namespace Ui {
 class ProEProductView;
 }
 
+/**
+ * @brief The ProEProductView class is a product view for PRO/E files
+ * @see AbstractProductView
+ */
 class ProEProductView : public AbstractProductView
 {
 	Q_OBJECT
@@ -16,8 +20,8 @@ public:
 	~ProEProductView();
 
 	QString title();
-	QList<File::FileTypes> canHandle();
-	bool handle(File *f);
+	FileTypeList canHandle();
+	bool handle(FileMetadata *f);
 
 signals:
 

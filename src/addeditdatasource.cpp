@@ -21,146 +21,113 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QDebug>
+#include <QPushButton>
 
 #include "addeditdatasource.h"
 #include "ui_addeditdatasource.h"
 
-AddEditDataSource::AddEditDataSource(BaseDataSource *dataSource, Actions action, QWidget *parent) :
+AddEditDataSource::AddEditDataSource(const DataSourceList &names, DataSource *dataSource, Actions action, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::AddEditDataSource)
 {
 	ui->setupUi(this);
+	m_action = action;
 
-	dataSources << dataSource;
-	lastDataSource = dataSource;
+	foreach (DataSource *i, names)
+	m_names.append(i->name);
 
-	ui->dataSourceComboBox->setCurrentIndex( dataSource->dataSource );
-	ui->stackedWidget->setCurrentIndex( dataSource->dataSource );
+	if (dataSource)
+	{
+		ui->labelLineEdit->setText(dataSource->name);
+		ui->pathLineEdit->setText(dataSource->rootPath);
+	}
+	else
+		ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
-	refill();
-
-	connect(ui->fileDialogButton, SIGNAL(clicked()), this, SLOT(openFileDialog()));
-	connect(ui->dataSourceComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(dataSourceTypeChanged(int)));
-
-	connect(ui->labelLineEdit, SIGNAL(textEdited(QString)), this, SLOT(labelChangedByUser()));
+	connect(ui->fileDialogButton, SIGNAL(clicked()),
+	        this, SLOT(openFileDialog()));
+	connect(ui->labelLineEdit, SIGNAL(textEdited(QString)),
+	        this, SLOT(labelLineEdit_textEdited(QString)));
+	connect(ui->pathLineEdit, SIGNAL(textEdited(QString)),
+	        this, SLOT(pathLineEdit_textEdited(QString)));
 
 	if( action == EDIT )
+	{
+		m_originalName = dataSource->name;
 		setWindowTitle(tr("Edit data source"));
+	}
+
+	checkEnable();
 }
 
 AddEditDataSource::~AddEditDataSource()
 {
 	delete ui;
-
-	foreach(BaseDataSource *bs, dataSources)
-		if( bs != lastDataSource )
-			delete bs;
 }
 
-BaseDataSource* AddEditDataSource::dataSource()
+DataSource* AddEditDataSource::dataSource()
 {
-	lastDataSource->label = ui->labelLineEdit->text();
-
-	switch( lastDataSource->dataSource )
-	{
-	case LOCAL: {
-		LocalDataSource *s = static_cast<LocalDataSource*>(lastDataSource);
-
-		s->localPath = ui->pathLineEdit->text();
-
-		break;
-	}
-	case FTP: {
-		FtpDataSource *s = static_cast<FtpDataSource*>(lastDataSource);
-
-		s->remoteHost = ui->txtHost->text();
-		s->remotePort = ui->txtPort->text().toInt();
-		s->remoteBaseDir = ui->txtBaseDir->text();
-		s->remoteLogin = ui->txtLogin->text();
-		s->remotePassword = ui->txtPass->text();
-
-		break;
-	}
-	default:
-		break;
-	}
-
-	return lastDataSource;
+	return new DataSource(ui->labelLineEdit->text(), ui->pathLineEdit->text());
 }
 
 void AddEditDataSource::openFileDialog()
 {
-	ui->pathLineEdit->setText( QFileDialog::getExistingDirectory(this, tr("Select directory"), QDir::homePath()) );
+	QDir userEntered(ui->pathLineEdit->text());
+	QString initDir;
+	if (userEntered.exists())
+		initDir = userEntered.absolutePath();
+	else
+		initDir = QDir::homePath();
+
+	QString ret = QFileDialog::getExistingDirectory(this, tr("Select directory"), initDir);
+	if (ret.isEmpty())
+		return;
+	ui->pathLineEdit->setText(ret);
+	checkEnable();
 }
 
-void AddEditDataSource::dataSourceTypeChanged(int index)
+void AddEditDataSource::labelLineEdit_textEdited(const QString &text)
 {
-	foreach(BaseDataSource *bs, dataSources)
+	Q_UNUSED(text);
+	checkEnable();
+}
+
+void AddEditDataSource::pathLineEdit_textEdited(const QString &text)
+{
+	Q_UNUSED(text);
+	checkEnable();
+}
+
+void AddEditDataSource::checkEnable()
+{
+	// do not allow duplicated names for datasources
+	QString label = ui->labelLineEdit->text().trimmed();
+	QString errmsg;
+
+	if (label.isEmpty())
 	{
-		if( bs->dataSource == index )
+		errmsg = tr("Label/name of the data source cannot be empty");
+	}
+	else if (m_names.contains(label))
+	{
+		errmsg = tr("Label must be unique");
+		if (m_action == EDIT && m_originalName == label)
 		{
-			lastDataSource = bs;
-			return;
+			errmsg = "";
 		}
 	}
 
-	switch( index )
+	// directory existence
+	if (ui->pathLineEdit->text().trimmed().isEmpty())
+		errmsg += "\n" + tr("Enter the directory path");
+	else
 	{
-	case LOCAL: {
-		LocalDataSource *s = new LocalDataSource();
-
-		dataSources << s;
-		lastDataSource = s;
-		break;
+		QDir d(ui->pathLineEdit->text());
+		if (!d.exists())
+			errmsg += "\n" + tr("Directory must exist");
 	}
-	case FTP: {
-		FtpDataSource *s = new FtpDataSource();
 
-		dataSources << s;
-		lastDataSource = s;
-		break;
-	}
-	default:
-		break;
-	}
-}
-
-void AddEditDataSource::refill()
-{
-	ui->labelLineEdit->setText(lastDataSource->label);
-
-	switch( lastDataSource->dataSource )
-	{
-	case LOCAL: {
-		LocalDataSource *s = static_cast<LocalDataSource*>(lastDataSource);
-
-		if( !s->label.isEmpty() && s->localPath != s->label )
-			labelChangedByUser();
-
-		ui->pathLineEdit->setText( s->localPath );
-
-		break;
-	}
-	case FTP: {
-		FtpDataSource *s = static_cast<FtpDataSource*>(lastDataSource);
-
-		if( !s->label.isEmpty() && s->remoteHost != s->label )
-			labelChangedByUser();
-
-		ui->txtHost->setText(s->remoteHost);
-		ui->txtPort->setText(QString::number(s->remotePort));
-		ui->txtBaseDir->setText(s->remoteBaseDir);
-		ui->txtLogin->setText(s->remoteLogin);
-		ui->txtPass->setText(s->remotePassword);
-		ui->checkPassive->setChecked(s->ftpPassiveMode);
-	}
-	default:
-		break;
-	}
-}
-
-void AddEditDataSource::labelChangedByUser()
-{
-	disconnect(ui->pathLineEdit, SIGNAL(textChanged(QString)), ui->labelLineEdit, SLOT(setText(QString)));
-	disconnect(ui->txtHost, SIGNAL(textChanged(QString)), ui->labelLineEdit, SLOT(setText(QString)));
+	ui->statusLabel->setText(errmsg.trimmed());
+	ui->statusLabel->setVisible(!errmsg.isEmpty());
+	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(errmsg.isEmpty());
 }

@@ -25,7 +25,8 @@
 
 #include "filtersdialog.h"
 #include "ui_filtersdialog.h"
-#include "item.h"
+#include "settings.h"
+
 
 FiltersDialog::FiltersDialog(QWidget *parent) :
 	QDialog(parent),
@@ -33,23 +34,20 @@ FiltersDialog::FiltersDialog(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	QGridLayout *grid = new QGridLayout;
-
-	int cnt = MainWindow::filterGroups.count();
-	int row = 0, col = 0;
-
+	int cnt = Settings::get()->FilterGroups.count();
 	for(int i = 0; i < cnt; i++)
 	{
-		grid->addWidget(MainWindow::filterGroups[i].widget(), row, col++);
-
-		if(col >= 4)
-		{
-			row++;
-			col = 0;
-		}
+		ui->treeWidget->addTopLevelItem(Settings::get()->FilterGroups[i].widget());
+		ui->listWidget->addItem(Settings::get()->FilterGroups[i].label);
 	}
 
-	ui->verticalLayout->insertLayout(0, grid);
+	ui->treeWidget->expandAll();
+	ui->treeWidget->setFocus();
+
+	connect(ui->listWidget, SIGNAL(currentRowChanged(int)),
+	        this, SLOT(listWidget_currentRowChanged(int)));
+	connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+	        this, SLOT(treeWidget_currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 }
 
 FiltersDialog::~FiltersDialog()
@@ -59,11 +57,33 @@ FiltersDialog::~FiltersDialog()
 
 void FiltersDialog::accept()
 {
-	int cnt = MainWindow::filterGroups.count();
+	int cnt = Settings::get()->FilterGroups.count();
 
 	for(int i = 0; i < cnt; i++)
-		MainWindow::filterGroups[i].apply();
+		Settings::get()->FilterGroups[i].apply();
 
+	Settings::get()->recalculateFilters();
 	QDialog::accept();
 }
 
+void FiltersDialog::listWidget_currentRowChanged(int row)
+{
+	ui->listWidget->blockSignals(true);
+	ui->treeWidget->setCurrentItem(Settings::get()->FilterGroups[row].currentItem());
+	ui->listWidget->blockSignals(false);
+}
+
+void FiltersDialog::treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
+{
+	if (!current)
+		return;
+
+	ui->listWidget->blockSignals(true);
+	QTreeWidgetItem *parent = current->parent();
+	if (!parent)
+		parent = current;
+
+	int ix = ui->treeWidget->indexOfTopLevelItem(parent);
+	ui->listWidget->setCurrentRow(ix);
+	ui->listWidget->blockSignals(false);
+}

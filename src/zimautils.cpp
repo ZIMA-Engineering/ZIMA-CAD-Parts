@@ -1,4 +1,6 @@
 #include "zimautils.h"
+#include "settings.h"
+
 
 QString ZimaUtils::internalNameForUtility(int util)
 {
@@ -42,4 +44,9 @@ QString ZimaUtils::labelForUtility(ZimaUtility util)
 	default:
 		return "invalid";
 	}
+}
+
+QHash<QString,QString> ZimaUtils::paths()
+{
+	return Settings::get()->ExternalPrograms;
 }

@@ -23,9 +23,9 @@
 
 #include <QDialog>
 #include <QList>
-#include "basedatasource.h"
-#include "ftpdatasource.h"
-#include "localdatasource.h"
+#include "settings.h"
+
+class DataSources;
 
 namespace Ui {
 class AddEditDataSource;
@@ -41,21 +41,25 @@ public:
 		EDIT
 	};
 
-	explicit AddEditDataSource(BaseDataSource *dataSource, Actions action, QWidget *parent = 0);
+	explicit AddEditDataSource(const DataSourceList &names, DataSource *dataSource, Actions action, QWidget *parent = 0);
 	~AddEditDataSource();
 
-	BaseDataSource *dataSource();
+	DataSource *dataSource();
 
 private:
-	void refill();
-
 	Ui::AddEditDataSource *ui;
-	QList<BaseDataSource*> dataSources;
-	BaseDataSource *lastDataSource;
+	DataSource *m_ds;
+	QStringList m_names;
+	QString m_originalName;
+	Actions m_action;
+
+	//! \brief User data validations
+	void checkEnable();
+
 private slots:
 	void openFileDialog();
-	void dataSourceTypeChanged(int index);
-	void labelChangedByUser();
+	void labelLineEdit_textEdited(const QString &text);
+	void pathLineEdit_textEdited(const QString &text);
 };
 
 #endif // ADDEDITDATASOURCE_H

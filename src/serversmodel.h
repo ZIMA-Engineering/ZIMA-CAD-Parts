@@ -26,110 +26,62 @@
 #include <QList>
 #include <QKeyEvent>
 
-#include "item.h"
-#include "basedatasource.h"
-#include "treeautodescent.h"
-#include "transferhandler.h"
+#include <QFileSystemModel>
+#include <QSortFilterProxyModel>
+#include <QFileIconProvider>
 
-class DownloadModel;
+class ServersIconProvider;
 
-class ServersModel : public QAbstractItemModel, public TransferHandler
+
+/*! A "datasource" tree. This class is used inside ServersView only
+ */
+class ServersModel : public QFileSystemModel
+{
+	Q_OBJECT
+public:
+	explicit ServersModel(QObject *parent = 0);
+
+	int columnCount(const QModelIndex & parent = QModelIndex()) const;
+	QVariant data(const QModelIndex &index, int role) const;
+
+private:
+	ServersIconProvider *m_iconProvider;
+};
+
+/*! \brief An icon provider for ServersModel. It contains additional
+ * handling of LOGO_FILE and LOGO_FILE_TEXT files in the TECHSPEC_DIR directory
+ * The main method to be used is custom pixmap().
+ */
+class ServersIconProvider : public QFileIconProvider
+{
+public:
+	ServersIconProvider();
+
+	virtual QIcon   icon ( IconType type ) const;
+	virtual QIcon   icon ( const QFileInfo & info ) const;
+	virtual QString type ( const QFileInfo & info ) const;
+
+	/*! \brief Handle custom logo files or standard file browser icons as QPixmaps.
+	 * The request is simple - to allow various sized pixmaps to be displayed.
+	 * Basically there is no image resizing allowed. Logo files are used as-is,
+	 * standard icons are resized to 32x32
+	 */
+	QPixmap pixmap(const QFileInfo &info) const;
+};
+
+/*! A filter proxy for ServersModel. Its main task is to filter out
+ * the TECHSPEC_DIR directory
+ */
+class ServersProxyModel : public QSortFilterProxyModel
 {
 	Q_OBJECT
 
 public:
-	ServersModel(QObject *parent = 0);
-	~ServersModel();
-
-	bool canFetchMore(const QModelIndex &parent) const;
-	void fetchMore(const QModelIndex &parent);
-//	bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
-	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
-
-	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-	bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole);
-	QVariant data(const QModelIndex &index, int role) const;
-	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-	QModelIndex parent(const QModelIndex &index) const;
-	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-	//---
-	void setDownloadQueue(DownloadModel *queue);
-	void setServerData(QList<BaseDataSource*>);
-	QString translateDataSourceNameToPath(QString name);
-	QList<BaseDataSource::Error*> fileErrors(BaseDataSource::Operation op);
-	bool hasErrors(BaseDataSource::Operation op);
-	Item *lastTechSpecRequest();
-	void stopDownload();
-	void clearQueue();
-
-public slots:
-	void refresh(Item* item);
-	void clear();
-	void loadItem(Item *item);
-	void requestTechSpecs(const QModelIndex &index);
-	void requestTechSpecs(Item *item);
-	void deleteFiles();
-	void downloadFiles(QString dir);
-	void resumeDownload();
-	void uncheckAll(Item *item = 0);
-	void deleteDownloadQueue();
-	void saveQueue(QSettings *settings);
-	int loadQueue(QSettings *settings);
-	void retranslateMetadata(Item *item = 0);
-	void abort();
-	void descentTo(QString path, Item *item = 0);
-	void assignTechSpecUrlToItem(QString url, Item *item, bool overwrite = false);
-	void assignPartsIndexUrlToItem(QString url, Item *item, bool overwrite = false);
-	void catchFileError(BaseDataSource::Operation op, BaseDataSource::Error *err);
+	ServersProxyModel(QObject *parent = 0);
 
 protected:
-	QList<File*> getCheckedFiles(Item *item);
-
-protected slots:
-	void allPartsDownloaded(Item* item);
-
-private:
-	QIcon dirIcon, serverIcon;
-	QList<BaseDataSource*> servers;
-	Item *rootItem;
-	Item *m_lastTechSpecRequest;
-	QList<BaseDataSource::Error*> m_fileErrors[BaseDataSource::OperationCount];
-	int dsDeleted;
-	QList<TreeAutoDescent*> autoDescents;
-	QHash<TreeAutoDescent*, Item*> metadataIncludeHash;
-	DownloadModel *downloadQueue;
-
-private slots:
-	void dataSourceFinishedDownloading();
-	void dataSourceFinishedDeleting();
-	void metadataReady(Item *item);
-	void newItem(Item *item);
-	void itemUpdated(Item *item);
-	void forwardAutoDescentProgress(TreeAutoDescent *descent, Item *item);
-	void forwardAutoDescentCompleted(TreeAutoDescent *descent, Item *item);
-	void forwardAutoDescentNotFound(TreeAutoDescent *descent);
-	void metadataInclude(Item *item, QString path);
-	void metadataIncludeCancel(Item *item);
-
-signals:
-	void loadingItem(Item*);
-	void itemLoaded(const QModelIndex&);
-	void allItemsLoaded();
-	void techSpecAvailable(QUrl);
-	void statusUpdated(QString);
-	void errorOccured(QString);
-	void fileProgress(File*);
-	void fileDownloaded(File*);
-	void filesDownloaded();
-	void queueChanged();
-	void autoDescentProgress(const QModelIndex&);
-	void autoDescentCompleted(const QModelIndex&);
-	void autoDescentNotFound();
-	void techSpecsIndexAlreadyExists(Item*);
-	void partsIndexAlreadyExists(Item*);
-	void filesDeleted();
+	bool filterAcceptsRow(int sourceRow,
+	                      const QModelIndex &sourceParent) const;
 };
 
 #endif // SERVERSMODEL_H

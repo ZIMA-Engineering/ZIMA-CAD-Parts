@@ -22,60 +22,116 @@
 #define METADATA_H
 
 #include <QObject>
-#include <QSettings>
 #include <QStringList>
+#include <QSettings>
 
-class Item;
+#include "file.h"
 
+
+//! \brief Thumbnail map: baseName -> full path to the file (including the file name)
+typedef QHash<QString,QPair<QString,QPixmap> > MetadataThumbnailMap;
+typedef QHashIterator<QString,QPair<QString,QPixmap> > MetadataThumbnailMapIterator;
+
+//! \brief Version map: completeBaseName -> fileName, only the latest version is stored in this map
+typedef QHash<QString,QString> MetadataVersionsMap;
+
+/*! Metadata for one directory.
+ *
+ * @warning do not access Metadata directly - use MetadataCache.
+ *
+ * Metadata are stored in 0000-index/metadata.ini as QSettings::IniFormat.
+ * Groups:
+ * [params]
+ * <lang>/label = string // a directory label to be displayed in the directory tree
+ * <lang>/1..n = string // a FileModel column label for additional columns
+ *
+ * [<base file name>] // name of the file without an extension
+ * <lang>/1..n = string // a value which belongs to a column label
+ *
+ * Metadata Includes
+ * [include]
+ * data = path
+ * thumbnails = path
+ *
+ */
 class Metadata : public QObject
 {
 	Q_OBJECT
 public:
-	explicit Metadata(Item *item, QObject *parent = 0);
+	explicit Metadata(const QString &path, QObject *parent = 0);
 	~Metadata();
-	void init();
-	QString getLabel();
-	QStringList getColumnLabels();
-	QString getPartParam(QString part, int col);
-	void deletePart(QString part);
-	QList<Item*> includedThumbnailItems();
 
-public slots:
-	void refresh();
-	void retranslate(QString lang = QString());
-	void provideInclude(Metadata *m, QString path = QString());
+	//! Label for current directory (tree)
+	QString getLabel();
+	//! Labels for FileModel
+	QStringList columnLabels();
+	//! Value for FileModel
+	QString partParam(const QString &partName, int col);
+	//! Thumbnail paths for FileModel
+	MetadataThumbnailMap partThumbnailPaths();
+
+	void deletePart(const QString &part);
+	/*! Load part versions.
+	 * Implementation: list name-ordered directory and use only the latest
+	 * file name for its completeBaseName
+	 */
+	MetadataVersionsMap partVersions();
 
 private:
-	enum Include {
-		IncludeNothing=0,
-		IncludeMetadata=1,
-		IncludeThumbnails=2
-	};
+	QSettings *m_settings;
 
-	Item *m_item;
+	QString m_path;
 	QList<Metadata*> includes;
 	int m_loadedIncludes;
-	QString metadataFile;
-	QSettings *metadata;
-	QString currentAppLang;
-	QString lang;
-	QStringList columnLabels;
+	QStringList m_columnLabels;
 	QString label;
-	QHash<QString, Include> m_includeHash;
-	QList<Item*> m_thumbItems;
-	bool m_includedData;
 
-	void openMetadata();
-	void probeMetadata();
-	QString buildIncludePath(QString raw);
-	QStringList buildIncludePaths(QStringList raw);
-	void setIncludeMark(QStringList &list, Include mark);
+	MetadataThumbnailMap m_thumbnailsCache;
+	MetadataVersionsMap m_versionsCache;
+
+	QString buildIncludePath(const QString &raw);
+	QStringList buildIncludePaths(const QStringList &raw);
+	bool partVersionType(FileType::FileType t, const QFileInfo &fi);
+};
+
+/*! An access singleton to the Metadata cache.
+ * All-aware universal key is the "path" - the full path of the directory
+ * used in the FileModel.
+ */
+class MetadataCache : public QObject
+{
+	Q_OBJECT
+public:
+
+	//! The main access method to Metadata
+	static MetadataCache *get();
+
+	bool showLabel(const QString &path);
+	QString label(const QString &path);
+	QStringList columnLabels(const QString &path);
+	QString partParam(const QString &path, const QString &fname, int column);
+	MetadataThumbnailMap partThumbnailPaths(const QString &path);
+	MetadataVersionsMap partVersions(const QString &path);
+	void deletePart(const QString &path, const QString &part);
 
 signals:
-	void includeRequired(Item *item, QString path);
-	void includeRequireCancelled(Item *item);
-	void ready(Item *item);
-	void retranslated();
+	//! Emitted when is the cache content invalidated. All dependent objects should reset themself.
+	void cleared();
+
+public slots:
+	void clear();
+	void clear(const QString &path);
+
+private:
+	//! Singleton handling
+	static MetadataCache *m_instance;
+
+	MetadataCache();
+	//MetadataCache(const MetadataCache &) {};
+	~MetadataCache();
+
+	QHash<QString,Metadata*> m_map;
+	void load(const QString &path);
 };
 
 #endif // METADATA_H

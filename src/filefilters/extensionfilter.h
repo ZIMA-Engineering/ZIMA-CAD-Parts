@@ -7,15 +7,11 @@
 class ExtensionFilter : public FileFilter
 {
 public:
-	ExtensionFilter(File::FileTypes type);
+    ExtensionFilter(FileType::FileType type);
 	FileFilters filterType();
 	void load(QSettings *settings);
 	void save(QSettings *settings);
-	QWidget* widget();
-	void apply();
-
-private:
-	QCheckBox *checkBox;
+	QTreeWidgetItem* widget();
 };
 
 #endif // EXTENSIONFILTER_H

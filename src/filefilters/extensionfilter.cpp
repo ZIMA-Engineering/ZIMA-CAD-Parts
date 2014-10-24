@@ -1,6 +1,6 @@
 #include "extensionfilter.h"
 
-ExtensionFilter::ExtensionFilter(File::FileTypes type)
+ExtensionFilter::ExtensionFilter(FileType::FileType type)
 	: FileFilter(type)
 {
 
@@ -21,17 +21,13 @@ void ExtensionFilter::save(QSettings *settings)
 	settings->setValue(File::getInternalNameForFileType(type), enabled);
 }
 
-QWidget* ExtensionFilter::widget()
+QTreeWidgetItem* ExtensionFilter::widget()
 {
-	checkBox = new QCheckBox(File::getLabelForFileType(type));
-	checkBox->setChecked(enabled);
-	checkBox->setIcon(QIcon(QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(type))));
+	item = new QTreeWidgetItem();
+	item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+	item->setText(0, File::getLabelForFileType(type));
+	item->setCheckState(0, enabled ? Qt::Checked : Qt::Unchecked);
+	item->setIcon(0, QIcon(QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(type))));
 
-	return checkBox;
-}
-
-void ExtensionFilter::apply()
-{
-	enabled = checkBox->isChecked();
-	checkBox->deleteLater();
+	return item;
 }

@@ -19,122 +19,76 @@
 */
 
 #include "productview.h"
+#include "settings.h"
 
-
-#include "ui_productview.h"
 #include "proeproductview.h"
 #include "dxfproductview.h"
 #include "pdfproductview.h"
-#include "productviewsettings.h"
 
-#include <QtDebug>
+#include "filemodel.h"
+
+
 ProductView::ProductView(QWidget *parent) :
-	QDialog(parent),
-	ui(new Ui::ProductView()),
-	currentProvider(0)
+	QObject(parent),
+	m_current(0)
 {
-	ui->setupUi(this);
-//	ui->statusLabel->setText(tr("Double click any part."));
-	setWindowFlags(Qt::Window);
-
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
-	// disabled 20140206 by Vlad's request:
-	// only "supported" files should be displayed. For rest of files this dialog should be closed
-	// addProviders<PDFProductView>();
+#ifdef HAVE_POPPLER
+	addProviders<PDFProductView>();
+#endif
 	//failbackProvider = new FailbackProductView(this);
 	//failbackProvider->hide();
-	failbackProvider = 0;
+//	failbackProvider = 0;
 }
 
 ProductView::~ProductView()
 {
 	saveSettings();
-
-	delete ui;
-
-	QHashIterator<File::FileTypes, AbstractProductView*> i(providers);
-	while (i.hasNext())
-	{
-		i.next();
-		i.value()->deleteLater();
-	}
-
 	providers.clear();
-}
-
-bool ProductView::canHandle()
-{
-	return currentProvider != 0;
-}
-
-void ProductView::hideEvent(QHideEvent * e)
-{
-	saveSettings();
-	QDialog::hideEvent(e);
-}
-
-void ProductView::showEvent(QShowEvent *e)
-{
-	QSettings s;
-	restoreGeometry(s.value("Extensions/ProductView/geometry").toByteArray());
-	QPoint pt = s.value("Extensions/ProductView/position").toPoint();
-	if (!pt.isNull())
-		move(pt);
-
-	QDialog::showEvent(e);
 }
 
 void ProductView::saveSettings()
 {
-	QSettings s;
-	s.setValue("Extensions/ProductView/geometry", saveGeometry());
-	s.setValue("Extensions/ProductView/position", pos());
+	if (m_current)
+	{
+		Settings::get()->ExtensionsProductViewGeometry = m_current->saveGeometry();
+		Settings::get()->ExtensionsProductViewPosition = m_current->pos();
+	}
 }
 
-
-bool ProductView::expectFile(File *f)
+void ProductView::hide()
 {
-	if (expectedFile != f)
-	{
-		expectedFile = f;
-		return true;
-	}
-	return false;
-//	ui->statusLabel->setText(tr("Waiting for part to download..."));
-}
-
-void ProductView::fileDownloaded(File *f)
-{
-	if (currentProvider)
-	{
-		currentProvider->hide();
-		ui->verticalLayout->removeWidget(currentProvider);
-	}
-
-	if (f != expectedFile)
-	{
-//		ui->statusLabel->setText(tr("Double click any part."));
+	if (!m_current)
 		return;
-	}
 
+	saveSettings();
+	m_current->hide();
+}
+
+void ProductView::setFile(FileMetadata* f)
+{
 	if (!providers.contains(f->type))
 	{
-		//currentProvider = failbackProvider;
-		currentProvider = 0;
+		if (m_current)
+			m_current->hide();
+		m_current = 0;
 		return;
 	}
-	else
+
+	if (m_current && m_current != providers.value(f->type))
 	{
-		currentProvider = providers.value(f->type);
+		saveSettings();
+		m_current->hide();
 	}
 
-	setWindowTitle(f->baseName() + " " + currentProvider->title());
+	m_current = providers.value(f->type);
+	m_current->restoreGeometry(Settings::get()->ExtensionsProductViewGeometry);
+	QPoint pt = Settings::get()->ExtensionsProductViewPosition;
+	if (!pt.isNull())
+		m_current->move(pt);
 
-	//qDebug() << "PTH" << f->path << f->targetPath;
-	//ui->statusLabel->setText(tr("Displaying: %1").arg(currentProvider->title()));
-	currentProvider->handle(f);
-	//ui->verticalLayout->insertWidget(1, currentProvider);
-	ui->verticalLayout->addWidget(currentProvider);
-	currentProvider->show();
+	m_current->setWindowTitle(f->fileInfo.baseName() + " " + m_current->title());
+	m_current->handle(f);
+	m_current->show();
 }

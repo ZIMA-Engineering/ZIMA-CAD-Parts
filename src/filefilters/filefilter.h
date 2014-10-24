@@ -2,11 +2,13 @@
 #define FILEFILTER_H
 
 #include <QSettings>
+#include <QTreeWidgetItem>
 
-#include "../item.h"
 #include "filtergroup.h"
+#include "file.h"
 
 class FilterGroup;
+
 
 class FileFilter
 {
@@ -16,16 +18,20 @@ public:
 		Version
 	};
 
-	FileFilter(File::FileTypes type);
+    FileFilter(FileType::FileType type);
 	virtual FileFilters filterType() = 0;
 	virtual void load(QSettings *settings) = 0;
 	virtual void save(QSettings *settings) = 0;
-	virtual QWidget* widget() = 0;
-	virtual void apply() = 0;
+	virtual QTreeWidgetItem* widget() = 0;
 
-	File::FileTypes type;
+	virtual void apply();
+
+    FileType::FileType type;
 	bool enabled;
 	FilterGroup *group;
+
+protected:
+	QTreeWidgetItem *item;
 };
 
 #endif // FILEFILTER_H

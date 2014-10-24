@@ -10,10 +10,14 @@ class FileFilter;
 class FilterGroup
 {
 public:
-    FilterGroup(QString internalName, QString label) : label(label), internalName(internalName), enabled(0){}
+	FilterGroup(QString internalName, QString label) : label(label), internalName(internalName), enabled(0) {}
 	FilterGroup& operator<<(FileFilter* f);
-	QWidget* widget();
+	QTreeWidgetItem* widget();
 	void apply();
+
+	QTreeWidgetItem* currentItem() {
+		return item;
+	}
 
 	QString label;
 	QString internalName;
@@ -21,7 +25,7 @@ public:
 	bool enabled;
 
 private:
-	QGroupBox *groupBox;
+	QTreeWidgetItem *item;
 };
 
 #endif // FILTERGROUP_H

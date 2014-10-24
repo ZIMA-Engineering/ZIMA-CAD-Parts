@@ -1,9 +1,8 @@
 #include "versionfilter.h"
 
 VersionFilter::VersionFilter()
-	: FileFilter(File::UNDEFINED)
+    : FileFilter(FileType::UNDEFINED)
 {
-
 }
 
 VersionFilter::FileFilters VersionFilter::filterType()
@@ -21,17 +20,12 @@ void VersionFilter::save(QSettings *settings)
 	settings->setValue("versions", enabled);
 }
 
-QWidget* VersionFilter::widget()
+QTreeWidgetItem* VersionFilter::widget()
 {
-	checkBox = new QCheckBox(QObject::tr("Show versions"));
-	checkBox->setChecked(enabled);
+	item = new QTreeWidgetItem();
+	item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+	item->setText(0, QObject::tr("Show versions"));
+	item->setCheckState(0, enabled ? Qt::Checked : Qt::Unchecked);
 
-	return checkBox;
+	return item;
 }
-
-void VersionFilter::apply()
-{
-	enabled = checkBox->isChecked();
-	checkBox->deleteLater();
-}
-

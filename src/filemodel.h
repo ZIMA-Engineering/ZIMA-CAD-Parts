@@ -22,56 +22,76 @@
 #define FILEMODEL_H
 
 #include <QAbstractItemModel>
-#include <QStringList>
+#include <QFileIconProvider>
+#include "metadata.h"
 
-class Item;
-struct File;
+class FileIconProvider;
 
+
+/*! A "list files" tree. This class is used inside FileView only
+ */
 class FileModel : public QAbstractItemModel
 {
 	Q_OBJECT
 public:
 	explicit FileModel(QObject *parent = 0);
+	~FileModel();
 
-	//---
-	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
-	QModelIndex parent(const QModelIndex &index) const;
-	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+	QModelIndex index(int row, int column,
+	                  const QModelIndex &parent = QModelIndex()) const;
+	QModelIndex parent(const QModelIndex &child) const;
+	int columnCount(const QModelIndex & parent = QModelIndex()) const;
+	int rowCount(const QModelIndex & parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 	QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-	bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole);
-	QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
-	QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
+
+	void settingsChanged();
+	void setDirectory(const QString &path);
+    void refreshModel();
+
 	Qt::ItemFlags flags(const QModelIndex &index) const;
-	//---
 
-	Item* getRootItem();
-	void setPreviewWidth(int size);
+	void deleteParts();
+	void copyToWorkingDir();
 
-public slots:
-	void setRootIndex(const QModelIndex &index);
-	void setThumbWidth(int size);
-	void initMetadata(Item *i);
-	void prepareForUpdate();
+	QString path() const {
+		return m_path;
+	}
 
-protected:
-	Item* rootItem;
-	Item* formalRootItem;
-
-private:
-	int thumbWidth;
-	int previewWidth;
-	QStringList colLabels;
-
-private slots:
-	void thumbnailDownloaded(File *file);
-	void itemLoaded(Item *item);
-	void metadataRetranslated();
+	QFileInfo fileInfo(const QModelIndex &ix);
 
 signals:
-	void requestColumnResize();
+	void directoryLoaded(const QString &path);
+
+private:
+	QFileInfoList m_data;
+	QString m_path;
+	QStringList m_columnLabels;
+	/*! List of checked files. Key = root directory, values are full
+	 * paths of files (checked).
+	 * It shares information between directories. The map is cleared
+	 * when is the "Download" button clicked and processed.
+	 * Also "root dir" is cleared when there is "Delete" action processed.
+	 */
+	QHash<QString,QStringList> m_checked;
+	FileIconProvider *m_iconProvider;
+
+private slots:
+	void loadFiles(const QString &path);
+};
+
+/*! An icon provider for FileModel. It contains additional
+ * handling of CAD file icons from builtin resources
+ */
+class FileIconProvider : public QFileIconProvider
+{
+public:
+	FileIconProvider();
+
+	virtual QIcon   icon ( IconType type ) const;
+	virtual QIcon   icon ( const QFileInfo & info ) const;
+	virtual QString type ( const QFileInfo & info ) const;
 };
 
 #endif // FILEMODEL_H

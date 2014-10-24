@@ -1,5 +1,5 @@
 #include "proeproductview.h"
-#include "productviewsettings.h"
+#include "../../settings.h"
 #include "../../zima-cad-parts.h"
 
 #include <QTextStream>
@@ -26,30 +26,30 @@ QString ProEProductView::title()
 	return tr("PRO/E part");
 }
 
-QList<File::FileTypes> ProEProductView::canHandle()
+FileTypeList ProEProductView::canHandle()
 {
 #ifdef Q_OS_WIN
 	// ProductView Express is available for windows only
-	return QList<File::FileTypes>() << File::PRT_PROE << File::PRT_NX;
+	return FileTypeList() << FileType::PRT_PROE << FileType::PRT_NX
+	       << FileType::ASM;
 #else
-	return QList<File::FileTypes>();
+	return FileTypeList();
 #endif
 }
 
-bool ProEProductView::handle(File *f)
+bool ProEProductView::handle(FileMetadata *f)
 {
 	QFile pv(":/data/extensions/productview/proeproductview.html");
 	pv.open(QIODevice::ReadOnly);
 	QTextStream stream(&pv);
 	QString html = stream.readAll();
 
-	QSettings settings;
 	html.replace("%VERSION%", VERSION);
-	html.replace("%FILE_NAME%", f->name);
-	html.replace("%FILE_PATH%", f->cachePath);
-	html.replace("%PRODUCTVIEW_PATH%", settings.value("Extensions/ProductView/Path", PRODUCT_VIEW_DEFAULT_PATH).toString());
+	html.replace("%FILE_NAME%", f->fileInfo.fileName());
+	html.replace("%FILE_PATH%", f->fileInfo.filePath());
+	html.replace("%PRODUCTVIEW_PATH%", Settings::get()->ExtensionsProductViewPath);
 
-	QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->name + ".html");
+	QTemporaryFile tmp(QDir::tempPath() + "/zima-cad-parts_XXXXXX_" + f->fileInfo.fileName() + ".html");
 
 	if(tmp.open())
 	{

@@ -26,5 +26,6 @@
 // Extensions
 //#ifdef Q_OS_WIN32
 //#endif // Q_OS_WIN32
+#define PRODUCT_VIEW_DEFAULT_PATH "C:\\Program Files\\ProductViewExpress"
 
 #endif // ZIMAPARTS_H

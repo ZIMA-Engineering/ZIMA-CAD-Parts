@@ -2,6 +2,8 @@
 #define ZIMAUTILS_H
 
 #include <QString>
+#include <QStringList>
+
 
 class ZimaUtils
 {
@@ -18,6 +20,7 @@ public:
 	static QString internalNameForUtility(ZimaUtility util);
 	static QString labelForUtility(int util);
 	static QString labelForUtility(ZimaUtility util);
+	static QHash<QString,QString> paths();
 };
 
 #endif // ZIMAUTILS_H

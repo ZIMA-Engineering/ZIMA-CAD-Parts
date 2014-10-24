@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>577</width>
-    <height>398</height>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -156,28 +156,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Cache</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QPushButton" name="pruneCacheButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Prune cache</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -290,8 +268,8 @@
       <attribute name="title">
        <string>External programs</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0" colspan="3">
         <widget class="QGroupBox" name="zimaUtilsGroupBox">
          <property name="title">
           <string>ZIMA utilities</string>
@@ -299,7 +277,41 @@
          <layout class="QGridLayout" name="gridLayout"/>
         </widget>
        </item>
-       <item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>ProE executable:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="proeEdit"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="proeButton">
+         <property name="text">
+          <string>Find...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>ProductView path:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="productViewEdit"/>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="productViewButton">
+         <property name="text">
+          <string>Find...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
         <spacer name="verticalSpacer_5">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

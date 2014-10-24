@@ -21,20 +21,13 @@
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
-#include <QtGui/QDialog>
-#include <QSettings>
-#include <QMultiHash>
+#include <QDialog>
 #include <QTranslator>
 #include <QSignalMapper>
-#include <QList>
-#include <QLineEdit>
 
 #include "zima-cad-parts.h"
-#include "basedatasource.h"
-#include "ftpdatasource.h"
-#include "localdatasource.h"
+#include "settings.h"
 
-#include "extensions/productview/productviewsettings.h"
 
 class QListWidgetItem;
 
@@ -47,33 +40,22 @@ class SettingsDialog : public QDialog {
 	Q_DISABLE_COPY(SettingsDialog)
 public:
 	enum Section {
-	    General=0,
-	    DataSources,
-	    ExternalPrograms,
-	    DeveloperMode,
-	    ProductView,
-	    SectionCount
+		General=0,
+		DataSources,
+		ExternalPrograms,
+		DeveloperMode,
+		ProductView,
+		SectionCount
 	};
 
-	enum Languages {
-	    DETECT=0,
-	    ENGLISH,
-	    CZECH
-	};
-
-	explicit SettingsDialog(QSettings *settings, QList<BaseDataSource*> datasources, QTranslator **translator, QWidget *parent = 0);
+	explicit SettingsDialog(QTranslator **translator, QWidget *parent = 0);
 	virtual ~SettingsDialog();
 
 	void setSection(Section s);
-	void loadSettings(QSettings*);
-	void saveSettings();
-
-	QList<BaseDataSource*> getDatasources();
-	static QString langIndexToName(int lang);
-	static int langIndex(QString lang);
 
 protected:
 	virtual void changeEvent(QEvent *e);
+	virtual void accept();
 
 private slots:
 	void addDataSource();
@@ -81,20 +63,18 @@ private slots:
 	void removeDataSource();
 	void datasourceUpButton_clicked();
 	void datasourceDownButton_clicked();
-	void pruneCache(QString path = QString());
-//	void changingText();
-//	void changingPassive();
 	void setZimaUtilPath(int util);
+	void proeButton_clicked();
+	void productViewButton_clicked();
 
 private:
 	Ui::SettingsDialog  *m_ui;
-	QSettings *settings;
 	QTranslator **translator;
 	QSignalMapper *zimaUtilSignalMapper;
 	QList<QLineEdit*> zimaUtilLineEdits;
-	ProductViewSettings *productViewSettings;
+	DataSourceList m_editedDS;
 
-	void setupDatasourceList(QList<BaseDataSource*> datasources);
+	void setupDatasourceList();
 };
 
 #endif // SETTINGSDIALOG_H

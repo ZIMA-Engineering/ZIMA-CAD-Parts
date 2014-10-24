@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ServerTabWidget</class>
+ <widget class="QWidget" name="ServerTabWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>594</width>
+    <height>441</height>
+   </rect>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab_3">
+      <property name="minimumSize">
+       <size>
+        <width>358</width>
+        <height>295</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>10000000</width>
+        <height>10000000</height>
+       </size>
+      </property>
+      <attribute name="title">
+       <string>&amp;Technical specifications</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QWidget" name="techSpecDeveloperWidget" native="true">
+         <layout class="QGridLayout" name="gridLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="techSpecReloadButton"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="techSpecForwardButton"/>
+          </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="techSpecGoButton"/>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="techSpecUrlLineEdit"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="techSpecBackButton"/>
+          </item>
+          <item row="0" column="5">
+           <widget class="QPushButton" name="techSpecPinButton">
+            <property name="toolTip">
+             <string>Pin this URL to current directory in tree (write permission required)</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../zima-cad-parts.qrc">
+              <normaloff>:/gfx/pin.png</normaloff>:/gfx/pin.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="TechSpecsWebView" name="techSpec">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <property name="maximumSize">
+       <size>
+        <width>10000000</width>
+        <height>10000000</height>
+       </size>
+      </property>
+      <attribute name="title">
+       <string>&amp;Parts</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QWidget" name="partsIndexDeveloperWidget" native="true">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="partsIndexBackButton"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="partsIndexForwardButton"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="partsIndexReloadButton"/>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="partsIndexUrlLineEdit"/>
+          </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="partsIndexGoButton"/>
+          </item>
+          <item row="0" column="5">
+           <widget class="QPushButton" name="partsIndexPinButton">
+            <property name="icon">
+             <iconset resource="../zima-cad-parts.qrc">
+              <normaloff>:/gfx/pin.png</normaloff>:/gfx/pin.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSplitter" name="partsSplitter">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="QWebView" name="partsWebView">
+          <property name="url">
+           <url>
+            <string>about:blank</string>
+           </url>
+          </property>
+         </widget>
+         <widget class="FileView" name="partsTreeView">
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="verticalScrollMode">
+           <enum>QAbstractItemView::ScrollPerPixel</enum>
+          </property>
+          <property name="rootIsDecorated">
+           <bool>false</bool>
+          </property>
+          <property name="itemsExpandable">
+           <bool>false</bool>
+          </property>
+          <property name="expandsOnDoubleClick">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QPushButton" name="filterButton">
+           <property name="text">
+            <string>Filters...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Thumbnail size</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>-</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="thumbnailSizeSlider">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimum">
+            <number>16</number>
+           </property>
+           <property name="maximum">
+            <number>256</number>
+           </property>
+           <property name="singleStep">
+            <number>8</number>
+           </property>
+           <property name="pageStep">
+            <number>32</number>
+           </property>
+           <property name="value">
+            <number>32</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>+</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="refreshButton">
+           <property name="text">
+            <string>Refresh</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnDelete">
+           <property name="text">
+            <string>Delete</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="copyToWorkingDirButton">
+           <property name="text">
+            <string>Download</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKitWidgets/QWebView</header>
+  </customwidget>
+  <customwidget>
+   <class>TechSpecsWebView</class>
+   <extends>QWebView</extends>
+   <header>src/techspecswebview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FileView</class>
+   <extends>QTreeView</extends>
+   <header>src/fileview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../zima-cad-parts.qrc"/>
+ </resources>
+ <connections/>
+</ui>

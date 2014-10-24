@@ -1,4 +1,4 @@
-#include <QVBoxLayout>
+#include <QFont>
 
 #include "filtergroup.h"
 
@@ -10,35 +10,33 @@ FilterGroup& FilterGroup::operator<<(FileFilter *f)
 	return *this;
 }
 
-QWidget* FilterGroup::widget()
+QTreeWidgetItem* FilterGroup::widget()
 {
-	groupBox = new QGroupBox();
-	groupBox->setTitle(label);
-	groupBox->setCheckable(true);
-	groupBox->setChecked(enabled);
+	item = new QTreeWidgetItem();
+	item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+	item->setText(0, label);
+	item->setCheckState(0, enabled ? Qt::Checked : Qt::Unchecked);
 
-	QVBoxLayout *groupLayout = new QVBoxLayout;
+	QFont f = item->font(0);
+	f.setBold(true);
+	item->setFont(0, f);
 
 	int filterCnt = filters.count();
 
 	for(int j = 0; j < filterCnt; j++)
-		groupLayout->addWidget(filters[j]->widget());
+		item->addChild(filters[j]->widget());
 
-	groupLayout->addStretch(100);
-
-	groupBox->setLayout(groupLayout);
-
-	return groupBox;
+	return item;
 }
 
 void FilterGroup::apply()
 {
-	enabled = groupBox->isChecked();
+	enabled = item->checkState(0) == Qt::Checked;
 
 	int filterCnt = filters.count();
 
 	for(int j = 0; j < filterCnt; j++)
 		filters[j]->apply();
 
-	delete groupBox;
+	delete item;
 }

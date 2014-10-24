@@ -19,6 +19,7 @@
 */
 
 #include "techspecswebview.h"
+#include "webdownloaderdialog.h"
 
 #include <QDialog>
 #include <QVBoxLayout>
@@ -26,21 +27,25 @@
 #include <QWebElementCollection>
 #include <QRegExp>
 #include <QDebug>
+#include <QMessageBox>
+#include <QTextCodec>
 
-#include "mainwindow.h"
-#include "datatransfer.h"
-#include "downloadmodel.h"
+#include "settings.h"
+#include "zima-cad-parts.h"
+
 
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
-	QWebView(parent)
+	QWebView(parent),
+	m_downloader(0)
 {
-	loadAboutPage();
-
 	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
 
 	page()->setForwardUnsupportedContent(true);
-	connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
+	connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)),
+	        this, SLOT(downloadFile(QNetworkReply*)));
+
+	loadAboutPage();
 }
 
 void TechSpecsWebView::setRootPath(QString path)
@@ -48,50 +53,17 @@ void TechSpecsWebView::setRootPath(QString path)
 	m_rootPath = path;
 }
 
-void TechSpecsWebView::setDownloadDirectory(QString path)
-{
-	m_dlDir = path;
-}
-
-void TechSpecsWebView::setDownloadQueue(DownloadModel *queue)
-{
-	downloadQueue = queue;
-}
-
-void TechSpecsWebView::stopDownload()
-{
-	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
-
-	foreach(File *f, tmp)
-	f->transfer->cancel();
-}
-
-void TechSpecsWebView::resumeDownload()
-{
-	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
-
-	foreach(File *f, tmp)
-	downloadFile(page()->networkAccessManager()->get(QNetworkRequest(f->path)), f);
-
-}
-
-void TechSpecsWebView::clearQueue()
-{
-	QList<File*> tmp = downloadQueue->files(DownloadModel::TechSpec);
-
-	foreach(File *f, tmp)
-	delete f->transfer;
-}
-
 void TechSpecsWebView::loadAboutPage()
 {
 	QString url = ":/data/zima-cad-parts%1.html";
-	QString localized = url.arg("_" + MainWindow::getCurrentLanguageCode());
+	QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
 	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
 
 	QFile f(filename);
 	f.open(QIODevice::ReadOnly);
 	QTextStream stream(&f);
+	// resource/bundled html files are UTF-8 encoded for sure
+	stream.setCodec(QTextCodec::codecForName("utf8"));
 
 	setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
@@ -151,54 +123,48 @@ void TechSpecsWebView::pageLoaded(bool ok)
 	}
 }
 
-void TechSpecsWebView::downloadFile(QNetworkReply *reply, File *f)
+void TechSpecsWebView::downloadFile(QNetworkReply *reply)
 {
-	bool isNew = !f;
-
-	if(isNew)
+	QString fileName = Settings::get()->WorkingDir + "/" + reply->url().path().split('/').last();
+	if (QDir().exists(fileName))
 	{
-		QString fileName = reply->url().path().split('/').last();
-
-		if(reply->hasRawHeader("Content-Disposition"))
+		if (QMessageBox::question(this, tr("File Exists"),
+		                          tr("File %1 already exists. Overwrite?").arg(fileName),
+		                          QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
 		{
-			QStringList patterns;
-			patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
-
-			QRegExp rx;
-
-			foreach(QString pattern, patterns)
-			{
-				rx.setPattern(pattern);
-
-				if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
-				{
-					fileName = rx.cap(1).replace('\\', '/').split('/').last();
-
-					if(fileName.endsWith(';'))
-						fileName.chop(1);
-
-					break;
-				}
-			}
+			reply->close();
+			reply->deleteLater();
+			return;
 		}
-
-		f = new File;
-		f->parentItem = 0;
-		f->name = fileName;
-		f->path = reply->url().toString();
-		f->targetPath = m_dlDir + "/" + fileName;
-		f->transferHandler = DownloadModel::TechSpec;
-		f->transfer = new DataTransfer(reply, f);
-		f->transfer->setDeleteSrc(true);
-		f->transfer->setDeleteDst(true);
-	} else {
-		f->bytesDone = 0;
-		f->transfer->setSource(reply);
 	}
 
-	if(reply->hasRawHeader("Content-Length"))
-		f->size = reply->rawHeader("Content-Length").toULongLong();
+	if(reply->hasRawHeader("Content-Disposition"))
+	{
+		QStringList patterns;
+		patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
 
-	if(f->transfer->initiate() && isNew)
-		downloadQueue->enqueue(f);
+		QRegExp rx;
+
+		foreach(QString pattern, patterns)
+		{
+			rx.setPattern(pattern);
+
+			if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
+			{
+				fileName = rx.cap(1).replace('\\', '/').split('/').last();
+
+				if(fileName.endsWith(';'))
+					fileName.chop(1);
+
+				break;
+			}
+		}
+	}
+
+	if (!m_downloader)
+	{
+		m_downloader = new WebDownloaderDialog(this);
+	}
+	m_downloader->enqueue(fileName, reply);
+	m_downloader->show();
 }

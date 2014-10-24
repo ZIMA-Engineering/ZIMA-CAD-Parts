@@ -13,12 +13,20 @@ ErrorDialog::~ErrorDialog()
 	delete ui;
 }
 
-void ErrorDialog::setError(QString s)
+void ErrorDialog::setErrors(const QString &label, const ErrorsMap &errors)
 {
-	ui->label->setText(s);
+	ui->label->setText(label);
+
+	QString str = "<html><body><dl>";
+	ErrorsMapIterator it(errors);
+	while (it.hasNext())
+	{
+		it.next();
+		str += "<dt>" + it.key() + ":</dt>";
+		str += "<dd>" + it.value() + ":</dd>";
+	}
+	str += "</dl></body></html>";
+
+	ui->textEdit->setHtml(str);
 }
 
-void ErrorDialog::setText(QString s)
-{
-	ui->textEdit->setHtml(s);
-}

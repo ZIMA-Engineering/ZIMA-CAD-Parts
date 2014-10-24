@@ -22,7 +22,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QSettings>
 #include <QModelIndex>
 #include <QLabel>
 #include <QUrl>
@@ -39,18 +38,13 @@
 #include "filemodel.h"
 #include "zima-cad-parts.h"
 #include "filefiltermodel.h"
-#include "filefilters/filtergroup.h"
 
-#include "extensions/productview/productview.h"
+class WorkingDirWidget;
 
 namespace Ui
 {
 class MainWindowClass;
 }
-
-class QFtp;
-class FtpDataSource;
-class DownloadModel;
 
 class MainWindow : public QMainWindow
 {
@@ -59,135 +53,33 @@ class MainWindow : public QMainWindow
 public:
 	MainWindow(QTranslator *translator, QWidget *parent = 0);
 	~MainWindow();
-	void keyPressEvent(QKeyEvent *event);
-	static QString getCurrentLanguageCode();
-	static QString getCurrentMetadataLanguageCode();
-
-	static QList<FilterGroup> filterGroups;
 
 private:
-	enum Tabs {
-	    TECH_SPECS,
-	    PARTS,
-	    DOWNLOADS,
-//		PRODUCT_VIEW,
-	    TABS_COUNT
-	};
-
 	Ui::MainWindowClass *ui;
-	static QSettings           *settings;
-	QList<BaseDataSource*> servers;
-	QLabel              *statusState, *statusDir;
-	FtpDataSource           *currentServer;
-	FileModel *fm;
-	FileFilterModel *proxy;
-	QTranslator *translator;
-	bool downloading;
-	QButtonGroup *langButtonGroup;
-	static QString currentMetadataLang;
-	QStringList langs;
-	QList<QPushButton*> langFlags;
-	QSignalMapper *dirTreeSignalMapper;
 
-	// Models
-	DownloadModel *downloadModel;
+	QTranslator *translator;// app ui
+	WorkingDirWidget *m_wdirWidget;
 
 	// History
-	QList<QModelIndex> history;
-	int historyCurrentIndex;
-	int historySize;
+	QList<QString> m_history;
+	int m_historyCurrent;
 
-	// Tech spec toolbar
-	QToolBar *techSpecToolBar;
-	QAction *techSpecBackAction;
-	QAction *techSpecForwardAction;
-	QLineEdit *urlBar;
-
-	// Parts index toolbar
-	QToolBar *partsIndexToolBar;
-	QAction *partsIndexBackAction;
-	QAction *partsIndexForwardAction;
-	QLineEdit *partsIndexUrlBar;
-
-	QString autoDescentPath;
-	Item *lastPartsIndexItem;
-	QUrl lastPartsIndex;
-	QDateTime lastPartsIndexModTime;
 	QModelIndex lastFoundIndex;
 
-	QStringList zimaUtils;
-
-	ProductView *productView;
-
-	bool s_developerMode;
-
-	void showOrHideProductView();
-
-	void loadExtensions();
-	void setupDeveloperMode();
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
+	void handleHistory();
+
 public slots:
-	void downloadButton();
-	void setWorkingDirectoryDialog();
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
-	void updateClicked();
-	void deleteSelectedParts();
-	void searchClicked();
-	void serverSelected(const QModelIndex&);
-	void updateStatus(QString);
-	void treeExpandedOrCollaped();
-	void loadingItem(Item *item);
-	void itemLoaded(const QModelIndex&);
-	void allItemsLoaded();
-	void loadTechSpec(QUrl url);
-	void errorOccured(QString error);
-	void filesDownloaded();
-	void setFiltersDialog();
-	void rebuildFilters();
-	void toggleDownload();
-	void resumeDownload();
-	void stopDownload();
-	void filesDeleted();
-	void selectDirTreePath();
+	void updateStatus(const QString &message);
 
 private slots:
-	void openWorkingDirectory();
-	void changeLanguage(int lang);
-	void goToUrl();
-	void updateUrlBar(QUrl url);
-	void setPartsIndex(const QModelIndex &index);
-	void partsIndexLoaded(const QModelIndex &index);
-	void viewHidePartsIndex(Item *item = 0);
-	void goToPartsIndexUrl();
-	void updatePartsUrlBar(QUrl url);
-	void descentTo();
-	void autoDescentProgress(const QModelIndex &index);
-	void autoDescendComplete(const QModelIndex &index);
-	void autoDescentNotFound();
-	void adjustThumbColumnWidth(int width);
-	void assignUrlToDirectory(bool overwrite = false);
-	void techSpecsIndexOverwrite(Item *item);
-	void assignPartsIndexUrlToDirectory(bool overwrite = false);
-	void partsIndexOverwrite(Item *item);
-	void openDirTreePath();
-	void loadSettings();
-	void loadZimaUtils();
-	QList<BaseDataSource*> loadDataSources();
-	void saveSettings();
-	void loadFilters();
-	void saveFilters();
-	void dirTreeContextMenu(QPoint point);
-	void spawnZimaUtilityOnDir(int i);
-	void setWorkingDirectory();
-	void goToWorkingDirectory();
-	void trackHistory(const QModelIndex &index);
+	void settingsChanged();
+	void trackHistory(const QString &index);
 	void historyBack();
 	void historyForward();
-
-	void previewInProductView(const QModelIndex &index);
-	void tree_doubleClicked(const QModelIndex &index);
 };
 
 class SleeperThread : public QThread

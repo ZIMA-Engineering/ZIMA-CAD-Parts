@@ -1,3 +1,4 @@
+#ifdef HAVE_POPPLER
 #ifndef PDFPRODUCTVIEW_H
 #define PDFPRODUCTVIEW_H
 
@@ -9,6 +10,11 @@ namespace Ui {
 class PDFProductView;
 }
 
+
+/**
+ * @brief The PDFProductView class is a product view for PDF files
+ * @see AbstractProductView
+ */
 class PDFProductView : public AbstractProductView
 {
 	Q_OBJECT
@@ -19,10 +25,12 @@ public:
 
 	QString title();
 	QList<File::FileTypes> canHandle();
-	bool handle(File *f);
+	bool handle(FileMetadata *f);
 
 private:
 	Ui::PDFProductView *ui;
 };
 
 #endif // PDFPRODUCTVIEW_H
+
+#endif
