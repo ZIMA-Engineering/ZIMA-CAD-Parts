@@ -24,7 +24,6 @@
 #include "../../zima-cad-parts.h"
 
 #include <QObject>
-#include "ui_productview.h"
 #include "abstractproductview.h"
 #include "failbackproductview.h"
 
