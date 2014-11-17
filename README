@@ -3,12 +3,12 @@ ZIMA-CAD-Parts
 
 Requirements
 ------------
-Qt 4.x - modules core, gui, network and webkit, qmake
+Qt 4.x or 5.x - modules core, gui, network and webkit, qmake
 
 Installation
 ------------
-  tar xzf ZIMA-CAD-Parts-0.4.0-src.tar.gz
-  cd ZIMA-CAD-Parts-0.4.0-src
+  tar xzf ZIMA-CAD-Parts-0.5.0-src.tar.gz
+  cd ZIMA-CAD-Parts-0.5.0-src
   qmake
   make
 
