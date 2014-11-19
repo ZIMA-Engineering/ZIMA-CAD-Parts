@@ -427,7 +427,7 @@
     <message>
         <location filename="../src/servertabwidget.ui" line="274"/>
         <source>Download</source>
-        <translation>StáhnoutStáhnout</translation>
+        <translation>Stáhnout</translation>
     </message>
     <message>
         <location filename="../src/servertabwidget.cpp" line="242"/>
