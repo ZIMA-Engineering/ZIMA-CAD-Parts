@@ -18,7 +18,9 @@ FileView::FileView(QWidget *parent) :
 
 	m_proxy->setSourceModel(m_model);
 	setModel(m_proxy);
-	//setModel(m_model);
+
+    setSortingEnabled(true);
+    sortByColumn(100, Qt::AscendingOrder);
 
 	connect(m_model, SIGNAL(directoryLoaded(QString)),
 	        this, SLOT(resizeColumnToContents()));
