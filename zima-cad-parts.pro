@@ -95,7 +95,9 @@ SOURCES += src/zima-cad-parts.cpp \
     src/serversview.cpp \
     src/fileview.cpp \
     src/webdownloaderwidget.cpp \
-    src/webdownloaderdialog.cpp
+    src/webdownloaderdialog.cpp \
+    src/progressdialog.cpp \
+    src/directoryremover.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -139,7 +141,9 @@ HEADERS += src/mainwindow.h \
     src/serversview.h \
     src/fileview.h \
     src/webdownloaderwidget.h \
-    src/webdownloaderdialog.h
+    src/webdownloaderdialog.h \
+    src/progressdialog.h \
+    src/directoryremover.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -155,7 +159,8 @@ FORMS += mainwindow.ui \
     src/extensions/navbar/navbaroptionsdialog.ui \
     src/workingdirwidget.ui \
     src/webdownloaderwidget.ui \
-    src/webdownloaderdialog.ui
+    src/webdownloaderdialog.ui \
+    src/progressdialog.ui
 
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc

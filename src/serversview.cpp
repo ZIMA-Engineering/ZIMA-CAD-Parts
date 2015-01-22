@@ -3,6 +3,7 @@
 #include "zimautils.h"
 #include "settings.h"
 #include "settingsdialog.h"
+#include "directoryremover.h"
 
 #include <QHeaderView>
 #include <QDesktopServices>
@@ -81,6 +82,10 @@ void ServersView::showContextMenu(const QPoint &point)
 
 	menu->addSeparator();
 
+	menu->addAction(QIcon(":/gfx/list-remove.png"), tr("Delete"), this, SLOT(deleteDirectory()));
+
+	menu->addSeparator();
+
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), tr("Clean with ZIMA-PTC-Cleaner"), m_signalMapper, SLOT(map())),
 	                           ZimaUtils::internalNameForUtility(ZimaUtils::ZimaPtcCleaner));
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), tr("Sync with ZIMA-CAD-Sync"), m_signalMapper, SLOT(map())),
@@ -126,6 +131,12 @@ void ServersView::setWorkingDirectory()
 {
 	Settings::get()->WorkingDir = currentFileInfo().absoluteFilePath();
 	emit workingDirChanged();
+}
+
+void ServersView::deleteDirectory()
+{
+	DirectoryRemover *rm = new DirectoryRemover(currentFileInfo(), this);
+	rm->work();
 }
 
 bool ServersView::navigateToDirectory(const QString &path)

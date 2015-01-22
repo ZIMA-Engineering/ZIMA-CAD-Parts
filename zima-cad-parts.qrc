@@ -48,5 +48,6 @@
         <file>gfx/icons/iges.png</file>
         <file>gfx/icons/sldprt.png</file>
         <file>gfx/icons/slddrw.png</file>
+        <file>gfx/list-remove.png</file>
     </qresource>
 </RCC>
