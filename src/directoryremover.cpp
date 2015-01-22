@@ -87,7 +87,7 @@ void DirectoryRemoverWorker::start()
 
 		qDebug() << "Remove" << f.absoluteFilePath();
 
-		if (f.isDir())
+		if (f.isDir() && !f.isSymLink())
 		{
 			ret = f.absoluteDir().rmdir(f.fileName());
 
