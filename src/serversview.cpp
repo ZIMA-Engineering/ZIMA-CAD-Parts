@@ -135,8 +135,17 @@ void ServersView::setWorkingDirectory()
 
 void ServersView::deleteDirectory()
 {
-	DirectoryRemover *rm = new DirectoryRemover(currentFileInfo(), this);
-	rm->work();
+	QFileInfo fi = currentFileInfo();
+
+	if( QMessageBox::question(this,
+							  tr("Do you really want to delete selected directory?"),
+							  tr("Do you really want to delete directory '%1'? This action is irreversible.").arg(fi.absoluteFilePath()),
+							  QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+			==  QMessageBox::Yes)
+	{
+		DirectoryRemover *rm = new DirectoryRemover(fi, this);
+		rm->work();
+	}
 }
 
 bool ServersView::navigateToDirectory(const QString &path)
