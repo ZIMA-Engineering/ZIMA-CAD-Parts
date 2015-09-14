@@ -90,5 +90,5 @@ void ServersWidget::setDirectory(const QString &path)
 
 void ServersWidget::goToWorkingDirectory()
 {
-	setDirectory(Settings::get()->WorkingDir);
+    setDirectory(Settings::get()->getWorkingDir());
 }

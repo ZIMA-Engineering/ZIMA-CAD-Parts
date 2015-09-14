@@ -129,7 +129,7 @@ void ServersView::spawnZimaUtilityOnDir(const QString &label)
 
 void ServersView::setWorkingDirectory()
 {
-	Settings::get()->WorkingDir = currentFileInfo().absoluteFilePath();
+    Settings::get()->setWorkingDir(currentFileInfo().absoluteFilePath());
 	emit workingDirChanged();
 }
 

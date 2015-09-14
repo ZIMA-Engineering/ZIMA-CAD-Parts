@@ -271,16 +271,16 @@ void FileModel::copyToWorkingDir()
 	QHash<QString,QString> errors;
 	QDir d;
 
-	if (!d.exists(Settings::get()->WorkingDir))
+    if (!d.exists(Settings::get()->getWorkingDir()))
 	{
 		if (QMessageBox::question(0, tr("Working Dir does not exist"),
-		                          tr("Working directory %1 does not exist. Create it?").arg(Settings::get()->WorkingDir),
+                                  tr("Working directory %1 does not exist. Create it?").arg(Settings::get()->getWorkingDir()),
 		                          QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
 		{
 			return;
 		}
-		if (!d.mkpath(Settings::get()->WorkingDir))
-			errors[Settings::get()->WorkingDir] = "Cannot create directory: " + Settings::get()->WorkingDir;
+        if (!d.mkpath(Settings::get()->getWorkingDir()))
+            errors[Settings::get()->getWorkingDir()] = "Cannot create directory: " + Settings::get()->getWorkingDir();
 	}
 
 	QHashIterator<QString,QStringList> it(m_checked);
@@ -290,7 +290,7 @@ void FileModel::copyToWorkingDir()
 		QString key = it.key();
 
 		// do not copy files from WD into WD
-		if (key == Settings::get()->WorkingDir)
+        if (key == Settings::get()->getWorkingDir())
 		{
 			m_checked[key].clear();
 			continue;
@@ -300,7 +300,7 @@ void FileModel::copyToWorkingDir()
 		{
 			QFileInfo fi(fname);
 			QFile f(fi.absoluteFilePath());
-			QString target = Settings::get()->WorkingDir + "/" + fi.fileName();
+            QString target = Settings::get()->getWorkingDir() + "/" + fi.fileName();
 
 			if (!overwrite && QDir().exists(target))
 			{
@@ -337,12 +337,12 @@ void FileModel::copyToWorkingDir()
 			else
 			{
 				// copy the thumbnail too
-				if (QDir().mkpath(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR))
+                if (QDir().mkpath(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR))
 				{
 					QFileInfo thumbFi;
 					thumbFi.setFile(MetadataCache::get()->partThumbnailPaths(m_path)[fi.baseName()].first);
 					QFile thumb(thumbFi.absoluteFilePath());
-					thumb.copy(Settings::get()->WorkingDir + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
+                    thumb.copy(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
 				}
 				m_checked[key].removeAll(fname);
 			}

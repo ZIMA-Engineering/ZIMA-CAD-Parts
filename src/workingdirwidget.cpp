@@ -25,34 +25,34 @@ WorkingDirWidget::~WorkingDirWidget()
 
 void WorkingDirWidget::settingsChanged()
 {
-	ui->workingDirectoryEdit->setText(Settings::get()->WorkingDir);
+    ui->workingDirectoryEdit->setText(Settings::get()->getWorkingDir());
 }
 
 void WorkingDirWidget::setWorkingDirectoryDialog()
 {
 	QString str = QFileDialog::getExistingDirectory(this,
 	              tr("ZIMA-CAD-Parts - set working directory"),
-	              Settings::get()->WorkingDir);
+                  Settings::get()->getWorkingDir());
 	if (!str.isEmpty())
 	{
-		Settings::get()->WorkingDir = str;
+        Settings::get()->setWorkingDir(str);
 		settingsChanged();
 	}
 }
 
 void WorkingDirWidget::openWorkingDirectory()
 {
-	if(!QFile::exists(Settings::get()->WorkingDir))
+    if(!QFile::exists(Settings::get()->getWorkingDir()))
 	{
 		QDir dir;
 
-		if(!dir.mkpath(Settings::get()->WorkingDir))
+        if(!dir.mkpath(Settings::get()->getWorkingDir()))
 		{
 			QMessageBox::warning(this, tr("Unable to create working directory"),
-			                     tr("Unable to create working directory: %1").arg(Settings::get()->WorkingDir));
+                                 tr("Unable to create working directory: %1").arg(Settings::get()->getWorkingDir()));
 			return;
 		}
 	}
 
-	QDesktopServices::openUrl(QUrl::fromLocalFile(Settings::get()->WorkingDir));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Settings::get()->getWorkingDir()));
 }

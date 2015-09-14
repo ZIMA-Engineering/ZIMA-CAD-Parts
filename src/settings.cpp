@@ -341,3 +341,12 @@ QString Settings::langIndexToName(int lang)
 		return "detect";
 	}
 }
+
+void Settings::setWorkingDir(const QString &wd)
+{
+    WorkingDir = wd;
+
+    QSettings s;
+    s.setValue("WorkingDir", WorkingDir);
+    s.sync();
+}

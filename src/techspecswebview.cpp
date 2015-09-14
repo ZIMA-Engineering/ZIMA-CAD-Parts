@@ -125,7 +125,7 @@ void TechSpecsWebView::pageLoaded(bool ok)
 
 void TechSpecsWebView::downloadFile(QNetworkReply *reply)
 {
-	QString fileName = Settings::get()->WorkingDir + "/" + reply->url().path().split('/').last();
+    QString fileName = Settings::get()->getWorkingDir() + "/" + reply->url().path().split('/').last();
 	if (QDir().exists(fileName))
 	{
 		if (QMessageBox::question(this, tr("File Exists"),

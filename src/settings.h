@@ -80,9 +80,11 @@ public:
 
 	// real settings
 
+    QString getWorkingDir() { return WorkingDir; }
+    //! WorkingDir is handled by a method because of it should be saved immediatelly
+    void setWorkingDir(const QString &wd);
+
 	QHash<QString,QString> ExternalPrograms;
-	//! Current working directory
-	QString WorkingDir;
 	//! State of the MainWindow
 	QByteArray MainWindowState;
 	//! Geometry of the MainWindow
@@ -151,6 +153,9 @@ private:
 	Settings();
 	Settings(const Settings &) {};
 	~Settings();
+
+    //! Current working directory
+    QString WorkingDir;
 
 	void load();
 	void loadDataSources();
