@@ -333,8 +333,14 @@ QStringList Metadata::buildIncludePaths(const QStringList &raw)
 {
 	QStringList ret;
 
-	foreach(QString s, raw)
-	ret << buildIncludePath(s);
+    if (raw.count())
+    {
+        Q_FOREACH(QString s, raw)
+        {
+            qDebug() << s;
+            ret << buildIncludePath(s);
+        }
+    }
 
 	return ret;
 }
