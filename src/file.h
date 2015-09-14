@@ -72,7 +72,11 @@ typedef enum {
 	OFFICE_DRAW,
 	OFFICE_PROJECT,
 	OFFICE_BASE,
-	TYPES_COUNT,
+    OFFICE_EML,
+    // images
+    FILE_IMAGE,
+    // this must go last
+    TYPES_COUNT,
 	UNDEFINED
 } FileType;
 

@@ -49,5 +49,7 @@
         <file>gfx/icons/sldprt.png</file>
         <file>gfx/icons/slddrw.png</file>
         <file>gfx/list-remove.png</file>
+        <file>gfx/icons/internet-mail.png</file>
+        <file>gfx/icons/image-x-generic.png</file>
     </qresource>
 </RCC>
