@@ -90,12 +90,23 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		switch( role )
 		{
 		case Qt::DecorationRole:
+        {
 			if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
 				return MetadataCache::get()->partThumbnailPaths(m_path)[key].second.scaled(Settings::get()->GUIThumbWidth,
 				        Settings::get()->GUIThumbWidth,
 				        Qt::KeepAspectRatio
 				                                                                          );
+            // TODO/FIXME: this is quite slow. Think about optimization
+            FileMetadata m(m_data.at(index.row()));
+            // generate thumbnail for image files
+            if (m.type == FileType::FILE_IMAGE)
+            {
+                return QPixmap(m.fileInfo.absoluteFilePath()).scaled(Settings::get()->GUIThumbWidth,
+                                                                     Settings::get()->GUIThumbWidth,
+                                                                     Qt::KeepAspectRatio);
+            }
 			break;
+        }
 		case Qt::SizeHintRole:
 			if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
 			{
