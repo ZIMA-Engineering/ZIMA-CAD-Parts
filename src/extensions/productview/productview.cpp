@@ -24,6 +24,7 @@
 #include "proeproductview.h"
 #include "dxfproductview.h"
 #include "pdfproductview.h"
+#include "imageproductview.h"
 
 #include "filemodel.h"
 
@@ -34,6 +35,7 @@ ProductView::ProductView(QWidget *parent) :
 {
 	addProviders<ProEProductView>();
 	addProviders<DxfProductView>();
+    addProviders<ImageProductView>();
 #ifdef HAVE_POPPLER
 	addProviders<PDFProductView>();
 #endif
