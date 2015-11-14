@@ -4,6 +4,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <QHash>
+
 
 class ZimaUtils
 {
