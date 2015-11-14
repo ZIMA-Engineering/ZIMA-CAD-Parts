@@ -98,13 +98,6 @@ QString MetadataCache::partParam(const QString &path, const QString &fname, int 
 	return m_map[path]->partParam(fname, column);
 }
 
-MetadataThumbnailMap MetadataCache::partThumbnailPaths(const QString &path)
-{
-	if (!m_map.contains(path))
-		load(path);
-	return m_map[path]->partThumbnailPaths();
-}
-
 MetadataVersionsMap MetadataCache::partVersions(const QString &path)
 {
 	if (!m_map.contains(path))
@@ -117,6 +110,13 @@ void MetadataCache::deletePart(const QString &path, const QString &part)
 	if (!m_map.contains(path))
 		load(path);
 	return m_map[path]->deletePart(part);
+}
+
+Metadata* MetadataCache::metadata(const QString &path)
+{
+    if (!m_map.contains(path))
+        load(path);
+    return m_map[path];
 }
 
 Metadata::Metadata(const QString &path, QObject *parent)
@@ -140,7 +140,7 @@ Metadata::Metadata(const QString &path, QObject *parent)
 		toInclude.removeDuplicates();
 
 		foreach(QString path, toInclude)
-		includes << new Metadata(path, this);
+        m_includes << new Metadata(path, this);
 	}
 	m_settings->endGroup();
 }
@@ -150,7 +150,6 @@ Metadata::~Metadata()
 	delete m_settings;
 
 	m_columnLabels.clear();
-	m_thumbnailsCache.clear();
 	m_versionsCache.clear();
 }
 
@@ -188,10 +187,10 @@ QStringList Metadata::columnLabels()
 	}
 	m_settings->endGroup();
 
-	if (includes.size())
+    if (m_includes.size())
 	{
 		m_columnLabels.clear();
-		foreach(Metadata *include, includes)
+        foreach(Metadata *include, m_includes)
 		m_columnLabels << include->columnLabels();
 	}
 
@@ -227,7 +226,7 @@ QString Metadata::partParam(const QString &partName, int col)
 
 		if(ret.isEmpty())
 		{
-			foreach(Metadata *include, includes)
+            foreach(Metadata *include, m_includes)
 			{
 				QString tmp = include->partParam(partName, col);
 
@@ -238,39 +237,6 @@ QString Metadata::partParam(const QString &partName, int col)
 
 		return ret;
 	}
-}
-
-MetadataThumbnailMap Metadata::partThumbnailPaths()
-{
-	if (m_thumbnailsCache.size())
-		return m_thumbnailsCache;
-
-	QDir d(m_path + "/" + THUMBNAILS_DIR);
-	QStringList thumbs = d.entryList(QStringList() << "*.png" << "*.jpg",
-	                                 QDir::Files | QDir::Readable);
-
-	QFileInfo fi;
-	// includes first because local dir overrides it
-	foreach(Metadata *include, includes)
-	{
-		MetadataThumbnailMapIterator it(include->partThumbnailPaths());
-		while (it.hasNext())
-		{
-			it.next();
-			fi.setFile(it.key());
-			m_thumbnailsCache[fi.baseName()] = it.value();
-		}
-	}
-
-	QString pmPath;
-	foreach (QString i, thumbs)
-	{
-		fi.setFile(i);
-		pmPath = m_path + "/" + THUMBNAILS_DIR + "/" + i;
-		m_thumbnailsCache[fi.baseName()] = qMakePair(pmPath, QPixmap(pmPath));
-	}
-
-	return m_thumbnailsCache;
 }
 
 bool Metadata::partVersionType(FileType::FileType t, const QFileInfo &fi)

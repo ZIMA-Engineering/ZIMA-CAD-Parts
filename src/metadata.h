@@ -28,10 +28,6 @@
 #include "file.h"
 
 
-//! \brief Thumbnail map: baseName -> full path to the file (including the file name)
-typedef QHash<QString,QPair<QString,QPixmap> > MetadataThumbnailMap;
-typedef QHashIterator<QString,QPair<QString,QPixmap> > MetadataThumbnailMapIterator;
-
 //! \brief Version map: completeBaseName -> fileName, only the latest version is stored in this map
 typedef QHash<QString,QString> MetadataVersionsMap;
 
@@ -67,8 +63,6 @@ public:
 	QStringList columnLabels();
 	//! Value for FileModel
 	QString partParam(const QString &partName, int col);
-	//! Thumbnail paths for FileModel
-	MetadataThumbnailMap partThumbnailPaths();
 
 	void deletePart(const QString &part);
 	/*! Load part versions.
@@ -77,16 +71,18 @@ public:
 	 */
 	MetadataVersionsMap partVersions();
 
+    QList<Metadata*> includes() { return m_includes; }
+    QString path() { return m_path; }
+
 private:
 	QSettings *m_settings;
 
 	QString m_path;
-	QList<Metadata*> includes;
+    QList<Metadata*> m_includes;
 	int m_loadedIncludes;
 	QStringList m_columnLabels;
 	QString label;
 
-	MetadataThumbnailMap m_thumbnailsCache;
 	MetadataVersionsMap m_versionsCache;
 
 	QString buildIncludePath(const QString &raw);
@@ -110,9 +106,9 @@ public:
 	QString label(const QString &path);
 	QStringList columnLabels(const QString &path);
 	QString partParam(const QString &path, const QString &fname, int column);
-	MetadataThumbnailMap partThumbnailPaths(const QString &path);
 	MetadataVersionsMap partVersions(const QString &path);
 	void deletePart(const QString &path, const QString &part);
+    Metadata* metadata(const QString &path);
 
 signals:
 	//! Emitted when is the cache content invalidated. All dependent objects should reset themself.

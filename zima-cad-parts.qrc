@@ -51,5 +51,6 @@
         <file>gfx/list-remove.png</file>
         <file>gfx/icons/internet-mail.png</file>
         <file>gfx/icons/image-x-generic.png</file>
+        <file>gfx/image-loading.png</file>
     </qresource>
 </RCC>

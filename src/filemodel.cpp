@@ -30,6 +30,8 @@ FileModel::FileModel(QObject *parent) :
 	QAbstractItemModel(parent)
 {
 	m_iconProvider = new FileIconProvider();
+    m_thumb = new ThumbnailManager(this);
+    connect(m_thumb, SIGNAL(updateModel()), this, SLOT(updateThumbnails()));
 }
 
 FileModel::~FileModel()
@@ -91,11 +93,6 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 		{
 		case Qt::DecorationRole:
         {
-			if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
-				return MetadataCache::get()->partThumbnailPaths(m_path)[key].second.scaled(Settings::get()->GUIThumbWidth,
-				        Settings::get()->GUIThumbWidth,
-				        Qt::KeepAspectRatio
-				                                                                          );
             // TODO/FIXME: this is quite slow. Think about optimization
             FileMetadata m(m_data.at(index.row()));
             // generate thumbnail for image files
@@ -105,22 +102,16 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
                                                                      Settings::get()->GUIThumbWidth,
                                                                      Qt::KeepAspectRatio);
             }
+            else
+                return m_thumb->thumbnail(m_data.at(index.row()));
 			break;
         }
 		case Qt::SizeHintRole:
-			if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
-			{
-				return QSize(Settings::get()->GUIThumbWidth,
-				             Settings::get()->GUIThumbWidth);
-			}
-			break;
+            return QSize(Settings::get()->GUIThumbWidth,
+                         Settings::get()->GUIThumbWidth);
+            break;
 		case Qt::ToolTipRole:
-			if (MetadataCache::get()->partThumbnailPaths(m_path).contains(key))
-			{
-				return QString("<img src=\"%1\" width=\"%2\">")
-				       .arg(MetadataCache::get()->partThumbnailPaths(m_path)[key].first)
-				       .arg(Settings::get()->GUIPreviewWidth);
-			}
+            return m_thumb->tooltip(m_data.at(index.row()));
 			break;
 		}
 	} // additional metadata
@@ -139,6 +130,13 @@ void FileModel::loadFiles(const QString &path)
 	m_data.clear();
 	QDir d(path);
 	m_data = d.entryInfoList(QDir::Files|QDir::Readable, QDir::Name);
+}
+
+void FileModel::updateThumbnails()
+{
+    // TODO/FIXME: proper index subset for udpate
+    beginResetModel();
+    endResetModel();
 }
 
 QFileInfo FileModel::fileInfo(const QModelIndex &ix)
@@ -187,7 +185,7 @@ void FileModel::setDirectory(const QString &path)
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 		loadFiles(path);
-		MetadataCache::get()->partThumbnailPaths(path);
+        m_thumb->setPath(path);
 		m_path = path;
 
 		beginResetModel();
@@ -207,7 +205,7 @@ void FileModel::refreshModel()
 
     m_columnLabels = MetadataCache::get()->columnLabels(m_path);
     loadFiles(m_path);
-    MetadataCache::get()->partThumbnailPaths(m_path);
+    m_thumb->clear();
 
     beginResetModel();
     endResetModel();
@@ -350,10 +348,13 @@ void FileModel::copyToWorkingDir()
 				// copy the thumbnail too
                 if (QDir().mkpath(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR))
 				{
+#warning "Implement 'copy to wdir' for thumbnail!"
+#if 0
 					QFileInfo thumbFi;
-					thumbFi.setFile(MetadataCache::get()->partThumbnailPaths(m_path)[fi.baseName()].first);
+                    thumbFi.setFile(MetadataCache::get()->partThumbnailPaths(m_path)[fi.baseName()].first);
 					QFile thumb(thumbFi.absoluteFilePath());
                     thumb.copy(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
+#endif
 				}
 				m_checked[key].removeAll(fname);
 			}

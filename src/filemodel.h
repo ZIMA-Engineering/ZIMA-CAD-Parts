@@ -24,6 +24,7 @@
 #include <QAbstractItemModel>
 #include <QFileIconProvider>
 #include "metadata.h"
+#include "thumbnailmanager.h"
 
 class FileIconProvider;
 
@@ -77,8 +78,11 @@ private:
 	QHash<QString,QStringList> m_checked;
 	FileIconProvider *m_iconProvider;
 
+    ThumbnailManager *m_thumb;
+
 private slots:
 	void loadFiles(const QString &path);
+    void updateThumbnails();
 };
 
 /*! An icon provider for FileModel. It contains additional
