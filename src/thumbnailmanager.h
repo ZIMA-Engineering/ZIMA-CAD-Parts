@@ -54,6 +54,7 @@ private:
     QString m_path;
     QPixmap m_loading;
     ThumbnailMap m_cache;
+    bool m_isLoading;
 
     void load();
 };

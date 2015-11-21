@@ -9,20 +9,17 @@ ThumbnailWorker::ThumbnailWorker(const QString &path)
 
 void ThumbnailWorker::run()
 {
-    qDebug() << "Starting thread";
-
     ThumbnailMap ret;
-
     Metadata* m = MetadataCache::get()->metadata(m_path);
     getThumbs(m, &ret);
-
     emit dataReady(ret);
-
-    qDebug() << "Thread finished";
 }
 
 void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
 {
+    if (isInterruptionRequested())
+        return;
+
     QString path = m->path();
 
     QDir d(path + "/" + THUMBNAILS_DIR);
@@ -34,6 +31,8 @@ void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
 
     foreach (QString i, thumbs)
     {
+        if (isInterruptionRequested())
+            return;
         fi.setFile(i);
         if (map->contains(fi.baseName()))
             continue;
@@ -53,7 +52,8 @@ void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
 
 ThumbnailManager::ThumbnailManager(QObject *parent)
     : QObject(parent),
-      m_worker(0)
+      m_worker(0),
+      m_isLoading(true)
 {
     qRegisterMetaType<ThumbnailMap>("ThumbnailMap");
 
@@ -70,7 +70,9 @@ void ThumbnailManager::clear()
 {
     if (m_worker)
     {
-        m_worker->quit();
+        disconnect(m_worker, SIGNAL(dataReady(ThumbnailMap)), this, SLOT(dataReady(ThumbnailMap)));
+        m_worker->requestInterruption();
+        m_worker->wait();
         m_worker->deleteLater();
         m_worker = 0;
     }
@@ -82,20 +84,20 @@ void ThumbnailManager::load()
 {
     m_worker = new ThumbnailWorker(m_path);
     connect(m_worker, SIGNAL(dataReady(ThumbnailMap)), this, SLOT(dataReady(ThumbnailMap)));
-    // TODO/FIXME: sig/slots
+    m_isLoading = true;
     m_worker->start();
 }
 
 void ThumbnailManager::dataReady(const ThumbnailMap &data)
 {
+    m_isLoading = false;
     m_cache = data;
-    qDebug() << m_cache;
     emit updateModel();
 }
 
 QPixmap ThumbnailManager::thumbnail(const QFileInfo &fi)
 {
-    if (!m_cache.size())
+    if (m_isLoading)
         return m_loading;
     else if (m_cache.contains(fi.baseName()) && !m_cache[fi.baseName()].second.isNull())
         return m_cache[fi.baseName()].second;
@@ -113,49 +115,3 @@ QString ThumbnailManager::tooltip(const QFileInfo &fi)
     }
     return tr("No thumbnail");
 }
-
-
-
-#if 0
-
-MetadataThumbnailMap MetadataCache::partThumbnailPaths(const QString &path)
-{
-    if (!m_map.contains(path))
-        load(path);
-    return m_map[path]->partThumbnailPaths();
-}
-
-MetadataThumbnailMap Metadata::partThumbnailPaths()
-{
-//return m_thumbnailsCache;
-    if (m_thumbnailsCache.size())
-        return m_thumbnailsCache;
-
-    QDir d(m_path + "/" + THUMBNAILS_DIR);
-    QStringList thumbs = d.entryList(QStringList() << "*.png" << "*.jpg",
-                                     QDir::Files | QDir::Readable);
-
-    QFileInfo fi;
-    // includes first because local dir overrides it
-    foreach(Metadata *include, includes)
-    {
-        MetadataThumbnailMapIterator it(include->partThumbnailPaths());
-        while (it.hasNext())
-        {
-            it.next();
-            fi.setFile(it.key());
-            m_thumbnailsCache[fi.baseName()] = it.value();
-        }
-    }
-
-    QString pmPath;
-    foreach (QString i, thumbs)
-    {
-        fi.setFile(i);
-        pmPath = m_path + "/" + THUMBNAILS_DIR + "/" + i;
-        m_thumbnailsCache[fi.baseName()] = qMakePair(pmPath, QPixmap(pmPath));
-    }
-
-    return m_thumbnailsCache;
-}
-# endif
