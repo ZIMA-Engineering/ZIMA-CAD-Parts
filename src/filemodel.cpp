@@ -348,13 +348,13 @@ void FileModel::copyToWorkingDir()
 				// copy the thumbnail too
                 if (QDir().mkpath(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR))
 				{
-#warning "Implement 'copy to wdir' for thumbnail!"
-#if 0
-					QFileInfo thumbFi;
-                    thumbFi.setFile(MetadataCache::get()->partThumbnailPaths(m_path)[fi.baseName()].first);
-					QFile thumb(thumbFi.absoluteFilePath());
-                    thumb.copy(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR +"/" + thumbFi.fileName());
-#endif
+                    QString fp = m_thumb->path(fi.baseName());
+                    qDebug() << fp << fi.absoluteFilePath();
+                    if (fp.isEmpty())
+                        continue;
+                    QFile thumb(fp);
+                    thumb.copy(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR +"/" + fi.baseName()+".jpg");
+
 				}
 				m_checked[key].removeAll(fname);
 			}

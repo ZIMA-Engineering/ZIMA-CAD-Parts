@@ -39,6 +39,7 @@ public:
 
     QPixmap thumbnail(const QFileInfo &fi);
     QString tooltip(const QFileInfo &fi);
+    QString path(const QFileInfo &fi);
 
 signals:
     void updateModel();
