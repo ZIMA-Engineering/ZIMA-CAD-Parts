@@ -349,7 +349,6 @@ void FileModel::copyToWorkingDir()
                 if (QDir().mkpath(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR))
 				{
                     QString fp = m_thumb->path(fi.baseName());
-                    qDebug() << fp << fi.absoluteFilePath();
                     if (fp.isEmpty())
                         continue;
                     QFile thumb(fp);

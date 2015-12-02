@@ -92,7 +92,6 @@ void ThumbnailManager::dataReady(const ThumbnailMap &data)
 {
     m_isLoading = false;
     m_cache = data;
-    qDebug() << m_cache;
     emit updateModel();
 }
 
@@ -108,10 +107,10 @@ QPixmap ThumbnailManager::thumbnail(const QFileInfo &fi)
 
 QString ThumbnailManager::tooltip(const QFileInfo &fi)
 {
-    if (!m_cache[fi.fileName()].first.isEmpty())
+    if (!m_cache[fi.baseName()].first.isEmpty())
     {
         return QString("<img src=\"%1\" width=\"%2\">")
-               .arg(m_cache[fi.fileName()].first)
+               .arg(m_cache[fi.baseName()].first)
                .arg(Settings::get()->GUIPreviewWidth);
     }
     return tr("No thumbnail");
