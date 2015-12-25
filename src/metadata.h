@@ -74,6 +74,8 @@ public:
     QList<Metadata*> includes() { return m_includes; }
     QString path() { return m_path; }
 
+    void reloadProe(const QFileInfoList &fil);
+
 private:
 	QSettings *m_settings;
 

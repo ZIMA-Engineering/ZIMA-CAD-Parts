@@ -24,6 +24,7 @@
 
 #include "metadata.h"
 #include "settings.h"
+#include "libproe/libproe.h"
 
 
 MetadataCache * MetadataCache::m_instance = 0;
@@ -309,4 +310,40 @@ QStringList Metadata::buildIncludePaths(const QStringList &raw)
     }
 
 	return ret;
+}
+#include <QProgressDialog>
+void Metadata::reloadProe(const QFileInfoList &fil)
+{
+    qDebug() << "reloadProe" << m_path;
+
+    QString txt = tr("Loading ProE metadata...");
+    QProgressDialog dia(txt, tr("Abort"), 0, fil.size());
+    dia.setWindowModality(Qt::WindowModal);
+
+    int ix = 1;
+    foreach (QFileInfo i, fil)
+    {
+        dia.setValue(ix++);
+
+        if (dia.wasCanceled())
+            break;
+
+        FileMetadata fm(i);
+        if (fm.type != FileType::PRT_PROE)
+            continue;
+        qDebug() << i.absoluteFilePath();
+        dia.setLabelText(txt + "\n" + i.fileName());
+
+        QFile f(i.absoluteFilePath());
+        f.open(QIODevice::ReadOnly);
+        QTextStream s(&f);
+        attr_arr_t attrs;
+        proe_get_attr(attrs, s);
+        foreach (attr_t a, attrs)
+        {
+            qDebug() << a.name << a.value;
+        }
+    }
+
+    dia.setValue(fil.size());
 }

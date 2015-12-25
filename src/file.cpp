@@ -268,6 +268,12 @@ QString File::getRxFromStringList(const QStringList &extensions)
 	return ret;
 }
 
+FileMetadata::FileMetadata(const QString &path)
+    : type(FileType::UNDEFINED)
+{
+    fileInfo = QFileInfo(path);
+    detectFileType();
+}
 
 FileMetadata::FileMetadata(const QFileInfo &fi)
 	: type(FileType::UNDEFINED),
