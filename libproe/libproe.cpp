@@ -32,10 +32,10 @@ int proe_get_attr(attr_arr_t &attrs, QTextStream &s)
 		str = s.readLine();
         //qDebug() << "line" << pos << !str.isNull() << rgx.indexIn(str) << s.status();
         // TODO/FIXME: a hack for fixing infinite loop in eg. ZE0088-KIEKERT-FIAT_XUV-new_routing_of_fishmouth_sealing/ze0088-0000-0101.prt.11
-        if (pos > 10000) {
-            qDebug() << "Infinite loop threshold reached. Skipping.";
-            return 1;
-        }
+        //if (pos > 10000) {
+        //    qDebug() << "Infinite loop threshold reached. Skipping.";
+        //    return 1;
+       // }
 	} while (!str.isNull() && rgx.indexIn(str) != 0 &&
              s.status() == QTextStream::Ok);
 	

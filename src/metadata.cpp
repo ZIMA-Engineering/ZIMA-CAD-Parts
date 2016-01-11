@@ -329,16 +329,19 @@ void Metadata::reloadProe(const QFileInfoList &fil)
             break;
 
         FileMetadata fm(i);
-        if (fm.type != FileType::PRT_PROE)
+        if (fm.type != FileType::ASM && fm.type != FileType::DRW)
             continue;
         qDebug() << i.absoluteFilePath();
         dia.setLabelText(txt + "\n" + i.fileName());
+
+        qDebug() << fm.type << File::getInternalNameForFileType(fm.type);
 
         QFile f(i.absoluteFilePath());
         f.open(QIODevice::ReadOnly);
         QTextStream s(&f);
         attr_arr_t attrs;
-        proe_get_attr(attrs, s);
+        int ret = proe_get_attr(attrs, s);
+        qDebug() << "    ret" << ret;
         foreach (attr_t a, attrs)
         {
             qDebug() << a.name << a.value;
