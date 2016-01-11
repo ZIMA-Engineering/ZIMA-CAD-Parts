@@ -20,6 +20,7 @@
 
 #include <QRegExp>
 #include <QDir>
+#include <QProgressDialog>
 #include <QDebug>
 
 #include "metadata.h"
@@ -311,7 +312,7 @@ QStringList Metadata::buildIncludePaths(const QStringList &raw)
 
 	return ret;
 }
-#include <QProgressDialog>
+
 void Metadata::reloadProe(const QFileInfoList &fil)
 {
     qDebug() << "reloadProe" << m_path;
