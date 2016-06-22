@@ -17,8 +17,10 @@ void ThumbnailWorker::run()
 
 void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
 {
-    if (isInterruptionRequested())
-        return;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+	if (isInterruptionRequested())
+		return;
+#endif
 
     QString path = m->path();
 
@@ -31,8 +33,11 @@ void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
 
     foreach (QString i, thumbs)
     {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
         if (isInterruptionRequested())
             return;
+#endif
+
         fi.setFile(i);
         if (map->contains(fi.baseName()))
             continue;
@@ -71,7 +76,11 @@ void ThumbnailManager::clear()
     if (m_worker)
     {
         disconnect(m_worker, SIGNAL(dataReady(ThumbnailMap)), this, SLOT(dataReady(ThumbnailMap)));
-        m_worker->requestInterruption();
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+		m_worker->requestInterruption();
+#endif
+
         m_worker->wait();
         m_worker->deleteLater();
         m_worker = 0;
