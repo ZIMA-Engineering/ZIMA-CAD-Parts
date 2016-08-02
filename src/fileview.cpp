@@ -128,6 +128,7 @@ void FileView::refreshRequested()
 void FileView::reloadProeMeta()
 {
     MetadataCache::get()->metadata(m_path)->reloadProe(m_model->fileInfoList());
+    m_model->refreshModel();
 }
 
 void FileView::copyToWorkingDir()

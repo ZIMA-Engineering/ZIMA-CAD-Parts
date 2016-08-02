@@ -25,7 +25,6 @@
 
 #include "metadata.h"
 #include "settings.h"
-#include "libproe/libproe.h"
 
 
 MetadataCache * MetadataCache::m_instance = 0;
@@ -330,9 +329,11 @@ void Metadata::reloadProe(const QFileInfoList &fil)
             break;
 
         FileMetadata fm(i);
-        if (fm.type != FileType::ASM && fm.type != FileType::DRW)
+        if (fm.type != FileType::ASM && fm.type != FileType::DRW && fm.type != FileType::PRT_PROE)
+        {
             continue;
-        qDebug() << i.absoluteFilePath();
+        }
+        qDebug() << "PROE import for file" << i.absoluteFilePath();
         dia.setLabelText(txt + "\n" + i.fileName());
 
         qDebug() << fm.type << File::getInternalNameForFileType(fm.type);
@@ -340,13 +341,57 @@ void Metadata::reloadProe(const QFileInfoList &fil)
         QFile f(i.absoluteFilePath());
         f.open(QIODevice::ReadOnly);
         QTextStream s(&f);
-        attr_arr_t attrs;
-        int ret = proe_get_attr(attrs, s);
-        qDebug() << "    ret" << ret;
-        foreach (attr_t a, attrs)
+        s.setCodec("UTF-8"); // just guessing here... but it works somehow
+        QString line;
+        while (s.readLineInto(&line))
         {
-            qDebug() << a.name << a.value;
+            if (line.startsWith("description") && !line.startsWith("descriptions"))
+            {
+                // some all-used separator or whatever. It seems it does not have any meaning
+                line = line.replace("\xEF\xBF\xBD", "");
+                // another all-arround used value
+                line = line.replace("\x00", "");
+                // then it seems like key and value is separated by "\x15"
+                QStringList l = line.split("\x15");
+                //qDebug() << l;
+                QStringListIterator it(l);
+                while (it.hasNext())
+                {
+                    QString s = it.next();
+                    // \r is another strange char. It seems it used in all user defined attributes
+                    if (!s.contains("\r"))
+                    {
+                        continue;
+                    }
+                    s = s.replace(QRegExp("^.+\\r"), "");
+                    QStringList vals = s.split("'");
+                    if (vals.size() != 2)
+                    {
+                        qWarning() << "attribute unexpected:" << s << vals << "it needs to be split";
+                        continue;
+                    }
+                    QString key = vals[0].replace("\x0000", "");
+                    key.chop(1); // remove \u0000 from the end of key
+                    if (key.isEmpty())
+                    {
+                        qDebug() << "key is empty, skipping:" << s;
+                        continue;
+                    }
+                    else
+                    {
+                        qDebug() << "found key:" << key;
+                    }
+
+                    QString val = vals[1].split("\x14")[0];
+                    val.chop(1);
+                    val.remove(0,2);
+                    qDebug() << "    value:" << val << (val.isEmpty() ? "skipping" : "will be used") << "original:" << vals[1];
+                }
+                break;
+            }
+
         }
+
     }
 
     dia.setValue(fil.size());
