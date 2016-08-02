@@ -342,9 +342,10 @@ void Metadata::reloadProe(const QFileInfoList &fil)
         f.open(QIODevice::ReadOnly);
         QTextStream s(&f);
         s.setCodec("UTF-8"); // just guessing here... but it works somehow
-        QString line;
-        while (s.readLineInto(&line))
+
+        while (!s.atEnd())
         {
+            QString line = s.readLine();
             if (line.startsWith("description") && !line.startsWith("descriptions"))
             {
                 // some all-used separator or whatever. It seems it does not have any meaning
