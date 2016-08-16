@@ -64,6 +64,9 @@ public:
 	//! Value for FileModel
 	QString partParam(const QString &partName, int col);
 
+    //! Set new value for given param
+    void setPartParam(const QString &partName, int col, const QString &value);
+
 	void deletePart(const QString &part);
 	/*! Load part versions.
 	 * Implementation: list name-ordered directory and use only the latest

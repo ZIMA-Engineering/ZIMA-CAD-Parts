@@ -240,6 +240,21 @@ QString Metadata::partParam(const QString &partName, int col)
 	}
 }
 
+void Metadata::setPartParam(const QString &partName, int col, const QString &value)
+{
+    QString partGroup = partName.section('.', 0, 0);
+
+    m_settings->beginGroup(partGroup);
+
+    foreach (QString lang, Settings::get()->Languages)
+    {
+        QString key = QString("%1/%2").arg(lang.left(2)).arg(col);
+        m_settings->setValue(key, value);
+    }
+
+    m_settings->endGroup();
+}
+
 bool Metadata::partVersionType(FileType::FileType t, const QFileInfo &fi)
 {
 	QRegExp re(File::getRxForFileType(t));
@@ -310,6 +325,27 @@ QStringList Metadata::buildIncludePaths(const QStringList &raw)
     }
 
 	return ret;
+}
+
+QString unaccent_helper(const QString &str)
+{
+    QString diacriticLetters = QString::fromUtf8("ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ");
+    QStringList noDiacriticLetters;
+    noDiacriticLetters << "S"<<"OE"<<"Z"<<"s"<<"oe"<<"z"<<"Y"<<"Y"<<"u"<<"A"<<"A"<<"A"<<"A"<<"A"<<"A"<<"AE"<<"C"<<"E"<<"E"<<"E"<<"E"<<"I"<<"I"<<"I"<<"I"<<"D"<<"N"<<"O"<<"O"<<"O"<<"O"<<"O"<<"O"<<"U"<<"U"<<"U"<<"U"<<"Y"<<"s"<<"a"<<"a"<<"a"<<"a"<<"a"<<"a"<<"ae"<<"c"<<"e"<<"e"<<"e"<<"e"<<"i"<<"i"<<"i"<<"i"<<"o"<<"n"<<"o"<<"o"<<"o"<<"o"<<"o"<<"o"<<"u"<<"u"<<"u"<<"u"<<"y"<<"y";
+
+    QString output = "";
+    for (int i = 0; i < str.length(); i++) {
+        QChar c = str[i];
+        int dIndex = diacriticLetters.indexOf(c);
+        if (dIndex < 0) {
+            output.append(c);
+        } else {
+            QString replacement = noDiacriticLetters[dIndex];
+            output.append(replacement);
+        }
+    }
+
+    return output;
 }
 
 void Metadata::reloadProe(const QFileInfoList &fil)
@@ -387,6 +423,21 @@ void Metadata::reloadProe(const QFileInfoList &fil)
                     val.chop(1);
                     val.remove(0,2);
                     qDebug() << "    value:" << val << (val.isEmpty() ? "skipping" : "will be used") << "original:" << vals[1];
+
+                    // try to find metadata.ini index
+                    QString fname = i.fileName();
+                    QString key1 = key.toLower();
+                    qDebug() << columnLabels();
+                    foreach (QString key2, columnLabels())
+                    {
+                        QString unac = unaccent_helper(key2).toLower();
+                        qDebug() << "UNAC" << unac << key2 << key1;
+                        if (unac == key1)
+                        {
+                            setPartParam(fname, columnLabels().indexOf(key2), val);
+                            break;
+                        }
+                    }
                 }
                 break;
             }
