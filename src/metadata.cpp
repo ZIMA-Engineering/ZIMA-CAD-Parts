@@ -434,7 +434,7 @@ void Metadata::reloadProe(const QFileInfoList &fil)
                         qDebug() << "UNAC" << unac << key2 << key1;
                         if (unac == key1)
                         {
-                            setPartParam(fname, columnLabels().indexOf(key2), val);
+                            setPartParam(fname, columnLabels().indexOf(key2) -1, val);
                             break;
                         }
                     }
