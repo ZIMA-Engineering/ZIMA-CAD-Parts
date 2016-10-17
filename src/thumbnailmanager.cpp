@@ -17,8 +17,10 @@ void ThumbnailWorker::run()
 
 void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     if (isInterruptionRequested())
         return;
+#endif
 
     QString path = m->path();
 
@@ -71,7 +73,9 @@ void ThumbnailManager::clear()
     if (m_worker)
     {
         disconnect(m_worker, SIGNAL(dataReady(ThumbnailMap)), this, SLOT(dataReady(ThumbnailMap)));
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)) 
         m_worker->requestInterruption();
+#endif
         m_worker->wait();
         m_worker->deleteLater();
         m_worker = 0;
