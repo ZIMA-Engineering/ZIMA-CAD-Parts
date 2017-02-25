@@ -396,10 +396,6 @@ void Metadata::reloadProe(const QFileInfoList &fil)
                 {
                     QString s = it.next();
                     // \r is another strange char. It seems it used in all user defined attributes
-                    if (!s.contains("\r"))
-                    {
-                        continue;
-                    }
                     s = s.replace(QRegExp("^.+\\r"), "");
                     QStringList vals = s.split("'");
                     if (vals.size() != 2)
@@ -407,8 +403,8 @@ void Metadata::reloadProe(const QFileInfoList &fil)
                         qWarning() << "attribute unexpected:" << s << vals << "it needs to be split";
                         continue;
                     }
-                    QString key = vals[0].replace("\x0000", "");
-                    key.chop(1); // remove \u0000 from the end of key
+                    // user defined attributes are uppercased ASCII chars only
+                    QString key = vals[0].replace(QRegExp("[^A-Z]"), "");
                     if (key.isEmpty())
                     {
                         qDebug() << "key is empty, skipping:" << s;
@@ -422,7 +418,7 @@ void Metadata::reloadProe(const QFileInfoList &fil)
                     QString val = vals[1].split("\x14")[0];
                     val.chop(1);
                     val.remove(0,2);
-                    qDebug() << "    value:" << val << (val.isEmpty() ? "skipping" : "will be used") << "original:" << vals[1];
+                    qDebug() << "    value:" << val << (val.isEmpty() ? "skipping" : "will be used") << "; original:" << vals[1];
 
                     // try to find metadata.ini index
                     QString fname = i.fileName();
