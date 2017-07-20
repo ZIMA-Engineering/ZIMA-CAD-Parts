@@ -28,6 +28,7 @@ protected:
 private:
     QString m_path;
 
+    void cacheThumbnails(const QString &dirpath, ThumbnailMap* map);
     void getThumbs(Metadata *m, ThumbnailMap* map);
 };
 

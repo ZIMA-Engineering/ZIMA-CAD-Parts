@@ -102,6 +102,7 @@ public:
 class FileMetadata
 {
 public:
+    FileMetadata(const QString &path);
 	FileMetadata(const QFileInfo &fi);
 	~FileMetadata();
 

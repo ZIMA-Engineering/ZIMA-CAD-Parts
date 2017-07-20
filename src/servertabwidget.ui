@@ -262,6 +262,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="loadProeButton">
+           <property name="text">
+            <string>PROE</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="btnDelete">
            <property name="text">
             <string>Delete</string>

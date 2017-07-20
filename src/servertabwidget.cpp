@@ -22,6 +22,8 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 
 	connect(ui->refreshButton, SIGNAL(clicked()),
 	        this, SLOT(refreshButton_clicked()));
+    connect(ui->loadProeButton, SIGNAL(clicked()),
+            this, SLOT(loadProeButton_clicked()));
 
 	ui->techSpecBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 	ui->techSpecForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
@@ -213,6 +215,12 @@ void ServerTabWidget::techSpecPinButton_clicked()
 void ServerTabWidget::refreshButton_clicked()
 {
 	ui->partsTreeView->refreshRequested();
+}
+
+void ServerTabWidget::loadProeButton_clicked()
+{
+    ui->partsTreeView->reloadProeMeta();
+    ui->partsTreeView->refreshRequested();
 }
 
 void ServerTabWidget::techSpec_urlChanged(const QUrl &url)

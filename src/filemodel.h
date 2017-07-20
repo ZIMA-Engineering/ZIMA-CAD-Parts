@@ -61,6 +61,7 @@ public:
 	}
 
 	QFileInfo fileInfo(const QModelIndex &ix);
+    QFileInfoList fileInfoList() { return m_data; }
 
 signals:
 	void directoryLoaded(const QString &path);

@@ -81,6 +81,7 @@ SOURCES += src/zima-cad-parts.cpp \
     libqdxf/src/dxfsceneview.cpp \
     libqdxf/src/mtexttohtml.cpp \
     libqdxf/src/spline.cpp \
+    libproe/libproe.cpp \
     src/extensions/productview/pdfproductview.cpp \
     src/extensions/productview/failbackproductview.cpp \
     src/serverswidget.cpp \
@@ -128,6 +129,7 @@ HEADERS += src/mainwindow.h \
     libqdxf/src/dxfsceneview.h \
     libqdxf/src/dxfinterface.h \
     libqdxf/src/spline.h \
+    libproe/libproe.h \
     src/extensions/productview/pdfproductview.h \
     src/extensions/productview/failbackproductview.h \
     src/serverswidget.h \

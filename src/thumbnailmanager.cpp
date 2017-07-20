@@ -15,23 +15,18 @@ void ThumbnailWorker::run()
     emit dataReady(ret);
 }
 
-void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
+void ThumbnailWorker::cacheThumbnails(const QString &dirpath, ThumbnailMap* map)
 {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-	if (isInterruptionRequested())
-		return;
+    if (isInterruptionRequested())
+        return;
 #endif
-
-    QString path = m->path();
-
-    QDir d(path + "/" + THUMBNAILS_DIR);
-    QStringList thumbs = d.entryList(QStringList() << "*.png" << "*.jpg",
-                                     QDir::Files | QDir::Readable);
 
     QString pmPath;
     QFileInfo fi;
+    QDir d(dirpath);
 
-    foreach (QString i, thumbs)
+    foreach(QString i, d.entryList(QStringList() << "*.png" << "*.jpg" << "*.jpeg", QDir::Files | QDir::Readable))
     {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
         if (isInterruptionRequested())
@@ -41,12 +36,19 @@ void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
         fi.setFile(i);
         if (map->contains(fi.baseName()))
             continue;
-        pmPath = path + "/" + THUMBNAILS_DIR + "/" + i;
+        pmPath = dirpath + "/" + i;
         map->insert(fi.baseName(), qMakePair(pmPath, QPixmap(pmPath).scaled(Settings::get()->GUIThumbWidth,
                                                                             Settings::get()->GUIThumbWidth,
                                                                             Qt::KeepAspectRatio)));
-    }
+    };
+}
 
+void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
+{
+    // local pictures
+    cacheThumbnails(m->path(), map);
+    // index
+    cacheThumbnails(m->path() + "/" + THUMBNAILS_DIR, map);
     // now includes
     foreach(Metadata *i, m->includes())
     {
@@ -77,8 +79,8 @@ void ThumbnailManager::clear()
     {
         disconnect(m_worker, SIGNAL(dataReady(ThumbnailMap)), this, SLOT(dataReady(ThumbnailMap)));
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-		m_worker->requestInterruption();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)) 
+        m_worker->requestInterruption();
 #endif
 
         m_worker->wait();

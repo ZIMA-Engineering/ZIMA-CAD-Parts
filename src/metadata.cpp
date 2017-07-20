@@ -20,6 +20,7 @@
 
 #include <QRegExp>
 #include <QDir>
+#include <QProgressDialog>
 #include <QDebug>
 
 #include "metadata.h"
@@ -239,6 +240,21 @@ QString Metadata::partParam(const QString &partName, int col)
 	}
 }
 
+void Metadata::setPartParam(const QString &partName, int col, const QString &value)
+{
+    QString partGroup = partName.section('.', 0, 0);
+
+    m_settings->beginGroup(partGroup);
+
+    foreach (QString lang, Settings::get()->Languages)
+    {
+        QString key = QString("%1/%2").arg(lang.left(2)).arg(col);
+        m_settings->setValue(key, value);
+    }
+
+    m_settings->endGroup();
+}
+
 bool Metadata::partVersionType(FileType::FileType t, const QFileInfo &fi)
 {
 	QRegExp re(File::getRxForFileType(t));
@@ -309,4 +325,122 @@ QStringList Metadata::buildIncludePaths(const QStringList &raw)
     }
 
 	return ret;
+}
+
+QString unaccent_helper(const QString &str)
+{
+    QString diacriticLetters = QString::fromUtf8("ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ");
+    QStringList noDiacriticLetters;
+    noDiacriticLetters << "S"<<"OE"<<"Z"<<"s"<<"oe"<<"z"<<"Y"<<"Y"<<"u"<<"A"<<"A"<<"A"<<"A"<<"A"<<"A"<<"AE"<<"C"<<"E"<<"E"<<"E"<<"E"<<"I"<<"I"<<"I"<<"I"<<"D"<<"N"<<"O"<<"O"<<"O"<<"O"<<"O"<<"O"<<"U"<<"U"<<"U"<<"U"<<"Y"<<"s"<<"a"<<"a"<<"a"<<"a"<<"a"<<"a"<<"ae"<<"c"<<"e"<<"e"<<"e"<<"e"<<"i"<<"i"<<"i"<<"i"<<"o"<<"n"<<"o"<<"o"<<"o"<<"o"<<"o"<<"o"<<"u"<<"u"<<"u"<<"u"<<"y"<<"y";
+
+    QString output = "";
+    for (int i = 0; i < str.length(); i++) {
+        QChar c = str[i];
+        int dIndex = diacriticLetters.indexOf(c);
+        if (dIndex < 0) {
+            output.append(c);
+        } else {
+            QString replacement = noDiacriticLetters[dIndex];
+            output.append(replacement);
+        }
+    }
+
+    return output;
+}
+
+void Metadata::reloadProe(const QFileInfoList &fil)
+{
+    qDebug() << "reloadProe" << m_path;
+
+    QString txt = tr("Loading ProE metadata...");
+    QProgressDialog dia(txt, tr("Abort"), 0, fil.size());
+    dia.setWindowModality(Qt::WindowModal);
+
+    int ix = 1;
+    foreach (QFileInfo i, fil)
+    {
+        dia.setValue(ix++);
+
+        if (dia.wasCanceled())
+            break;
+
+        FileMetadata fm(i);
+        if (fm.type != FileType::ASM && fm.type != FileType::DRW && fm.type != FileType::PRT_PROE)
+        {
+            continue;
+        }
+        qDebug() << "PROE import for file" << i.absoluteFilePath();
+        dia.setLabelText(txt + "\n" + i.fileName());
+
+        qDebug() << fm.type << File::getInternalNameForFileType(fm.type);
+
+        QFile f(i.absoluteFilePath());
+        f.open(QIODevice::ReadOnly);
+        QTextStream s(&f);
+        s.setCodec("UTF-8"); // just guessing here... but it works somehow
+
+        while (!s.atEnd())
+        {
+            QString line = s.readLine();
+            if (line.startsWith("description") && !line.startsWith("descriptions"))
+            {
+                // some all-used separator or whatever. It seems it does not have any meaning
+                line = line.replace("\xEF\xBF\xBD", "");
+                // another all-arround used value
+                line = line.replace("\x00", "");
+                // then it seems like key and value is separated by "\x15"
+                QStringList l = line.split("\x15");
+                //qDebug() << l;
+                QStringListIterator it(l);
+                while (it.hasNext())
+                {
+                    QString s = it.next();
+                    // \r is another strange char. It seems it used in all user defined attributes
+                    s = s.replace(QRegExp("^.+\\r"), "");
+                    QStringList vals = s.split("'");
+                    if (vals.size() != 2)
+                    {
+                        qWarning() << "attribute unexpected:" << s << vals << "it needs to be split";
+                        continue;
+                    }
+                    // user defined attributes are uppercased ASCII chars only
+                    QString key = vals[0].replace(QRegExp("[^A-Z]"), "");
+                    if (key.isEmpty())
+                    {
+                        qDebug() << "key is empty, skipping:" << s;
+                        continue;
+                    }
+                    else
+                    {
+                        qDebug() << "found key:" << key;
+                    }
+
+                    QString val = vals[1].split("\x14")[0];
+                    val.chop(1);
+                    val.remove(0,2);
+                    qDebug() << "    value:" << val << (val.isEmpty() ? "skipping" : "will be used") << "; original:" << vals[1];
+
+                    // try to find metadata.ini index
+                    QString fname = i.fileName();
+                    QString key1 = key.toLower();
+                    qDebug() << columnLabels();
+                    foreach (QString key2, columnLabels())
+                    {
+                        QString unac = unaccent_helper(key2).toLower();
+                        qDebug() << "UNAC" << unac << key2 << key1;
+                        if (unac == key1)
+                        {
+                            setPartParam(fname, columnLabels().indexOf(key2) -1, val);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+
+        }
+
+    }
+
+    dia.setValue(fil.size());
 }
