@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QTemporaryFile>
 #include <QDir>
+#include <QWebEngineSettings>
 
 
 ProEProductView::ProEProductView(QWidget *parent) :
@@ -12,8 +13,10 @@ ProEProductView::ProEProductView(QWidget *parent) :
 	ui(new Ui::ProEProductView())
 {
 	ui->setupUi(this);
-	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavaEnabled, true);
-	QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
+	// TODO:
+	//   QWebEngine does not seem to support java plugin
+	// QWebEngineSettings::globalSettings()->setAttribute(QWebEngineSettings::JavaEnabled, true);
+	// QWebEngineSettings::globalSettings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
 }
 
 ProEProductView::~ProEProductView()

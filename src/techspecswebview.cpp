@@ -23,27 +23,25 @@
 
 #include <QDialog>
 #include <QVBoxLayout>
-#include <QWebFrame>
-#include <QWebElementCollection>
 #include <QRegExp>
 #include <QDebug>
 #include <QMessageBox>
 #include <QTextCodec>
+#include <QWebEngineProfile>
 
 #include "settings.h"
 #include "zima-cad-parts.h"
 
 
 TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
-	QWebView(parent),
+	QWebEngineView(parent),
 	m_downloader(0)
 {
 	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
 
-	page()->setForwardUnsupportedContent(true);
-	connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)),
-	        this, SLOT(downloadFile(QNetworkReply*)));
+	connect(page()->profile(), SIGNAL(downloadRequested(QWebEngineDownloadItem*)),
+			this, SLOT(downloadFile(QWebEngineDownloadItem*)));
 
 	loadAboutPage();
 }
@@ -68,8 +66,10 @@ void TechSpecsWebView::loadAboutPage()
 	setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
 
-TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
+TechSpecsWebView* TechSpecsWebView::createWindow(QWebEnginePage::WebWindowType type)
 {
+	Q_UNUSED(type)
+
 	QDialog *popup = new QDialog(this);
 	QVBoxLayout *layout = new QVBoxLayout;
 
@@ -78,10 +78,6 @@ TechSpecsWebView* TechSpecsWebView::createWindow(QWebPage::WebWindowType type)
 
 	popup->setLayout(layout);
 	popup->setWindowTitle(tr("ZIMA-CAD-Parts Technical Specifications"));
-
-	if(type == QWebPage::WebModalDialog)
-		popup->setModal(true);
-
 	popup->setWindowFlags(popup->windowFlags() | Qt::WindowMinMaxButtonsHint);
 	popup->show();
 	return webview;
@@ -103,68 +99,54 @@ void TechSpecsWebView::pageLoaded(bool ok)
 	if(url().scheme() != "file")
 		return;
 
-	QWebFrame *frame = page()->mainFrame();
+	// TODO:
+	//   This does not really work, because m_rootPath is never set!
+	//   It should be set to the current data source's root.
+	page()->runJavaScript(QString(R"(
+		window.ZCP = {rootPath: "%1"};
+	)").arg(m_rootPath));
 
-	QWebElementCollection collection = frame->findAllElements("* [href], * [src]");
+	page()->runJavaScript(R"(
+		(function () {
+		var elements = document.querySelectorAll('* [href], * [src]');
+		for (var i = 0; i < elements.length; i++) {
+			['href', 'src'].forEach(function (attr) {
+				var v = elements[i].getAttribute(attr);
 
-	foreach(QWebElement el, collection)
-	{
-		foreach(QString attr, el.attributeNames())
-		{
-			QString val = el.attribute(attr);
+				if (v === null || !v.startsWith('/'))
+					return;
 
-			if(!val.startsWith('/'))
-				continue;
-
-			val.insert(0, m_rootPath);
-
-			el.setAttribute(attr, val);
+				elements[i].setAttribute(attr, ZCP.rootPath + '/' + v);
+			});
 		}
-	}
+		})()
+	)");
 }
 
-void TechSpecsWebView::downloadFile(QNetworkReply *reply)
+void TechSpecsWebView::downloadFile(QWebEngineDownloadItem *download)
 {
-    QString fileName = Settings::get()->getWorkingDir() + "/" + reply->url().path().split('/').last();
-	if (QDir().exists(fileName))
+	QFileInfo fi(download->path());
+	QString filePath = Settings::get()->getWorkingDir() + "/" + fi.fileName();
+
+	qDebug() << "Downloading into" << filePath;
+
+	if (QDir().exists(filePath))
 	{
 		if (QMessageBox::question(this, tr("File Exists"),
-		                          tr("File %1 already exists. Overwrite?").arg(fileName),
+								  tr("File %1 already exists. Overwrite?").arg(filePath),
 		                          QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
 		{
-			reply->close();
-			reply->deleteLater();
+			download->cancel();
 			return;
 		}
 	}
 
-	if(reply->hasRawHeader("Content-Disposition"))
-	{
-		QStringList patterns;
-		patterns << "filename=\"(.+)\"" << "filename=([^$]+)";
-
-		QRegExp rx;
-
-		foreach(QString pattern, patterns)
-		{
-			rx.setPattern(pattern);
-
-			if(rx.indexIn(reply->rawHeader("Content-Disposition")) != -1)
-			{
-				fileName = rx.cap(1).replace('\\', '/').split('/').last();
-
-				if(fileName.endsWith(';'))
-					fileName.chop(1);
-
-				break;
-			}
-		}
-	}
+	download->setPath(filePath);
+	download->accept();
 
 	if (!m_downloader)
-	{
 		m_downloader = new WebDownloaderDialog(this);
-	}
-	m_downloader->enqueue(fileName, reply);
+
+	m_downloader->enqueue(download);
 	m_downloader->show();
 }

@@ -21,13 +21,12 @@
 #ifndef TECHSPECSWEBVIEW_H
 #define TECHSPECSWEBVIEW_H
 
-#include <QWebView>
-#include <QNetworkReply>
+#include <QWebEngineView>
+#include <QWebEngineDownloadItem>
 
 class WebDownloaderDialog;
 
-
-class TechSpecsWebView : public QWebView
+class TechSpecsWebView : public QWebEngineView
 {
 	Q_OBJECT
 public:
@@ -40,12 +39,12 @@ public slots:
 	void loadAboutPage();
 
 protected:
-	TechSpecsWebView *createWindow(QWebPage::WebWindowType type);
+	TechSpecsWebView *createWindow(QWebEnginePage::WebWindowType type);
 
 private slots:
 	void pageLoaded(bool ok);
 	void urlChange(const QUrl &url);
-	void downloadFile(QNetworkReply *reply);
+	void downloadFile(QWebEngineDownloadItem *download);
 
 private:
 	QString m_rootPath;

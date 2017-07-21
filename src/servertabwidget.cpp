@@ -1,5 +1,5 @@
 #include <QDir>
-#include <QWebHistory>
+#include <QWebEngineHistory>
 #include <QtDebug>
 #include <QMessageBox>
 
@@ -102,7 +102,7 @@ void ServerTabWidget::setDirectory(const QString &rootPath)
 	setEnabled(true);
 }
 
-void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound)
+void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound)
 {
 	QStringList filters;
 	filters << filterBase + "_??.html"

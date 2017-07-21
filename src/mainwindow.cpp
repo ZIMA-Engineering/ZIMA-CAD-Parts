@@ -27,7 +27,7 @@
 #include <QRegExp>
 #include <QFile>
 #include <QDebug>
-#include <QWebSettings>
+#include <QWebEngineSettings>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -117,7 +117,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	ui->toolBar->addAction(ui->action_Preferences);
 	connect(ui->action_Preferences, SIGNAL(triggered()), this, SLOT(showSettings()));
 
-	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
+	QWebEngineSettings::globalSettings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
 
 	settingsChanged();
 

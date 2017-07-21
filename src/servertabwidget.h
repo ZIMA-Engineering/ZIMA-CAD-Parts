@@ -8,7 +8,7 @@
 class FileModel;
 class FileFilterModel;
 class ProductView;
-class QWebView;
+class QWebEngineView;
 
 namespace Ui {
 class ServerTabWidget;
@@ -50,7 +50,7 @@ private:
 
 	ProductView *m_productView;
 
-	void loadIndexHtml(const QString &rootPath, QWebView *webView, const QString &filterBase, bool hideIfNotFound);
+	void loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound);
 
 private slots:
 	void techSpecUrlLineEdit_returnPressed();

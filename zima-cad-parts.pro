@@ -1,9 +1,9 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-05-18T21:26:48
 # -------------------------------------------------
-QT += network webkit opengl
+QT += network opengl
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets webkitwidgets
+    QT += widgets webengine webenginewidgets
 }
 TARGET = ZIMA-CAD-Parts
 TEMPLATE = app
