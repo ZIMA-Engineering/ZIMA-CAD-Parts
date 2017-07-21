@@ -45,6 +45,7 @@ private slots:
 	void pageLoaded(bool ok);
 	void urlChange(const QUrl &url);
 	void downloadFile(QWebEngineDownloadItem *download);
+	void authenticate(const QUrl &requestUrl, QAuthenticator *authenticator);
 
 private:
 	QString m_rootPath;

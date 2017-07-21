@@ -100,7 +100,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/progressdialog.cpp \
     src/directoryremover.cpp \
     src/extensions/productview/imageproductview.cpp \
-    src/thumbnailmanager.cpp
+    src/thumbnailmanager.cpp \
+    src/webauthenticationdialog.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -149,7 +150,8 @@ HEADERS += src/mainwindow.h \
     src/progressdialog.h \
     src/directoryremover.h \
     src/extensions/productview/imageproductview.h \
-    src/thumbnailmanager.h
+    src/thumbnailmanager.h \
+    src/webauthenticationdialog.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -167,7 +169,8 @@ FORMS += mainwindow.ui \
     src/webdownloaderwidget.ui \
     src/webdownloaderdialog.ui \
     src/progressdialog.ui \
-    src/extensions/productview/imageproductview.ui
+    src/extensions/productview/imageproductview.ui \
+    src/webauthenticationdialog.ui
 
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc

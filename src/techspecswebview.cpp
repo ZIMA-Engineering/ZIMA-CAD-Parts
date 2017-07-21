@@ -20,6 +20,7 @@
 
 #include "techspecswebview.h"
 #include "webdownloaderdialog.h"
+#include "webauthenticationdialog.h"
 
 #include <QDialog>
 #include <QVBoxLayout>
@@ -42,6 +43,8 @@ TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
 
 	connect(page()->profile(), SIGNAL(downloadRequested(QWebEngineDownloadItem*)),
 			this, SLOT(downloadFile(QWebEngineDownloadItem*)));
+	connect(page(), SIGNAL(authenticationRequired(QUrl,QAuthenticator*)),
+			this, SLOT(authenticate(QUrl,QAuthenticator*)));
 
 	loadAboutPage();
 }
@@ -149,4 +152,16 @@ void TechSpecsWebView::downloadFile(QWebEngineDownloadItem *download)
 
 	m_downloader->enqueue(download);
 	m_downloader->show();
+}
+
+void TechSpecsWebView::authenticate(const QUrl &requestUrl, QAuthenticator *authenticator)
+{
+	Q_UNUSED(requestUrl)
+
+	WebAuthenticationDialog dlg(authenticator);
+
+	if (dlg.exec() != QDialog::Accepted)
+		return;
+
+	dlg.authenticate();
 }
