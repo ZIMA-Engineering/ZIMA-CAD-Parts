@@ -66,14 +66,14 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="techSpecReloadButton"/>
-          </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="techSpecForwardButton"/>
           </item>
           <item row="0" column="4">
            <widget class="QPushButton" name="techSpecGoButton"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="techSpecReloadButton"/>
           </item>
           <item row="0" column="3">
            <widget class="QLineEdit" name="techSpecUrlLineEdit"/>
@@ -92,11 +92,25 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="6">
+           <widget class="QPushButton" name="techSpecEditButton">
+            <property name="toolTip">
+             <string>Open this file in text editor</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../zima-cad-parts.qrc">
+              <normaloff>:/gfx/document-edit.png</normaloff>:/gfx/document-edit.png</iconset>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="TechSpecsWebView" name="techSpec">
+        <widget class="TechSpecsWebView" name="techSpec" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -133,26 +147,40 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item row="0" column="0">
-           <widget class="QPushButton" name="partsIndexBackButton"/>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="partsIndexForwardButton"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="partsIndexReloadButton"/>
-          </item>
           <item row="0" column="3">
            <widget class="QLineEdit" name="partsIndexUrlLineEdit"/>
-          </item>
-          <item row="0" column="4">
-           <widget class="QPushButton" name="partsIndexGoButton"/>
           </item>
           <item row="0" column="5">
            <widget class="QPushButton" name="partsIndexPinButton">
             <property name="icon">
              <iconset resource="../zima-cad-parts.qrc">
               <normaloff>:/gfx/pin.png</normaloff>:/gfx/pin.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="partsIndexReloadButton"/>
+          </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="partsIndexGoButton"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="partsIndexForwardButton"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="partsIndexBackButton"/>
+          </item>
+          <item row="0" column="6">
+           <widget class="QPushButton" name="partsIndexEditButton">
+            <property name="toolTip">
+             <string>Open this file in text editor</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../zima-cad-parts.qrc">
+              <normaloff>:/gfx/document-edit.png</normaloff>:/gfx/document-edit.png</iconset>
             </property>
            </widget>
           </item>
@@ -164,8 +192,8 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <widget class="QWebEngineView" name="partsWebView">
-          <property name="url">
+         <widget class="QWebEngineView" name="partsWebView" native="true">
+          <property name="url" stdset="0">
            <url>
             <string>about:blank</string>
            </url>

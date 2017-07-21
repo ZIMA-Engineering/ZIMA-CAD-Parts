@@ -2,6 +2,7 @@
 #include <QWebEngineHistory>
 #include <QtDebug>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 #include "servertabwidget.h"
 #include "ui_servertabwidget.h"
@@ -42,6 +43,8 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	        this, SLOT(techSpecGoButton_clicked()));
 	connect(ui->techSpecPinButton, SIGNAL(clicked()),
 	        this, SLOT(techSpecPinButton_clicked()));
+	connect(ui->techSpecEditButton, SIGNAL(clicked()),
+			this, SLOT(techSpecEditButton_clicked()));
 	connect(ui->techSpec, SIGNAL(urlChanged(QUrl)),
 	        this, SLOT(techSpec_urlChanged(QUrl)));
 
@@ -62,6 +65,8 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	        this, SLOT(partsIndexGoButton_clicked()));
 	connect(ui->partsIndexPinButton, SIGNAL(clicked()),
 	        this, SLOT(partsIndexPinButton_clicked()));
+	connect(ui->partsIndexEditButton, SIGNAL(clicked()),
+			this, SLOT(partsIndexEditButton_clicked()));
 	connect(ui->partsWebView, SIGNAL(urlChanged(QUrl)),
 	        this, SLOT(partsWebView_urlChanged(QUrl)));
 
@@ -207,9 +212,19 @@ void ServerTabWidget::partsIndexPinButton_clicked()
 	ui->partsTreeView->createIndexHtmlFile(ui->partsIndexUrlLineEdit->text(), "index-parts");
 }
 
+void ServerTabWidget::partsIndexEditButton_clicked()
+{
+	QDesktopServices::openUrl(QUrl(ui->partsIndexUrlLineEdit->text()));
+}
+
 void ServerTabWidget::techSpecPinButton_clicked()
 {
 	ui->partsTreeView->createIndexHtmlFile(ui->techSpecUrlLineEdit->text(), "index");
+}
+
+void ServerTabWidget::techSpecEditButton_clicked()
+{
+	QDesktopServices::openUrl(QUrl(ui->techSpecUrlLineEdit->text()));
 }
 
 void ServerTabWidget::refreshButton_clicked()
@@ -227,6 +242,7 @@ void ServerTabWidget::techSpec_urlChanged(const QUrl &url)
 {
 	ui->techSpecBackButton->setEnabled(ui->techSpec->history()->canGoBack());
 	ui->techSpecForwardButton->setEnabled(ui->techSpec->history()->canGoForward());
+	ui->techSpecEditButton->setEnabled(url.scheme() == "file");
 
 	QString str = url.toString();
 
@@ -240,6 +256,7 @@ void ServerTabWidget::partsWebView_urlChanged(const QUrl &url)
 {
 	ui->partsIndexBackButton->setEnabled(ui->partsWebView->history()->canGoBack());
 	ui->partsIndexForwardButton->setEnabled(ui->partsWebView->history()->canGoForward());
+	ui->partsIndexEditButton->setEnabled(url.scheme() == "file");
 	QString str = url.toString();
 	ui->partsIndexUrlLineEdit->setText(str);
 }
