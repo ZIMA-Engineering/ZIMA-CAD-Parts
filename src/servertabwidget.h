@@ -51,6 +51,7 @@ private:
 	ProductView *m_productView;
 
 	void loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound);
+	void editIndexFile(const QString &path);
 
 private slots:
 	void techSpecUrlLineEdit_returnPressed();

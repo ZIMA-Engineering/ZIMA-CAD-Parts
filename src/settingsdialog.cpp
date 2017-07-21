@@ -70,6 +70,8 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	        this, SLOT(datasourceDownButton_clicked()));
 	connect(m_ui->productViewButton, SIGNAL(clicked()),
 	        this, SLOT(productViewButton_clicked()));
+	connect(m_ui->textEditorButton, SIGNAL(clicked()),
+			this, SLOT(textEditorButton_clicked()));
 
 	m_editedDS = Settings::get()->DataSources;
 	setupDatasourceList();
@@ -82,6 +84,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
 	m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperTechSpecToolBar);
 	m_ui->productViewEdit->setText(Settings::get()->ExtensionsProductViewPath);
+	m_ui->textEditorLineEdit->setText(Settings::get()->TextEditorPath);
 
 	connect(m_ui->proeButton, SIGNAL(clicked()),
 	        this, SLOT(proeButton_clicked()));
@@ -145,6 +148,7 @@ void SettingsDialog::accept()
 	Settings::get()->DeveloperEnabled = m_ui->developerModeGroupBox->isChecked();
 	Settings::get()->DeveloperTechSpecToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
 	Settings::get()->ExtensionsProductViewPath = m_ui->productViewEdit->text();
+	Settings::get()->TextEditorPath = m_ui->textEditorLineEdit->text();
 
 
 	QString lang = Settings::get()->langIndexToName( m_ui->languageComboBox->currentIndex() );
@@ -332,4 +336,12 @@ void SettingsDialog::productViewButton_clicked()
 	              m_ui->productViewEdit->text());
 	if (!str.isEmpty())
 		m_ui->productViewEdit->setText(str);
+}
+
+void SettingsDialog::textEditorButton_clicked()
+{
+	QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - select text editor"),
+				  QDir::currentPath());
+	if (!str.isEmpty())
+		m_ui->textEditorLineEdit->setText(str);
 }

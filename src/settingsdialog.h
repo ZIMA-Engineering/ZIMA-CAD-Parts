@@ -66,6 +66,7 @@ private slots:
 	void setZimaUtilPath(int util);
 	void proeButton_clicked();
 	void productViewButton_clicked();
+	void textEditorButton_clicked();
 
 private:
 	Ui::SettingsDialog  *m_ui;

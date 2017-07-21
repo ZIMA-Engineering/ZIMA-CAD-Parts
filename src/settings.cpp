@@ -71,6 +71,7 @@ void Settings::load()
 	ExtensionsProductViewGeometry = s.value("Extensions/ProductView/geometry").toByteArray();
 	ExtensionsProductViewPosition = s.value("Extensions/ProductView/position").toPoint();
 	ProeExecutable = s.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
+	TextEditorPath = s.value("ExternalPrograms/TextEditorPath").toString();
 
 	loadDataSources();
 	setupFilterGroups();
@@ -115,6 +116,7 @@ void Settings::save()
 	s.setValue("DeveloperTechSpecToolBar", DeveloperTechSpecToolBar);
 	s.setValue("ExtensionsProductViewPath", ExtensionsProductViewPath);
 	s.setValue("ExternalPrograms/ProE/Executable", ProeExecutable);
+	s.setValue("ExternalPrograms/TextEditorPath", TextEditorPath);
 	s.setValue("Extensions/ProductView/geometry", ExtensionsProductViewGeometry);
 	s.setValue("Extensions/ProductView/position", ExtensionsProductViewPosition);
 

@@ -3,6 +3,7 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QProcess>
 
 #include "servertabwidget.h"
 #include "ui_servertabwidget.h"
@@ -152,6 +153,21 @@ void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
 	webView->load(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
 }
 
+void ServerTabWidget::editIndexFile(const QString &path)
+{
+	QUrl url(path);
+	QString editor = Settings::get()->TextEditorPath;
+
+	if (editor.isEmpty()) {
+		QDesktopServices::openUrl(url);
+		return;
+	}
+
+	QStringList args;
+	args << url.path();
+	QProcess::startDetached(editor, args);
+}
+
 void ServerTabWidget::changeEvent(QEvent *e)
 {
 	switch (e->type()) {
@@ -214,7 +230,7 @@ void ServerTabWidget::partsIndexPinButton_clicked()
 
 void ServerTabWidget::partsIndexEditButton_clicked()
 {
-	QDesktopServices::openUrl(QUrl(ui->partsIndexUrlLineEdit->text()));
+	editIndexFile(ui->partsIndexUrlLineEdit->text());
 }
 
 void ServerTabWidget::techSpecPinButton_clicked()
@@ -224,7 +240,7 @@ void ServerTabWidget::techSpecPinButton_clicked()
 
 void ServerTabWidget::techSpecEditButton_clicked()
 {
-	QDesktopServices::openUrl(QUrl(ui->techSpecUrlLineEdit->text()));
+	editIndexFile(ui->techSpecUrlLineEdit->text());
 }
 
 void ServerTabWidget::refreshButton_clicked()

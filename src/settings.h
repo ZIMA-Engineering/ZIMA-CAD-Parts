@@ -112,6 +112,9 @@ public:
 	//! ProductView dialog position
 	QPoint ExtensionsProductViewPosition;
 
+	// Text editor executable
+	QString TextEditorPath;
+
 	//! Executable of the Pro/E
 	QString ProeExecutable;
 
