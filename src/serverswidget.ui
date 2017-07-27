@@ -10,7 +10,25 @@
     <height>395</height>
    </rect>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
@@ -26,6 +44,9 @@
         <height>0</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -33,7 +54,11 @@
        <enum>QFrame::Raised</enum>
       </property>
      </widget>
-     <widget class="ServerTabWidget" name="partsWidget" native="true"/>
+     <widget class="ServerTabWidget" name="partsWidget" native="true">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>
