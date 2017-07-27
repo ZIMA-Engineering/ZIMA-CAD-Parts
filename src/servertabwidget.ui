@@ -306,7 +306,7 @@
          <item>
           <widget class="QPushButton" name="copyToWorkingDirButton">
            <property name="text">
-            <string>Download</string>
+            <string>Copy</string>
            </property>
           </widget>
          </item>
