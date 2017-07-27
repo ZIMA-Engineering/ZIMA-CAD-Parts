@@ -26,10 +26,6 @@ public:
 private:
 	Ui::WorkingDirWidget *ui;
 
-private slots:
-	void openWorkingDirectory();
-	void setWorkingDirectoryDialog();
-
 };
 
 #endif // WORKINGDIRWIDGET_H
