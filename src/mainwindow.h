@@ -73,7 +73,6 @@ private:
 
 public slots:
 	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
-	void updateStatus(const QString &message);
 
 private slots:
 	void settingsChanged();

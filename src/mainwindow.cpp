@@ -90,18 +90,12 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->actionHome, SIGNAL(triggered()),
 	        ui->serversWidget, SLOT(goToWorkingDirectory()));
 
-	updateStatus(tr("Ready"));
-
 	restoreState(Settings::get()->MainWindowState);
 	restoreGeometry(Settings::get()->MainWindowGeometry);
 
 	QList<int> list;
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
-
-	// status bar - use this one
-	connect(ui->serversWidget, SIGNAL(statusUpdated(QString)),
-	        this, SLOT(updateStatus(QString)));
 
 	connect(ui->serversWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
@@ -194,11 +188,6 @@ void MainWindow::settingsChanged()
 
 	ui->actionHistoryBack->setEnabled(false);
 	ui->actionHistoryForward->setEnabled(false);
-}
-
-void MainWindow::updateStatus(const QString &message)
-{
-	statusBar()->showMessage(message, 5000);
 }
 
 void MainWindow::trackHistory(const QString &path)

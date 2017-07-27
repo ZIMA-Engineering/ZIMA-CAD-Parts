@@ -23,7 +23,6 @@ public:
 	void setDirectory(const QString &path);
 
 signals:
-	void statusUpdated(const QString &message);
 	void showSettings(SettingsDialog::Section);
 
 	void itemLoaded(const QModelIndex&);
