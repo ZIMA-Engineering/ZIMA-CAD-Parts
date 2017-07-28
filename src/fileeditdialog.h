@@ -15,8 +15,10 @@ class FileEditDialog : public QDialog
 public:
 	explicit FileEditDialog(QString dir, QString file, QWidget *parent = 0);
 	~FileEditDialog();
+	bool editNext() const;
 
 public slots:
+	void saveAndNext();
 	void save();
 
 private:
@@ -24,6 +26,7 @@ private:
 	QString m_dir;
 	QString m_file;
 	QList<QLineEdit*> m_edits;
+	bool m_next;
 };
 
 #endif // FILEEDITDIALOG_H

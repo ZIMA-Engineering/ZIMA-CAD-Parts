@@ -8,7 +8,8 @@ FileEditDialog::FileEditDialog(QString dir, QString file, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::FileEditDialog),
 	m_dir(dir),
-	m_file(file)
+	m_file(file),
+	m_next(false)
 {
 	ui->setupUi(this);
 
@@ -26,11 +27,25 @@ FileEditDialog::FileEditDialog(QString dir, QString file, QWidget *parent) :
 		ui->gridLayout->addWidget(new QLabel(label), layoutRow, 0);
 		ui->gridLayout->addWidget(edit, layoutRow++, 1);
 	}
+
+	connect(ui->saveAndNextButton, SIGNAL(clicked()),
+			this, SLOT(saveAndNext()));
 }
 
 FileEditDialog::~FileEditDialog()
 {
 	delete ui;
+}
+
+bool FileEditDialog::editNext() const
+{
+	return m_next;
+}
+
+void FileEditDialog::saveAndNext()
+{
+	m_next = true;
+	accept();
 }
 
 void FileEditDialog::save()

@@ -146,6 +146,24 @@ void FileView::copyToWorkingDir()
 	m_model->copyToWorkingDir();
 }
 
+QModelIndex FileView::findNextPartIndex(const QModelIndex &from)
+{
+	QString name = fileInfo(from).baseName();
+	QModelIndex index = from;
+
+	while (true) {
+		index = indexBelow(index);
+
+		if (!index.isValid())
+			return index;
+
+		if (fileInfo(index).baseName() == name)
+			continue;
+
+		return index;
+	}
+}
+
 void FileView::handleActivated(const QModelIndex &index)
 {
 	// open productview only when user clicks on the thumbnail
@@ -200,9 +218,22 @@ void FileView::showContextMenu(const QPoint &point)
 
 void FileView::editFile()
 {
-	FileEditDialog dlg(m_path, fileInfo(currentIndex()).baseName());
+	QModelIndex index = currentIndex();
 
-	if (dlg.exec() == QDialog::Accepted) {
+	while (true) {
+		if (!index.isValid())
+			return;
+
+		FileEditDialog dlg(m_path, fileInfo(index).baseName());
+
+		if (dlg.exec() != QDialog::Accepted)
+			return;
+
 		dlg.save();
+
+		if (!dlg.editNext())
+			return;
+
+		index = findNextPartIndex(index);
 	}
 }

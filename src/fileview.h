@@ -34,6 +34,8 @@ private:
 	FileModel *m_model;
 	FileFilterModel *m_proxy;
 
+	QModelIndex findNextPartIndex(const QModelIndex &from);
+
 private slots:
 	void resizeColumnToContents();
 	void refreshModel();
