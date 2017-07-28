@@ -102,7 +102,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/extensions/productview/imageproductview.cpp \
     src/thumbnailmanager.cpp \
     src/webauthenticationdialog.cpp \
-    src/filedelegate.cpp
+    src/filedelegate.cpp \
+    src/fileeditdialog.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -153,7 +154,8 @@ HEADERS += src/mainwindow.h \
     src/extensions/productview/imageproductview.h \
     src/thumbnailmanager.h \
     src/webauthenticationdialog.h \
-    src/filedelegate.h
+    src/filedelegate.h \
+    src/fileeditdialog.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -172,7 +174,8 @@ FORMS += mainwindow.ui \
     src/webdownloaderdialog.ui \
     src/progressdialog.ui \
     src/extensions/productview/imageproductview.ui \
-    src/webauthenticationdialog.ui
+    src/webauthenticationdialog.ui \
+    src/fileeditdialog.ui
 
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc

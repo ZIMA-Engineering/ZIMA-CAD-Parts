@@ -2,12 +2,14 @@
 #include "filemodel.h"
 #include "filefiltermodel.h"
 #include "filedelegate.h"
+#include "fileeditdialog.h"
 #include "settings.h"
 
 #include <QMessageBox>
 #include <QProcess>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QMenu>
 #include <QtDebug>
 
 
@@ -26,6 +28,8 @@ FileView::FileView(QWidget *parent) :
 	setItemDelegate(new FileDelegate(this));
 	setEditTriggers(QAbstractItemView::SelectedClicked);
 
+	setContextMenuPolicy(Qt::CustomContextMenu);
+
 	connect(m_model, SIGNAL(directoryLoaded(QString)),
 	        this, SLOT(resizeColumnToContents()));
 
@@ -35,6 +39,8 @@ FileView::FileView(QWidget *parent) :
 	        this, SLOT(handleActivated(QModelIndex)));
 	connect(this, SIGNAL(doubleClicked(QModelIndex)),
 	        this, SLOT(openInProE(QModelIndex)));
+	connect(this, SIGNAL(customContextMenuRequested(QPoint)),
+			this, SLOT(showContextMenu(QPoint)));
 
 	connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(refreshModel()));
 }
@@ -174,5 +180,29 @@ void FileView::openInProE(const QModelIndex &index)
 	}
 	default:
 		QDesktopServices::openUrl(QUrl::fromLocalFile(f.fileInfo.absoluteFilePath()));
+	}
+}
+
+void FileView::showContextMenu(const QPoint &point)
+{
+	QModelIndex i = currentIndex();
+
+	if (!i.isValid())
+		return;
+
+	QMenu *menu = new QMenu(this);
+
+	menu->addAction(QIcon(":/gfx/document-edit.png"), tr("Edit"),
+					this, SLOT(editFile()));
+	menu->exec(mapToGlobal(point));
+	menu->deleteLater();
+}
+
+void FileView::editFile()
+{
+	FileEditDialog dlg(m_path, fileInfo(currentIndex()).baseName());
+
+	if (dlg.exec() == QDialog::Accepted) {
+		dlg.save();
 	}
 }

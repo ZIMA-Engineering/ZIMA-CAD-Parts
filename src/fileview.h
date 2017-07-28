@@ -39,6 +39,8 @@ private slots:
 	void refreshModel();
 	void handleActivated(const QModelIndex &index);
 	void openInProE(const QModelIndex &index);
+	void showContextMenu(const QPoint &point);
+	void editFile();
 };
 
 #endif // FILEVIEW_H
