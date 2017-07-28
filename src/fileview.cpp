@@ -1,6 +1,7 @@
 #include "fileview.h"
 #include "filemodel.h"
 #include "filefiltermodel.h"
+#include "filedelegate.h"
 #include "settings.h"
 
 #include <QMessageBox>
@@ -21,6 +22,8 @@ FileView::FileView(QWidget *parent) :
 
     setSortingEnabled(true);
     sortByColumn(100, Qt::AscendingOrder);
+
+	setItemDelegate(new FileDelegate(this));
 	setEditTriggers(QAbstractItemView::SelectedClicked);
 
 	connect(m_model, SIGNAL(directoryLoaded(QString)),

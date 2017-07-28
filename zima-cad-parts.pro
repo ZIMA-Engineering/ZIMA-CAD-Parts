@@ -101,7 +101,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/directoryremover.cpp \
     src/extensions/productview/imageproductview.cpp \
     src/thumbnailmanager.cpp \
-    src/webauthenticationdialog.cpp
+    src/webauthenticationdialog.cpp \
+    src/filedelegate.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -151,7 +152,8 @@ HEADERS += src/mainwindow.h \
     src/directoryremover.h \
     src/extensions/productview/imageproductview.h \
     src/thumbnailmanager.h \
-    src/webauthenticationdialog.h
+    src/webauthenticationdialog.h \
+    src/filedelegate.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
