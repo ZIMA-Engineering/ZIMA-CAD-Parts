@@ -3,7 +3,8 @@ ZIMA-CAD-Parts
 
 Requirements
 ------------
-Qt 4.x or 5.x - modules core, gui, network and webkit, qmake
+Qt 5.6 or newer - modules core, gui, network, widgets, webengine
+and webenginewidgets, qmake.
 
 Installation
 ------------

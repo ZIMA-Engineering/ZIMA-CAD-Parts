@@ -17,10 +17,8 @@ void ThumbnailWorker::run()
 
 void ThumbnailWorker::cacheThumbnails(const QString &dirpath, ThumbnailMap* map)
 {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     if (isInterruptionRequested())
         return;
-#endif
 
     QString pmPath;
     QFileInfo fi;
@@ -28,10 +26,8 @@ void ThumbnailWorker::cacheThumbnails(const QString &dirpath, ThumbnailMap* map)
 
     foreach(QString i, d.entryList(QStringList() << "*.png" << "*.jpg" << "*.jpeg", QDir::Files | QDir::Readable))
     {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
         if (isInterruptionRequested())
             return;
-#endif
 
         fi.setFile(i);
         if (map->contains(fi.baseName()))
@@ -79,10 +75,7 @@ void ThumbnailManager::clear()
     {
         disconnect(m_worker, SIGNAL(dataReady(ThumbnailMap)), this, SLOT(dataReady(ThumbnailMap)));
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)) 
         m_worker->requestInterruption();
-#endif
-
         m_worker->wait();
         m_worker->deleteLater();
         m_worker = 0;

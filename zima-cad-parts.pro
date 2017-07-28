@@ -1,10 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-05-18T21:26:48
 # -------------------------------------------------
-QT += network opengl
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets webengine webenginewidgets
-}
+QT += network opengl widgets webengine webenginewidgets
 TARGET = ZIMA-CAD-Parts
 TEMPLATE = app
 
@@ -18,7 +15,6 @@ INCLUDEPATH += libqdxf/libdxfrw/src
 
 # disabled 20140206 by Vlad's request:
 # only "supported" files should be displayed. For rest of files this dialog should be closed
-#greaterThan(QT_MAJOR_VERSION, 4) {
 #    win32 {
 #        INCLUDEPATH += win32/poppler-0.24.5-win32/include
 #        LIBS += -L$$PWD/win32/poppler-0.24.5-win32/bin
@@ -28,13 +24,6 @@ INCLUDEPATH += libqdxf/libdxfrw/src
 #        CONFIG += link_pkgconfig
 #        PKGCONFIG += poppler-qt5
 #    }
-#}
-#else {
-#    unix {
-#        CONFIG += link_pkgconfig
-#        PKGCONFIG += poppler-qt4
-#    }
-#}
 
 SOURCES += src/zima-cad-parts.cpp \
     src/mainwindow.cpp \
