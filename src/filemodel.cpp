@@ -146,8 +146,13 @@ QFileInfo FileModel::fileInfo(const QModelIndex &ix)
 
 Qt::ItemFlags FileModel::flags(const QModelIndex& index) const
 {
-	Q_UNUSED(index);
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+	int col = index.column();
+	int flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+
+	if (col > 1)
+		flags |= Qt::ItemIsEditable;
+
+	return (Qt::ItemFlag) flags;
 }
 
 bool FileModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -163,7 +168,18 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
 		emit dataChanged(index, index);
 		return true;
+
+	} else if (role == Qt::EditRole) {
+		MetadataCache::get()->metadata(m_path)->setPartParam(
+			m_data.at(index.row()).fileName(),
+			index.column() - 1,
+			value.toString()
+		);
+
+		emit dataChanged(index, index);
+		return true;
 	}
+
 	return QAbstractItemModel::setData(index, value, role);
 }
 

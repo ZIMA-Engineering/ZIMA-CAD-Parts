@@ -21,6 +21,7 @@ FileView::FileView(QWidget *parent) :
 
     setSortingEnabled(true);
     sortByColumn(100, Qt::AscendingOrder);
+	setEditTriggers(QAbstractItemView::SelectedClicked);
 
 	connect(m_model, SIGNAL(directoryLoaded(QString)),
 	        this, SLOT(resizeColumnToContents()));
