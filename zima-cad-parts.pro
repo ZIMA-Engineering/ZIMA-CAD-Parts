@@ -177,7 +177,6 @@ OTHER_FILES += \
     AUTHORS \
     data/zima-cad-parts.html \
     data/zima-cad-parts_cs_CZ.html \
-    README \
     data/extensions/productview/proeproductview.html \
     Doxyfile \
     src/extensions/navbar/styles/downarrowblue.png \
@@ -215,3 +214,6 @@ else {
 }
 
 ICON = gfx/icon.icns
+
+DISTFILES += \
+    README.md
