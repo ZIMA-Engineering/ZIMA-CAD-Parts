@@ -56,6 +56,7 @@ FileView::FileView(QWidget *parent) :
 	connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(refreshModel()));
 
 	new QShortcut(QKeySequence("Ctrl+F"), m_header, SLOT(toggleSearch()));
+	new QShortcut(QKeySequence("Escape"), m_header, SLOT(disableSearch()));
 }
 
 void FileView::setDirectory(const QString &path)

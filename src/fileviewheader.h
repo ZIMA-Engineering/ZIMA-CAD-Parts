@@ -30,6 +30,7 @@ public slots:
 	void newDirectory(const QString &path);
 	void toggleSearch();
 	void setSearchEnabled(bool search);
+	void disableSearch();
 	void fixComboPositions();
 
 signals:

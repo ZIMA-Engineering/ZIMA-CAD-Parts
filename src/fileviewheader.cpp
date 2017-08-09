@@ -47,7 +47,10 @@ void FileViewHeader::toggleSearch()
 
 void FileViewHeader::setSearchEnabled(bool search)
 {
-	if (m_search && !search) {
+	if (m_search == search) {
+		return;
+
+	} else if (m_search && !search) {
 		clearFields();
 		emit filtersDisabled();
 
@@ -63,6 +66,11 @@ void FileViewHeader::setSearchEnabled(bool search)
 	show();
 
 	emit geometriesChanged();
+}
+
+void FileViewHeader::disableSearch()
+{
+	setSearchEnabled(false);
 }
 
 void FileViewHeader::fixComboPositions()
