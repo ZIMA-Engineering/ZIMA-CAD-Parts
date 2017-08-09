@@ -92,7 +92,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/thumbnailmanager.cpp \
     src/webauthenticationdialog.cpp \
     src/filedelegate.cpp \
-    src/fileeditdialog.cpp
+    src/fileeditdialog.cpp \
+    src/fileviewheader.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -144,7 +145,8 @@ HEADERS += src/mainwindow.h \
     src/thumbnailmanager.h \
     src/webauthenticationdialog.h \
     src/filedelegate.h \
-    src/fileeditdialog.h
+    src/fileeditdialog.h \
+    src/fileviewheader.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

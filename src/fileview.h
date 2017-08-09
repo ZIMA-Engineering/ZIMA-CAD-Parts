@@ -3,6 +3,7 @@
 
 #include <QTreeView>
 
+class FileViewHeader;
 class FileModel;
 class FileFilterModel;
 class QFileInfo;
@@ -29,10 +30,14 @@ public slots:
 	void settingsChanged();
 	void copyToWorkingDir();
 
+protected:
+	void scrollContentsBy(int dx, int dy);
+
 private:
 	QString m_path;
 	FileModel *m_model;
 	FileFilterModel *m_proxy;
+	FileViewHeader *m_header;
 
 	QModelIndex findNextPartIndex(const QModelIndex &from);
 

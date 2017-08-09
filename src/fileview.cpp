@@ -1,4 +1,5 @@
 #include "fileview.h"
+#include "fileviewheader.h"
 #include "filemodel.h"
 #include "filefiltermodel.h"
 #include "filedelegate.h"
@@ -10,6 +11,8 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QMenu>
+#include <QHeaderView>
+#include <QShortcut>
 #include <QtDebug>
 
 
@@ -24,6 +27,14 @@ FileView::FileView(QWidget *parent) :
 
     setSortingEnabled(true);
     sortByColumn(100, Qt::AscendingOrder);
+
+	m_header = new FileViewHeader(m_model, this);
+	setHeader(m_header);
+
+	connect(m_header, SIGNAL(filterColumn(int,QString)),
+			m_proxy, SLOT(filterColumn(int,QString)));
+	connect(m_header, SIGNAL(filtersDisabled()),
+			m_proxy, SLOT(resetFilters()));
 
 	setItemDelegate(new FileDelegate(this));
 	setEditTriggers(QAbstractItemView::SelectedClicked);
@@ -43,6 +54,8 @@ FileView::FileView(QWidget *parent) :
 			this, SLOT(showContextMenu(QPoint)));
 
 	connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(refreshModel()));
+
+	new QShortcut(QKeySequence("Ctrl+F"), m_header, SLOT(toggleSearch()));
 }
 
 void FileView::setDirectory(const QString &path)
@@ -55,6 +68,7 @@ void FileView::setDirectory(const QString &path)
 	// it has to be reset here because calling QFileSystemModel's reset
 	// or begin/end alternatives results in "/" as a root path
 	m_model->setDirectory(m_path);
+	m_proxy->resetFilters();
 	//setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
 	resizeColumnToContents();
 }
@@ -144,6 +158,14 @@ void FileView::reloadProeMeta()
 void FileView::copyToWorkingDir()
 {
 	m_model->copyToWorkingDir();
+}
+
+void FileView::scrollContentsBy(int dx, int dy)
+{
+	QTreeView::scrollContentsBy(dx, dy);
+
+	if (dx != 0)
+		m_header->fixComboPositions();
 }
 
 QModelIndex FileView::findNextPartIndex(const QModelIndex &from)
