@@ -49,11 +49,14 @@ private:
 
 	void clearFields();
 	void createFields();
+	void setEditGeometry(QWidget *w, int index);
+	void forceRedraw();
 
 private slots:
 	void handleSectionResized(int i);
 	void handleSectionMoved(int logical, int oldVisualIndex, int newVisualIndex);
 	void filter(int column);
+	void sortIndicatorChange(int logicalIndex, Qt::SortOrder order);
 };
 
 #endif // FILEVIEWHEADER_H

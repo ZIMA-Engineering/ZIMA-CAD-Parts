@@ -16,6 +16,8 @@ FileViewHeader::FileViewHeader(FileModel *model, QWidget *parent) :
 			this, SLOT(handleSectionResized(int)));
 	connect(this, SIGNAL(sectionMoved(int, int, int)),
 			this, SLOT(handleSectionMoved(int, int, int)));
+	connect(this, SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),
+			this, SLOT(sortIndicatorChange(int,Qt::SortOrder)));
 
 	setDefaultAlignment(Qt::AlignTop);
 
@@ -33,11 +35,7 @@ void FileViewHeader::newDirectory(const QString &path)
 		createFields();
 	}
 
-	// Force QShowEvent to be sent
-	hide();
-	show();
-
-	emit geometriesChanged();
+	forceRedraw();
 }
 
 void FileViewHeader::toggleSearch()
@@ -60,12 +58,7 @@ void FileViewHeader::setSearchEnabled(bool search)
 	}
 
 	m_search = search;
-
-	// Force QShowEvent to be sent
-	hide();
-	show();
-
-	emit geometriesChanged();
+	forceRedraw();
 }
 
 void FileViewHeader::disableSearch()
@@ -80,14 +73,7 @@ void FileViewHeader::fixComboPositions()
 
 	QMap<int, QLineEdit*>::const_iterator i = m_edits.constBegin();
 	while (i != m_edits.constEnd()) {
-		int index = i.key();
-
-		i.value()->setGeometry(
-			sectionViewportPosition(index),
-			0,
-			sectionSize(index) - 5,
-			height()
-		);
+		setEditGeometry(i.value(), i.key());
 		++i;
 	}
 }
@@ -113,13 +99,7 @@ void FileViewHeader::showEvent(QShowEvent *e)
 		int index = i.key();
 		QLineEdit *edit = i.value();
 
-		edit->setGeometry(
-			sectionViewportPosition(index),
-			20,
-			sectionSize(index) - 5,
-			height() - 20
-		);
-
+		setEditGeometry(edit, index);
 		edit->show();
 		++i;
 	}
@@ -156,6 +136,25 @@ void FileViewHeader::createFields()
 	}
 }
 
+void FileViewHeader::setEditGeometry(QWidget *w, int index)
+{
+	w->setGeometry(
+		sectionViewportPosition(index),
+		20,
+		sectionSize(index) - (index == sortIndicatorSection() ? 28 : 10),
+		height() - 20
+	);
+}
+
+void FileViewHeader::forceRedraw()
+{
+	// Force QShowEvent to be sent
+	hide();
+	show();
+
+	emit geometriesChanged();
+}
+
 void FileViewHeader::handleSectionResized(int i)
 {
 	if (!m_search)
@@ -167,12 +166,7 @@ void FileViewHeader::handleSectionResized(int i)
 		if (logical == 1)
 			continue;
 
-		m_edits[logical]->setGeometry(
-			sectionViewportPosition(logical),
-			20,
-			sectionSize(logical) - 5,
-			height() - 20
-		);
+		setEditGeometry(m_edits[logical], logical);
 	}
 }
 
@@ -189,16 +183,19 @@ void FileViewHeader::handleSectionMoved(int logical, int oldVisualIndex, int new
 		if (logical == 1)
 			continue;
 
-		m_edits[logical]->setGeometry(
-			sectionViewportPosition(logical),
-			0,
-			sectionSize(logical) - 5,
-			height() - 20
-		);
+		setEditGeometry(m_edits[logical], logical);
 	}
 }
 
 void FileViewHeader::filter(int column)
 {
 	emit filterColumn(column, m_edits[column]->text());
+}
+
+void FileViewHeader::sortIndicatorChange(int logicalIndex, Qt::SortOrder order)
+{
+	Q_UNUSED(logicalIndex)
+	Q_UNUSED(order)
+
+	forceRedraw();
 }
