@@ -7,8 +7,7 @@
 
 FileViewHeader::FileViewHeader(FileModel *model, QWidget *parent) :
 	QHeaderView(Qt::Horizontal, parent),
-	m_model(model),
-	m_search(false)
+	m_model(model)
 {
 	connect(m_model, SIGNAL(directoryLoaded(QString)),
 			this, SLOT(newDirectory(QString)));
@@ -30,47 +29,14 @@ void FileViewHeader::newDirectory(const QString &path)
 {
 	Q_UNUSED(path);
 
-	if (m_search) {
-		clearFields();
-		createFields();
-	}
+	clearFields();
+	createFields();
 
 	forceRedraw();
-}
-
-void FileViewHeader::toggleSearch()
-{
-	setSearchEnabled(!m_search);
-}
-
-void FileViewHeader::setSearchEnabled(bool search)
-{
-	if (m_search == search) {
-		return;
-
-	} else if (m_search && !search) {
-		clearFields();
-		emit filtersDisabled();
-
-	} else if (!m_search && search) {
-		createFields();
-		m_edits.first()->setFocus();
-	}
-
-	m_search = search;
-	forceRedraw();
-}
-
-void FileViewHeader::disableSearch()
-{
-	setSearchEnabled(false);
 }
 
 void FileViewHeader::fixComboPositions()
 {
-	if (!m_search)
-		return;
-
 	QMap<int, QLineEdit*>::const_iterator i = m_edits.constBegin();
 	while (i != m_edits.constEnd()) {
 		setEditGeometry(i.value(), i.key());
@@ -81,19 +47,12 @@ void FileViewHeader::fixComboPositions()
 QSize FileViewHeader::sizeHint() const
 {
 	QSize s = QHeaderView::sizeHint();
-
-	if (!m_search)
-		return s;
-
 	s.setHeight(s.height() + 25);
 	return s;
 }
 
 void FileViewHeader::showEvent(QShowEvent *e)
 {
-	if (!m_search)
-		return QHeaderView::showEvent(e);
-
 	QMap<int, QLineEdit*>::const_iterator i = m_edits.constBegin();
 	while (i != m_edits.constEnd()) {
 		int index = i.key();
@@ -157,9 +116,6 @@ void FileViewHeader::forceRedraw()
 
 void FileViewHeader::handleSectionResized(int i)
 {
-	if (!m_search)
-		return;
-
 	for (int j = visualIndex(i); j < count(); j++) {
 		int logical = logicalIndex(j);
 
@@ -173,9 +129,6 @@ void FileViewHeader::handleSectionResized(int i)
 void FileViewHeader::handleSectionMoved(int logical, int oldVisualIndex, int newVisualIndex)
 {
 	Q_UNUSED(logical)
-
-	if (!m_search)
-		return;
 
 	for (int i = qMin(oldVisualIndex, newVisualIndex); i < count(); i++){
 		int logical = logicalIndex(i);

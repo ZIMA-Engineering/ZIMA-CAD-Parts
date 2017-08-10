@@ -33,8 +33,6 @@ FileView::FileView(QWidget *parent) :
 
 	connect(m_header, SIGNAL(filterColumn(int,QString)),
 			m_proxy, SLOT(filterColumn(int,QString)));
-	connect(m_header, SIGNAL(filtersDisabled()),
-			m_proxy, SLOT(resetFilters()));
 
 	setItemDelegate(new FileDelegate(this));
 	setEditTriggers(QAbstractItemView::SelectedClicked);
@@ -54,9 +52,6 @@ FileView::FileView(QWidget *parent) :
 			this, SLOT(showContextMenu(QPoint)));
 
 	connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(refreshModel()));
-
-	new QShortcut(QKeySequence("Ctrl+F"), m_header, SLOT(toggleSearch()));
-	new QShortcut(QKeySequence("Escape"), m_header, SLOT(disableSearch()));
 }
 
 void FileView::setDirectory(const QString &path)

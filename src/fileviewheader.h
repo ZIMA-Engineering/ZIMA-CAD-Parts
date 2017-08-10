@@ -28,14 +28,10 @@ public:
 
 public slots:
 	void newDirectory(const QString &path);
-	void toggleSearch();
-	void setSearchEnabled(bool search);
-	void disableSearch();
 	void fixComboPositions();
 
 signals:
 	void filterColumn(int column, const QString &text);
-	void filtersDisabled();
 
 protected:
 	QSize sizeHint() const;
@@ -44,7 +40,6 @@ protected:
 private:
 	FileModel *m_model;
 	QMap<int, QLineEdit*> m_edits;
-	bool m_search;
 	QSignalMapper *m_mapper;
 
 	void clearFields();
