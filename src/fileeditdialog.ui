@@ -89,6 +89,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>saveButton</tabstop>
+  <tabstop>saveAndNextButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../zima-cad-parts.qrc"/>
  </resources>
