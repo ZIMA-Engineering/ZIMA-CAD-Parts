@@ -3,7 +3,6 @@
 
 #include <QDir>
 #include <QDebug>
-#include <QThread>
 #include <QProgressBar>
 #include <QLabel>
 #include <QMessageBox>
@@ -17,60 +16,60 @@ DirectoryRemover::DirectoryRemover(QFileInfo dirInfo, QWidget *parent)
 
 void DirectoryRemover::work()
 {
-	QThread *thread = new QThread(this);
-	DirectoryRemoverWorker *rm = new DirectoryRemoverWorker(m_dirInfo);
-	ProgressDialog *progress = new ProgressDialog(static_cast<QWidget*>(parent()));
+	m_rm = ThreadWorker::create<DirectoryRemoverWorker>();
+	m_rm->setDirInfo(m_dirInfo);
 
-	progress->label()->setText(tr("Please wait while the directory is being removed..."));
+	m_progress = new ProgressDialog(static_cast<QWidget*>(parent()));
+	m_progress->label()->setText(tr("Please wait while the directory is being removed..."));
 
-	rm->moveToThread(thread);
-
-	// Start/quit thread
-	connect(thread, SIGNAL(started()),
-			rm, SLOT(start()));
-	connect(rm, SIGNAL(finished()),
-			thread, SLOT(quit()));
-
-	// Quit after thread finishes
-	connect(thread, SIGNAL(finished()),
-			rm, SLOT(deleteLater()));
-	connect(thread, SIGNAL(finished()),
-			progress, SLOT(accept()));
-	connect(thread, SIGNAL(finished()),
-			progress, SLOT(deleteLater()));
-	connect(thread, SIGNAL(finished()),
-			this, SLOT(deleteLater()));
+	// Quit after worker finishes
+	connect(m_rm, SIGNAL(finished()),
+			m_progress, SLOT(accept()));
 
 	// Monitor progress
-	connect(rm, SIGNAL(progress(int)),
-			progress->progressBar(), SLOT(setValue(int)));
-	connect(rm, SIGNAL(errorOccured(QFileInfo)),
-			this, SLOT(directoryDeletionError(QFileInfo)));
-	connect(rm, SIGNAL(errorOccured(QFileInfo)),
-			thread, SLOT(quit()));
+	connect(m_rm, SIGNAL(progress(int,int)),
+			this, SLOT(progressUpdate(int,int)));
+	connect(m_rm, SIGNAL(errorOccured(QString)),
+			this, SLOT(directoryDeletionError(QString)));
 
-	thread->start();
+	m_rm->start();
 
-	if (progress->exec() == QDialog::Rejected)
-		rm->stop();
+	if (m_progress->exec() == QDialog::Rejected)
+		m_rm->stop();
+
+	m_rm->deleteLater();
+	m_progress->deleteLater();
 }
 
-void DirectoryRemover::directoryDeletionError(const QFileInfo &file)
+void DirectoryRemover::progressUpdate(int done, int total)
 {
-	QMessageBox::warning(static_cast<QWidget*>(parent()), tr("Directory deletion failed"),
-						 tr("Unable to delete '%1'").arg(file.absoluteFilePath()));
+	Q_UNUSED(total)
+
+	m_progress->progressBar()->setValue(done);
+}
+
+void DirectoryRemover::directoryDeletionError(const QString &error)
+{
+	QMessageBox::warning(
+		static_cast<QWidget*>(parent()),
+		tr("Directory deletion failed"),
+		error
+	);
 }
 
 
-DirectoryRemoverWorker::DirectoryRemoverWorker(QFileInfo dirInfo, QObject *parent)
-	: QObject(parent),
-	  m_dirInfo(dirInfo),
-	  m_stop(false)
+DirectoryRemoverWorker::DirectoryRemoverWorker(QObject *parent)
+	: ThreadWorker(parent)
 {
 
 }
 
-void DirectoryRemoverWorker::start()
+void DirectoryRemoverWorker::setDirInfo(const QFileInfo &dirInfo)
+{
+	m_dirInfo = dirInfo;
+}
+
+void DirectoryRemoverWorker::run()
 {
 	recurse(m_dirInfo);
 
@@ -83,7 +82,10 @@ void DirectoryRemoverWorker::start()
 		bool ret;
 
 		if (shouldStop())
+		{
+			quit();
 			return;
+		}
 
 		qDebug() << "Remove" << f.absoluteFilePath();
 
@@ -97,7 +99,8 @@ void DirectoryRemoverWorker::start()
 
 		if (!ret)
 		{
-			emit errorOccured(f);
+			emit errorOccured(tr("Unable to delete '%1'").arg(f.absoluteFilePath()));
+			quit();
 			return;
 		}
 
@@ -106,18 +109,11 @@ void DirectoryRemoverWorker::start()
 		if (done > lastDone)
 		{
 			lastDone = done;
-			emit progress(done);
+			emit progress(done, 100);
 		}
 	}
 
 	emit finished();
-}
-
-void DirectoryRemoverWorker::stop()
-{
-	QMutexLocker locker(&m_mutex);
-
-	m_stop = true;
 }
 
 void DirectoryRemoverWorker::recurse(const QFileInfo &dir)
@@ -138,11 +134,4 @@ void DirectoryRemoverWorker::recurse(const QFileInfo &dir)
 	}
 
 	m_files << dir;
-}
-
-bool DirectoryRemoverWorker::shouldStop()
-{
-	QMutexLocker locker(&m_mutex);
-
-	return m_stop;
 }

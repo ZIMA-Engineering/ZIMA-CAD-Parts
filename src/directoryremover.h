@@ -4,7 +4,11 @@
 #include <QObject>
 #include <QFileInfo>
 #include <QFileInfoList>
-#include <QMutexLocker>
+
+#include "threadworker.h"
+
+class ProgressDialog;
+class DirectoryRemoverWorker;
 
 /*! Wraps the actual working thread that is deleting files and reporting
  * progress.
@@ -20,34 +24,29 @@ public slots:
 
 private:
 	QFileInfo m_dirInfo;
+	ProgressDialog *m_progress;
+	DirectoryRemoverWorker *m_rm;
 
 private slots:
-	void directoryDeletionError(const QFileInfo &file);
+	void progressUpdate(int done, int total);
+	void directoryDeletionError(const QString &error);
 };
 
-class DirectoryRemoverWorker : public QObject
+class DirectoryRemoverWorker : public ThreadWorker
 {
 	Q_OBJECT
 public:
-	explicit DirectoryRemoverWorker(QFileInfo dirInfo, QObject *parent = 0);
-
-signals:
-	void progress(int done);
-	void errorOccured(const QFileInfo &file);
-	void finished();
+	explicit DirectoryRemoverWorker(QObject *parent = 0);
+	void setDirInfo(const QFileInfo &dirInfo);
 
 public slots:
-	void start();
-	void stop();
+	void run();
 
 private:
-	QMutex m_mutex;
 	QFileInfo m_dirInfo;
 	QFileInfoList m_files;
-	bool m_stop;
 
 	void recurse(const QFileInfo &dir);
-	bool shouldStop();
 };
 
 #endif // DIRECTORYREMOVER_H
