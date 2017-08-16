@@ -3,6 +3,8 @@
 #include "zimautils.h"
 #include "settings.h"
 #include "settingsdialog.h"
+#include "createdirectorydialog.h"
+#include "directorycreator.h"
 #include "directoryremover.h"
 
 #include <QHeaderView>
@@ -12,6 +14,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QUrl>
+#include <QDebug>
 
 
 ServersView::ServersView(const QString &rootPath, QWidget *parent) :
@@ -79,6 +82,7 @@ void ServersView::showContextMenu(const QPoint &point)
 
 	menu->addAction(style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open"), this, SLOT(indexOpenPath()));
 	menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
+	menu->addAction(style()->standardIcon(QStyle::SP_FileDialogNewFolder), tr("Create directory"), this, SLOT(createDirectory()));
 
 	menu->addSeparator();
 
@@ -131,6 +135,23 @@ void ServersView::setWorkingDirectory()
 {
     Settings::get()->setWorkingDir(currentFileInfo().absoluteFilePath());
 	emit workingDirChanged();
+}
+
+void ServersView::createDirectory()
+{
+	QFileInfo fi = currentFileInfo();
+	CreateDirectoryDialog dlg(fi.absoluteFilePath());
+
+	if (dlg.exec() == QDialog::Accepted)
+	{
+
+		auto creator = new DirectoryCreator(fi.absoluteFilePath(), dlg.name(), this);
+
+		if (dlg.hasPrototype())
+			creator->setPrototype(dlg.prototype());
+
+		creator->work();
+	}
 }
 
 void ServersView::deleteDirectory()

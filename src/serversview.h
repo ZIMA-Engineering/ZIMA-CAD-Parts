@@ -45,6 +45,7 @@ private slots:
 	void spawnZimaUtilityOnDir(const QString &label);
 	void indexOpenPath();
 	void setWorkingDirectory();
+	void createDirectory();
 	void deleteDirectory();
 };
 

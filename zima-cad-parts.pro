@@ -94,6 +94,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/filedelegate.cpp \
     src/fileeditdialog.cpp \
     src/fileviewheader.cpp \
+    src/createdirectorydialog.cpp \
+    src/directorycreator.cpp \
     src/threadworker.cpp
 
 HEADERS += src/mainwindow.h \
@@ -148,6 +150,8 @@ HEADERS += src/mainwindow.h \
     src/filedelegate.h \
     src/fileeditdialog.h \
     src/fileviewheader.h \
+    src/createdirectorydialog.h \
+    src/directorycreator.h \
     src/threadworker.h
 
 FORMS += mainwindow.ui \
@@ -168,7 +172,8 @@ FORMS += mainwindow.ui \
     src/progressdialog.ui \
     src/extensions/productview/imageproductview.ui \
     src/webauthenticationdialog.ui \
-    src/fileeditdialog.ui
+    src/fileeditdialog.ui \
+    src/createdirectorydialog.ui
 
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc
