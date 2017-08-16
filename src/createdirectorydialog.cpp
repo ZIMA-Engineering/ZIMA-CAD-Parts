@@ -67,5 +67,6 @@ void CreateDirectoryDialog::disablePrototype()
 
 void CreateDirectoryDialog::nameChange(const QString &text)
 {
-	ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(text.isEmpty());
+	bool ok = !text.isEmpty() && !QFile::exists(m_path + "/" + text);
+	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
 }

@@ -142,16 +142,25 @@ void ServersView::createDirectory()
 	QFileInfo fi = currentFileInfo();
 	CreateDirectoryDialog dlg(fi.absoluteFilePath());
 
-	if (dlg.exec() == QDialog::Accepted)
+	if (dlg.exec() != QDialog::Accepted)
+		return;
+
+	if (QFile::exists(fi.absoluteFilePath() + "/" + dlg.name()))
 	{
-
-		auto creator = new DirectoryCreator(fi.absoluteFilePath(), dlg.name(), this);
-
-		if (dlg.hasPrototype())
-			creator->setPrototype(dlg.prototype());
-
-		creator->work();
+		QMessageBox::warning(
+			this,
+			tr("Directory exists"),
+			tr("Directory %1 already exists.").arg(dlg.name())
+		);
+		return;
 	}
+
+	auto creator = new DirectoryCreator(fi.absoluteFilePath(), dlg.name(), this);
+
+	if (dlg.hasPrototype())
+		creator->setPrototype(dlg.prototype());
+
+	creator->work();
 }
 
 void ServersView::deleteDirectory()
