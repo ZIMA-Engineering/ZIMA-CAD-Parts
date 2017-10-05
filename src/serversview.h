@@ -46,6 +46,7 @@ private slots:
 	void indexOpenPath();
 	void setWorkingDirectory();
 	void createDirectory();
+	void editDirectory();
 	void deleteDirectory();
 };
 

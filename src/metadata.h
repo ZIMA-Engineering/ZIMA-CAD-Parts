@@ -59,6 +59,10 @@ public:
 
 	//! Label for current directory (tree)
 	QString getLabel();
+	QString getLabel(const QString &lang);
+
+	void setLabel(const QString &lang, const QString &newLabel);
+
 	//! Labels for FileModel
 	QStringList columnLabels();
 	//! Value for FileModel

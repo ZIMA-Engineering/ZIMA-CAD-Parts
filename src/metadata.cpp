@@ -159,7 +159,19 @@ QString Metadata::getLabel()
 	if(label.count())
 		return label;
 
-	return (label = m_settings->value(QString("params/%1/label").arg(Settings::get()->LanguageMetadata), QString()).toString());
+	return (label = getLabel(Settings::get()->LanguageMetadata));
+}
+
+QString Metadata::getLabel(const QString &lang)
+{
+	return m_settings->value(QString("params/%1/label").arg(lang), QString()).toString();
+}
+
+void Metadata::setLabel(const QString &lang, const QString &newLabel)
+{
+	label.clear();
+
+	m_settings->setValue(QString("params/%1/label").arg(lang), newLabel);
 }
 
 QStringList Metadata::columnLabels()

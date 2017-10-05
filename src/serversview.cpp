@@ -5,6 +5,7 @@
 #include "settingsdialog.h"
 #include "createdirectorydialog.h"
 #include "directorycreator.h"
+#include "directoryeditordialog.h"
 #include "directoryremover.h"
 
 #include <QHeaderView>
@@ -86,6 +87,7 @@ void ServersView::showContextMenu(const QPoint &point)
 
 	menu->addSeparator();
 
+	menu->addAction(QIcon(":/gfx/document-edit.png"), tr("Edit"), this, SLOT(editDirectory()));
 	menu->addAction(QIcon(":/gfx/list-remove.png"), tr("Delete"), this, SLOT(deleteDirectory()));
 
 	menu->addSeparator();
@@ -161,6 +163,18 @@ void ServersView::createDirectory()
 		creator->setPrototype(dlg.prototype());
 
 	creator->work();
+}
+
+void ServersView::editDirectory()
+{
+	QFileInfo fi = currentFileInfo();
+
+	DirectoryEditorDialog dlg(fi, this);
+
+	if (dlg.exec() == QDialog::Accepted)
+	{
+		dlg.apply();
+	}
 }
 
 void ServersView::deleteDirectory()

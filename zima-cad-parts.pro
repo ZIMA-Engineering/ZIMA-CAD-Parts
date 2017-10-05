@@ -96,7 +96,9 @@ SOURCES += src/zima-cad-parts.cpp \
     src/fileviewheader.cpp \
     src/createdirectorydialog.cpp \
     src/directorycreator.cpp \
-    src/threadworker.cpp
+    src/threadworker.cpp \
+    src/directoryeditordialog.cpp \
+    src/directorylocaleeditwidget.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -152,7 +154,9 @@ HEADERS += src/mainwindow.h \
     src/fileviewheader.h \
     src/createdirectorydialog.h \
     src/directorycreator.h \
-    src/threadworker.h
+    src/threadworker.h \
+    src/directoryeditordialog.h \
+    src/directorylocaleeditwidget.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -173,7 +177,9 @@ FORMS += mainwindow.ui \
     src/extensions/productview/imageproductview.ui \
     src/webauthenticationdialog.ui \
     src/fileeditdialog.ui \
-    src/createdirectorydialog.ui
+    src/createdirectorydialog.ui \
+    src/directoryeditordialog.ui \
+    src/directorylocaleeditwidget.ui
 
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc
