@@ -329,6 +329,10 @@ int Settings::langIndex(const QString &lang)
 		return ENGLISH;
 	else if( lang == "cs_CZ" )
 		return CZECH;
+	else if ( lang == "de_DE" )
+		return GERMAN;
+	else if ( lang == "ru_RU" )
+		return RUSSIAN;
 	else
 		return DETECT;
 }
@@ -341,6 +345,10 @@ QString Settings::langIndexToName(int lang)
 		return "en_US";
 	case CZECH:
 		return "cs_CZ";
+	case GERMAN:
+		return "de_DE";
+	case RUSSIAN:
+		return "ru_RU";
 	default:
 		return "detect";
 	}

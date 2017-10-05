@@ -58,7 +58,9 @@ public:
 	enum Languages {
 		DETECT=0,
 		ENGLISH,
-		CZECH
+		CZECH,
+		GERMAN,
+		RUSSIAN
 	};
 
 	//! The main access method to settings
