@@ -179,20 +179,35 @@ QStringList Metadata::columnLabels()
 	if(m_columnLabels.count())
 		return m_columnLabels;
 
-	m_columnLabels << tr("Part Name") << tr("Thumbnail");
+	return (m_columnLabels = columnLabels(Settings::get()->LanguageMetadata));
+}
+
+QStringList Metadata::columnLabels(const QString &lang)
+{
+	QStringList columnLabels;
+
+	columnLabels << tr("Part Name") << tr("Thumbnail");
+	columnLabels.append(dataColumnLabels(lang));
+
+	return columnLabels;
+}
+
+QStringList Metadata::dataColumnLabels(const QString &lang)
+{
+	QStringList columnLabels;
 
 	QRegExp colRx("^\\d+$");
 	int colIndex = 1;
 
 	m_settings->beginGroup("params");
 	{
-		m_settings->beginGroup(Settings::get()->LanguageMetadata);
+		m_settings->beginGroup(lang);
 		{
-			foreach(QString col, m_settings->childKeys())
+			foreach (const QString &col, m_settings->childKeys())
 			{
-				if(colRx.exactMatch(col))
+				if (colRx.exactMatch(col))
 				{
-					m_columnLabels << m_settings->value( QString("%1").arg(colIndex++) ).toString();
+					columnLabels << m_settings->value( QString("%1").arg(colIndex++) ).toString();
 				}
 			}
 		}
@@ -200,14 +215,42 @@ QStringList Metadata::columnLabels()
 	}
 	m_settings->endGroup();
 
-    if (m_includes.size())
+	if (m_includes.size())
 	{
-		m_columnLabels.clear();
-        foreach(Metadata *include, m_includes)
-		m_columnLabels << include->columnLabels();
+		columnLabels.clear();
+
+		foreach(Metadata *include, m_includes)
+			columnLabels << include->dataColumnLabels(lang);
 	}
 
-	return m_columnLabels;
+	return columnLabels;
+}
+
+void Metadata::setDataColumnLabels(const QString &lang, const QStringList &labels)
+{
+	QRegExp colRx("^\\d+$");
+	int colIndex = 1;
+
+	m_settings->beginGroup("params");
+	{
+		m_settings->beginGroup(lang);
+		{
+			// First clear all existing columns
+			foreach (const QString &col, m_settings->childKeys())
+			{
+				if (colRx.exactMatch(col))
+					m_settings->remove(col);
+			}
+
+			// Write new columns
+			foreach (const QString &label, labels)
+			{
+				m_settings->setValue(QString("%1").arg(colIndex++), label);
+			}
+		}
+		m_settings->endGroup();
+	}
+	m_settings->endGroup();
 }
 
 QString Metadata::partParam(const QString &partName, int col)

@@ -98,7 +98,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/directorycreator.cpp \
     src/threadworker.cpp \
     src/directoryeditordialog.cpp \
-    src/directorylocaleeditwidget.cpp
+    src/directorylocaleeditwidget.cpp \
+    src/directoryeditcolumnmodel.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -156,7 +157,8 @@ HEADERS += src/mainwindow.h \
     src/directorycreator.h \
     src/threadworker.h \
     src/directoryeditordialog.h \
-    src/directorylocaleeditwidget.h
+    src/directorylocaleeditwidget.h \
+    src/directoryeditcolumnmodel.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

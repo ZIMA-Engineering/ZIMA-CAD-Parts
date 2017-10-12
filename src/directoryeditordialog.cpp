@@ -92,6 +92,7 @@ void DirectoryEditorDialog::apply()
 void DirectoryEditorDialog::setupLanguageBox()
 {
 	QStringList languages = Settings::get()->Languages;
+	QStringList primaryLangColumns = findPrimaryLanguageColumns(languages);
 
 	foreach (const QString &code, languages)
 	{
@@ -104,7 +105,11 @@ void DirectoryEditorDialog::setupLanguageBox()
 			code
 		);
 
-		ui->stackedWidget->addWidget(new DirectoryLocaleEditWidget(m_meta, langCode));
+		ui->stackedWidget->addWidget(new DirectoryLocaleEditWidget(
+			m_meta,
+			langCode,
+			primaryLangColumns
+		));
 	}
 
 	int i = languages.indexOf(Settings::get()->getCurrentLanguageCode());
@@ -198,6 +203,25 @@ bool DirectoryEditorDialog::hasIcon(const QString &name) const
 QString DirectoryEditorDialog::iconInstallPath(const QString &name) const
 {
 	return m_dirPath +"/"+ TECHSPEC_DIR + "/" + name;
+}
+
+QStringList DirectoryEditorDialog::findPrimaryLanguageColumns(QStringList languages)
+{
+	int maxCols = -1;
+	QStringList ret;
+
+	foreach (const QString &code, languages)
+	{
+		QStringList cols = m_meta->dataColumnLabels(code.left(2));
+
+		if (cols.count() > maxCols)
+		{
+			maxCols = cols.count();
+			ret = cols;
+		}
+	}
+
+	return ret;
 }
 
 void DirectoryEditorDialog::removeIcon()

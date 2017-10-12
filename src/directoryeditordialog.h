@@ -37,6 +37,7 @@ private:
 	bool hasAnyLabel();
 	bool hasIcon(const QString &name) const;
 	QString iconInstallPath(const QString &name) const;
+	QStringList findPrimaryLanguageColumns(QStringList languages);
 
 private slots:
 	void removeIcon();

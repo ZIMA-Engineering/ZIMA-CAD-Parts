@@ -65,6 +65,11 @@ public:
 
 	//! Labels for FileModel
 	QStringList columnLabels();
+	QStringList columnLabels(const QString &lang);
+	QStringList dataColumnLabels(const QString &lang);
+
+	void setDataColumnLabels(const QString &lang, const QStringList &labels);
+
 	//! Value for FileModel
 	QString partParam(const QString &partName, int col);
 

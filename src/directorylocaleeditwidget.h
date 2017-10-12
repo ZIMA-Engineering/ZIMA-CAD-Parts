@@ -14,7 +14,7 @@ class DirectoryLocaleEditWidget : public QWidget
 	Q_OBJECT
 
 public:
-	explicit DirectoryLocaleEditWidget(Metadata *meta, const QString &lang, QWidget *parent = 0);
+	explicit DirectoryLocaleEditWidget(Metadata *meta, const QString &lang, const QStringList &primaryColumns, QWidget *parent = 0);
 	~DirectoryLocaleEditWidget();
 	QString label() const;
 
