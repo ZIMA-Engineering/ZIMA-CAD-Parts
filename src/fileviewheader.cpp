@@ -122,8 +122,10 @@ void FileViewHeader::handleSectionResized(int i)
 		if (logical == 1)
 			continue;
 
-		if (logical < m_edits.count())
-			setEditGeometry(m_edits[logical], logical);
+		if (logical > m_edits.count())
+			break;
+
+		setEditGeometry(m_edits[logical], logical);
 	}
 }
 
