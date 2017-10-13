@@ -20,6 +20,7 @@ public:
 	void deleteParts();
 	void refreshRequested();
     void reloadProeMeta();
+	QString currentPath();
 
 signals:
 	void previewProductView(const QFileInfo &fi);
@@ -29,6 +30,7 @@ public slots:
 	void setDirectory(const QString &path);
 	void settingsChanged();
 	void copyToWorkingDir();
+	void directoryChanged();
 
 protected:
 	void scrollContentsBy(int dx, int dy);

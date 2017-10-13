@@ -52,6 +52,8 @@ void ServersWidget::settingsChanged()
 			        partsWidget, SLOT(setDirectory(QString)));
 			connect(view, SIGNAL(directorySelected(QString)),
 			        this, SIGNAL(directorySelected(QString)));
+			connect(view, SIGNAL(directoryChanged(QString)),
+					partsWidget, SLOT(updateDirectory(QString)));
 
 			serversToolBox->addPage(view, ds->name, ds->icon);
 		}

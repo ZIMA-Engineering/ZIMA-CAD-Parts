@@ -105,11 +105,18 @@ void DirectoryEditorDialog::setupLanguageBox()
 			code
 		);
 
-		ui->stackedWidget->addWidget(new DirectoryLocaleEditWidget(
+		auto w = new DirectoryLocaleEditWidget(
 			m_meta,
 			langCode,
 			primaryLangColumns
-		));
+		);
+
+		connect(this, SIGNAL(primaryColumnAdded(int)),
+				w, SLOT(addPrimaryColumn(int)));
+		connect(w, SIGNAL(primaryColumnAdded(int)),
+				this, SIGNAL(primaryColumnAdded(int)));
+
+		ui->stackedWidget->addWidget(w);
 	}
 
 	int i = languages.indexOf(Settings::get()->getCurrentLanguageCode());

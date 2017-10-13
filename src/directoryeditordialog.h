@@ -21,6 +21,9 @@ public:
 public slots:
 	void apply();
 
+signals:
+	void primaryColumnAdded(int row);
+
 private:
 	Ui::DirectoryEditorDialog *ui;
 	QFileInfo m_fi;

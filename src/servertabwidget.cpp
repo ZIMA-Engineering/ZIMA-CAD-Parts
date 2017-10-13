@@ -108,6 +108,12 @@ void ServerTabWidget::setDirectory(const QString &rootPath)
 	setEnabled(true);
 }
 
+void ServerTabWidget::updateDirectory(const QString &rootPath)
+{
+	if (ui->partsTreeView->currentPath().compare(rootPath) == 0)
+		ui->partsTreeView->directoryChanged();
+}
+
 void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound)
 {
 	QStringList filters;

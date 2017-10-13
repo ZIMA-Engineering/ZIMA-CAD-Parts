@@ -148,12 +148,23 @@ void FileView::refreshRequested()
 void FileView::reloadProeMeta()
 {
     MetadataCache::get()->metadata(m_path)->reloadProe(m_model->fileInfoList());
-    m_model->refreshModel();
+	m_model->refreshModel();
+}
+
+QString FileView::currentPath()
+{
+	return m_path;
 }
 
 void FileView::copyToWorkingDir()
 {
 	m_model->copyToWorkingDir();
+}
+
+void FileView::directoryChanged()
+{
+	refreshModel();
+	m_header->newDirectory(m_path);
 }
 
 void FileView::scrollContentsBy(int dx, int dy)

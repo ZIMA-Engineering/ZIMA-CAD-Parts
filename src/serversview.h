@@ -29,6 +29,7 @@ signals:
 	void showSettings(SettingsDialog::Section);
 	void workingDirChanged();
 	void directorySelected(const QString &path);
+	void directoryChanged(const QString &path);
 
 private:
 	QString m_path;

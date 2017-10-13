@@ -251,6 +251,8 @@ void Metadata::setDataColumnLabels(const QString &lang, const QStringList &label
 		m_settings->endGroup();
 	}
 	m_settings->endGroup();
+
+	m_columnLabels.clear();
 }
 
 QString Metadata::partParam(const QString &partName, int col)

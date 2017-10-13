@@ -174,6 +174,7 @@ void ServersView::editDirectory()
 	if (dlg.exec() == QDialog::Accepted)
 	{
 		dlg.apply();
+		emit directoryChanged(fi.absoluteFilePath());
 	}
 }
 

@@ -88,6 +88,18 @@ bool DirectoryEditColumnModel::setData(const QModelIndex &index, const QVariant 
 	return true;
 }
 
+bool DirectoryEditColumnModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+	if (count != 1 || row != m_primaryColumns.count())
+		return false;
+
+	beginInsertRows(parent, row, row);
+	m_primaryColumns << tr("New column");
+	endInsertRows();
+
+	return true;
+}
+
 Qt::ItemFlags DirectoryEditColumnModel::flags(const QModelIndex &index) const
 {
 	Qt::ItemFlags ret = QAbstractItemModel::flags(index);

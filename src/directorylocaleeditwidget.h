@@ -20,10 +20,17 @@ public:
 
 public slots:
 	void apply(Metadata *meta);
+	void addPrimaryColumn(int row);
+
+signals:
+	void primaryColumnAdded(int row);
 
 private:
 	Ui::DirectoryLocaleEditWidget *ui;
 	QString m_lang;
+
+private slots:
+	void addNewColumn();
 };
 
 #endif // DIRECTORYLOCALEEDITWIDGET_H

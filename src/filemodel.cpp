@@ -220,6 +220,7 @@ void FileModel::refreshModel()
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     m_columnLabels = MetadataCache::get()->columnLabels(m_path);
+
     loadFiles(m_path);
     m_thumb->clear();
 
