@@ -74,6 +74,7 @@ public:
 
 	void setParameterLabel(const QString &param, const QString &lang, const QString &value);
 	void renameParameter(const QString &handle, const QString &newHandle);
+	void removeParameter(const QString &handle);
 
 	//! Value for FileModel
 	QString partParam(const QString &partName, const QString &param);

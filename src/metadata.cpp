@@ -226,6 +226,7 @@ void Metadata::setParameterHandles(const QStringList &handles)
 	// TODO: check that we're not removing no handles...
 	// what is allowed is reordering and adding of new parameters
 	m_settings->setValue("Directory/Parameters", handles);
+	m_parameterLabels.clear();
 }
 
 QStringList Metadata::parameterLabels()
@@ -309,6 +310,33 @@ void Metadata::renameParameter(const QString &handle, const QString &newHandle)
 		}
 	}
 	m_settings->endGroup();
+
+	m_parameterLabels.clear();
+}
+
+void Metadata::removeParameter(const QString &handle)
+{
+	QStringList params = parameterHandles();
+	params.removeOne(handle);
+
+	m_settings->setValue("Directory/Parameters", params);
+
+	// Parameter settings
+	m_settings->remove(QString("Parameters/%1").arg(handle));
+
+	// Part data
+	m_settings->beginGroup("Parts");
+	{
+		foreach (const QString &part, m_settings->childGroups())
+		{
+			m_settings->beginGroup(part);
+			m_settings->remove(handle);
+			m_settings->endGroup();
+		}
+	}
+	m_settings->endGroup();
+
+	m_parameterLabels.clear();
 }
 
 QString Metadata::partParam(const QString &partName, const QString &param)

@@ -24,6 +24,7 @@ public slots:
 signals:
 	void parameterAdded(const QString &handle);
 	void parameterHandleChanged(const QString &handle, const QString &newHandle);
+	void parameterRemoved(const QString &handle);
 
 private:
 	Ui::DirectoryEditorDialog *ui;
@@ -34,6 +35,7 @@ private:
 	QString m_origIconPath;
 	QStringList m_parameters;
 	QHash<QString, QString> m_handleChanges;
+	QStringList m_deletedParameters;
 
 	void setupLanguageBox();
 	void setupIcon();
@@ -49,6 +51,7 @@ private slots:
 	void openIconDialog();
 	void parameterAddition(const QString &handle);
 	void parameterHandleChange(const QString &handle, const QString &newHandle);
+	void parameterRemoval(const QString &handle);
 };
 
 #endif // DIRECTORYEDITORDIALOG_H

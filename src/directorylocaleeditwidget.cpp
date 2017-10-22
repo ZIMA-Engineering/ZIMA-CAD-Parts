@@ -23,8 +23,12 @@ DirectoryLocaleEditWidget::DirectoryLocaleEditWidget(Metadata *meta, const QStri
 
 	connect(ui->addParameterButton, SIGNAL(clicked()),
 			this, SLOT(addNewParameter()));
+	connect(ui->removeParameterButton, SIGNAL(clicked()),
+			this, SLOT(removeSelectedParameter()));
 	connect(model, SIGNAL(parameterHandleChanged(QString,QString)),
 			this, SIGNAL(parameterHandleChanged(QString,QString)));
+	connect(ui->parameterTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+			this, SLOT(parameterSelected(QModelIndex,QModelIndex)));
 }
 
 DirectoryLocaleEditWidget::~DirectoryLocaleEditWidget()
@@ -77,6 +81,48 @@ void DirectoryLocaleEditWidget::parameterHandleChange(const QString &handle, con
 		return;
 
 	model->changeHandle(handle, newHandle);
+}
+
+void DirectoryLocaleEditWidget::removeSelectedParameter()
+{
+	 QModelIndex index = ui->parameterTreeView->currentIndex();
+	 QString handle = ui->parameterTreeView->model()->data(
+		index,
+		Qt::DisplayRole
+	).toString();
+
+	if (!index.isValid())
+		return;
+
+	if (!ui->parameterTreeView->model()->removeRows(index.row(), 1, index.parent()))
+		return;
+
+	emit parameterRemoved(handle);
+}
+
+void DirectoryLocaleEditWidget::parameterSelected(const QModelIndex &current, const QModelIndex &previous)
+{
+	Q_UNUSED(previous)
+
+	if (!current.isValid())
+	{
+		ui->removeParameterButton->setEnabled(false);
+		return;
+	}
+
+	ui->removeParameterButton->setEnabled(true);
+}
+
+void DirectoryLocaleEditWidget::removeParameter(const QString &handle)
+{
+	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
+
+	// If true, this widget is where the signal originated, so we
+	// do not want to add another column
+	if (!model->hasParameter(handle))
+		return;
+
+	model->removeParameter(handle);
 }
 
 void DirectoryLocaleEditWidget::addNewParameter()

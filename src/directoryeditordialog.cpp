@@ -80,6 +80,12 @@ void DirectoryEditorDialog::apply()
 	}
 
 	// Parameter handles
+	if (!m_deletedParameters.isEmpty())
+	{
+		foreach (const QString &handle, m_deletedParameters)
+			MetadataCache::get()->metadata(m_dirPath)->removeParameter(handle);
+	}
+
 	if (!m_handleChanges.isEmpty())
 	{
 		QHashIterator<QString, QString> i(m_handleChanges);
@@ -137,6 +143,13 @@ void DirectoryEditorDialog::setupLanguageBox()
 				this, SLOT(parameterHandleChange(QString,QString)));
 		connect(w, SIGNAL(parameterHandleChanged(QString,QString)),
 				this, SIGNAL(parameterHandleChanged(QString,QString)));
+
+		connect(this, SIGNAL(parameterRemoved(QString)),
+				w, SLOT(removeParameter(QString)));
+		connect(w, SIGNAL(parameterRemoved(QString)),
+				this, SLOT(parameterRemoval(QString)));
+		connect(w, SIGNAL(parameterRemoved(QString)),
+				this, SIGNAL(parameterRemoved(QString)));
 
 		ui->stackedWidget->addWidget(w);
 	}
@@ -282,4 +295,22 @@ void DirectoryEditorDialog::parameterHandleChange(const QString &handle, const Q
 		return;
 
 	m_handleChanges[handle] = newHandle;
+}
+
+void DirectoryEditorDialog::parameterRemoval(const QString &handle)
+{
+	QString key;
+
+	if (!(key = m_handleChanges.key(handle)).isEmpty())
+	{
+		// Removing previously renamed parameter
+		// We need to remove the original name
+		m_parameters.removeOne(handle);
+		m_deletedParameters << key;
+		m_handleChanges.remove(key);
+		return;
+	}
+
+	m_parameters.removeOne(handle);
+	m_deletedParameters << handle;
 }

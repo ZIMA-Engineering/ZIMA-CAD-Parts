@@ -131,6 +131,23 @@ bool DirectoryEditParametersModel::insertRows(int row, int count, const QModelIn
 	return true;
 }
 
+bool DirectoryEditParametersModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+	if (count != 1)
+		return false;
+
+	beginRemoveRows(parent, row, row);
+
+	QString handle = m_parameters[row];
+
+	m_parameters.removeAt(row);
+	m_labels.remove(handle);
+
+	endRemoveRows();
+
+	return true;
+}
+
 Qt::ItemFlags DirectoryEditParametersModel::flags(const QModelIndex &index) const
 {
 	return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
@@ -166,6 +183,18 @@ void DirectoryEditParametersModel::changeHandle(const QString &handle, const QSt
 
 	QModelIndex idx = index(i, 1, QModelIndex());
 	emit dataChanged(idx, idx);
+}
+
+void DirectoryEditParametersModel::removeParameter(const QString &handle)
+{
+	int i = m_parameters.indexOf(handle);
+
+	beginRemoveRows(QModelIndex(), i, i);
+
+	m_labels.remove(handle);
+	m_parameters.removeOne(handle);
+
+	endRemoveRows();
 }
 
 QString DirectoryEditParametersModel::newParameterHandle()
