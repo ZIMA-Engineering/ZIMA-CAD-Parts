@@ -151,6 +151,13 @@ void DirectoryEditorDialog::setupLanguageBox()
 		connect(w, SIGNAL(parameterRemoved(QString)),
 				this, SIGNAL(parameterRemoved(QString)));
 
+		connect(this, SIGNAL(parametersReordered(QStringList)),
+				w, SLOT(reorderParameters(QStringList)));
+		connect(w, SIGNAL(parametersReordered(QStringList)),
+				this, SLOT(reorderParameters(QStringList)));
+		connect(w, SIGNAL(parametersReordered(QStringList)),
+				this, SIGNAL(parametersReordered(QStringList)));
+
 		ui->stackedWidget->addWidget(w);
 	}
 
@@ -313,4 +320,9 @@ void DirectoryEditorDialog::parameterRemoval(const QString &handle)
 
 	m_parameters.removeOne(handle);
 	m_deletedParameters << handle;
+}
+
+void DirectoryEditorDialog::reorderParameters(const QStringList &parameters)
+{
+	m_parameters = parameters;
 }

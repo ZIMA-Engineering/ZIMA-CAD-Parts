@@ -25,11 +25,13 @@ public slots:
 	void removeSelectedParameter();
 	void parameterSelected(const QModelIndex &current, const QModelIndex &previous);
 	void removeParameter(const QString &handle);
+	void reorderParameters(const QStringList &parameters);
 
 signals:
 	void parameterAdded(const QString &handle);
 	void parameterHandleChanged(const QString &handle, const QString &newHandle);
 	void parameterRemoved(const QString &handle);
+	void parametersReordered(const QStringList &parameters);
 
 private:
 	Ui::DirectoryLocaleEditWidget *ui;

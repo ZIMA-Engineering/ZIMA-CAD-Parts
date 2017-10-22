@@ -92,6 +92,8 @@ QVariant DirectoryEditParametersModel::headerData(int section, Qt::Orientation o
 
 bool DirectoryEditParametersModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+	Q_UNUSED(role)
+
 	QString val = value.toString().trimmed();
 
 	if (val.isEmpty())
@@ -120,6 +122,8 @@ bool DirectoryEditParametersModel::setData(const QModelIndex &index, const QVari
 
 bool DirectoryEditParametersModel::insertRows(int row, int count, const QModelIndex &parent)
 {
+	Q_UNUSED(count)
+
 	beginInsertRows(parent, row, row);
 
 	QString handle = newParameterHandle();
@@ -150,7 +154,107 @@ bool DirectoryEditParametersModel::removeRows(int row, int count, const QModelIn
 
 Qt::ItemFlags DirectoryEditParametersModel::flags(const QModelIndex &index) const
 {
-	return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+	Qt::ItemFlags ret = QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+
+	if (index.isValid())
+		return Qt::ItemIsDragEnabled | ret;
+
+	else
+		return Qt::ItemIsDropEnabled | ret;
+}
+
+Qt::DropActions DirectoryEditParametersModel::supportedDropActions() const
+{
+	return Qt::CopyAction;
+}
+
+QStringList DirectoryEditParametersModel::mimeTypes() const
+{
+	QStringList types;
+	types << "application/vnd.text.list";
+	return types;
+}
+
+QMimeData *DirectoryEditParametersModel::mimeData(const QModelIndexList &indexes) const
+{
+	QMimeData *mimeData = new QMimeData();
+	QByteArray encodedData;
+
+	QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+	foreach (const QModelIndex &idx, indexes) {
+		if (!idx.isValid())
+			continue;
+
+		QString text = data(
+			index(idx.row(), 1, QModelIndex()),
+			Qt::DisplayRole
+		).toString();
+		stream << text;
+	}
+
+	mimeData->setData("application/vnd.zcp.parameter.list", encodedData);
+	return mimeData;
+}
+
+bool DirectoryEditParametersModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+{
+	Q_UNUSED(action);
+	Q_UNUSED(row);
+
+	if (!data->hasFormat("application/vnd.zcp.parameter.list"))
+		return false;
+
+	if (parent.isValid() || column > 0)
+		return false;
+
+	return true;
+}
+
+bool DirectoryEditParametersModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+	if (!canDropMimeData(data, action, row, column, parent))
+		return false;
+
+	if (action == Qt::IgnoreAction)
+		return true;
+
+	int beginRow;
+
+	if (row != -1)
+		beginRow = row;
+	else
+		beginRow = rowCount(QModelIndex());
+
+	QByteArray encodedData = data->data("application/vnd.zcp.parameter.list");
+	QDataStream stream(&encodedData, QIODevice::ReadOnly);
+	QStringList handles;
+
+	while (!stream.atEnd())
+	{
+		QString handle;
+		stream >> handle;
+		handles << handle;
+	}
+
+	handles.removeDuplicates();
+
+	int i = 0;
+
+	foreach (const QString &handle, handles)
+	{
+		m_parameters.removeOne(handle);
+		m_parameters.insert(beginRow + i++, handle);
+	}
+
+	emit parametersReordered(m_parameters);
+
+	emit dataChanged(
+		index(beginRow, 0, QModelIndex()),
+		index(m_parameters.count() - 1, 1, QModelIndex())
+	);
+
+	return true;
 }
 
 QHash<QString, QString> DirectoryEditParametersModel::parameterLabels() const
@@ -195,6 +299,19 @@ void DirectoryEditParametersModel::removeParameter(const QString &handle)
 	m_parameters.removeOne(handle);
 
 	endRemoveRows();
+}
+
+void DirectoryEditParametersModel::reorderParameters(const QStringList &parameters)
+{
+	if (m_parameters == parameters)
+		return;
+
+	m_parameters = parameters;
+
+	emit dataChanged(
+		index(0, 0, QModelIndex()),
+		index(m_parameters.count() - 1, 1, QModelIndex())
+	);
 }
 
 QString DirectoryEditParametersModel::newParameterHandle()

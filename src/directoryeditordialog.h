@@ -25,6 +25,7 @@ signals:
 	void parameterAdded(const QString &handle);
 	void parameterHandleChanged(const QString &handle, const QString &newHandle);
 	void parameterRemoved(const QString &handle);
+	void parametersReordered(const QStringList &parameters);
 
 private:
 	Ui::DirectoryEditorDialog *ui;
@@ -52,6 +53,7 @@ private slots:
 	void parameterAddition(const QString &handle);
 	void parameterHandleChange(const QString &handle, const QString &newHandle);
 	void parameterRemoval(const QString &handle);
+	void reorderParameters(const QStringList &parameters);
 };
 
 #endif // DIRECTORYEDITORDIALOG_H

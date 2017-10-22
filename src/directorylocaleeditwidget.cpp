@@ -27,6 +27,8 @@ DirectoryLocaleEditWidget::DirectoryLocaleEditWidget(Metadata *meta, const QStri
 			this, SLOT(removeSelectedParameter()));
 	connect(model, SIGNAL(parameterHandleChanged(QString,QString)),
 			this, SIGNAL(parameterHandleChanged(QString,QString)));
+	connect(model, SIGNAL(parametersReordered(QStringList)),
+			this, SIGNAL(parametersReordered(QStringList)));
 	connect(ui->parameterTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
 			this, SLOT(parameterSelected(QModelIndex,QModelIndex)));
 }
@@ -123,6 +125,12 @@ void DirectoryLocaleEditWidget::removeParameter(const QString &handle)
 		return;
 
 	model->removeParameter(handle);
+}
+
+void DirectoryLocaleEditWidget::reorderParameters(const QStringList &parameters)
+{
+	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
+	model->reorderParameters(parameters);
 }
 
 void DirectoryLocaleEditWidget::addNewParameter()
