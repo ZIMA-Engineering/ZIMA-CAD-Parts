@@ -99,7 +99,10 @@ SOURCES += src/zima-cad-parts.cpp \
     src/threadworker.cpp \
     src/directoryeditordialog.cpp \
     src/directorylocaleeditwidget.cpp \
-    src/directoryeditparametersmodel.cpp
+    src/directoryeditparametersmodel.cpp \
+    src/metadata/metadatamigration.cpp \
+    src/metadata/metadatamigrator.cpp \
+    src/metadata/migrations/metadatav2migration.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -158,7 +161,10 @@ HEADERS += src/mainwindow.h \
     src/threadworker.h \
     src/directoryeditordialog.h \
     src/directorylocaleeditwidget.h \
-    src/directoryeditparametersmodel.h
+    src/directoryeditparametersmodel.h \
+    src/metadata/metadatamigration.h \
+    src/metadata/metadatamigrator.h \
+    src/metadata/migrations/metadatav2migration.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

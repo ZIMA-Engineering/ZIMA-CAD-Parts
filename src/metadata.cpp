@@ -26,6 +26,7 @@
 
 #include "metadata.h"
 #include "settings.h"
+#include "metadata/metadatamigrator.h"
 
 
 MetadataCache * MetadataCache::m_instance = 0;
@@ -140,28 +141,48 @@ Metadata::Metadata(const QString &path, QObject *parent)
 	  m_path(path),
 	  m_loadedIncludes(0)
 {
-//    qDebug() << "Metadata constructor for" << path;
 	m_settings = new QSettings(
 		m_path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE,
 		QSettings::IniFormat
 	);
 	m_settings->setIniCodec("utf-8");
-//    qDebug() << "ini file" << m_settings->fileName();
 
-	m_settings->beginGroup("Directory");
+	int v = version();
+
+	if (v > METADATA_VERSION)
 	{
-		QStringList toInclude;
-		QStringList data = buildIncludePaths(m_settings->value("IncludeParameters").toStringList());
-		QStringList thumbs = buildIncludePaths(m_settings->value("IncludeThumbnails").toStringList());
-
-		toInclude << data << thumbs;
-
-		toInclude.removeDuplicates();
-
-		foreach(QString path, toInclude)
-			m_includes << new Metadata(path, this);
+		qDebug() << "Metadata file" << m_settings->fileName();
+		qDebug() << "Detected version" << v;
+		qDebug() << "This program supports only version" << METADATA_VERSION;
+		return;
 	}
-	m_settings->endGroup();
+
+	if (v < METADATA_VERSION)
+	{
+		qDebug() << "Metadata file" << m_settings->fileName();
+		qDebug() << "Detected version" << v;
+
+		if (isEmpty())
+		{
+			qDebug() << "File is empty, tagging version";
+			m_settings->setValue("Directory/Version", METADATA_VERSION);
+
+		} else {
+			qDebug() << "Upgrading to version" << METADATA_VERSION;
+
+			MetadataMigrator migrator(m_settings);
+
+			if (!migrator.migrate(v, METADATA_VERSION))
+			{
+				qDebug() << "Migration failed";
+				return;
+			}
+
+			qDebug() << "Migration successful";
+		}
+	}
+
+	setup();
 }
 
 Metadata::~Metadata()
@@ -565,5 +586,33 @@ void Metadata::reloadProe(const QFileInfoList &fil)
 
     }
 
-    dia.setValue(fil.size());
+	dia.setValue(fil.size());
+}
+
+void Metadata::setup()
+{
+	m_settings->beginGroup("Directory");
+	{
+		QStringList toInclude;
+		QStringList data = buildIncludePaths(m_settings->value("IncludeParameters").toStringList());
+		QStringList thumbs = buildIncludePaths(m_settings->value("IncludeThumbnails").toStringList());
+
+		toInclude << data << thumbs;
+
+		toInclude.removeDuplicates();
+
+		foreach(QString path, toInclude)
+			m_includes << new Metadata(path, this);
+	}
+	m_settings->endGroup();
+}
+
+int Metadata::version()
+{
+	return m_settings->value("Directory/Version", 1).toInt();
+}
+
+bool Metadata::isEmpty()
+{
+	return m_settings->childGroups().empty() && m_settings->allKeys().empty();
 }

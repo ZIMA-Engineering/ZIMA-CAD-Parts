@@ -27,6 +27,7 @@
 
 #include "file.h"
 
+#define METADATA_VERSION 2
 
 //! \brief Version map: completeBaseName -> fileName, only the latest version is stored in this map
 typedef QHash<QString,QString> MetadataVersionsMap;
@@ -104,6 +105,9 @@ private:
 
 	MetadataVersionsMap m_versionsCache;
 
+	void setup();
+	int version();
+	bool isEmpty();
 	QString buildIncludePath(const QString &raw);
 	QStringList buildIncludePaths(const QStringList &raw);
 	bool partVersionType(FileType::FileType t, const QFileInfo &fi);
