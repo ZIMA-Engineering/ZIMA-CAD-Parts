@@ -21,6 +21,7 @@
 #include <QRegExp>
 #include <QDir>
 #include <QProgressDialog>
+#include <QHash>
 #include <QDebug>
 
 #include "metadata.h"
@@ -85,18 +86,32 @@ QString MetadataCache::label(const QString &path)
 	return m_map[path]->getLabel();
 }
 
-QStringList MetadataCache::columnLabels(const QString &path)
+QStringList MetadataCache::parameterHandles(const QString &path)
 {
 	if (!m_map.contains(path))
 		load(path);
-	return m_map[path]->columnLabels();
+	return m_map[path]->parameterHandles();
 }
 
-QString MetadataCache::partParam(const QString &path, const QString &fname, int column)
+QStringList MetadataCache::parameterLabels(const QString &path)
 {
 	if (!m_map.contains(path))
 		load(path);
-	return m_map[path]->partParam(fname, column);
+	return m_map[path]->parameterLabels();
+}
+
+QString MetadataCache::partParam(const QString &path, const QString &fname, const QString &param)
+{
+	if (!m_map.contains(path))
+		load(path);
+	return m_map[path]->partParam(fname, param);
+}
+
+QString MetadataCache::partParam(const QString &path, const QString &fname, int index)
+{
+	if (!m_map.contains(path))
+		load(path);
+	return m_map[path]->partParam(fname, index);
 }
 
 MetadataVersionsMap MetadataCache::partVersions(const QString &path)
@@ -126,22 +141,25 @@ Metadata::Metadata(const QString &path, QObject *parent)
 	  m_loadedIncludes(0)
 {
 //    qDebug() << "Metadata constructor for" << path;
-	m_settings = new QSettings(m_path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE, QSettings::IniFormat);
+	m_settings = new QSettings(
+		m_path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE,
+		QSettings::IniFormat
+	);
 	m_settings->setIniCodec("utf-8");
 //    qDebug() << "ini file" << m_settings->fileName();
 
-	m_settings->beginGroup("include");
+	m_settings->beginGroup("Directory");
 	{
 		QStringList toInclude;
-		QStringList data = buildIncludePaths(m_settings->value("data").toStringList());
-		QStringList thumbs = buildIncludePaths(m_settings->value("thumbnails").toStringList());
+		QStringList data = buildIncludePaths(m_settings->value("IncludeParameters").toStringList());
+		QStringList thumbs = buildIncludePaths(m_settings->value("IncludeThumbnails").toStringList());
 
 		toInclude << data << thumbs;
 
 		toInclude.removeDuplicates();
 
 		foreach(QString path, toInclude)
-        m_includes << new Metadata(path, this);
+			m_includes << new Metadata(path, this);
 	}
 	m_settings->endGroup();
 }
@@ -150,13 +168,13 @@ Metadata::~Metadata()
 {
 	delete m_settings;
 
-	m_columnLabels.clear();
+	m_parameterLabels.clear();
 	m_versionsCache.clear();
 }
 
 QString Metadata::getLabel()
 {
-	if(label.count())
+	if (!label.isEmpty())
 		return label;
 
 	return (label = getLabel(Settings::get()->LanguageMetadata));
@@ -164,152 +182,189 @@ QString Metadata::getLabel()
 
 QString Metadata::getLabel(const QString &lang)
 {
-	return m_settings->value(QString("params/%1/label").arg(lang), QString()).toString();
+	return m_settings->value(
+		QString("Directory/Label/%1").arg(lang),
+		QString()
+	).toString();
 }
 
 void Metadata::setLabel(const QString &lang, const QString &newLabel)
 {
 	label.clear();
 
-	m_settings->setValue(QString("params/%1/label").arg(lang), newLabel);
+	m_settings->setValue(QString("Directory/Label/%1").arg(lang), newLabel);
 }
 
-QStringList Metadata::columnLabels()
+QStringList Metadata::parameterHandles()
 {
-	if(m_columnLabels.count())
-		return m_columnLabels;
-
-	return (m_columnLabels = columnLabels(Settings::get()->LanguageMetadata));
+	return m_settings->value("Directory/Parameters", QStringList()).toStringList();
 }
 
-QStringList Metadata::columnLabels(const QString &lang)
+void Metadata::setParameterHandles(const QStringList &handles)
 {
-	QStringList columnLabels;
-
-	columnLabels << tr("Part Name") << tr("Thumbnail");
-	columnLabels.append(dataColumnLabels(lang));
-
-	return columnLabels;
+	// TODO: check that we're not removing no handles...
+	// what is allowed is reordering and adding of new parameters
+	m_settings->setValue("Directory/Parameters", handles);
 }
 
-QStringList Metadata::dataColumnLabels(const QString &lang)
+QStringList Metadata::parameterLabels()
 {
-	QStringList columnLabels;
+	if (!m_parameterLabels.isEmpty())
+		return m_parameterLabels;
 
-	QRegExp colRx("^\\d+$");
-	int colIndex = 1;
+	return (m_parameterLabels = parameterLabels(Settings::get()->LanguageMetadata));
+}
 
-	m_settings->beginGroup("params");
+QStringList Metadata::parameterLabels(const QString &lang)
+{
+	QStringList ret;
+
+	foreach (const QString &param, parameterHandles())
 	{
-		m_settings->beginGroup(lang);
-		{
-			foreach (const QString &col, m_settings->childKeys())
-			{
-				if (colRx.exactMatch(col))
-				{
-					columnLabels << m_settings->value( QString("%1").arg(colIndex++) ).toString();
-				}
-			}
-		}
-		m_settings->endGroup();
+		ret << m_settings->value(
+			QString("Parameters/%1/Label/%2").arg(param).arg(lang),
+			QString()
+		).toString();
 	}
-	m_settings->endGroup();
 
-	if (m_includes.size())
+	if (!m_includes.isEmpty())
 	{
-		columnLabels.clear();
+		ret.clear();
 
 		foreach(Metadata *include, m_includes)
-			columnLabels << include->dataColumnLabels(lang);
+			ret << include->parameterLabels(lang);
 	}
 
-	return columnLabels;
+	return ret;
 }
 
-void Metadata::setDataColumnLabels(const QString &lang, const QStringList &labels)
+QHash<QString, QString> Metadata::parametersWithLabels(const QString &lang)
 {
-	QRegExp colRx("^\\d+$");
-	int colIndex = 1;
+	QHash<QString, QString> ret;
 
-	m_settings->beginGroup("params");
+	foreach (const QString &param, parameterHandles())
 	{
-		m_settings->beginGroup(lang);
-		{
-			// First clear all existing columns
-			foreach (const QString &col, m_settings->childKeys())
-			{
-				if (colRx.exactMatch(col))
-					m_settings->remove(col);
-			}
+		ret.insert(param, m_settings->value(
+			QString("Parameters/%1/Label/%2").arg(param).arg(lang),
+			QString()
+		).toString());
+	}
 
-			// Write new columns
-			foreach (const QString &label, labels)
-			{
-				m_settings->setValue(QString("%1").arg(colIndex++), label);
-			}
-		}
-		m_settings->endGroup();
+	if (!m_includes.isEmpty())
+	{
+		ret.clear();
+
+		foreach(Metadata *include, m_includes)
+			ret.unite(include->parametersWithLabels(lang));
+	}
+
+	return ret;
+}
+
+void Metadata::setParameterLabel(const QString &param, const QString &lang, const QString &value)
+{
+	m_settings->setValue(QString("Parameters/%1/Label/%2").arg(param).arg(lang), value);
+}
+
+void Metadata::renameParameter(const QString &handle, const QString &newHandle)
+{
+	QStringList handles = parameterHandles();
+	handles.replace(handles.indexOf(handle), newHandle);
+	m_settings->setValue("Directory/Parameters", handles);
+
+	m_settings->beginGroup("Parameters");
+	{
+		rename(handle, newHandle);
 	}
 	m_settings->endGroup();
 
-	m_columnLabels.clear();
+	m_settings->beginGroup("Parts");
+	{
+		foreach (const QString &part, m_settings->childGroups())
+		{
+			m_settings->beginGroup(part);
+			rename(handle, newHandle);
+			m_settings->endGroup();
+		}
+	}
+	m_settings->endGroup();
 }
 
-QString Metadata::partParam(const QString &partName, int col)
+QString Metadata::partParam(const QString &partName, const QString &param)
 {
 	QString partGroup = partName.section('.', 0, 0);
 	QString anyVal;
 	QString val;
 
+	m_settings->beginGroup("Parts");
 	m_settings->beginGroup(partGroup);
-
-	foreach(QString group, m_settings->childGroups())
+	m_settings->beginGroup(param);
 	{
-		if(!(val = m_settings->value(QString("%1/%2").arg(group).arg(col)).toString()).isEmpty() && group == Settings::get()->LanguageMetadata)
-			break;
+		foreach (const QString &lang, m_settings->childKeys())
+		{
+			val = m_settings->value(lang).toString();
 
-		if(anyVal.isEmpty())
-			anyVal = val;
+			if (!(val).isEmpty() && lang == Settings::get()->LanguageMetadata)
+				break;
+
+			if (anyVal.isEmpty())
+				anyVal = val;
+		}
 	}
-
+	m_settings->endGroup();
+	m_settings->endGroup();
 	m_settings->endGroup();
 
-	if(!val.isEmpty())
-	{
+	if (!val.isEmpty())
 		return val;
+
+	QString ret;
+
+	if (anyVal.isEmpty())
+	{
+		ret = m_settings->value(
+			QString("Parts/%1/%2").arg(partGroup).arg(param),
+			QString()
+		).toString();
+
+	} else {
+		ret = anyVal;
 	}
-	else {
 
-		QString ret = anyVal.isEmpty() ? m_settings->value(QString("%1/%2").arg(partGroup).arg(col), QString()).toString() : anyVal;
-
-		if(ret.isEmpty())
+	if (ret.isEmpty())
+	{
+		foreach(Metadata *include, m_includes)
 		{
-            foreach(Metadata *include, m_includes)
-			{
-				QString tmp = include->partParam(partName, col);
+			QString tmp = include->partParam(partName, param);
 
-				if(!tmp.isEmpty())
-					return tmp;
-			}
+			if (!tmp.isEmpty())
+				return tmp;
 		}
-
-		return ret;
 	}
+
+	return ret;
 }
 
-void Metadata::setPartParam(const QString &partName, int col, const QString &value)
+QString Metadata::partParam(const QString &partName, int index)
+{
+	return partParam(partName, parameterHandles()[index]);
+}
+
+void Metadata::setPartParam(const QString &partName, const QString &param, const QString &value)
 {
     QString partGroup = partName.section('.', 0, 0);
 
+	m_settings->beginGroup("Parts");
     m_settings->beginGroup(partGroup);
 
-    foreach (QString lang, Settings::get()->Languages)
-    {
-        QString key = QString("%1/%2").arg(lang.left(2)).arg(col);
-        m_settings->setValue(key, value);
-    }
+	QString key = QString("%1/%2")
+		.arg(param)
+		.arg(Settings::get()->LanguageMetadata);
+
+	m_settings->setValue(key, value);
 
     m_settings->endGroup();
+	m_settings->endGroup();
 }
 
 bool Metadata::partVersionType(FileType::FileType t, const QFileInfo &fi)
@@ -322,6 +377,45 @@ bool Metadata::partVersionType(FileType::FileType t, const QFileInfo &fi)
 		return true;
 	}
 	return false;
+}
+
+void Metadata::rename(const QString &oldName, const QString &newName)
+{
+	QHash<QString, QVariant> settings;
+
+	if (m_settings->childKeys().contains(oldName))
+	{
+		m_settings->setValue(newName, m_settings->value(oldName));
+		m_settings->remove(oldName);
+		return;
+	}
+
+	m_settings->beginGroup(oldName);
+	recursiveRename(newName, settings);
+	m_settings->endGroup();
+
+	QHashIterator<QString, QVariant> i(settings);
+
+	while (i.hasNext())
+	{
+		i.next();
+		m_settings->setValue(i.key(), i.value());
+	}
+
+	m_settings->remove(oldName);
+}
+
+void Metadata::recursiveRename(const QString &path, QHash<QString, QVariant> &settings)
+{
+	foreach (const QString &group, m_settings->childGroups())
+	{
+		m_settings->beginGroup(group);
+		recursiveRename(path + "/" + group, settings);
+		m_settings->endGroup();
+	}
+
+	foreach (const QString &key, m_settings->childKeys())
+		settings.insert(path + "/" + key, m_settings->value(key));
 }
 
 MetadataVersionsMap Metadata::partVersions()
@@ -355,7 +449,7 @@ void Metadata::deletePart(const QString &part)
 	if(grp.isEmpty())
 		return;
 
-	m_settings->remove(grp);
+	m_settings->remove(QString("Parameters/%1").arg(grp));
 }
 
 QString Metadata::buildIncludePath(const QString &raw)
@@ -382,27 +476,6 @@ QStringList Metadata::buildIncludePaths(const QStringList &raw)
     }
 
 	return ret;
-}
-
-QString unaccent_helper(const QString &str)
-{
-    QString diacriticLetters = QString::fromUtf8("ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ");
-    QStringList noDiacriticLetters;
-    noDiacriticLetters << "S"<<"OE"<<"Z"<<"s"<<"oe"<<"z"<<"Y"<<"Y"<<"u"<<"A"<<"A"<<"A"<<"A"<<"A"<<"A"<<"AE"<<"C"<<"E"<<"E"<<"E"<<"E"<<"I"<<"I"<<"I"<<"I"<<"D"<<"N"<<"O"<<"O"<<"O"<<"O"<<"O"<<"O"<<"U"<<"U"<<"U"<<"U"<<"Y"<<"s"<<"a"<<"a"<<"a"<<"a"<<"a"<<"a"<<"ae"<<"c"<<"e"<<"e"<<"e"<<"e"<<"i"<<"i"<<"i"<<"i"<<"o"<<"n"<<"o"<<"o"<<"o"<<"o"<<"o"<<"o"<<"u"<<"u"<<"u"<<"u"<<"y"<<"y";
-
-    QString output = "";
-    for (int i = 0; i < str.length(); i++) {
-        QChar c = str[i];
-        int dIndex = diacriticLetters.indexOf(c);
-        if (dIndex < 0) {
-            output.append(c);
-        } else {
-            QString replacement = noDiacriticLetters[dIndex];
-            output.append(replacement);
-        }
-    }
-
-    return output;
 }
 
 void Metadata::reloadProe(const QFileInfoList &fil)
@@ -480,17 +553,10 @@ void Metadata::reloadProe(const QFileInfoList &fil)
                     // try to find metadata.ini index
                     QString fname = i.fileName();
                     QString key1 = key.toLower();
-                    qDebug() << columnLabels();
-                    foreach (QString key2, columnLabels())
-                    {
-                        QString unac = unaccent_helper(key2).toLower();
-                        qDebug() << "UNAC" << unac << key2 << key1;
-                        if (unac == key1)
-                        {
-                            setPartParam(fname, columnLabels().indexOf(key2) -1, val);
-                            break;
-                        }
-                    }
+
+					if (parameterHandles().contains(key1))
+						setPartParam(fname, key1, val);
+
                 }
                 break;
             }

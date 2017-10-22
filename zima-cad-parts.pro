@@ -99,7 +99,7 @@ SOURCES += src/zima-cad-parts.cpp \
     src/threadworker.cpp \
     src/directoryeditordialog.cpp \
     src/directorylocaleeditwidget.cpp \
-    src/directoryeditcolumnmodel.cpp
+    src/directoryeditparametersmodel.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -158,7 +158,7 @@ HEADERS += src/mainwindow.h \
     src/threadworker.h \
     src/directoryeditordialog.h \
     src/directorylocaleeditwidget.h \
-    src/directoryeditcolumnmodel.h
+    src/directoryeditparametersmodel.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -231,4 +231,7 @@ else {
 ICON = gfx/icon.icns
 
 DISTFILES += \
-    README.md
+    README.md \
+    doc/datasource.md \
+    doc/metadata.md \
+    doc/users.md

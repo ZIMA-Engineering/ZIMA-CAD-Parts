@@ -22,7 +22,8 @@ public slots:
 	void apply();
 
 signals:
-	void primaryColumnAdded(int row);
+	void parameterAdded(const QString &handle);
+	void parameterHandleChanged(const QString &handle, const QString &newHandle);
 
 private:
 	Ui::DirectoryEditorDialog *ui;
@@ -31,6 +32,8 @@ private:
 	Metadata *m_meta;
 	QString m_iconPath;
 	QString m_origIconPath;
+	QStringList m_parameters;
+	QHash<QString, QString> m_handleChanges;
 
 	void setupLanguageBox();
 	void setupIcon();
@@ -40,11 +43,12 @@ private:
 	bool hasAnyLabel();
 	bool hasIcon(const QString &name) const;
 	QString iconInstallPath(const QString &name) const;
-	QStringList findPrimaryLanguageColumns(QStringList languages);
 
 private slots:
 	void removeIcon();
 	void openIconDialog();
+	void parameterAddition(const QString &handle);
+	void parameterHandleChange(const QString &handle, const QString &newHandle);
 };
 
 #endif // DIRECTORYEDITORDIALOG_H

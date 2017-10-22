@@ -63,18 +63,23 @@ public:
 
 	void setLabel(const QString &lang, const QString &newLabel);
 
-	//! Labels for FileModel
-	QStringList columnLabels();
-	QStringList columnLabels(const QString &lang);
-	QStringList dataColumnLabels(const QString &lang);
+	QStringList parameterHandles();
+	void setParameterHandles(const QStringList &handles);
 
-	void setDataColumnLabels(const QString &lang, const QStringList &labels);
+	//! Labels for FileModel
+	QStringList parameterLabels();
+	QStringList parameterLabels(const QString &lang);
+	QHash<QString, QString> parametersWithLabels(const QString &lang);
+
+	void setParameterLabel(const QString &param, const QString &lang, const QString &value);
+	void renameParameter(const QString &handle, const QString &newHandle);
 
 	//! Value for FileModel
-	QString partParam(const QString &partName, int col);
+	QString partParam(const QString &partName, const QString &param);
+	QString partParam(const QString &partName, int index);
 
     //! Set new value for given param
-    void setPartParam(const QString &partName, int col, const QString &value);
+	void setPartParam(const QString &partName, const QString &param, const QString &value);
 
 	void deletePart(const QString &part);
 	/*! Load part versions.
@@ -94,7 +99,7 @@ private:
 	QString m_path;
     QList<Metadata*> m_includes;
 	int m_loadedIncludes;
-	QStringList m_columnLabels;
+	QStringList m_parameterLabels;
 	QString label;
 
 	MetadataVersionsMap m_versionsCache;
@@ -102,6 +107,8 @@ private:
 	QString buildIncludePath(const QString &raw);
 	QStringList buildIncludePaths(const QStringList &raw);
 	bool partVersionType(FileType::FileType t, const QFileInfo &fi);
+	void rename(const QString &oldName, const QString &newName);
+	void recursiveRename(const QString &path, QHash<QString, QVariant> &settings);
 };
 
 /*! An access singleton to the Metadata cache.
@@ -118,8 +125,10 @@ public:
 
 	bool showLabel(const QString &path);
 	QString label(const QString &path);
-	QStringList columnLabels(const QString &path);
-	QString partParam(const QString &path, const QString &fname, int column);
+	QStringList parameterHandles(const QString &path);
+	QStringList parameterLabels(const QString &path);
+	QString partParam(const QString &path, const QString &fname, const QString &param);
+	QString partParam(const QString &path, const QString &fname, int index);
 	MetadataVersionsMap partVersions(const QString &path);
 	void deletePart(const QString &path, const QString &part);
     Metadata* metadata(const QString &path);

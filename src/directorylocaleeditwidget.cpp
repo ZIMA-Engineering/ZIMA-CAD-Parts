@@ -1,22 +1,30 @@
 #include "directorylocaleeditwidget.h"
 #include "ui_directorylocaleeditwidget.h"
 #include "metadata.h"
-#include "directoryeditcolumnmodel.h"
+#include "directoryeditparametersmodel.h"
 
 #include <QDebug>
 
-DirectoryLocaleEditWidget::DirectoryLocaleEditWidget(Metadata *meta, const QString &lang, const QStringList &primaryColumns, QWidget *parent) :
+DirectoryLocaleEditWidget::DirectoryLocaleEditWidget(Metadata *meta, const QString &lang, QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::DirectoryLocaleEditWidget),
 	m_lang(lang)
 {
 	ui->setupUi(this);
 
-	ui->labelLineEdit->setText(meta->getLabel(lang));
-	ui->columnListView->setModel(new DirectoryEditColumnModel(meta->dataColumnLabels(lang), primaryColumns, this));
+	auto model = new DirectoryEditParametersModel(
+		meta->parameterHandles(),
+		meta->parametersWithLabels(lang),
+		this
+	);
 
-	connect(ui->addColumnButton, SIGNAL(clicked()),
-			this, SLOT(addNewColumn()));
+	ui->labelLineEdit->setText(meta->getLabel(lang));
+	ui->parameterTreeView->setModel(model);
+
+	connect(ui->addParameterButton, SIGNAL(clicked()),
+			this, SLOT(addNewParameter()));
+	connect(model, SIGNAL(parameterHandleChanged(QString,QString)),
+			this, SIGNAL(parameterHandleChanged(QString,QString)));
 }
 
 DirectoryLocaleEditWidget::~DirectoryLocaleEditWidget()
@@ -33,36 +41,59 @@ void DirectoryLocaleEditWidget::apply(Metadata *meta)
 {
 	meta->setLabel(m_lang, ui->labelLineEdit->text());
 
-	auto model = static_cast<DirectoryEditColumnModel*>(ui->columnListView->model());
+	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
+	QHashIterator<QString, QString> i(model->parameterLabels());
 
-	meta->setDataColumnLabels(m_lang, model->columnLabels());
+	while (i.hasNext())
+	{
+		i.next();
+
+		if (i.value().isEmpty())
+			continue;
+
+		meta->setParameterLabel(i.key(), m_lang, i.value());
+	}
 }
 
-void DirectoryLocaleEditWidget::addPrimaryColumn(int row)
+void DirectoryLocaleEditWidget::addParameter(const QString &handle)
 {
-	QModelIndex root = ui->columnListView->rootIndex();
-	auto model = ui->columnListView->model();
+	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
 
 	// If true, this widget is where the signal originated, so we
 	// do not want to add another column
-	if (row > model->rowCount(root))
+	if (model->hasParameter(handle))
 		return;
 
-	ui->columnListView->model()->insertRows(row, 1, root);
+	model->addParameter(handle);
 }
 
-void DirectoryLocaleEditWidget::addNewColumn()
+void DirectoryLocaleEditWidget::parameterHandleChange(const QString &handle, const QString &newHandle)
 {
-	QModelIndex root = ui->columnListView->rootIndex();
-	auto model = ui->columnListView->model();
+	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
+
+	// If true, this widget is where the signal originated, so we
+	// do not want to add another column
+	if (model->hasParameter(newHandle))
+		return;
+
+	model->changeHandle(handle, newHandle);
+}
+
+void DirectoryLocaleEditWidget::addNewParameter()
+{
+	QModelIndex root = ui->parameterTreeView->rootIndex();
+	auto model = ui->parameterTreeView->model();
 	int row = model->rowCount(root);
 
-	if (!ui->columnListView->model()->insertRows(row, 1, root))
+	if (!model->insertRows(row, 1, root))
 		return;
 
 	QModelIndex current = model->index(row, 0, root);
-	ui->columnListView->setCurrentIndex(current);
-	ui->columnListView->edit(current);
+	ui->parameterTreeView->setCurrentIndex(current);
+	ui->parameterTreeView->edit(current);
 
-	emit primaryColumnAdded(row);
+	emit parameterAdded(model->data(
+		model->index(row, 1, root),
+		Qt::DisplayRole
+	).toString());
 }

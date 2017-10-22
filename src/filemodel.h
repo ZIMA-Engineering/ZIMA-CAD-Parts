@@ -70,6 +70,7 @@ private:
 	QFileInfoList m_data;
 	QString m_path;
 	QStringList m_columnLabels;
+	QStringList m_parameterHandles;
 	/*! List of checked files. Key = root directory, values are full
 	 * paths of files (checked).
 	 * It shares information between directories. The map is cleared
@@ -80,6 +81,8 @@ private:
 	FileIconProvider *m_iconProvider;
 
     ThumbnailManager *m_thumb;
+
+	void setupColumns(const QString &path);
 
 private slots:
 	void loadFiles(const QString &path);

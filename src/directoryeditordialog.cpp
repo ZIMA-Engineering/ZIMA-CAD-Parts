@@ -17,6 +17,7 @@ DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *paren
 
 	m_meta = MetadataCache::get()->metadata(fi.absoluteFilePath());
 	m_dirPath = m_fi.absoluteFilePath();
+	m_parameters = m_meta->parameterHandles();
 
 	setupLanguageBox();
 	connect(ui->languageComboBox, SIGNAL(currentIndexChanged(int)),
@@ -78,6 +79,23 @@ void DirectoryEditorDialog::apply()
 		installIcon(iconInstallPath(LOGO_TEXT_FILE), LOGO_FILE, true);
 	}
 
+	// Parameter handles
+	if (!m_handleChanges.isEmpty())
+	{
+		QHashIterator<QString, QString> i(m_handleChanges);
+
+		while (i.hasNext())
+		{
+			i.next();
+			MetadataCache::get()->metadata(m_dirPath)->renameParameter(
+				i.key(),
+				i.value()
+			);
+		}
+	}
+
+	MetadataCache::get()->metadata(m_dirPath)->setParameterHandles(m_parameters);
+
 	// Locales
 	int cnt = ui->stackedWidget->count();
 
@@ -92,7 +110,6 @@ void DirectoryEditorDialog::apply()
 void DirectoryEditorDialog::setupLanguageBox()
 {
 	QStringList languages = Settings::get()->Languages;
-	QStringList primaryLangColumns = findPrimaryLanguageColumns(languages);
 
 	foreach (const QString &code, languages)
 	{
@@ -105,16 +122,21 @@ void DirectoryEditorDialog::setupLanguageBox()
 			code
 		);
 
-		auto w = new DirectoryLocaleEditWidget(
-			m_meta,
-			langCode,
-			primaryLangColumns
-		);
+		auto w = new DirectoryLocaleEditWidget(m_meta, langCode);
 
-		connect(this, SIGNAL(primaryColumnAdded(int)),
-				w, SLOT(addPrimaryColumn(int)));
-		connect(w, SIGNAL(primaryColumnAdded(int)),
-				this, SIGNAL(primaryColumnAdded(int)));
+		connect(this, SIGNAL(parameterAdded(QString)),
+				w, SLOT(addParameter(QString)));
+		connect(w, SIGNAL(parameterAdded(QString)),
+				this, SLOT(parameterAddition(QString)));
+		connect(w, SIGNAL(parameterAdded(QString)),
+				this, SIGNAL(parameterAdded(QString)));
+
+		connect(this, SIGNAL(parameterHandleChanged(QString,QString)),
+				w, SLOT(parameterHandleChange(QString,QString)));
+		connect(w, SIGNAL(parameterHandleChanged(QString,QString)),
+				this, SLOT(parameterHandleChange(QString,QString)));
+		connect(w, SIGNAL(parameterHandleChanged(QString,QString)),
+				this, SIGNAL(parameterHandleChanged(QString,QString)));
 
 		ui->stackedWidget->addWidget(w);
 	}
@@ -212,25 +234,6 @@ QString DirectoryEditorDialog::iconInstallPath(const QString &name) const
 	return m_dirPath +"/"+ TECHSPEC_DIR + "/" + name;
 }
 
-QStringList DirectoryEditorDialog::findPrimaryLanguageColumns(QStringList languages)
-{
-	int maxCols = -1;
-	QStringList ret;
-
-	foreach (const QString &code, languages)
-	{
-		QStringList cols = m_meta->dataColumnLabels(code.left(2));
-
-		if (cols.count() > maxCols)
-		{
-			maxCols = cols.count();
-			ret = cols;
-		}
-	}
-
-	return ret;
-}
-
 void DirectoryEditorDialog::removeIcon()
 {
 	m_iconPath.clear();
@@ -253,4 +256,30 @@ void DirectoryEditorDialog::openIconDialog()
 	setIcon(iconFile);
 	m_iconPath = iconFile;
 	ui->removeIconButton->show();
+}
+
+void DirectoryEditorDialog::parameterAddition(const QString &handle)
+{
+	m_parameters << handle;
+}
+
+void DirectoryEditorDialog::parameterHandleChange(const QString &handle, const QString &newHandle)
+{
+	QString key;
+	m_parameters.replace(m_parameters.indexOf(handle), newHandle);
+
+	if (!(key = m_handleChanges.key(handle)).isEmpty())
+	{
+		// Changing previously changed key
+		if (!m_meta->parameterHandles().contains(key))
+			return;
+
+		m_handleChanges[key] = newHandle;
+		return;
+	}
+
+	if (!m_meta->parameterHandles().contains(handle))
+		return;
+
+	m_handleChanges[handle] = newHandle;
 }

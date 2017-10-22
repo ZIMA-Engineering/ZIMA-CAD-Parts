@@ -98,9 +98,11 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
             // generate thumbnail for image files
             if (m.type == FileType::FILE_IMAGE)
             {
-                return QPixmap(m.fileInfo.absoluteFilePath()).scaled(Settings::get()->GUIThumbWidth,
-                                                                     Settings::get()->GUIThumbWidth,
-                                                                     Qt::KeepAspectRatio);
+				return QPixmap(m.fileInfo.absoluteFilePath()).scaled(
+					Settings::get()->GUIThumbWidth,
+					Settings::get()->GUIThumbWidth,
+					Qt::KeepAspectRatio
+				);
             }
             else
                 return m_thumb->thumbnail(m_data.at(index.row()));
@@ -117,9 +119,11 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 	} // additional metadata
 	else if (role == Qt::DisplayRole && col > 1)
 	{
-		return MetadataCache::get()->partParam(m_path,
-		                                       m_data.at(index.row()).fileName(),
-		                                       col-1);
+		return MetadataCache::get()->partParam(
+			m_path,
+			m_data.at(index.row()).fileName(),
+			m_parameterHandles[col - 2]
+		);
 	}
 
 	return QVariant();
@@ -129,7 +133,7 @@ void FileModel::loadFiles(const QString &path)
 {
 	m_data.clear();
 	QDir d(path);
-	m_data = d.entryInfoList(QDir::Files|QDir::Readable, QDir::Name);
+	m_data = d.entryInfoList(QDir::Files | QDir::Readable, QDir::Name);
 }
 
 void FileModel::updateThumbnails()
@@ -142,6 +146,15 @@ void FileModel::updateThumbnails()
 QFileInfo FileModel::fileInfo(const QModelIndex &ix)
 {
 	return m_data.at(ix.row());
+}
+
+void FileModel::setupColumns(const QString &path)
+{
+	m_columnLabels.clear();
+	m_columnLabels << tr("Part name") << "Thumbnail";
+	m_columnLabels << MetadataCache::get()->parameterLabels(path);
+
+	m_parameterHandles = MetadataCache::get()->parameterHandles(path);
 }
 
 Qt::ItemFlags FileModel::flags(const QModelIndex& index) const
@@ -169,10 +182,10 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 		emit dataChanged(index, index);
 		return true;
 
-	} else if (role == Qt::EditRole) {
+	} else if (role == Qt::EditRole && index.column() > 1) {
 		MetadataCache::get()->metadata(m_path)->setPartParam(
 			m_data.at(index.row()).fileName(),
-			index.column() - 1,
+			m_parameterHandles[ index.column() - 2 ],
 			value.toString()
 		);
 
@@ -194,7 +207,7 @@ QVariant FileModel::headerData (int section, Qt::Orientation orientation, int ro
 void FileModel::setDirectory(const QString &path)
 {
 	// this has to go before path != m_path check to reload the header translations
-	m_columnLabels = MetadataCache::get()->columnLabels(path);
+	setupColumns(path);
 
 	if (path != m_path)
 	{
@@ -219,7 +232,7 @@ void FileModel::refreshModel()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    m_columnLabels = MetadataCache::get()->columnLabels(m_path);
+	setupColumns(m_path);
 
     loadFiles(m_path);
     m_thumb->clear();

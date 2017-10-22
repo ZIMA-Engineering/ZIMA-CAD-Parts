@@ -109,7 +109,7 @@ bool FileFilterModel::isFiltered(const QString &path, const QString &name) const
 			// This shouldn't happen, do nothing
 
 		} else {
-			QString data = meta->partParam(path, name, col - 1);
+			QString data = meta->partParam(path, name, col-2);
 
 			if (!data.contains(val))
 				return false;

@@ -17,14 +17,16 @@ FileEditDialog::FileEditDialog(QString dir, QString file, QWidget *parent) :
 	ui->nameLabel->setText(file);
 
 	Metadata *meta = MetadataCache::get()->metadata(dir);
-	int partColumn = 1; // parts are indexed from 1
+	QStringList paramHandles = meta->parameterHandles();
+	QStringList paramLabels = meta->parameterLabels();
 	int layoutRow = 1; // first row contains part name
 
-	foreach (const QString &label, meta->columnLabels().mid(2)) {
-		QLineEdit *edit = new QLineEdit(meta->partParam(file, partColumn++));
+	for (int i = 0; i < paramHandles.count(); i++)
+	{
+		QLineEdit *edit = new QLineEdit(meta->partParam(file, paramHandles[i]));
 		m_edits << edit;
 
-		ui->gridLayout->addWidget(new QLabel(label), layoutRow, 0);
+		ui->gridLayout->addWidget(new QLabel(paramLabels[i]), layoutRow, 0);
 		ui->gridLayout->addWidget(edit, layoutRow++, 1);
 	}
 
@@ -52,8 +54,9 @@ void FileEditDialog::save()
 {
 	int cnt = m_edits.count();
 	Metadata *meta = MetadataCache::get()->metadata(m_dir);
+	QStringList paramHandles = meta->parameterHandles();
 
 	for (int i = 0; i < cnt; i++) {
-		meta->setPartParam(m_file, i+1, m_edits[i]->text());
+		meta->setPartParam(m_file, paramHandles[i], m_edits[i]->text());
 	}
 }

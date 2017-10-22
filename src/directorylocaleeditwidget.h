@@ -14,23 +14,25 @@ class DirectoryLocaleEditWidget : public QWidget
 	Q_OBJECT
 
 public:
-	explicit DirectoryLocaleEditWidget(Metadata *meta, const QString &lang, const QStringList &primaryColumns, QWidget *parent = 0);
+	explicit DirectoryLocaleEditWidget(Metadata *meta, const QString &lang, QWidget *parent = 0);
 	~DirectoryLocaleEditWidget();
 	QString label() const;
 
 public slots:
 	void apply(Metadata *meta);
-	void addPrimaryColumn(int row);
+	void addParameter(const QString &handle);
+	void parameterHandleChange(const QString &handle, const QString &newHandle);
 
 signals:
-	void primaryColumnAdded(int row);
+	void parameterAdded(const QString &handle);
+	void parameterHandleChanged(const QString &handle, const QString &newHandle);
 
 private:
 	Ui::DirectoryLocaleEditWidget *ui;
 	QString m_lang;
 
 private slots:
-	void addNewColumn();
+	void addNewParameter();
 };
 
 #endif // DIRECTORYLOCALEEDITWIDGET_H
