@@ -218,7 +218,17 @@ void Metadata::setLabel(const QString &lang, const QString &newLabel)
 
 QStringList Metadata::parameterHandles()
 {
-	return m_settings->value("Directory/Parameters", QStringList()).toStringList();
+	if (m_includes.isEmpty())
+		return m_settings->value(
+			"Directory/Parameters", QStringList()
+		).toStringList();
+
+	QStringList ret;
+
+	foreach(Metadata *include, m_includes)
+			ret << include->parameterHandles();
+
+	return ret;
 }
 
 void Metadata::setParameterHandles(const QStringList &handles)
