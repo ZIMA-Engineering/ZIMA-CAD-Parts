@@ -17,13 +17,18 @@ class DirectoryRemover : public QObject
 {
 	Q_OBJECT
 public:
-	explicit DirectoryRemover(QFileInfo dirInfo, QWidget *parent = 0);
+	explicit DirectoryRemover(QWidget *parent = 0);
+	explicit DirectoryRemover(QFileInfo fileInfo, QWidget *parent = 0);
+	explicit DirectoryRemover(QFileInfoList fileInfos, QWidget *parent = 0);
+	void addFiles(QFileInfoList fileInfos);
+	void setMessage(const QString &msg);
 
 public slots:
 	void work();
 
 private:
-	QFileInfo m_dirInfo;
+	QString m_msg;
+	QFileInfoList m_fileInfos;
 	ProgressDialog *m_progress;
 	DirectoryRemoverWorker *m_rm;
 
@@ -37,16 +42,16 @@ class DirectoryRemoverWorker : public ThreadWorker
 	Q_OBJECT
 public:
 	explicit DirectoryRemoverWorker(QObject *parent = 0);
-	void setDirInfo(const QFileInfo &dirInfo);
+	void setFileInfos(const QFileInfoList &fileInfos);
 
 public slots:
 	void run();
 
 private:
-	QFileInfo m_dirInfo;
+	QFileInfoList m_fileInfos;
 	QFileInfoList m_files;
 
-	void recurse(const QFileInfo &dir);
+	void recurse(const QFileInfo &fi);
 };
 
 #endif // DIRECTORYREMOVER_H

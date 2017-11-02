@@ -189,6 +189,7 @@ void ServersView::deleteDirectory()
 			==  QMessageBox::Yes)
 	{
 		DirectoryRemover *rm = new DirectoryRemover(fi, this);
+		rm->setMessage(tr("Please wait while the directory is being removed..."));
 		rm->work();
 	}
 }

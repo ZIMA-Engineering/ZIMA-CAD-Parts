@@ -7,20 +7,44 @@
 #include <QLabel>
 #include <QMessageBox>
 
-DirectoryRemover::DirectoryRemover(QFileInfo dirInfo, QWidget *parent)
-	: QObject(parent),
-	  m_dirInfo(dirInfo)
+DirectoryRemover::DirectoryRemover(QWidget *parent) : QObject(parent)
 {
 
+}
+
+DirectoryRemover::DirectoryRemover(QFileInfo fileInfo, QWidget *parent)
+	: QObject(parent),
+	  m_fileInfos(QFileInfoList() << fileInfo)
+{
+
+}
+
+DirectoryRemover::DirectoryRemover(QFileInfoList fileInfos, QWidget *parent)
+	: QObject(parent),
+	  m_fileInfos(fileInfos)
+{
+
+}
+
+void DirectoryRemover::addFiles(QFileInfoList fileInfos)
+{
+	m_fileInfos << fileInfos;
+}
+
+void DirectoryRemover::setMessage(const QString &msg)
+{
+	m_msg = msg;
 }
 
 void DirectoryRemover::work()
 {
 	m_rm = ThreadWorker::create<DirectoryRemoverWorker>();
-	m_rm->setDirInfo(m_dirInfo);
+	m_rm->setFileInfos(m_fileInfos);
 
 	m_progress = new ProgressDialog(static_cast<QWidget*>(parent()));
-	m_progress->label()->setText(tr("Please wait while the directory is being removed..."));
+	m_progress->label()->setText(
+		m_msg.isNull() ? tr("Please wait while the files are being removed...") : m_msg
+	);
 
 	// Quit after worker finishes
 	connect(m_rm, SIGNAL(finished()),
@@ -64,14 +88,15 @@ DirectoryRemoverWorker::DirectoryRemoverWorker(QObject *parent)
 
 }
 
-void DirectoryRemoverWorker::setDirInfo(const QFileInfo &dirInfo)
+void DirectoryRemoverWorker::setFileInfos(const QFileInfoList &fileInfos)
 {
-	m_dirInfo = dirInfo;
+	m_fileInfos = fileInfos;
 }
 
 void DirectoryRemoverWorker::run()
 {
-	recurse(m_dirInfo);
+	foreach (const QFileInfo &fi, m_fileInfos)
+		recurse(fi);
 
 	int i = 0, done = 0, lastDone = 0;
 
@@ -116,10 +141,21 @@ void DirectoryRemoverWorker::run()
 	emit finished();
 }
 
-void DirectoryRemoverWorker::recurse(const QFileInfo &dir)
+void DirectoryRemoverWorker::recurse(const QFileInfo &fi)
 {
-	QDir root(dir.absoluteFilePath());
-	QFileInfoList list = root.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden | QDir::System);
+	if (!fi.isDir())
+	{
+		m_files << fi;
+		return;
+	}
+
+	QDir root(fi.absoluteFilePath());
+	QFileInfoList list = root.entryInfoList(
+		QDir::NoDotAndDotDot
+		| QDir::AllEntries
+		| QDir::Hidden
+		| QDir::System
+	);
 
 	foreach (const QFileInfo &f, list)
 	{
@@ -133,5 +169,5 @@ void DirectoryRemoverWorker::recurse(const QFileInfo &dir)
 			m_files << f;
 	}
 
-	m_files << dir;
+	m_files << fi;
 }
