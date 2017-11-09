@@ -60,7 +60,27 @@ void MetadataCache::clear()
 void MetadataCache::clear(const QString &path)
 {
 	delete m_map.take(path);
-	emit cleared();
+}
+
+void MetadataCache::clearBelow(const QString &path)
+{
+	delete m_map.take(path);
+
+	QHashIterator<QString,Metadata*> it(m_map);
+
+	while (it.hasNext())
+	{
+		it.next();
+
+		QString dirPath = it.key();
+		Metadata *m = it.value();
+
+		if (dirPath.startsWith(path + "/"))
+		{
+			m_map.remove(dirPath);
+			delete m;
+		}
+	}
 }
 
 void MetadataCache::load(const QString &path)

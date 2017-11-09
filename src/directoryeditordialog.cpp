@@ -54,7 +54,7 @@ void DirectoryEditorDialog::apply()
 
 		if (QFile::rename(m_dirPath, dstDirPath))
 		{
-			MetadataCache::get()->clear(m_dirPath);
+			MetadataCache::get()->clearBelow(m_dirPath);
 			m_dirPath = dstDirPath;
 
 		} else {
