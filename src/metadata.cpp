@@ -87,6 +87,13 @@ QString MetadataCache::label(const QString &path)
 	return m_map[path]->getLabel();
 }
 
+bool MetadataCache::showDirectoriesAsParts(const QString &path)
+{
+	if (!m_map.contains(path))
+		load(path);
+	return m_map[path]->showDirectoriesAsParts();
+}
+
 QStringList MetadataCache::parameterHandles(const QString &path)
 {
 	if (!m_map.contains(path))
@@ -214,6 +221,16 @@ void Metadata::setLabel(const QString &lang, const QString &newLabel)
 	label.clear();
 
 	m_settings->setValue(QString("Directory/Label/%1").arg(lang), newLabel);
+}
+
+bool Metadata::showDirectoriesAsParts() const
+{
+	return m_settings->value("Directory/SubdirectoriesAsParts", false).toBool();
+}
+
+void Metadata::setShowDirectoriesAsParts(bool enabled)
+{
+	m_settings->setValue("Directory/SubdirectoriesAsParts", enabled);
 }
 
 QStringList Metadata::parameterHandles()

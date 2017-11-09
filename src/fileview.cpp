@@ -5,6 +5,8 @@
 #include "filedelegate.h"
 #include "fileeditdialog.h"
 #include "settings.h"
+#include "directoryremover.h"
+#include "filecopier.h"
 
 #include <QMessageBox>
 #include <QProcess>
@@ -137,7 +139,9 @@ void FileView::createIndexHtmlFile(const QString &text, const QString &fileBase)
 
 void FileView::deleteParts()
 {
-	m_model->deleteParts();
+	DirectoryRemover *rm = new DirectoryRemover(this);
+	rm->setMessage(tr("Please wait while the parts are being removed..."));
+	m_model->deleteParts(rm);
 }
 
 void FileView::refreshRequested()
@@ -158,7 +162,9 @@ QString FileView::currentPath()
 
 void FileView::copyToWorkingDir()
 {
-	m_model->copyToWorkingDir();
+	FileCopier *cp = new FileCopier(this);
+	cp->setMessage(tr("Please wait while the parts are being copied..."));
+	m_model->copyToWorkingDir(cp);
 }
 
 void FileView::directoryChanged()

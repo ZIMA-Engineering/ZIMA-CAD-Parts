@@ -25,6 +25,8 @@
 #include "filemodel.h"
 #include "settings.h"
 #include "errordialog.h"
+#include "directoryremover.h"
+#include "filecopier.h"
 
 FileModel::FileModel(QObject *parent) :
 	QAbstractItemModel(parent)
@@ -133,7 +135,13 @@ void FileModel::loadFiles(const QString &path)
 {
 	m_data.clear();
 	QDir d(path);
-	m_data = d.entryInfoList(QDir::Files | QDir::Readable, QDir::Name);
+	m_data = d.entryInfoList(
+		QDir::Files
+		| QDir::Dirs
+		| QDir::Readable
+		| QDir::NoDotAndDotDot,
+		QDir::Name
+	);
 }
 
 void FileModel::updateThumbnails()
@@ -248,161 +256,92 @@ void FileModel::settingsChanged()
 	//setDirectory(m_path);
 }
 
-void FileModel::deleteParts()
+void FileModel::deleteParts(DirectoryRemover *rm)
 {
-	QFile f;
-	QHash<QString,QString> errors;
-	QFileInfo key;
+	// TODO: this code basically ignores all errors, so we delete metadata
+	// of parts that are still on disk, e.g. because ZCP does not have permissions
+	// to delete them. Undeleted parts are also unchecked. Errors are reported to
+	// the user though via QMessageBox.
 
-	foreach (QString fname, m_checked[m_path])
+	QFileInfoList deleteList;
+
+	beginResetModel();
+	m_data.clear();
+
+	foreach (const QString &fname, m_checked[m_path])
 	{
-		key.setFile(fname);
+		QFileInfo fi(fname);
 
 		if (!Settings::get()->ShowProeVersions
-		        && MetadataCache::get()->partVersions(m_path).contains(key.completeBaseName()))
+				&& MetadataCache::get()->partVersions(m_path).contains(fi.completeBaseName()))
 		{
+			// When deleting Pro/E files, we need to find all part versions
 			QDir d(m_path);
-			QFileInfoList fil = d.entryInfoList(QStringList() << key.completeBaseName()+".*");
-			foreach (QFileInfo fi, fil)
-			{
-				if (!f.remove(fi.absoluteFilePath()))
-				{
-					errors[fi.absoluteFilePath()] = f.errorString();
-				}
-				else
-				{
-					m_data.removeAll(key);
-					MetadataCache::get()->deletePart(m_path, key.baseName());
-					m_checked[m_path].removeAll(fname);
-				}
-			}
+			deleteList << d.entryInfoList(
+				QStringList() << (fi.completeBaseName() + ".*")
+			);
+
+		} else {
+			deleteList << fi;
 		}
-		else
-		{
-			if (!f.remove(key.absoluteFilePath()))
-				errors[key.absoluteFilePath()] = f.errorString();
-			else
-			{
-				m_data.removeAll(key);
-				MetadataCache::get()->deletePart(m_path, key.baseName());
-				m_checked[m_path].removeAll(fname);
-			}
-		}
+
+		if (fi.isDir())
+			MetadataCache::get()->clear(fname);
+
+		m_data.removeAll(fi);
+		MetadataCache::get()->deletePart(m_path, fi.baseName());
+		m_checked[m_path].removeAll(fname);
 	}
 
-	if (errors.count())
-	{
-		ErrorDialog dlg;
-		dlg.setErrors(tr("File deletion error(s):"), errors);
-		dlg.exec();
-	}
-	else
-	{
-		m_checked[m_path].clear();
-		beginResetModel();
-		endResetModel();
-	}
+	rm->addFiles(deleteList);
+	rm->setStopOnError(false);
+	rm->work();
+
+	m_checked[m_path].clear();
+	loadFiles(m_path);
+
+	endResetModel();
 }
 
-void FileModel::copyToWorkingDir()
+void FileModel::copyToWorkingDir(FileCopier *cp)
 {
-	bool overwrite = false;
-	QHash<QString,QString> errors;
-	QDir d;
-
-    if (!d.exists(Settings::get()->getWorkingDir()))
-	{
-		if (QMessageBox::question(0, tr("Working Dir does not exist"),
-                                  tr("Working directory %1 does not exist. Create it?").arg(Settings::get()->getWorkingDir()),
-		                          QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-		{
-			return;
-		}
-        if (!d.mkpath(Settings::get()->getWorkingDir()))
-            errors[Settings::get()->getWorkingDir()] = "Cannot create directory: " + Settings::get()->getWorkingDir();
-	}
-
 	QHashIterator<QString,QStringList> it(m_checked);
+
 	while (it.hasNext())
 	{
 		it.next();
 		QString key = it.key();
 
 		// do not copy files from WD into WD
-        if (key == Settings::get()->getWorkingDir())
+		if (key == Settings::get()->getWorkingDir())
 		{
 			m_checked[key].clear();
 			continue;
 		}
 
-		foreach (QString fname, it.value())
+		foreach (const QString &fname, it.value())
 		{
 			QFileInfo fi(fname);
-			QFile f(fi.absoluteFilePath());
-            QString target = Settings::get()->getWorkingDir() + "/" + fi.fileName();
+			cp->addSourceFile(fi);
 
-			if (!overwrite && QDir().exists(target))
-			{
-				QMessageBox::StandardButton ret = QMessageBox::question(0, tr("Overwrite file?"),
-				                                  tr("File %1 already exists. Overwrite?").arg(target),
-				                                  QMessageBox::Yes|QMessageBox::No|QMessageBox::YesAll|QMessageBox::Cancel
-				                                                       );
-				switch (ret)
-				{
-				case QMessageBox::Yes:
-					break;
-				case QMessageBox::No:
-					continue;
-					break;
-				case QMessageBox::YesAll:
-					overwrite = true;
-					break;
-				case QMessageBox::Cancel:
-					return;
-					break;
-				default:
-					break;
-				} // switch
+			QString thumbPath = m_thumb->path(fi.baseName());
 
-			} // if !overwrite
+			if (!thumbPath.isEmpty())
+				cp->addSourceFile(QFileInfo(thumbPath), THUMBNAILS_DIR);
 
-			if (f.exists(target) && !f.remove(target))
-			{
-				errors[target] = f.errorString();
-				continue;
-			}
-			if (!f.copy(target))
-				errors[target] = f.errorString();
-			else
-			{
-				// copy the thumbnail too
-                if (QDir().mkpath(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR))
-				{
-                    QString fp = m_thumb->path(fi.baseName());
-                    if (fp.isEmpty())
-                        continue;
-                    QFile thumb(fp);
-                    thumb.copy(Settings::get()->getWorkingDir() + "/" + THUMBNAILS_DIR +"/" + fi.baseName()+".jpg");
-
-				}
-				m_checked[key].removeAll(fname);
-			}
-		} // while
-
+			m_checked[key].removeAll(fname);
+		}
 	}
 
-	if (errors.count())
-	{
-		ErrorDialog dlg;
-		dlg.setErrors(tr("File copying error(s):"), errors);
-		dlg.exec();
-	}
-	else
-	{
-		m_checked.clear();
-		beginResetModel();
-		endResetModel();
-	}
+	cp->setDestination(Settings::get()->getWorkingDir());
+	cp->setStopOnError(false);
+
+	beginResetModel();
+
+	cp->work();
+	m_checked.clear();
+
+	endResetModel();
 }
 
 

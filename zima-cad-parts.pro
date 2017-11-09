@@ -102,7 +102,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/directoryeditparametersmodel.cpp \
     src/metadata/metadatamigration.cpp \
     src/metadata/metadatamigrator.cpp \
-    src/metadata/migrations/metadatav2migration.cpp
+    src/metadata/migrations/metadatav2migration.cpp \
+    src/filecopier.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -164,7 +165,8 @@ HEADERS += src/mainwindow.h \
     src/directoryeditparametersmodel.h \
     src/metadata/metadatamigration.h \
     src/metadata/metadatamigrator.h \
-    src/metadata/migrations/metadatav2migration.h
+    src/metadata/migrations/metadatav2migration.h \
+    src/filecopier.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

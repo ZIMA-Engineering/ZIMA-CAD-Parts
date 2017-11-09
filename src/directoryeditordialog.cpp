@@ -34,6 +34,8 @@ DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *paren
 			this, SLOT(removeIcon()));
 	connect(ui->iconButton, SIGNAL(clicked()),
 			this, SLOT(openIconDialog()));
+
+	ui->subdirPartsCheckBox->setChecked(m_meta->showDirectoriesAsParts());
 }
 
 DirectoryEditorDialog::~DirectoryEditorDialog()
@@ -78,6 +80,11 @@ void DirectoryEditorDialog::apply()
 	} else if (hasIcon(LOGO_TEXT_FILE) && !hasAnyLabel()) {
 		installIcon(iconInstallPath(LOGO_TEXT_FILE), LOGO_FILE, true);
 	}
+
+	// Subdirectory parts
+	MetadataCache::get()->metadata(m_dirPath)->setShowDirectoriesAsParts(
+		ui->subdirPartsCheckBox->isChecked()
+	);
 
 	// Parameter handles
 	if (!m_deletedParameters.isEmpty())

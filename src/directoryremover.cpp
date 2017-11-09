@@ -7,21 +7,22 @@
 #include <QLabel>
 #include <QMessageBox>
 
-DirectoryRemover::DirectoryRemover(QWidget *parent) : QObject(parent)
+DirectoryRemover::DirectoryRemover(QWidget *parent)
+	: DirectoryRemover(QFileInfoList(), parent)
 {
 
 }
 
 DirectoryRemover::DirectoryRemover(QFileInfo fileInfo, QWidget *parent)
-	: QObject(parent),
-	  m_fileInfos(QFileInfoList() << fileInfo)
+	: DirectoryRemover(QFileInfoList() << fileInfo, parent)
 {
 
 }
 
 DirectoryRemover::DirectoryRemover(QFileInfoList fileInfos, QWidget *parent)
 	: QObject(parent),
-	  m_fileInfos(fileInfos)
+	m_fileInfos(fileInfos),
+	m_stopOnError(true)
 {
 
 }
@@ -36,10 +37,16 @@ void DirectoryRemover::setMessage(const QString &msg)
 	m_msg = msg;
 }
 
+void DirectoryRemover::setStopOnError(bool stop)
+{
+	m_stopOnError = stop;
+}
+
 void DirectoryRemover::work()
 {
 	m_rm = ThreadWorker::create<DirectoryRemoverWorker>();
 	m_rm->setFileInfos(m_fileInfos);
+	m_rm->setStopOnError(m_stopOnError);
 
 	m_progress = new ProgressDialog(static_cast<QWidget*>(parent()));
 	m_progress->label()->setText(
@@ -93,6 +100,11 @@ void DirectoryRemoverWorker::setFileInfos(const QFileInfoList &fileInfos)
 	m_fileInfos = fileInfos;
 }
 
+void DirectoryRemoverWorker::setStopOnError(bool stop)
+{
+	m_stopOnError = stop;
+}
+
 void DirectoryRemoverWorker::run()
 {
 	foreach (const QFileInfo &fi, m_fileInfos)
@@ -125,8 +137,12 @@ void DirectoryRemoverWorker::run()
 		if (!ret)
 		{
 			emit errorOccured(tr("Unable to delete '%1'").arg(f.absoluteFilePath()));
-			quit();
-			return;
+
+			if (m_stopOnError)
+			{
+				quit();
+				return;
+			}
 		}
 
 		done = ++i / (double) m_files.size() * 100;

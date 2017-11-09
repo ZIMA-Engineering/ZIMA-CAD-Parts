@@ -64,6 +64,9 @@ public:
 
 	void setLabel(const QString &lang, const QString &newLabel);
 
+	bool showDirectoriesAsParts() const;
+	void setShowDirectoriesAsParts(bool enabled);
+
 	QStringList parameterHandles();
 	void setParameterHandles(const QStringList &handles);
 
@@ -130,6 +133,7 @@ public:
 
 	bool showLabel(const QString &path);
 	QString label(const QString &path);
+	bool showDirectoriesAsParts(const QString &path);
 	QStringList parameterHandles(const QString &path);
 	QStringList parameterLabels(const QString &path);
 	QString partParam(const QString &path, const QString &fname, const QString &param);

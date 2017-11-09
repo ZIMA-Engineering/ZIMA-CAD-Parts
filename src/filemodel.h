@@ -27,7 +27,8 @@
 #include "thumbnailmanager.h"
 
 class FileIconProvider;
-
+class DirectoryRemover;
+class FileCopier;
 
 /*! A "list files" tree. This class is used inside FileView only
  */
@@ -53,8 +54,8 @@ public:
 
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 
-	void deleteParts();
-	void copyToWorkingDir();
+	void deleteParts(DirectoryRemover *rm);
+	void copyToWorkingDir(FileCopier *cp);
 
 	QString path() const {
 		return m_path;
