@@ -19,7 +19,6 @@ public:
 	void createIndexHtmlFile(const QString &text, const QString &fileBase);
 	void deleteParts();
 	void refreshRequested();
-    void reloadProeMeta();
 	QString currentPath();
 
 signals:

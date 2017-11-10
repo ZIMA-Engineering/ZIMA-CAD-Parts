@@ -65,7 +65,6 @@ private slots:
 	void partsIndexPinButton_clicked();
 	void partsIndexEditButton_clicked();
 	void refreshButton_clicked();
-    void loadProeButton_clicked();
 
 	void techSpec_urlChanged(const QUrl &url);
 	void partsWebView_urlChanged(const QUrl &url);
