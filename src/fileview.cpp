@@ -49,7 +49,7 @@ FileView::FileView(QWidget *parent) :
 	connect(this, SIGNAL(clicked(QModelIndex)),
 	        this, SLOT(handleActivated(QModelIndex)));
 	connect(this, SIGNAL(doubleClicked(QModelIndex)),
-	        this, SLOT(openInProE(QModelIndex)));
+			this, SLOT(openPart(QModelIndex)));
 	connect(this, SIGNAL(customContextMenuRequested(QPoint)),
 			this, SLOT(showContextMenu(QPoint)));
 
@@ -208,9 +208,15 @@ void FileView::handleActivated(const QModelIndex &index)
 		emit hideProductView();
 }
 
-void FileView::openInProE(const QModelIndex &index)
+void FileView::openPart(const QModelIndex &index)
 {
 	QFileInfo fi(fileInfo(index));
+
+	if (fi.isDir()) {
+		emit openPartDirectory(fi);
+		return;
+	}
+
 	FileMetadata f(fi);
 
 	switch (f.type)
@@ -223,12 +229,21 @@ void FileView::openInProE(const QModelIndex &index)
 	{
 		QString exe = Settings::get()->ProeExecutable;
 		qDebug() << "Starting ProE:" << exe << f.fileInfo.absoluteFilePath() << "; working dir" << m_path;
-		bool ret = QProcess::startDetached(exe, QStringList() << f.fileInfo.absoluteFilePath(),
-		                                   m_path);
+		bool ret = QProcess::startDetached(
+			exe,
+			QStringList() << f.fileInfo.absoluteFilePath(),
+			m_path
+		);
+
 		if (!ret)
-			QMessageBox::information(this, tr("ProE Startup Error"),
-			                         tr("An error occured while ProE has been requested to start"),
-			                         QMessageBox::Ok);
+		{
+			QMessageBox::information(
+				this,
+				tr("ProE Startup Error"),
+				tr("An error occured while ProE has been requested to start"),
+				QMessageBox::Ok
+			);
+		}
 		break;
 	}
 	default:

@@ -25,6 +25,7 @@ public:
 signals:
 	void previewProductView(const QFileInfo &fi);
 	void hideProductView();
+	void openPartDirectory(const QFileInfo &fi);
 
 public slots:
 	void setDirectory(const QString &path);
@@ -47,7 +48,7 @@ private slots:
 	void resizeColumnToContents();
 	void refreshModel();
 	void handleActivated(const QModelIndex &index);
-	void openInProE(const QModelIndex &index);
+	void openPart(const QModelIndex &index);
 	void showContextMenu(const QPoint &point);
 	void editFile();
 };

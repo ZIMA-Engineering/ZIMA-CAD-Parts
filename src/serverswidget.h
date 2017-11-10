@@ -44,6 +44,7 @@ private:
 
 private slots:
 	void splitterMoved(int, int);
+	void handleOpenPartDirectory(const QFileInfo &fi);
 };
 
 #endif // SERVERSWIDGET_H

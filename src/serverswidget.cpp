@@ -23,6 +23,11 @@ void ServersWidget::splitterMoved(int, int)
 	Settings::get()->ServersSplitterSizes = splitter->sizes();
 }
 
+void ServersWidget::handleOpenPartDirectory(const QFileInfo &fi)
+{
+	setDirectory(fi.absoluteFilePath());
+}
+
 void ServersWidget::settingsChanged()
 {
 	if (Settings::get()->DataSourcesNeedsUpdate)
@@ -50,6 +55,8 @@ void ServersWidget::settingsChanged()
 			        this, SIGNAL(workingDirChanged()));
 			connect(view, SIGNAL(directorySelected(QString)),
 			        partsWidget, SLOT(setDirectory(QString)));
+			connect(partsWidget, SIGNAL(openPartDirectory(QFileInfo)),
+					this, SLOT(handleOpenPartDirectory(QFileInfo)));
 			connect(view, SIGNAL(directorySelected(QString)),
 			        this, SIGNAL(directorySelected(QString)));
 			connect(view, SIGNAL(directoryChanged(QString)),

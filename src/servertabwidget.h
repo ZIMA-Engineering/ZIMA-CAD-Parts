@@ -35,6 +35,7 @@ public slots:
 
 signals:
 	void changeSettings();
+	void openPartDirectory(const QFileInfo &fi);
 
 protected:
 	void changeEvent(QEvent *event);
