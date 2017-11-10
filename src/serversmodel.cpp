@@ -46,24 +46,27 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 
 	switch(role)
 	{
-	case Qt::DisplayRole:
+	case Qt::DisplayRole: {
 		if (!MetadataCache::get()->showLabel(filePath(index)))
-		{
 			return QVariant();
-		}
-		else if (MetadataCache::get()->label(filePath(index)).isEmpty())
+
+		QString label = MetadataCache::get()->label(filePath(index));
+
+		if (label.isEmpty())
 			return QFileSystemModel::data(index, role);
+
 		else
 			return MetadataCache::get()->label(filePath(index));
-		break;
+	}
+
 	case Qt::ToolTipRole:
 		return fileInfo(index).absoluteFilePath();
-		break;
+
 	case Qt::DecorationRole:
 		return m_iconProvider->pixmap(fileInfo(index));
-		break;
+
 	default:
-		;
+		break;
 	}
 
 	return QFileSystemModel::data(index, role);
