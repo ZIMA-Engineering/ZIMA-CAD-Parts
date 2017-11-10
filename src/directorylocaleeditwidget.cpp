@@ -54,7 +54,7 @@ void DirectoryLocaleEditWidget::apply(Metadata *meta)
 	{
 		i.next();
 
-		if (i.value().isEmpty())
+		if (i.value().trimmed().isEmpty())
 			continue;
 
 		meta->setParameterLabel(i.key(), m_lang, i.value());
