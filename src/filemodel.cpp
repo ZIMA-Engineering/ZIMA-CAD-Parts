@@ -341,6 +341,9 @@ void FileModel::copyToWorkingDir(FileCopier *cp)
 	cp->work();
 	m_checked.clear();
 
+	if (m_path == Settings::get()->getWorkingDir())
+		loadFiles(m_path);
+
 	endResetModel();
 }
 
