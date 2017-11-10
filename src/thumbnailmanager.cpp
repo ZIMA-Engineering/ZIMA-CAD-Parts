@@ -46,7 +46,7 @@ void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
     // index
     cacheThumbnails(m->path() + "/" + THUMBNAILS_DIR, map);
     // now includes
-    foreach(Metadata *i, m->includes())
+	foreach(Metadata *i, m->thumbnailIncludes())
     {
         getThumbs(i, map);
     }

@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QSettings>
+#include <QMutex>
 
 #include "file.h"
 
@@ -93,7 +94,8 @@ public:
 	 */
 	MetadataVersionsMap partVersions();
 
-    QList<Metadata*> includes() { return m_includes; }
+	QList<Metadata*> dataIncludes();
+	QList<Metadata*> thumbnailIncludes();
     QString path() { return m_path; }
 
     void reloadProe(const QFileInfoList &fil);
@@ -102,7 +104,8 @@ private:
 	QSettings *m_settings;
 
 	QString m_path;
-    QList<Metadata*> m_includes;
+	QStringList m_dataIncludes;
+	QStringList m_thumbIncludes;
 	int m_loadedIncludes;
 	QStringList m_parameterLabels;
 	QString label;
@@ -117,6 +120,7 @@ private:
 	bool partVersionType(FileType::FileType t, const QFileInfo &fi);
 	void rename(const QString &oldName, const QString &newName);
 	void recursiveRename(const QString &path, QHash<QString, QVariant> &settings);
+	QList<Metadata*> includedMetadatas(QStringList paths);
 };
 
 /*! An access singleton to the Metadata cache.
@@ -154,13 +158,18 @@ public slots:
 private:
 	//! Singleton handling
 	static MetadataCache *m_instance;
+	QMutex m_mutex;
 
 	MetadataCache();
 	//MetadataCache(const MetadataCache &) {};
 	~MetadataCache();
 
 	QHash<QString,Metadata*> m_map;
-	void load(const QString &path);
+
+	Metadata* load(const QString &path);
+	Metadata* get(const QString &path);
+	void enter();
+	void leave();
 };
 
 #endif // METADATA_H

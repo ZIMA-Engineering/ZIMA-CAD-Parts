@@ -256,8 +256,7 @@ void ServerTabWidget::refreshButton_clicked()
 
 void ServerTabWidget::loadProeButton_clicked()
 {
-    ui->partsTreeView->reloadProeMeta();
-    ui->partsTreeView->refreshRequested();
+	ui->partsTreeView->reloadProeMeta();
 }
 
 void ServerTabWidget::techSpec_urlChanged(const QUrl &url)

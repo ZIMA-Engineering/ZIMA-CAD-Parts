@@ -83,11 +83,38 @@ void MetadataCache::clearBelow(const QString &path)
 	}
 }
 
-void MetadataCache::load(const QString &path)
+Metadata* MetadataCache::load(const QString &path)
 {
 	if (m_map.contains(path))
 		m_map[path]->deleteLater();
-	m_map[path] = new Metadata(path);
+
+	auto m = new Metadata(path);
+	m_map[path] = m;
+	return m;
+}
+
+Metadata* MetadataCache::get(const QString &path)
+{
+	Metadata *ret;
+	enter();
+
+	if (m_map.contains(path))
+		ret = m_map[path];
+	else
+		ret = load(path);
+
+	leave();
+	return ret;
+}
+
+void MetadataCache::enter()
+{
+	m_mutex.lock();
+}
+
+void MetadataCache::leave()
+{
+	m_mutex.unlock();
 }
 
 bool MetadataCache::showLabel(const QString &path)
@@ -102,65 +129,47 @@ QString MetadataCache::label(const QString &path)
 	if (!QDir().exists(path + "/" + TECHSPEC_DIR))
 		return QString();
 
-	if (!m_map.contains(path))
-		load(path);
-	return m_map[path]->getLabel();
+	return get(path)->getLabel();
 }
 
 bool MetadataCache::showDirectoriesAsParts(const QString &path)
 {
-	if (!m_map.contains(path))
-		load(path);
-	return m_map[path]->showDirectoriesAsParts();
+	return get(path)->showDirectoriesAsParts();
 }
 
 QStringList MetadataCache::parameterHandles(const QString &path)
 {
-	if (!m_map.contains(path))
-		load(path);
-	return m_map[path]->parameterHandles();
+	return get(path)->parameterHandles();
 }
 
 QStringList MetadataCache::parameterLabels(const QString &path)
 {
-	if (!m_map.contains(path))
-		load(path);
-	return m_map[path]->parameterLabels();
+	return get(path)->parameterLabels();
 }
 
 QString MetadataCache::partParam(const QString &path, const QString &fname, const QString &param)
 {
-	if (!m_map.contains(path))
-		load(path);
-	return m_map[path]->partParam(fname, param);
+	return get(path)->partParam(fname, param);
 }
 
 QString MetadataCache::partParam(const QString &path, const QString &fname, int index)
 {
-	if (!m_map.contains(path))
-		load(path);
-	return m_map[path]->partParam(fname, index);
+	return get(path)->partParam(fname, index);
 }
 
 MetadataVersionsMap MetadataCache::partVersions(const QString &path)
 {
-	if (!m_map.contains(path))
-		load(path);
-	return m_map[path]->partVersions();
+	return get(path)->partVersions();
 }
 
 void MetadataCache::deletePart(const QString &path, const QString &part)
 {
-	if (!m_map.contains(path))
-		load(path);
-	return m_map[path]->deletePart(part);
+	return get(path)->deletePart(part);
 }
 
 Metadata* MetadataCache::metadata(const QString &path)
 {
-    if (!m_map.contains(path))
-        load(path);
-    return m_map[path];
+	return get(path);
 }
 
 Metadata::Metadata(const QString &path, QObject *parent)
@@ -255,14 +264,14 @@ void Metadata::setShowDirectoriesAsParts(bool enabled)
 
 QStringList Metadata::parameterHandles()
 {
-	if (m_includes.isEmpty())
+	if (m_dataIncludes.isEmpty())
 		return m_settings->value(
 			"Directory/Parameters", QStringList()
 		).toStringList();
 
 	QStringList ret;
 
-	foreach(Metadata *include, m_includes)
+	foreach(Metadata *include, dataIncludes())
 			ret << include->parameterHandles();
 
 	return ret;
@@ -296,11 +305,11 @@ QStringList Metadata::parameterLabels(const QString &lang)
 		).toString();
 	}
 
-	if (!m_includes.isEmpty())
+	if (!m_dataIncludes.isEmpty())
 	{
 		ret.clear();
 
-		foreach(Metadata *include, m_includes)
+		foreach(Metadata *include, dataIncludes())
 			ret << include->parameterLabels(lang);
 	}
 
@@ -319,11 +328,11 @@ QHash<QString, QString> Metadata::parametersWithLabels(const QString &lang)
 		).toString());
 	}
 
-	if (!m_includes.isEmpty())
+	if (!m_dataIncludes.isEmpty())
 	{
 		ret.clear();
 
-		foreach(Metadata *include, m_includes)
+		foreach(Metadata *include, dataIncludes())
 			ret.unite(include->parametersWithLabels(lang));
 	}
 
@@ -429,7 +438,7 @@ QString Metadata::partParam(const QString &partName, const QString &param)
 
 	if (ret.isEmpty())
 	{
-		foreach(Metadata *include, m_includes)
+		foreach(Metadata *include, dataIncludes())
 		{
 			QString tmp = include->partParam(partName, param);
 
@@ -514,6 +523,16 @@ void Metadata::recursiveRename(const QString &path, QHash<QString, QVariant> &se
 		settings.insert(path + "/" + key, m_settings->value(key));
 }
 
+QList<Metadata *> Metadata::includedMetadatas(QStringList paths)
+{
+	QList<Metadata*> ret;
+
+	foreach (const QString &path, paths)
+		ret << MetadataCache::get()->metadata(path);
+
+	return ret;
+}
+
 MetadataVersionsMap Metadata::partVersions()
 {
 	if (m_versionsCache.size())
@@ -536,6 +555,16 @@ MetadataVersionsMap Metadata::partVersions()
 	}
 
 	return m_versionsCache;
+}
+
+QList<Metadata *> Metadata::dataIncludes()
+{
+	return includedMetadatas(m_dataIncludes);
+}
+
+QList<Metadata *> Metadata::thumbnailIncludes()
+{
+	return includedMetadatas(m_thumbIncludes);
 }
 
 void Metadata::deletePart(const QString &part)
@@ -668,16 +697,15 @@ void Metadata::setup()
 {
 	m_settings->beginGroup("Directory");
 	{
-		QStringList toInclude;
-		QStringList data = buildIncludePaths(m_settings->value("IncludeParameters").toStringList());
-		QStringList thumbs = buildIncludePaths(m_settings->value("IncludeThumbnails").toStringList());
+		m_dataIncludes = buildIncludePaths(
+			m_settings->value("IncludeParameters").toStringList()
+		);
+		m_thumbIncludes = buildIncludePaths(
+			m_settings->value("IncludeThumbnails").toStringList()
+		);
 
-		toInclude << data << thumbs;
-
-		toInclude.removeDuplicates();
-
-		foreach(QString path, toInclude)
-			m_includes << new Metadata(path, this);
+		m_dataIncludes.removeDuplicates();
+		m_thumbIncludes.removeDuplicates();
 	}
 	m_settings->endGroup();
 }
