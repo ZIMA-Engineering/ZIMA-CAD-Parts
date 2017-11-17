@@ -1,9 +1,9 @@
-#ifndef SERVERSWIDGET_H
-#define SERVERSWIDGET_H
+#ifndef DATASOURCEWIDGET_H
+#define DATASOURCEWIDGET_H
 
-#include "ui_serverswidget.h"
+#include "ui_datasourcewidget.h"
 #include "settingsdialog.h"
-#include "servertabwidget.h"
+#include "directorywidget.h"
 
 class QSignalMapper;
 
@@ -13,11 +13,11 @@ class QSignalMapper;
  *
  * The data source tree is kept in NavBar
  */
-class ServersWidget : public QWidget, public Ui::ServersWidget
+class DataSourceWidget : public QWidget, public Ui::DataSourceWidget
 {
 	Q_OBJECT
 public:
-	explicit ServersWidget(QWidget *parent = 0);
+	explicit DataSourceWidget(QWidget *parent = 0);
 
 	QModelIndex currentIndex();
 	void setDirectory(const QString &path);
@@ -47,4 +47,4 @@ private slots:
 	void handleOpenPartDirectory(const QFileInfo &fi);
 };
 
-#endif // SERVERSWIDGET_H
+#endif // DATASOURCEWIDGET_H

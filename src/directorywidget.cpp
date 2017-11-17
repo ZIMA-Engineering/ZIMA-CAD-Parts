@@ -5,8 +5,8 @@
 #include <QDesktopServices>
 #include <QProcess>
 
-#include "servertabwidget.h"
-#include "ui_servertabwidget.h"
+#include "directorywidget.h"
+#include "ui_directorywidget.h"
 #include "filemodel.h"
 #include "filefiltermodel.h"
 #include "settings.h"
@@ -14,9 +14,9 @@
 #include "extensions/productview/productview.h"
 
 
-ServerTabWidget::ServerTabWidget(QWidget *parent) :
+DirectoryWidget::DirectoryWidget(QWidget *parent) :
 	QWidget(parent),
-	ui(new Ui::ServerTabWidget)
+	ui(new Ui::DirectoryWidget)
 {
 	ui->setupUi(this);
 
@@ -89,12 +89,12 @@ ServerTabWidget::ServerTabWidget(QWidget *parent) :
 	ui->techSpec->loadAboutPage();
 }
 
-ServerTabWidget::~ServerTabWidget()
+DirectoryWidget::~DirectoryWidget()
 {
 	delete ui;
 }
 
-void ServerTabWidget::setDirectory(const QString &rootPath)
+void DirectoryWidget::setDirectory(const QString &rootPath)
 {
 	setEnabled(false);
 
@@ -108,13 +108,13 @@ void ServerTabWidget::setDirectory(const QString &rootPath)
 	setEnabled(true);
 }
 
-void ServerTabWidget::updateDirectory(const QString &rootPath)
+void DirectoryWidget::updateDirectory(const QString &rootPath)
 {
 	if (ui->partsTreeView->currentPath().compare(rootPath) == 0)
 		ui->partsTreeView->directoryChanged();
 }
 
-void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound)
+void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound)
 {
 	QStringList filters;
 	filters << filterBase + "_??.html"
@@ -159,7 +159,7 @@ void ServerTabWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
 	webView->load(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
 }
 
-void ServerTabWidget::editIndexFile(const QString &path)
+void DirectoryWidget::editIndexFile(const QString &path)
 {
 	QUrl url(path);
 	QString editor = Settings::get()->TextEditorPath;
@@ -174,7 +174,7 @@ void ServerTabWidget::editIndexFile(const QString &path)
 	QProcess::startDetached(editor, args);
 }
 
-void ServerTabWidget::changeEvent(QEvent *e)
+void DirectoryWidget::changeEvent(QEvent *e)
 {
 	switch (e->type()) {
 	case QEvent::LanguageChange:
@@ -187,7 +187,7 @@ void ServerTabWidget::changeEvent(QEvent *e)
 	}
 }
 
-void ServerTabWidget::settingsChanged()
+void DirectoryWidget::settingsChanged()
 {
 	ui->techSpecDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled
 	                                        && Settings::get()->DeveloperTechSpecToolBar);
@@ -197,12 +197,12 @@ void ServerTabWidget::settingsChanged()
 	ui->partsTreeView->settingsChanged();
 }
 
-void ServerTabWidget::techSpecUrlLineEdit_returnPressed()
+void DirectoryWidget::techSpecUrlLineEdit_returnPressed()
 {
 	techSpecGoButton_clicked();
 }
 
-void ServerTabWidget::techSpecGoButton_clicked()
+void DirectoryWidget::techSpecGoButton_clicked()
 {
 	QString str = ui->techSpecUrlLineEdit->text();
 
@@ -214,12 +214,12 @@ void ServerTabWidget::techSpecGoButton_clicked()
 		ui->techSpec->setUrl(QUrl(str));
 }
 
-void ServerTabWidget::partsIndexUrlLineEdit_returnPressed()
+void DirectoryWidget::partsIndexUrlLineEdit_returnPressed()
 {
 	partsIndexGoButton_clicked();
 }
 
-void ServerTabWidget::partsIndexGoButton_clicked()
+void DirectoryWidget::partsIndexGoButton_clicked()
 {
 	QString str = ui->partsIndexUrlLineEdit->text();
 
@@ -229,32 +229,32 @@ void ServerTabWidget::partsIndexGoButton_clicked()
 		ui->partsWebView->show();
 }
 
-void ServerTabWidget::partsIndexPinButton_clicked()
+void DirectoryWidget::partsIndexPinButton_clicked()
 {
 	ui->partsTreeView->createIndexHtmlFile(ui->partsIndexUrlLineEdit->text(), "index-parts");
 }
 
-void ServerTabWidget::partsIndexEditButton_clicked()
+void DirectoryWidget::partsIndexEditButton_clicked()
 {
 	editIndexFile(ui->partsIndexUrlLineEdit->text());
 }
 
-void ServerTabWidget::techSpecPinButton_clicked()
+void DirectoryWidget::techSpecPinButton_clicked()
 {
 	ui->partsTreeView->createIndexHtmlFile(ui->techSpecUrlLineEdit->text(), "index");
 }
 
-void ServerTabWidget::techSpecEditButton_clicked()
+void DirectoryWidget::techSpecEditButton_clicked()
 {
 	editIndexFile(ui->techSpecUrlLineEdit->text());
 }
 
-void ServerTabWidget::refreshButton_clicked()
+void DirectoryWidget::refreshButton_clicked()
 {
 	ui->partsTreeView->refreshRequested();
 }
 
-void ServerTabWidget::techSpec_urlChanged(const QUrl &url)
+void DirectoryWidget::techSpec_urlChanged(const QUrl &url)
 {
 	ui->techSpecBackButton->setEnabled(ui->techSpec->history()->canGoBack());
 	ui->techSpecForwardButton->setEnabled(ui->techSpec->history()->canGoForward());
@@ -268,7 +268,7 @@ void ServerTabWidget::techSpec_urlChanged(const QUrl &url)
 	ui->techSpecUrlLineEdit->setText(str);
 }
 
-void ServerTabWidget::partsWebView_urlChanged(const QUrl &url)
+void DirectoryWidget::partsWebView_urlChanged(const QUrl &url)
 {
 	ui->partsIndexBackButton->setEnabled(ui->partsWebView->history()->canGoBack());
 	ui->partsIndexForwardButton->setEnabled(ui->partsWebView->history()->canGoForward());
@@ -277,7 +277,7 @@ void ServerTabWidget::partsWebView_urlChanged(const QUrl &url)
 	ui->partsIndexUrlLineEdit->setText(str);
 }
 
-void ServerTabWidget::deleteSelectedParts()
+void DirectoryWidget::deleteSelectedParts()
 {
 	if( QMessageBox::question(this,
 	                          tr("Do you really want to delete selected parts?"),
@@ -289,14 +289,14 @@ void ServerTabWidget::deleteSelectedParts()
 	}
 }
 
-void ServerTabWidget::adjustThumbColumnWidth(int width)
+void DirectoryWidget::adjustThumbColumnWidth(int width)
 {
 	ui->partsTreeView->setColumnWidth(1, width);
 	Settings::get()->GUIThumbWidth = width;
 	ui->partsTreeView->settingsChanged();
 }
 
-void ServerTabWidget::previewInProductView(const QFileInfo &fi)
+void DirectoryWidget::previewInProductView(const QFileInfo &fi)
 {
 	FileMetadata f(fi);
 	m_productView->setFile(&f);
@@ -304,7 +304,7 @@ void ServerTabWidget::previewInProductView(const QFileInfo &fi)
 	activateWindow();
 }
 
-void ServerTabWidget::setFiltersDialog()
+void DirectoryWidget::setFiltersDialog()
 {
 	FiltersDialog dlg;
 

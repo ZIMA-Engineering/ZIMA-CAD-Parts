@@ -1,12 +1,12 @@
-#ifndef SERVERSVIEW_H
-#define SERVERSVIEW_H
+#ifndef DATASOURCEVIEW_H
+#define DATASOURCEVIEW_H
 
 #include <QTreeView>
 
 #include "settingsdialog.h"
 
-class ServersModel;
-class ServersProxyModel;
+class DataSourceModel;
+class DataSourceProxyModel;
 class QSignalMapper;
 class QFileInfo;
 
@@ -14,11 +14,11 @@ class QFileInfo;
 /*! Main class for "directory tree" widget. Every datasource has one
  * ServersView.
  */
-class ServersView : public QTreeView
+class DataSourceView : public QTreeView
 {
 	Q_OBJECT
 public:
-	explicit ServersView(const QString &rootPath, QWidget *parent = 0);
+	explicit DataSourceView(const QString &rootPath, QWidget *parent = 0);
 
 	/*! try to find the path.
 	 * @returns true if the path can be found
@@ -33,8 +33,8 @@ signals:
 
 private:
 	QString m_path;
-	ServersModel *m_model;
-	ServersProxyModel *m_proxy;
+	DataSourceModel *m_model;
+	DataSourceProxyModel *m_proxy;
 	QSignalMapper *m_signalMapper;
 
 	QFileInfo currentFileInfo();
@@ -51,4 +51,4 @@ private slots:
 	void deleteDirectory();
 };
 
-#endif // SERVERSVIEW_H
+#endif // DATASOURCEVIEW_H

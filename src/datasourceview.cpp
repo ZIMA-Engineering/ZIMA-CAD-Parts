@@ -1,5 +1,5 @@
-#include "serversview.h"
-#include "serversmodel.h"
+#include "datasourceview.h"
+#include "datasourcemodel.h"
 #include "zimautils.h"
 #include "settings.h"
 #include "settingsdialog.h"
@@ -18,16 +18,16 @@
 #include <QDebug>
 
 
-ServersView::ServersView(const QString &rootPath, QWidget *parent) :
+DataSourceView::DataSourceView(const QString &rootPath, QWidget *parent) :
 	QTreeView(parent),
 	m_path(rootPath)
 {
 	// boss requirement - icons shoudl have be at least 32px sized
 	setStyleSheet("icon-size: 32px;");
 
-	m_proxy = new ServersProxyModel(this);
+	m_proxy = new DataSourceProxyModel(this);
 
-	m_model = new ServersModel(this);
+	m_model = new DataSourceModel(this);
 	m_proxy->setSourceModel(m_model);
 
 	setModel(m_proxy);
@@ -49,20 +49,20 @@ ServersView::ServersView(const QString &rootPath, QWidget *parent) :
 	        this, SLOT(refreshModel()));
 }
 
-void ServersView::refreshModel()
+void DataSourceView::refreshModel()
 {
 	// it has to be reset here because calling QFileSystemModel's reset
 	// or begin/end alternatives results in "/" as a root path
 	setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
 }
 
-void ServersView::modelClicked(const QModelIndex &index)
+void DataSourceView::modelClicked(const QModelIndex &index)
 {
 	Q_UNUSED(index);
 	emit directorySelected(currentFileInfo().absoluteFilePath());
 }
 
-QFileInfo ServersView::currentFileInfo()
+QFileInfo DataSourceView::currentFileInfo()
 {
 	QModelIndex index = currentIndex();
 	if (!index.isValid())
@@ -72,7 +72,7 @@ QFileInfo ServersView::currentFileInfo()
 	return m_model->fileInfo(srcIndex).absoluteFilePath();
 }
 
-void ServersView::showContextMenu(const QPoint &point)
+void DataSourceView::showContextMenu(const QPoint &point)
 {
 	QModelIndex i = currentIndex();
 
@@ -105,12 +105,12 @@ void ServersView::showContextMenu(const QPoint &point)
 	menu->deleteLater();
 }
 
-void ServersView::indexOpenPath()
+void DataSourceView::indexOpenPath()
 {
 	QDesktopServices::openUrl(QUrl::fromLocalFile(currentFileInfo().absoluteFilePath()));
 }
 
-void ServersView::spawnZimaUtilityOnDir(const QString &label)
+void DataSourceView::spawnZimaUtilityOnDir(const QString &label)
 {
 	QString executable = Settings::get()->ExternalPrograms[label];
 
@@ -133,13 +133,13 @@ void ServersView::spawnZimaUtilityOnDir(const QString &label)
 	QProcess::startDetached(executable, args);
 }
 
-void ServersView::setWorkingDirectory()
+void DataSourceView::setWorkingDirectory()
 {
     Settings::get()->setWorkingDir(currentFileInfo().absoluteFilePath());
 	emit workingDirChanged();
 }
 
-void ServersView::createDirectory()
+void DataSourceView::createDirectory()
 {
 	QFileInfo fi = currentFileInfo();
 	CreateDirectoryDialog dlg(fi.absoluteFilePath());
@@ -165,7 +165,7 @@ void ServersView::createDirectory()
 	creator->work();
 }
 
-void ServersView::editDirectory()
+void DataSourceView::editDirectory()
 {
 	QFileInfo fi = currentFileInfo();
 
@@ -178,7 +178,7 @@ void ServersView::editDirectory()
 	}
 }
 
-void ServersView::deleteDirectory()
+void DataSourceView::deleteDirectory()
 {
 	QFileInfo fi = currentFileInfo();
 
@@ -194,7 +194,7 @@ void ServersView::deleteDirectory()
 	}
 }
 
-bool ServersView::navigateToDirectory(const QString &path)
+bool DataSourceView::navigateToDirectory(const QString &path)
 {
 	// find the common root path. Then ise the index.
 	// note: all QFileSystemModels have the index(path) so we need to

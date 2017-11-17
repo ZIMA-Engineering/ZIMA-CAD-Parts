@@ -1,9 +1,9 @@
-#ifndef SERVERTABWIDGET_H
-#define SERVERTABWIDGET_H
+#ifndef DIRECTORYWIDGET_H
+#define DIRECTORYWIDGET_H
 
 #include <QWidget>
 
-#include "serversmodel.h"
+#include "datasourcemodel.h"
 
 class FileModel;
 class FileFilterModel;
@@ -11,7 +11,7 @@ class ProductView;
 class QWebEngineView;
 
 namespace Ui {
-class ServerTabWidget;
+class DirectoryWidget;
 }
 
 
@@ -19,13 +19,13 @@ class ServerTabWidget;
  * \brief The tab widget displaying "Parts" tabs.
  *
  */
-class ServerTabWidget : public QWidget
+class DirectoryWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	explicit ServerTabWidget(QWidget *parent = 0);
-	~ServerTabWidget();
+	explicit DirectoryWidget(QWidget *parent = 0);
+	~DirectoryWidget();
 
 public slots:
 	void setDirectory(const QString &rootPath);
@@ -48,7 +48,7 @@ private:
 		TABS_COUNT
 	};
 
-	Ui::ServerTabWidget *ui;
+	Ui::DirectoryWidget *ui;
 
 	ProductView *m_productView;
 
@@ -78,4 +78,4 @@ private slots:
 	void setFiltersDialog();
 };
 
-#endif // SERVERTABWIDGET_H
+#endif // DIRECTORYWIDGET_H

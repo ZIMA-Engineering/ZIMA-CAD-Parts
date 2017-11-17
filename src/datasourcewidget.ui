@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ServersWidget</class>
- <widget class="QWidget" name="ServersWidget">
+ <class>DataSourceWidget</class>
+ <widget class="QWidget" name="DataSourceWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -37,7 +37,7 @@
      <property name="childrenCollapsible">
       <bool>false</bool>
      </property>
-     <widget class="NavBar" name="serversToolBox">
+     <widget class="NavBar" name="dsList">
       <property name="minimumSize">
        <size>
         <width>100</width>
@@ -54,7 +54,7 @@
        <enum>QFrame::Raised</enum>
       </property>
      </widget>
-     <widget class="ServerTabWidget" name="partsWidget" native="true">
+     <widget class="DirectoryWidget" name="dirWidget" native="true">
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -71,9 +71,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>ServerTabWidget</class>
+   <class>DirectoryWidget</class>
    <extends>QWidget</extends>
-   <header>src/servertabwidget.h</header>
+   <header>src/directorywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

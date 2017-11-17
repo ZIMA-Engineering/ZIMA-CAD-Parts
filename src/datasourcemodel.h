@@ -18,8 +18,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SERVERSMODEL_H
-#define SERVERSMODEL_H
+#ifndef DATASOURCEMODEL_H
+#define DATASOURCEMODEL_H
 
 #include <QAbstractItemModel>
 #include <QIcon>
@@ -30,32 +30,32 @@
 #include <QSortFilterProxyModel>
 #include <QFileIconProvider>
 
-class ServersIconProvider;
+class DataSourceIconProvider;
 
 
 /*! A "datasource" tree. This class is used inside ServersView only
  */
-class ServersModel : public QFileSystemModel
+class DataSourceModel : public QFileSystemModel
 {
 	Q_OBJECT
 public:
-	explicit ServersModel(QObject *parent = 0);
+	explicit DataSourceModel(QObject *parent = 0);
 
 	int columnCount(const QModelIndex & parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role) const;
 
 private:
-	ServersIconProvider *m_iconProvider;
+	DataSourceIconProvider *m_iconProvider;
 };
 
 /*! \brief An icon provider for ServersModel. It contains additional
  * handling of LOGO_FILE and LOGO_FILE_TEXT files in the TECHSPEC_DIR directory
  * The main method to be used is custom pixmap().
  */
-class ServersIconProvider : public QFileIconProvider
+class DataSourceIconProvider : public QFileIconProvider
 {
 public:
-	ServersIconProvider();
+	DataSourceIconProvider();
 
 	virtual QIcon   icon ( IconType type ) const;
 	virtual QIcon   icon ( const QFileInfo & info ) const;
@@ -72,16 +72,16 @@ public:
 /*! A filter proxy for ServersModel. Its main task is to filter out
  * the TECHSPEC_DIR directory
  */
-class ServersProxyModel : public QSortFilterProxyModel
+class DataSourceProxyModel : public QSortFilterProxyModel
 {
 	Q_OBJECT
 
 public:
-	ServersProxyModel(QObject *parent = 0);
+	DataSourceProxyModel(QObject *parent = 0);
 
 protected:
 	bool filterAcceptsRow(int sourceRow,
 	                      const QModelIndex &sourceParent) const;
 };
 
-#endif // SERVERSMODEL_H
+#endif // DATASOURCEMODEL_H

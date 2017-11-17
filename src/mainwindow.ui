@@ -42,7 +42,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="ServersWidget" name="serversWidget" native="true">
+      <widget class="DataSourceWidget" name="dataSourceWidget" native="true">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -63,7 +63,7 @@
      <x>0</x>
      <y>0</y>
      <width>735</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -158,9 +158,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>ServersWidget</class>
+   <class>DataSourceWidget</class>
    <extends>QWidget</extends>
-   <header>src/serverswidget.h</header>
+   <header>src/datasourcewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

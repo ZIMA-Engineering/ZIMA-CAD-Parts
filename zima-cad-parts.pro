@@ -28,7 +28,6 @@ INCLUDEPATH += libqdxf/libdxfrw/src
 SOURCES += src/zima-cad-parts.cpp \
     src/mainwindow.cpp \
     src/settingsdialog.cpp \
-    src/serversmodel.cpp \
     src/file.cpp \
     src/filemodel.cpp \
     src/addeditdatasource.cpp \
@@ -73,8 +72,6 @@ SOURCES += src/zima-cad-parts.cpp \
     libproe/libproe.cpp \
     src/extensions/productview/pdfproductview.cpp \
     src/extensions/productview/failbackproductview.cpp \
-    src/serverswidget.cpp \
-    src/servertabwidget.cpp \
     src/languageflagswidget.cpp \
     src/extensions/navbar/navbar.cpp \
     src/extensions/navbar/navbarheader.cpp \
@@ -82,7 +79,6 @@ SOURCES += src/zima-cad-parts.cpp \
     src/extensions/navbar/navbarpagelistwidget.cpp \
     src/extensions/navbar/navbarsplitter.cpp \
     src/workingdirwidget.cpp \
-    src/serversview.cpp \
     src/fileview.cpp \
     src/webdownloaderwidget.cpp \
     src/webdownloaderdialog.cpp \
@@ -103,11 +99,14 @@ SOURCES += src/zima-cad-parts.cpp \
     src/metadata/metadatamigration.cpp \
     src/metadata/metadatamigrator.cpp \
     src/metadata/migrations/metadatav2migration.cpp \
-    src/filecopier.cpp
+    src/filecopier.cpp \
+    src/datasourcewidget.cpp \
+    src/directorywidget.cpp \
+    src/datasourceview.cpp \
+    src/datasourcemodel.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
-    src/serversmodel.h \
     src/file.h \
     src/filemodel.h \
     src/addeditdatasource.h \
@@ -135,8 +134,6 @@ HEADERS += src/mainwindow.h \
     libproe/libproe.h \
     src/extensions/productview/pdfproductview.h \
     src/extensions/productview/failbackproductview.h \
-    src/serverswidget.h \
-    src/servertabwidget.h \
     src/languageflagswidget.h \
     src/extensions/navbar/navbar.h \
     src/extensions/navbar/navbarheader.h \
@@ -145,7 +142,6 @@ HEADERS += src/mainwindow.h \
     src/extensions/navbar/navbarpagelistwidget.h \
     src/extensions/navbar/navbarsplitter.h \
     src/workingdirwidget.h \
-    src/serversview.h \
     src/fileview.h \
     src/webdownloaderwidget.h \
     src/webdownloaderdialog.h \
@@ -166,7 +162,11 @@ HEADERS += src/mainwindow.h \
     src/metadata/metadatamigration.h \
     src/metadata/metadatamigrator.h \
     src/metadata/migrations/metadatav2migration.h \
-    src/filecopier.h
+    src/filecopier.h \
+    src/datasourcewidget.h \
+    src/directorywidget.h \
+    src/datasourceview.h \
+    src/datasourcemodel.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -177,8 +177,6 @@ FORMS += mainwindow.ui \
     src/extensions/productview/dxfproductview.ui \
     src/extensions/productview/pdfproductview.ui \
     src/extensions/productview/failbackproductview.ui \
-    src/serverswidget.ui \
-    src/servertabwidget.ui \
     src/extensions/navbar/navbaroptionsdialog.ui \
     src/workingdirwidget.ui \
     src/webdownloaderwidget.ui \
@@ -189,7 +187,9 @@ FORMS += mainwindow.ui \
     src/fileeditdialog.ui \
     src/createdirectorydialog.ui \
     src/directoryeditordialog.ui \
-    src/directorylocaleeditwidget.ui
+    src/directorylocaleeditwidget.ui \
+    src/datasourcewidget.ui \
+    src/directorywidget.ui
 
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc

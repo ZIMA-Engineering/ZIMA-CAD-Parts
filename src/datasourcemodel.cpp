@@ -18,28 +18,28 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "serversmodel.h"
+#include "datasourcemodel.h"
 #include <QDir>
 #include <QDebug>
 #include "settings.h"
 
-ServersModel::ServersModel(QObject *parent) :
+DataSourceModel::DataSourceModel(QObject *parent) :
 	QFileSystemModel(parent)
 {
 	setReadOnly(true);
 	setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
-	m_iconProvider = new ServersIconProvider();
+	m_iconProvider = new DataSourceIconProvider();
 	// do not install icon provider. The icon handling is quite complex. See ServersIconProvider
 	//setIconProvider(m_iconProvider);
 }
 
-int ServersModel::columnCount(const QModelIndex & parent) const
+int DataSourceModel::columnCount(const QModelIndex & parent) const
 {
 	Q_UNUSED(parent);
 	return 1;
 }
 
-QVariant ServersModel::data(const QModelIndex &index, int role) const
+QVariant DataSourceModel::data(const QModelIndex &index, int role) const
 {
 	if (!index.isValid())
 		return QVariant();
@@ -73,29 +73,29 @@ QVariant ServersModel::data(const QModelIndex &index, int role) const
 }
 
 
-ServersProxyModel::ServersProxyModel(QObject *parent)
+DataSourceProxyModel::DataSourceProxyModel(QObject *parent)
 	: QSortFilterProxyModel(parent)
 {
 }
 
 
-bool ServersProxyModel::filterAcceptsRow(int sourceRow,
+bool DataSourceProxyModel::filterAcceptsRow(int sourceRow,
         const QModelIndex &sourceParent) const
 {
 	QModelIndex ix = sourceModel()->index(sourceRow, 0, sourceParent);
 	return ix.data().toString() != TECHSPEC_DIR;
 }
 
-ServersIconProvider::ServersIconProvider()
+DataSourceIconProvider::DataSourceIconProvider()
 {
 }
 
-QIcon ServersIconProvider::icon ( IconType type ) const
+QIcon DataSourceIconProvider::icon ( IconType type ) const
 {
 	return QFileIconProvider::icon(type);
 }
 
-QIcon ServersIconProvider::icon ( const QFileInfo & info ) const
+QIcon DataSourceIconProvider::icon ( const QFileInfo & info ) const
 {
 	QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
 
@@ -115,7 +115,7 @@ QIcon ServersIconProvider::icon ( const QFileInfo & info ) const
 		return QFileIconProvider::icon(info);
 }
 
-QPixmap ServersIconProvider::pixmap(const QFileInfo &info) const
+QPixmap DataSourceIconProvider::pixmap(const QFileInfo &info) const
 {
 	QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
 	if (QFile::exists(logoPath + LOGO_FILE))
@@ -132,7 +132,7 @@ QPixmap ServersIconProvider::pixmap(const QFileInfo &info) const
 	}
 }
 
-QString ServersIconProvider::type ( const QFileInfo & info ) const
+QString DataSourceIconProvider::type ( const QFileInfo & info ) const
 {
 	return QFileIconProvider::type(info);
 }

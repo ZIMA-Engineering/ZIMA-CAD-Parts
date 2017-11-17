@@ -31,7 +31,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "serversmodel.h"
+#include "datasourcemodel.h"
 #include "filtersdialog.h"
 #include "zimautils.h"
 #include "settings.h"
@@ -78,17 +78,17 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	ui->actionHistoryBack->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 	ui->actionHistoryForward->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
 
-	connect(ui->serversWidget, SIGNAL(showSettings(SettingsDialog::Section)),
+	connect(ui->dataSourceWidget, SIGNAL(showSettings(SettingsDialog::Section)),
 	        this, SLOT(showSettings(SettingsDialog::Section)));
 
-	connect(ui->serversWidget, SIGNAL(directorySelected(QString)),
+	connect(ui->dataSourceWidget, SIGNAL(directorySelected(QString)),
 	        this, SLOT(trackHistory(QString)));
 
 	connect(ui->actionHistoryBack, SIGNAL(triggered()), this, SLOT(historyBack()));
 	connect(ui->actionHistoryForward, SIGNAL(triggered()), this, SLOT(historyForward()));
 
 	connect(ui->actionHome, SIGNAL(triggered()),
-	        ui->serversWidget, SLOT(goToWorkingDirectory()));
+			ui->dataSourceWidget, SLOT(goToWorkingDirectory()));
 
 	restoreState(Settings::get()->MainWindowState);
 	restoreGeometry(Settings::get()->MainWindowGeometry);
@@ -97,7 +97,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
 
-	connect(ui->serversWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
+	connect(ui->dataSourceWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
 	m_wdirWidget = new WorkingDirWidget(this);
 	ui->toolBar->addWidget(m_wdirWidget);
@@ -179,7 +179,7 @@ void MainWindow::settingsChanged()
 		}
 	}
 #endif
-	ui->serversWidget->settingsChanged();
+	ui->dataSourceWidget->settingsChanged();
 	m_wdirWidget->settingsChanged();
 
 	// Prune tree history
@@ -222,7 +222,7 @@ void MainWindow::handleHistory()
 {
 	qDebug() << "handle history" << m_historyCurrent << m_history.at(m_historyCurrent);
 	QString path = m_history.at(m_historyCurrent);
-	ui->serversWidget->setDirectory(path);
+	ui->dataSourceWidget->setDirectory(path);
 
 	ui->actionHistoryBack->setEnabled(m_historyCurrent != 0);
 	ui->actionHistoryForward->setEnabled(m_historyCurrent != m_history.count()-1);

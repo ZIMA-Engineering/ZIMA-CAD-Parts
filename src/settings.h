@@ -4,7 +4,7 @@
 #include <QList>
 
 #include "filefilters/filtergroup.h"
-#include "serversmodel.h"
+#include "datasourcemodel.h"
 #include "metadata.h"
 
 
@@ -27,7 +27,7 @@ public:
 	{
 		this->name = name;
 		this->rootPath = path;
-		ServersIconProvider ip;
+		DataSourceIconProvider ip;
 		icon = ip.icon(QFileInfo(path));
 	}
 
