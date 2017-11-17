@@ -28,6 +28,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QWebEngineSettings>
+#include <QShortcut>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -68,10 +69,10 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->actionRefresh, SIGNAL(triggered()),
 	        MetadataCache::get(), SLOT(clear()));
 
-#ifdef Q_OS_WIN
-	// do not display menu bar for now on Windows. It contains only one "File" item now.
-	// On th eother side it's mandatory to allow user to quit the app in some
-	// X11 window manager (and mac)
+#if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
+	// do not display menu bar on Windows and Linux. It contains only one "File"
+	// item now. On th eother side it's mandatory to allow user to quit the app
+	// in some X11 window manager (and mac).
 	ui->menuBar->hide();
 #endif
 
@@ -125,6 +126,17 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Alt)
+	{
+		ui->menuBar->setVisible(!ui->menuBar->isVisible());
+		return;
+	}
+
+	QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::changeEvent(QEvent *event)

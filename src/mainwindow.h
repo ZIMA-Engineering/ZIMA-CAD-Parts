@@ -54,6 +54,9 @@ public:
 	MainWindow(QTranslator *translator, QWidget *parent = 0);
 	~MainWindow();
 
+protected:
+	void keyPressEvent(QKeyEvent *event);
+
 private:
 	Ui::MainWindowClass *ui;
 
