@@ -83,7 +83,7 @@ bool DataSourceProxyModel::filterAcceptsRow(int sourceRow,
         const QModelIndex &sourceParent) const
 {
 	QModelIndex ix = sourceModel()->index(sourceRow, 0, sourceParent);
-	return ix.data().toString() != TECHSPEC_DIR;
+	return ix.data().toString() != METADATA_DIR;
 }
 
 DataSourceIconProvider::DataSourceIconProvider()
@@ -97,7 +97,7 @@ QIcon DataSourceIconProvider::icon ( IconType type ) const
 
 QIcon DataSourceIconProvider::icon ( const QFileInfo & info ) const
 {
-	QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
+	QString logoPath = info.absoluteFilePath() +"/"+ METADATA_DIR +"/";
 
 	if (!info.isDir())
 	{
@@ -117,7 +117,7 @@ QIcon DataSourceIconProvider::icon ( const QFileInfo & info ) const
 
 QPixmap DataSourceIconProvider::pixmap(const QFileInfo &info) const
 {
-	QString logoPath = info.absoluteFilePath() +"/"+ TECHSPEC_DIR +"/";
+	QString logoPath = info.absoluteFilePath() +"/"+ METADATA_DIR +"/";
 	if (QFile::exists(logoPath + LOGO_FILE))
 	{
 		return QPixmap(logoPath + LOGO_FILE);

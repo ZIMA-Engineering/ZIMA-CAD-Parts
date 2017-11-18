@@ -56,17 +56,17 @@ private:
 	void editIndexFile(const QString &path);
 
 private slots:
-	void techSpecUrlLineEdit_returnPressed();
-	void techSpecGoButton_clicked();
-	void techSpecPinButton_clicked();
-	void techSpecEditButton_clicked();
+	void dirWebViewUrlLineEdit_returnPressed();
+	void dirWebViewGoButton_clicked();
+	void dirWebViewPinButton_clicked();
+	void dirWebViewEditButton_clicked();
 	void partsIndexUrlLineEdit_returnPressed();
 	void partsIndexGoButton_clicked();
 	void partsIndexPinButton_clicked();
 	void partsIndexEditButton_clicked();
 	void refreshButton_clicked();
 
-	void techSpec_urlChanged(const QUrl &url);
+	void dirWebView_urlChanged(const QUrl &url);
 	void partsWebView_urlChanged(const QUrl &url);
 
 	void previewInProductView(const QFileInfo &fi);

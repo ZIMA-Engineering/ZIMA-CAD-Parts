@@ -119,14 +119,14 @@ void MetadataCache::leave()
 
 bool MetadataCache::showLabel(const QString &path)
 {
-	return !QDir().exists(path + "/" + TECHSPEC_DIR + "/" + LOGO_FILE);
+	return !QDir().exists(path + "/" + METADATA_DIR + "/" + LOGO_FILE);
 }
 
 QString MetadataCache::label(const QString &path)
 {
 	// avoid creation of empty Metadata instances
 	// in ServersModel::data
-	if (!QDir().exists(path + "/" + TECHSPEC_DIR))
+	if (!QDir().exists(path + "/" + METADATA_DIR))
 		return QString();
 
 	return get(path)->getLabel();
@@ -178,7 +178,7 @@ Metadata::Metadata(const QString &path, QObject *parent)
 	  m_loadedIncludes(0)
 {
 	m_settings = new QSettings(
-		m_path + "/" + TECHSPEC_DIR + "/" + METADATA_FILE,
+		m_path + "/" + METADATA_DIR + "/" + METADATA_FILE,
 		QSettings::IniFormat
 	);
 	m_settings->setIniCodec("utf-8");

@@ -25,27 +25,27 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
 	connect(ui->refreshButton, SIGNAL(clicked()),
 			this, SLOT(refreshButton_clicked()));
 
-	ui->techSpecBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
-	ui->techSpecForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
-	ui->techSpecReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
-	ui->techSpecGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+	ui->dirWebViewBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
+	ui->dirWebViewForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
+	ui->dirWebViewReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
+	ui->dirWebViewGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
 
-	connect(ui->techSpecBackButton, SIGNAL(clicked()),
-	        ui->techSpec, SLOT(back()));
-	connect(ui->techSpecForwardButton, SIGNAL(clicked()),
-	        ui->techSpec, SLOT(forward()));
-	connect(ui->techSpecReloadButton, SIGNAL(clicked()),
-	        ui->techSpec, SLOT(reload()));
-	connect(ui->techSpecUrlLineEdit, SIGNAL(returnPressed()),
-	        this, SLOT(techSpecUrlLineEdit_returnPressed()));
-	connect(ui->techSpecGoButton, SIGNAL(clicked()),
-	        this, SLOT(techSpecGoButton_clicked()));
-	connect(ui->techSpecPinButton, SIGNAL(clicked()),
-	        this, SLOT(techSpecPinButton_clicked()));
-	connect(ui->techSpecEditButton, SIGNAL(clicked()),
-			this, SLOT(techSpecEditButton_clicked()));
-	connect(ui->techSpec, SIGNAL(urlChanged(QUrl)),
-	        this, SLOT(techSpec_urlChanged(QUrl)));
+	connect(ui->dirWebViewBackButton, SIGNAL(clicked()),
+			ui->dirWebView, SLOT(back()));
+	connect(ui->dirWebViewForwardButton, SIGNAL(clicked()),
+			ui->dirWebView, SLOT(forward()));
+	connect(ui->dirWebViewReloadButton, SIGNAL(clicked()),
+			ui->dirWebView, SLOT(reload()));
+	connect(ui->dirWebViewUrlLineEdit, SIGNAL(returnPressed()),
+			this, SLOT(dirWebViewUrlLineEdit_returnPressed()));
+	connect(ui->dirWebViewGoButton, SIGNAL(clicked()),
+			this, SLOT(dirWebViewGoButton_clicked()));
+	connect(ui->dirWebViewPinButton, SIGNAL(clicked()),
+			this, SLOT(dirWebViewPinButton_clicked()));
+	connect(ui->dirWebViewEditButton, SIGNAL(clicked()),
+			this, SLOT(dirWebViewEditButton_clicked()));
+	connect(ui->dirWebView, SIGNAL(urlChanged(QUrl)),
+			this, SLOT(dirWebView_urlChanged(QUrl)));
 
 	ui->partsIndexBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 	ui->partsIndexForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
@@ -86,7 +86,7 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
 	connect(ui->filterButton, SIGNAL(clicked()),
 	        this, SLOT(setFiltersDialog()));
 
-	ui->techSpec->loadAboutPage();
+	ui->dirWebView->loadAboutPage();
 }
 
 DirectoryWidget::~DirectoryWidget()
@@ -103,7 +103,7 @@ void DirectoryWidget::setDirectory(const QString &rootPath)
 	// handle the ui->partsWebView, custom index-parts*.html page in "parts" tab
 	loadIndexHtml(rootPath, ui->partsWebView, "index-parts", true);
 	// handle the ui->partsWebView, custom index*.html page in "parts" tab
-	loadIndexHtml(rootPath, ui->techSpec, "index", false);
+	loadIndexHtml(rootPath, ui->dirWebView, "index", false);
 
 	setEnabled(true);
 }
@@ -122,7 +122,7 @@ void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
 	        << filterBase + ".html"
 	        << filterBase + ".htm";
 
-	QDir dir(rootPath + "/" + TECHSPEC_DIR);
+	QDir dir(rootPath + "/" + METADATA_DIR);
 	QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
 
 	if (indexes.isEmpty())
@@ -130,9 +130,9 @@ void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
 		webView->setHtml("");
 		if (hideIfNotFound) webView->hide();
 		// load aboutPage only when there is no custom index.html and there is no WD specified
-		if (rootPath == DEFAULT_WDIR && webView == ui->techSpec)
+		if (rootPath == DEFAULT_WDIR && webView == ui->dirWebView)
 		{
-			ui->techSpec->loadAboutPage();
+			ui->dirWebView->loadAboutPage();
 			return;
 		}
 		QDir d(rootPath);
@@ -179,8 +179,8 @@ void DirectoryWidget::changeEvent(QEvent *e)
 	switch (e->type()) {
 	case QEvent::LanguageChange:
 		ui->retranslateUi(this);
-		if (ui->techSpec->url().path().startsWith("/data/zima-cad-parts") )
-			ui->techSpec->loadAboutPage();
+		if (ui->dirWebView->url().path().startsWith("/data/zima-cad-parts") )
+			ui->dirWebView->loadAboutPage();
 		break;
 	default:
 		break;
@@ -189,29 +189,29 @@ void DirectoryWidget::changeEvent(QEvent *e)
 
 void DirectoryWidget::settingsChanged()
 {
-	ui->techSpecDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled
-	                                        && Settings::get()->DeveloperTechSpecToolBar);
+	ui->dirWebViewDevWidget->setVisible(Settings::get()->DeveloperEnabled
+											&& Settings::get()->DeveloperDirWebViewToolBar);
 	ui->partsIndexDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled);
 	ui->thumbnailSizeSlider->setValue(Settings::get()->GUIThumbWidth);
 
 	ui->partsTreeView->settingsChanged();
 }
 
-void DirectoryWidget::techSpecUrlLineEdit_returnPressed()
+void DirectoryWidget::dirWebViewUrlLineEdit_returnPressed()
 {
-	techSpecGoButton_clicked();
+	dirWebViewGoButton_clicked();
 }
 
-void DirectoryWidget::techSpecGoButton_clicked()
+void DirectoryWidget::dirWebViewGoButton_clicked()
 {
-	QString str = ui->techSpecUrlLineEdit->text();
+	QString str = ui->dirWebViewUrlLineEdit->text();
 
 	if (str == "ZIMA-CAD-Parts:about")
 	{
-		ui->techSpec->loadAboutPage();
+		ui->dirWebView->loadAboutPage();
 	}
 	else
-		ui->techSpec->setUrl(QUrl(str));
+		ui->dirWebView->setUrl(QUrl(str));
 }
 
 void DirectoryWidget::partsIndexUrlLineEdit_returnPressed()
@@ -239,14 +239,14 @@ void DirectoryWidget::partsIndexEditButton_clicked()
 	editIndexFile(ui->partsIndexUrlLineEdit->text());
 }
 
-void DirectoryWidget::techSpecPinButton_clicked()
+void DirectoryWidget::dirWebViewPinButton_clicked()
 {
-	ui->partsTreeView->createIndexHtmlFile(ui->techSpecUrlLineEdit->text(), "index");
+	ui->partsTreeView->createIndexHtmlFile(ui->dirWebViewUrlLineEdit->text(), "index");
 }
 
-void DirectoryWidget::techSpecEditButton_clicked()
+void DirectoryWidget::dirWebViewEditButton_clicked()
 {
-	editIndexFile(ui->techSpecUrlLineEdit->text());
+	editIndexFile(ui->dirWebViewUrlLineEdit->text());
 }
 
 void DirectoryWidget::refreshButton_clicked()
@@ -254,18 +254,18 @@ void DirectoryWidget::refreshButton_clicked()
 	ui->partsTreeView->refreshRequested();
 }
 
-void DirectoryWidget::techSpec_urlChanged(const QUrl &url)
+void DirectoryWidget::dirWebView_urlChanged(const QUrl &url)
 {
-	ui->techSpecBackButton->setEnabled(ui->techSpec->history()->canGoBack());
-	ui->techSpecForwardButton->setEnabled(ui->techSpec->history()->canGoForward());
-	ui->techSpecEditButton->setEnabled(url.scheme() == "file");
+	ui->dirWebViewBackButton->setEnabled(ui->dirWebView->history()->canGoBack());
+	ui->dirWebViewForwardButton->setEnabled(ui->dirWebView->history()->canGoForward());
+	ui->dirWebViewEditButton->setEnabled(url.scheme() == "file");
 
 	QString str = url.toString();
 
 	if (str == "about:blank")
 		return;
 
-	ui->techSpecUrlLineEdit->setText(str);
+	ui->dirWebViewUrlLineEdit->setText(str);
 }
 
 void DirectoryWidget::partsWebView_urlChanged(const QUrl &url)

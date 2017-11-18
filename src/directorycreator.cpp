@@ -57,7 +57,7 @@ void DirectoryCreatorThread::run()
 
 	if (m_prototype.isEmpty())
 	{
-		d.mkdir(m_name + "/" + TECHSPEC_DIR);
+		d.mkdir(m_name + "/" + METADATA_DIR);
 		emit finished();
 		return;
 	}
@@ -66,7 +66,7 @@ void DirectoryCreatorThread::run()
 	recursiveCopy(m_dir + "/" PROTOTYPE_DIR + "/" + m_prototype, m_dir + "/" + m_name);
 
 	// Ensure 0000-index is created, in case it's not in the prototype
-	d.mkpath(m_name + "/" + TECHSPEC_DIR);
+	d.mkpath(m_name + "/" + METADATA_DIR);
 
 	emit finished();
 }

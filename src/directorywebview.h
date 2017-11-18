@@ -18,19 +18,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TECHSPECSWEBVIEW_H
-#define TECHSPECSWEBVIEW_H
+#ifndef DIRECTORYWEBVIEW_H
+#define DIRECTORYWEBVIEW_H
 
 #include <QWebEngineView>
 #include <QWebEngineDownloadItem>
 
 class WebDownloaderDialog;
 
-class TechSpecsWebView : public QWebEngineView
+class DirectoryWebView : public QWebEngineView
 {
 	Q_OBJECT
 public:
-	explicit TechSpecsWebView(QWidget *parent = 0);
+	explicit DirectoryWebView(QWidget *parent = 0);
 	void setRootPath(QString path);
 
 signals:
@@ -39,7 +39,7 @@ public slots:
 	void loadAboutPage();
 
 protected:
-	TechSpecsWebView *createWindow(QWebEnginePage::WebWindowType type);
+	DirectoryWebView *createWindow(QWebEnginePage::WebWindowType type);
 
 private slots:
 	void pageLoaded(bool ok);
@@ -52,4 +52,4 @@ private:
 	WebDownloaderDialog *m_downloader;
 };
 
-#endif // TECHSPECSWEBVIEW_H
+#endif // DIRECTORYWEBVIEW_H

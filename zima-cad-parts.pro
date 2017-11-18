@@ -35,7 +35,6 @@ SOURCES += src/zima-cad-parts.cpp \
     src/extensions/productview/productview.cpp \
     src/filtersdialog.cpp \
     src/metadata.cpp \
-    src/techspecswebview.cpp \
     src/zimautils.cpp \
     src/errordialog.cpp \
     src/filefiltermodel.cpp \
@@ -103,7 +102,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/datasourcewidget.cpp \
     src/directorywidget.cpp \
     src/datasourceview.cpp \
-    src/datasourcemodel.cpp
+    src/datasourcemodel.cpp \
+    src/directorywebview.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -114,7 +114,6 @@ HEADERS += src/mainwindow.h \
     src/extensions/productview/productview.h \
     src/filtersdialog.h \
     src/metadata.h \
-    src/techspecswebview.h \
     src/zima-cad-parts.h \
     src/zimautils.h \
     src/errordialog.h \
@@ -166,7 +165,8 @@ HEADERS += src/mainwindow.h \
     src/datasourcewidget.h \
     src/directorywidget.h \
     src/datasourceview.h \
-    src/datasourcemodel.h
+    src/datasourcemodel.h \
+    src/directorywebview.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

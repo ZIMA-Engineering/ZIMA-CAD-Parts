@@ -8,7 +8,7 @@
 #include "metadata.h"
 
 
-#define TECHSPEC_DIR "0000-index"
+#define METADATA_DIR "0000-index"
 #define THUMBNAILS_DIR "0000-index/thumbnails"
 #define PROTOTYPE_DIR "0000-index/prototypes"
 // If presented - display only the logo
@@ -106,7 +106,7 @@ public:
 	//! Flag: run in developer mode
 	bool DeveloperEnabled;
 	//! Flag: show developer tool bar
-	bool DeveloperTechSpecToolBar;
+	bool DeveloperDirWebViewToolBar;
 
 	//! ProEProductView path for external java applet
 	QString ExtensionsProductViewPath;

@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "techspecswebview.h"
+#include "directorywebview.h"
 #include "webdownloaderdialog.h"
 #include "webauthenticationdialog.h"
 
@@ -34,7 +34,7 @@
 #include "zima-cad-parts.h"
 
 
-TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
+DirectoryWebView::DirectoryWebView(QWidget *parent) :
 	QWebEngineView(parent),
 	m_downloader(0)
 {
@@ -49,12 +49,12 @@ TechSpecsWebView::TechSpecsWebView(QWidget *parent) :
 	loadAboutPage();
 }
 
-void TechSpecsWebView::setRootPath(QString path)
+void DirectoryWebView::setRootPath(QString path)
 {
 	m_rootPath = path;
 }
 
-void TechSpecsWebView::loadAboutPage()
+void DirectoryWebView::loadAboutPage()
 {
 	QString url = ":/data/zima-cad-parts%1.html";
 	QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
@@ -69,14 +69,14 @@ void TechSpecsWebView::loadAboutPage()
 	setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
 
-TechSpecsWebView* TechSpecsWebView::createWindow(QWebEnginePage::WebWindowType type)
+DirectoryWebView* DirectoryWebView::createWindow(QWebEnginePage::WebWindowType type)
 {
 	Q_UNUSED(type)
 
 	QDialog *popup = new QDialog(this);
 	QVBoxLayout *layout = new QVBoxLayout;
 
-	TechSpecsWebView *webview = new TechSpecsWebView(this);
+	DirectoryWebView *webview = new DirectoryWebView(this);
 	layout->addWidget(webview);
 
 	popup->setLayout(layout);
@@ -86,7 +86,7 @@ TechSpecsWebView* TechSpecsWebView::createWindow(QWebEnginePage::WebWindowType t
 	return webview;
 }
 
-void TechSpecsWebView::urlChange(const QUrl &url)
+void DirectoryWebView::urlChange(const QUrl &url)
 {
 	if(this->url() == url)
 		return;
@@ -95,7 +95,7 @@ void TechSpecsWebView::urlChange(const QUrl &url)
 		loadAboutPage();
 }
 
-void TechSpecsWebView::pageLoaded(bool ok)
+void DirectoryWebView::pageLoaded(bool ok)
 {
 	Q_UNUSED(ok);
 
@@ -126,7 +126,7 @@ void TechSpecsWebView::pageLoaded(bool ok)
 	)");
 }
 
-void TechSpecsWebView::downloadFile(QWebEngineDownloadItem *download)
+void DirectoryWebView::downloadFile(QWebEngineDownloadItem *download)
 {
 	QFileInfo fi(download->path());
 	QString filePath = Settings::get()->getWorkingDir() + "/" + fi.fileName();
@@ -154,7 +154,7 @@ void TechSpecsWebView::downloadFile(QWebEngineDownloadItem *download)
 	m_downloader->show();
 }
 
-void TechSpecsWebView::authenticate(const QUrl &requestUrl, QAuthenticator *authenticator)
+void DirectoryWebView::authenticate(const QUrl &requestUrl, QAuthenticator *authenticator)
 {
 	Q_UNUSED(requestUrl)
 

@@ -51,11 +51,11 @@
        </size>
       </property>
       <attribute name="title">
-       <string>&amp;Technical specifications</string>
+       <string>&amp;Directory</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QWidget" name="techSpecDeveloperWidget" native="true">
+        <widget class="QWidget" name="dirWebViewDevWidget" native="true">
          <layout class="QGridLayout" name="gridLayout_2">
           <property name="leftMargin">
            <number>0</number>
@@ -70,22 +70,22 @@
            <number>0</number>
           </property>
           <item row="0" column="1">
-           <widget class="QPushButton" name="techSpecForwardButton"/>
+           <widget class="QPushButton" name="dirWebViewForwardButton"/>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="techSpecGoButton"/>
+           <widget class="QPushButton" name="dirWebViewGoButton"/>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="techSpecReloadButton"/>
+           <widget class="QPushButton" name="dirWebViewReloadButton"/>
           </item>
           <item row="0" column="3">
-           <widget class="QLineEdit" name="techSpecUrlLineEdit"/>
+           <widget class="QLineEdit" name="dirWebViewUrlLineEdit"/>
           </item>
           <item row="0" column="0">
-           <widget class="QPushButton" name="techSpecBackButton"/>
+           <widget class="QPushButton" name="dirWebViewBackButton"/>
           </item>
           <item row="0" column="5">
-           <widget class="QPushButton" name="techSpecPinButton">
+           <widget class="QPushButton" name="dirWebViewPinButton">
             <property name="toolTip">
              <string>Pin this URL to current directory in tree (write permission required)</string>
             </property>
@@ -96,7 +96,7 @@
            </widget>
           </item>
           <item row="0" column="6">
-           <widget class="QPushButton" name="techSpecEditButton">
+           <widget class="QPushButton" name="dirWebViewEditButton">
             <property name="toolTip">
              <string>Open this file in text editor</string>
             </property>
@@ -113,7 +113,7 @@
         </widget>
        </item>
        <item>
-        <widget class="TechSpecsWebView" name="techSpec" native="true">
+        <widget class="DirectoryWebView" name="dirWebView" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -321,14 +321,15 @@
    <header>QtWebEngineWidgets/QWebEngineView</header>
   </customwidget>
   <customwidget>
-   <class>TechSpecsWebView</class>
-   <extends>QWebEngineView</extends>
-   <header>src/techspecswebview.h</header>
-  </customwidget>
-  <customwidget>
    <class>FileView</class>
    <extends>QTreeView</extends>
    <header>src/fileview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DirectoryWebView</class>
+   <extends>QWidget</extends>
+   <header>src/directorywebview.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

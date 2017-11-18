@@ -258,7 +258,7 @@ bool DirectoryEditorDialog::hasIcon(const QString &name) const
 
 QString DirectoryEditorDialog::iconInstallPath(const QString &name) const
 {
-	return m_dirPath +"/"+ TECHSPEC_DIR + "/" + name;
+	return m_dirPath +"/"+ METADATA_DIR + "/" + name;
 }
 
 void DirectoryEditorDialog::removeIcon()

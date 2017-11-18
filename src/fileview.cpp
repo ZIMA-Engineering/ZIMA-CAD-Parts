@@ -104,7 +104,7 @@ QFileInfo FileView::fileInfo(const QModelIndex &filteredIndex)
 
 void FileView::createIndexHtmlFile(const QString &text, const QString &fileBase)
 {
-	QDir techSpecDir(m_path + "/" + TECHSPEC_DIR);
+	QDir techSpecDir(m_path + "/" + METADATA_DIR);
 
 	if(!techSpecDir.exists())
 		techSpecDir.mkdir(techSpecDir.absolutePath());

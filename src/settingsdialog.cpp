@@ -82,7 +82,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
 	m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
 	m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
-	m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperTechSpecToolBar);
+	m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperDirWebViewToolBar);
 	m_ui->productViewEdit->setText(Settings::get()->ExtensionsProductViewPath);
 	m_ui->textEditorLineEdit->setText(Settings::get()->TextEditorPath);
 
@@ -146,7 +146,7 @@ void SettingsDialog::accept()
 	Settings::get()->GUISplashEnabled = m_ui->splashGroupBox->isChecked();
 	Settings::get()->GUISplashDuration = m_ui->splashDurationSpinBox->value();
 	Settings::get()->DeveloperEnabled = m_ui->developerModeGroupBox->isChecked();
-	Settings::get()->DeveloperTechSpecToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
+	Settings::get()->DeveloperDirWebViewToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
 	Settings::get()->ExtensionsProductViewPath = m_ui->productViewEdit->text();
 	Settings::get()->TextEditorPath = m_ui->textEditorLineEdit->text();
 
