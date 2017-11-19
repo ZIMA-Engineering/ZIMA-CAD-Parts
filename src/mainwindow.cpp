@@ -36,15 +36,13 @@
 #include "filtersdialog.h"
 #include "zimautils.h"
 #include "settings.h"
-#include "languageflagswidget.h"
-#include "workingdirwidget.h"
+#include "datasourcewidget.h"
 
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
 	  ui(new Ui::MainWindowClass),
-	  translator(translator),
-	  m_historyCurrent(-1)
+	  translator(translator)
 {
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
@@ -61,13 +59,10 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	ui->setupUi(this);
 
-	connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
-	ui->actionRefresh->setShortcut(QKeySequence::Refresh);
-	ui->actionRefresh->setShortcutContext(Qt::ApplicationShortcut);
-	ui->actionRefresh->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
-	connect(ui->actionRefresh, SIGNAL(triggered()),
-	        MetadataCache::get(), SLOT(clear()));
+	connect(ui->action_Preferences, SIGNAL(triggered()),
+			this, SLOT(showSettings()));
+	connect(ui->actionAbout_Qt, SIGNAL(triggered()),
+			qApp, SLOT(aboutQt()));
 
 #if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
 	// do not display menu bar on Windows and Linux. It contains only one "File"
@@ -76,20 +71,16 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	ui->menuBar->hide();
 #endif
 
-	ui->actionHistoryBack->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
-	ui->actionHistoryForward->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
+	connect(ui->toolBar, SIGNAL(settingsRequested()),
+			this, SLOT(showSettings()));
 
-	connect(ui->dataSourceWidget, SIGNAL(showSettings(SettingsDialog::Section)),
-	        this, SLOT(showSettings(SettingsDialog::Section)));
+	connect(ui->tabWidget, SIGNAL(showSettings(SettingsDialog::Section)),
+			this, SLOT(showSettings(SettingsDialog::Section)));
 
-	connect(ui->dataSourceWidget, SIGNAL(directorySelected(QString)),
-	        this, SLOT(trackHistory(QString)));
+	connect(ui->tabWidget, SIGNAL(newHistory(DataSourceHistory*)),
+			ui->toolBar, SLOT(setupHistory(DataSourceHistory*)));
 
-	connect(ui->actionHistoryBack, SIGNAL(triggered()), this, SLOT(historyBack()));
-	connect(ui->actionHistoryForward, SIGNAL(triggered()), this, SLOT(historyForward()));
-
-	connect(ui->actionHome, SIGNAL(triggered()),
-			ui->dataSourceWidget, SLOT(goToWorkingDirectory()));
+	ui->toolBar->setupHistory(ui->tabWidget->currentDataSource()->history());
 
 	restoreState(Settings::get()->MainWindowState);
 	restoreGeometry(Settings::get()->MainWindowGeometry);
@@ -98,19 +89,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	list << (int)(width()*0.25) << (int)(width()*0.75);
 	ui->splitter->setSizes(list);
 
-	connect(ui->dataSourceWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
-
-	m_wdirWidget = new WorkingDirWidget(this);
-	ui->toolBar->addWidget(m_wdirWidget);
-
-	ui->toolBar->addSeparator();
-
-	LanguageFlagsWidget *flagsWidget = new LanguageFlagsWidget(this);
-	ui->toolBar->addWidget(flagsWidget);
-
-	ui->toolBar->addSeparator();
-	ui->toolBar->addAction(ui->action_Preferences);
-	connect(ui->action_Preferences, SIGNAL(triggered()), this, SLOT(showSettings()));
+	connect(ui->tabWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
 	QWebEngineSettings::globalSettings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
 
@@ -126,6 +105,15 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::showSettings(SettingsDialog::Section section)
+{
+	SettingsDialog sd(&translator, this);
+	sd.setSection(section);
+
+	if (sd.exec())
+		settingsChanged();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -159,15 +147,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	QMainWindow::closeEvent(e);
 }
 
-void MainWindow::showSettings(SettingsDialog::Section section)
-{
-	SettingsDialog sd(&translator, this);
-	sd.setSection(section);
-
-	if (sd.exec())
-		settingsChanged();
-}
-
 void MainWindow::settingsChanged()
 {
 	Settings::get()->recalculateFilters();
@@ -191,51 +170,7 @@ void MainWindow::settingsChanged()
 		}
 	}
 #endif
-	ui->dataSourceWidget->settingsChanged();
-	m_wdirWidget->settingsChanged();
 
-	// Prune tree history
-	m_history.clear();
-	m_historyCurrent = -1;
-
-	ui->actionHistoryBack->setEnabled(false);
-	ui->actionHistoryForward->setEnabled(false);
-}
-
-void MainWindow::trackHistory(const QString &path)
-{
-	if (m_history.count() && m_history.at(0) == path)
-		return;
-	else
-	{
-		m_history << path;
-		m_historyCurrent++;
-	}
-
-	if (m_historyCurrent == 0)
-		ui->actionHistoryForward->setEnabled(false);
-	else if (m_historyCurrent > 0)
-		ui->actionHistoryBack->setEnabled(true);
-}
-
-void MainWindow::historyBack()
-{
-	--m_historyCurrent;
-	handleHistory();
-}
-
-void MainWindow::historyForward()
-{
-	++m_historyCurrent;
-	handleHistory();
-}
-
-void MainWindow::handleHistory()
-{
-	qDebug() << "handle history" << m_historyCurrent << m_history.at(m_historyCurrent);
-	QString path = m_history.at(m_historyCurrent);
-	ui->dataSourceWidget->setDirectory(path);
-
-	ui->actionHistoryBack->setEnabled(m_historyCurrent != 0);
-	ui->actionHistoryForward->setEnabled(m_historyCurrent != m_history.count()-1);
+	ui->toolBar->settingsChanged();
+	ui->tabWidget->settingsChanged();
 }

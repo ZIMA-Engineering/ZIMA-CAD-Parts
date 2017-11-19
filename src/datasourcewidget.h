@@ -6,6 +6,7 @@
 #include "directorywidget.h"
 
 class QSignalMapper;
+class DataSourceHistory;
 
 
 /*!
@@ -20,7 +21,7 @@ public:
 	explicit DataSourceWidget(QWidget *parent = 0);
 
 	QModelIndex currentIndex();
-	void setDirectory(const QString &path);
+	DataSourceHistory* history();
 
 signals:
 	void showSettings(SettingsDialog::Section);
@@ -32,19 +33,23 @@ signals:
 	void techSpecAvailable(const QUrl&);
 
 	void workingDirChanged();
-	void directorySelected(const QString&);
+	void directoryChanged(DataSourceWidget*, const QString&);
 
 public slots:
 	void expand(const QModelIndex & index);
 	void settingsChanged();
+	void setDirectory(const QString &path);
 	void goToWorkingDirectory();
 
 private:
+	DataSourceHistory *m_history;
 	QStringList m_zimaUtils;
 
 private slots:
+	void setupDataSources();
 	void splitterMoved(int, int);
 	void handleOpenPartDirectory(const QFileInfo &fi);
+	void announceDirectoryChange(const QString &dir);
 };
 
 #endif // DATASOURCEWIDGET_H

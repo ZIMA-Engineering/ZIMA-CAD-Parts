@@ -1,6 +1,7 @@
 #include "datasourcewidget.h"
 #include "datasourceview.h"
 #include "settings.h"
+#include "datasourcehistory.h"
 
 #include <QtDebug>
 
@@ -16,6 +17,13 @@ DataSourceWidget::DataSourceWidget(QWidget *parent)
 
 	connect(splitter, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)));
 	connect(dirWidget, SIGNAL(changeSettings()), this, SLOT(settingsChanged()));
+
+	m_history = new DataSourceHistory(this);
+
+	connect(m_history, SIGNAL(openDirectory(QString)),
+			this, SLOT(setDirectory(QString)));
+
+	setupDataSources();
 }
 
 void DataSourceWidget::splitterMoved(int, int)
@@ -28,13 +36,16 @@ void DataSourceWidget::handleOpenPartDirectory(const QFileInfo &fi)
 	setDirectory(fi.absoluteFilePath());
 }
 
+void DataSourceWidget::announceDirectoryChange(const QString &dir)
+{
+	emit directoryChanged(this, dir);
+}
+
 void DataSourceWidget::settingsChanged()
 {
+	// Data sources
 	if (Settings::get()->DataSourcesNeedsUpdate)
 	{
-		Settings::get()->DataSourcesNeedsUpdate = false;
-
-		// Datasources
 		// firstly delete all stuff used. Remember "the reset"
 		while (dsList->count())
 		{
@@ -45,31 +56,8 @@ void DataSourceWidget::settingsChanged()
 		qApp->processEvents();
 
 		// now setup all item==group again
-		foreach(DataSource *ds, Settings::get()->DataSources)
-		{
-			DataSourceView *view = new DataSourceView(ds->rootPath, this);
-
-			connect(view, SIGNAL(showSettings(SettingsDialog::Section)),
-			        this, SIGNAL(showSettings(SettingsDialog::Section)));
-			connect(view, SIGNAL(workingDirChanged()),
-			        this, SIGNAL(workingDirChanged()));
-			connect(view, SIGNAL(directorySelected(QString)),
-					dirWidget, SLOT(setDirectory(QString)));
-			connect(dirWidget, SIGNAL(openPartDirectory(QFileInfo)),
-					this, SLOT(handleOpenPartDirectory(QFileInfo)));
-			connect(view, SIGNAL(directorySelected(QString)),
-			        this, SIGNAL(directorySelected(QString)));
-			connect(view, SIGNAL(directoryChanged(QString)),
-					dirWidget, SLOT(updateDirectory(QString)));
-
-			dsList->addPage(view, ds->name, ds->icon);
-		}
-
-		dsList->setVisibleRows(dsList->count());
-
-		goToWorkingDirectory();
-
-	} // Settings::get()->DataSourcesNeedsUpdate
+		setupDataSources();
+	}
 
 	dirWidget->settingsChanged();
 }
@@ -97,7 +85,43 @@ void DataSourceWidget::setDirectory(const QString &path)
 	}
 }
 
+DataSourceHistory *DataSourceWidget::history()
+{
+	return m_history;
+}
+
 void DataSourceWidget::goToWorkingDirectory()
 {
-    setDirectory(Settings::get()->getWorkingDir());
+	QString wdir = Settings::get()->getWorkingDir();
+	setDirectory(wdir);
+	m_history->track(wdir);
+}
+
+void DataSourceWidget::setupDataSources()
+{
+	foreach(DataSource *ds, Settings::get()->DataSources)
+	{
+		DataSourceView *view = new DataSourceView(ds->rootPath, this);
+
+		connect(view, SIGNAL(showSettings(SettingsDialog::Section)),
+				this, SIGNAL(showSettings(SettingsDialog::Section)));
+		connect(view, SIGNAL(workingDirChanged()),
+				this, SIGNAL(workingDirChanged()));
+		connect(view, SIGNAL(directorySelected(QString)),
+				dirWidget, SLOT(setDirectory(QString)));
+		connect(dirWidget, SIGNAL(openPartDirectory(QFileInfo)),
+				this, SLOT(handleOpenPartDirectory(QFileInfo)));
+		connect(view, SIGNAL(directorySelected(QString)),
+				m_history, SLOT(track(QString)));
+		connect(view, SIGNAL(directorySelected(QString)),
+				this, SLOT(announceDirectoryChange(QString)));
+		connect(view, SIGNAL(directoryChanged(QString)),
+				dirWidget, SLOT(updateDirectory(QString)));
+
+		dsList->addPage(view, ds->name, ds->icon);
+	}
+
+	dsList->setVisibleRows(dsList->count());
+
+	goToWorkingDirectory();
 }

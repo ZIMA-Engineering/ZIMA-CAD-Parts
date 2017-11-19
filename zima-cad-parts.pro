@@ -103,7 +103,10 @@ SOURCES += src/zima-cad-parts.cpp \
     src/directorywidget.cpp \
     src/datasourceview.cpp \
     src/datasourcemodel.cpp \
-    src/directorywebview.cpp
+    src/directorywebview.cpp \
+    src/maintabwidget.cpp \
+    src/maintoolbar.cpp \
+    src/datasourcehistory.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -166,7 +169,10 @@ HEADERS += src/mainwindow.h \
     src/directorywidget.h \
     src/datasourceview.h \
     src/datasourcemodel.h \
-    src/directorywebview.h
+    src/directorywebview.h \
+    src/maintabwidget.h \
+    src/maintoolbar.h \
+    src/datasourcehistory.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -189,7 +195,9 @@ FORMS += mainwindow.ui \
     src/directoryeditordialog.ui \
     src/directorylocaleeditwidget.ui \
     src/datasourcewidget.ui \
-    src/directorywidget.ui
+    src/directorywidget.ui \
+    src/maintabwidget.ui \
+    src/maintoolbar.ui
 
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc

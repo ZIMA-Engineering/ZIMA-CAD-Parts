@@ -54,6 +54,9 @@ public:
 	MainWindow(QTranslator *translator, QWidget *parent = 0);
 	~MainWindow();
 
+public slots:
+	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
+
 protected:
 	void keyPressEvent(QKeyEvent *event);
 
@@ -63,25 +66,13 @@ private:
 	QTranslator *translator;// app ui
 	WorkingDirWidget *m_wdirWidget;
 
-	// History
-	QList<QString> m_history;
-	int m_historyCurrent;
-
 	QModelIndex lastFoundIndex;
 
 	void changeEvent(QEvent *event);
 	void closeEvent(QCloseEvent*);
 
-	void handleHistory();
-
-public slots:
-	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
-
 private slots:
 	void settingsChanged();
-	void trackHistory(const QString &index);
-	void historyBack();
-	void historyForward();
 };
 
 class SleeperThread : public QThread

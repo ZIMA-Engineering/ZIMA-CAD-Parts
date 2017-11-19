@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainToolBar</class>
+ <widget class="QToolBar" name="MainToolBar">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>401</width>
+    <height>39</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Main Tool Bar</string>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>24</width>
+    <height>24</height>
+   </size>
+  </property>
+  <action name="actionHome">
+   <property name="icon">
+    <iconset resource="../zima-cad-parts.qrc">
+     <normaloff>:/gfx/gohome.png</normaloff>:/gfx/gohome.png</iconset>
+   </property>
+   <property name="text">
+    <string>Home</string>
+   </property>
+  </action>
+  <action name="actionHistoryBack">
+   <property name="text">
+    <string>historyBack</string>
+   </property>
+  </action>
+  <action name="actionHistoryForward">
+   <property name="text">
+    <string>historyForward</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="icon">
+    <iconset resource="../zima-cad-parts.qrc">
+     <normaloff>:/gfx/configure.png</normaloff>:/gfx/configure.png</iconset>
+   </property>
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <addaction name="actionHome"/>
+  <addaction name="actionHistoryBack"/>
+  <addaction name="actionHistoryForward"/>
+  <addaction name="separator"/>
+  <addaction name="actionRefresh"/>
+  <addaction name="separator"/>
+ </widget>
+ <resources>
+  <include location="../zima-cad-parts.qrc"/>
+ </resources>
+ <connections/>
+</ui>
