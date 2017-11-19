@@ -72,13 +72,7 @@ private:
 	QString m_path;
 	QStringList m_columnLabels;
 	QStringList m_parameterHandles;
-	/*! List of checked files. Key = root directory, values are full
-	 * paths of files (checked).
-	 * It shares information between directories. The map is cleared
-	 * when is the "Download" button clicked and processed.
-	 * Also "root dir" is cleared when there is "Delete" action processed.
-	 */
-	QHash<QString,QStringList> m_checked;
+
 	FileIconProvider *m_iconProvider;
 
     ThumbnailManager *m_thumb;

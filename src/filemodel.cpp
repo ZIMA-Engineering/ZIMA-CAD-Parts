@@ -27,6 +27,7 @@
 #include "errordialog.h"
 #include "directoryremover.h"
 #include "filecopier.h"
+#include "partselector.h"
 
 FileModel::FileModel(QObject *parent) :
 	QAbstractItemModel(parent)
@@ -76,7 +77,10 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 	// first handle standard QFileSystemModel data
 	if (col == 0 && role == Qt::CheckStateRole)
 	{
-        return QVariant(m_checked[m_path].contains(m_data.at(index.row()).absoluteFilePath()));
+		return PartSelector::get()->isSelected(
+			m_path,
+			m_data.at(index.row()).absoluteFilePath()
+		);
 	}
 	else if (col == 0 && role == Qt::DisplayRole)
 	{
@@ -180,12 +184,10 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 {
 	if (role == Qt::CheckStateRole)
 	{
-		QString path = m_data.at(index.row()).absoluteFilePath();
-
-		if (m_checked[m_path].contains(path))
-			m_checked[m_path].removeAll(path);
-		else
-			m_checked[m_path].append(path);
+		PartSelector::get()->toggle(
+			m_path,
+			m_data.at(index.row()).absoluteFilePath()
+		);
 
 		emit dataChanged(index, index);
 		return true;
@@ -264,11 +266,12 @@ void FileModel::deleteParts(DirectoryRemover *rm)
 	// the user though via QMessageBox.
 
 	QFileInfoList deleteList;
+	auto selector = PartSelector::get();
 
 	beginResetModel();
 	m_data.clear();
 
-	foreach (const QString &fname, m_checked[m_path])
+	foreach (const QString &fname, selector->allSelected())
 	{
 		QFileInfo fi(fname);
 
@@ -290,14 +293,13 @@ void FileModel::deleteParts(DirectoryRemover *rm)
 
 		m_data.removeAll(fi);
 		MetadataCache::get()->deletePart(m_path, fi.baseName());
-		m_checked[m_path].removeAll(fname);
 	}
 
 	rm->addFiles(deleteList);
 	rm->setStopOnError(false);
 	rm->work();
 
-	m_checked[m_path].clear();
+	selector->clear();
 	loadFiles(m_path);
 
 	endResetModel();
@@ -305,7 +307,8 @@ void FileModel::deleteParts(DirectoryRemover *rm)
 
 void FileModel::copyToWorkingDir(FileCopier *cp)
 {
-	QHashIterator<QString,QStringList> it(m_checked);
+	auto selector = PartSelector::get();
+	auto it = selector->allSelectedIterator();
 
 	while (it.hasNext())
 	{
@@ -315,7 +318,7 @@ void FileModel::copyToWorkingDir(FileCopier *cp)
 		// do not copy files from WD into WD
 		if (key == Settings::get()->getWorkingDir())
 		{
-			m_checked[key].clear();
+			selector->clear(key);
 			continue;
 		}
 
@@ -329,7 +332,7 @@ void FileModel::copyToWorkingDir(FileCopier *cp)
 			if (!thumbPath.isEmpty())
 				cp->addSourceFile(QFileInfo(thumbPath), THUMBNAILS_DIR);
 
-			m_checked[key].removeAll(fname);
+			selector->clear(key, fname);
 		}
 	}
 
@@ -339,7 +342,7 @@ void FileModel::copyToWorkingDir(FileCopier *cp)
 	beginResetModel();
 
 	cp->work();
-	m_checked.clear();
+	selector->clear();
 
 	if (m_path == Settings::get()->getWorkingDir())
 		loadFiles(m_path);

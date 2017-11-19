@@ -106,7 +106,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/directorywebview.cpp \
     src/maintabwidget.cpp \
     src/maintoolbar.cpp \
-    src/datasourcehistory.cpp
+    src/datasourcehistory.cpp \
+    src/partselector.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -172,7 +173,8 @@ HEADERS += src/mainwindow.h \
     src/directorywebview.h \
     src/maintabwidget.h \
     src/maintoolbar.h \
-    src/datasourcehistory.h
+    src/datasourcehistory.h \
+    src/partselector.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
