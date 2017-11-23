@@ -48,6 +48,7 @@ private slots:
 	void closeTab(int index);
 	void tabChange(int index);
 	void updateTabTitle(DataSourceWidget *dsw, const QString &dir);
+	void handleTabMove(int from, int to);
 	void save();
 };
 

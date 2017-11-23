@@ -13,17 +13,20 @@ MainTabWidget::MainTabWidget(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	load();
-
-	auto addTabBtn = new QPushButton(QIcon(":/gfx/list-add.png"), QString(), this);
-
+	auto addTabBtn = new QToolButton(this);
+	addTabBtn->setIcon(QIcon(":/gfx/list-add.png"));
+	addTabBtn->setToolTip(tr("Open a new tab"));
 	connect(addTabBtn, SIGNAL(clicked()), this, SLOT(addNewTab()));
 
-	setCornerWidget(addTabBtn, Qt::TopLeftCorner);
+	int i = addTab(new QLabel("Add tabs by pressing \"+\""), QString());
+	setTabEnabled(i, false);
+	tabBar()->setTabButton(i, QTabBar::RightSide, addTabBtn);
+
+	load();
 
 	connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 	connect(this, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
-	connect(tabBar(), SIGNAL(tabMoved(int,int)), this, SLOT(save()));
+	connect(tabBar(), SIGNAL(tabMoved(int,int)), this, SLOT(handleTabMove(int,int)));
 }
 
 MainTabWidget::~MainTabWidget()
@@ -48,7 +51,7 @@ void MainTabWidget::goToWorkingDirectory()
 
 void MainTabWidget::settingsChanged()
 {
-	int cnt = count();
+	int cnt = count() - 1;
 
 	for (int i = 0; i < cnt; i++)
 		dataSourceAt(i)->settingsChanged();
@@ -113,10 +116,10 @@ void MainTabWidget::addDataSourceWidget(const QString &dir)
 	connect(dsw, SIGNAL(openInANewTabRequested(QString)),
 			this, SLOT(openInANewTab(QString)));
 
-	int i = addTab(dsw, QFileInfo(dir).baseName());
+	int i = insertTab(qMax(count() - 1, 0), dsw, "<you should not see this>");
 	updateTabTitle(dsw, dir);
 
-	if (count() > 1)
+	if (count() > 2)
 		setTabsClosable(true);
 
 	setCurrentIndex(i);
@@ -130,7 +133,7 @@ void MainTabWidget::addNewTab()
 
 void MainTabWidget::closeTab(int index)
 {
-	if (count() <= 1)
+	if (count() <= 2)
 		setTabsClosable(false);
 
 	removeTab(index);
@@ -138,6 +141,14 @@ void MainTabWidget::closeTab(int index)
 
 void MainTabWidget::tabChange(int index)
 {
+	if (index == count()-1)
+	{
+		// The last tab is the add tab button, so activate
+		// the previous tab instead.
+		setCurrentIndex(qMax(index-1, 0));
+		return;
+	}
+
 	save();
 	emit newHistory(dataSourceAt(index)->history());
 }
@@ -154,16 +165,32 @@ void MainTabWidget::updateTabTitle(DataSourceWidget *dsw, const QString &dir)
 	setTabText(
 		i,
 		label.isEmpty() ? QFileInfo(dir).baseName() : label
-	);
+						  );
+}
+
+void MainTabWidget::handleTabMove(int from, int to)
+{
+	Q_UNUSED(to)
+	/*
+	 * The last tab has to be with the add tab button, so when the last
+	 * tab is moved, put it immediately back in place.
+	 */
+	if (from == count()-1)
+		tabBar()->moveTab(to, count()-1);
+
+	save();
 }
 
 void MainTabWidget::save()
 {
 	QStringList tabDirs;
-	int cnt = count();
+	int cnt = count() - 1;
 
 	for (int i = 0; i < cnt; i++)
+	{
+		qDebug() << "Save tab" << i << tabText(i);
 		tabDirs << dataSourceAt(i)->currentDir();
+	}
 
 	Settings::get()->setMainTabs(tabDirs, currentIndex());
 }
