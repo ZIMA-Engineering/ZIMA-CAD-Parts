@@ -54,6 +54,11 @@ void MainTabWidget::settingsChanged()
 		dataSourceAt(i)->settingsChanged();
 }
 
+void MainTabWidget::openInANewTab(const QString &dir)
+{
+	addDataSourceWidget(dir);
+}
+
 void MainTabWidget::tabInserted(int index)
 {
 	Q_UNUSED(index)
@@ -105,6 +110,8 @@ void MainTabWidget::addDataSourceWidget(const QString &dir)
 			this, SLOT(save()));
 	connect(dsw, SIGNAL(workingDirChanged()),
 			this, SIGNAL(workingDirChanged()));
+	connect(dsw, SIGNAL(openInANewTabRequested(QString)),
+			this, SLOT(openInANewTab(QString)));
 
 	int i = addTab(dsw, QFileInfo(dir).baseName());
 

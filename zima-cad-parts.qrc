@@ -54,5 +54,6 @@
         <file>gfx/image-loading.png</file>
         <file>gfx/document-edit.png</file>
         <file>gfx/list-add.png</file>
+        <file>gfx/tab-new.png</file>
     </qresource>
 </RCC>

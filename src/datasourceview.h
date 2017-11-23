@@ -30,6 +30,7 @@ signals:
 	void workingDirChanged();
 	void directorySelected(const QString &path);
 	void directoryChanged(const QString &path);
+	void openInANewTabRequested(const QString &path);
 
 private:
 	QString m_path;
@@ -45,6 +46,7 @@ private slots:
 	void showContextMenu(const QPoint &point);
 	void spawnZimaUtilityOnDir(const QString &label);
 	void indexOpenPath();
+	void openInANewTab();
 	void setWorkingDirectory();
 	void createDirectory();
 	void editDirectory();

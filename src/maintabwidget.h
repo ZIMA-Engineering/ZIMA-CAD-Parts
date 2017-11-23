@@ -25,6 +25,7 @@ public:
 public slots:
 	void goToWorkingDirectory();
 	void settingsChanged();
+	void openInANewTab(const QString &dir);
 
 signals:
 	void showSettings(SettingsDialog::Section);

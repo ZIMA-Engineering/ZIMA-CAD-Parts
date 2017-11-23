@@ -82,6 +82,7 @@ void DataSourceView::showContextMenu(const QPoint &point)
 	QMenu *menu = new QMenu(this);
 
 	menu->addAction(style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open"), this, SLOT(indexOpenPath()));
+	menu->addAction(QIcon(":/gfx/tab-new.png"), tr("Open in a new tab"), this, SLOT(openInANewTab()));
 	menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
 	menu->addAction(style()->standardIcon(QStyle::SP_FileDialogNewFolder), tr("Create directory"), this, SLOT(createDirectory()));
 
@@ -108,6 +109,11 @@ void DataSourceView::showContextMenu(const QPoint &point)
 void DataSourceView::indexOpenPath()
 {
 	QDesktopServices::openUrl(QUrl::fromLocalFile(currentFileInfo().absoluteFilePath()));
+}
+
+void DataSourceView::openInANewTab()
+{
+	emit openInANewTabRequested(currentFileInfo().absoluteFilePath());
 }
 
 void DataSourceView::spawnZimaUtilityOnDir(const QString &label)

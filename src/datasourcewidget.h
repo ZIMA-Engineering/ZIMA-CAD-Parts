@@ -36,6 +36,8 @@ signals:
 	void workingDirChanged();
 	void directoryChanged(DataSourceWidget*, const QString&);
 
+	void openInANewTabRequested(const QString &path);
+
 public slots:
 	void expand(const QModelIndex & index);
 	void settingsChanged();

@@ -124,6 +124,8 @@ void DataSourceWidget::setupDataSources(const QString &dir)
 				this, SLOT(announceDirectoryChange(QString)));
 		connect(view, SIGNAL(directoryChanged(QString)),
 				dirWidget, SLOT(updateDirectory(QString)));
+		connect(view, SIGNAL(openInANewTabRequested(QString)),
+				this, SIGNAL(openInANewTabRequested(QString)));
 
 		dsList->addPage(view, ds->name, ds->icon);
 	}
