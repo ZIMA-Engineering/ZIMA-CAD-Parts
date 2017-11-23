@@ -62,13 +62,12 @@ public:
 	}
 
 	QFileInfo fileInfo(const QModelIndex &ix);
-    QFileInfoList fileInfoList() { return m_data; }
+	QFileInfoList fileInfoList();
 
 signals:
 	void directoryLoaded(const QString &path);
 
 private:
-	QFileInfoList m_data;
 	QString m_path;
 	QStringList m_columnLabels;
 	QStringList m_parameterHandles;
@@ -80,7 +79,7 @@ private:
 	void setupColumns(const QString &path);
 
 private slots:
-	void loadFiles(const QString &path);
+	void directoryCleared(const QString &dir);
     void updateThumbnails();
 };
 
