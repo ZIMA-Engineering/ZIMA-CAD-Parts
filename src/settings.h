@@ -149,6 +149,11 @@ public:
 	//! A language shortcode for Metadata. 'en', 'cs', ...
 	QString LanguageMetadata;
 
+	QStringList MainTabs;
+	int ActiveMainTab;
+
+	void setMainTabs(QStringList tabs, int current);
+
 private:
 	//! cannot access it directly. Use getCurrentLanguageCode()
 	QString Language;

@@ -73,6 +73,9 @@ void Settings::load()
 	ProeExecutable = s.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
 	TextEditorPath = s.value("ExternalPrograms/TextEditorPath").toString();
 
+	MainTabs = s.value("Tabs/Open", QStringList()).toStringList();
+	ActiveMainTab = s.value("Tabs/Active", 0).toInt();
+
 	loadDataSources();
 	setupFilterGroups();
 }
@@ -352,6 +355,16 @@ QString Settings::langIndexToName(int lang)
 	default:
 		return "detect";
 	}
+}
+
+void Settings::setMainTabs(QStringList tabs, int current)
+{
+	QSettings s;
+	s.setValue("Tabs/Open", tabs);
+	s.setValue("Tabs/Active", current);
+
+	MainTabs = tabs;
+	ActiveMainTab = current;
 }
 
 void Settings::setWorkingDir(const QString &wd)

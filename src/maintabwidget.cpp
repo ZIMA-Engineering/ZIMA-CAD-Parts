@@ -8,11 +8,12 @@
 
 MainTabWidget::MainTabWidget(QWidget *parent) :
 	QTabWidget(parent),
-	ui(new Ui::MainTabWidget)
+	ui(new Ui::MainTabWidget),
+	m_loading(true)
 {
 	ui->setupUi(this);
 
-	addDataSourceWidget(Settings::get()->getWorkingDir());
+	load();
 
 	auto addTabBtn = new QPushButton(QIcon(":/gfx/list-add.png"), QString(), this);
 
@@ -22,6 +23,7 @@ MainTabWidget::MainTabWidget(QWidget *parent) :
 
 	connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 	connect(this, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
+	connect(tabBar(), SIGNAL(tabMoved(int,int)), this, SLOT(save()));
 }
 
 MainTabWidget::~MainTabWidget()
@@ -52,14 +54,55 @@ void MainTabWidget::settingsChanged()
 		dataSourceAt(i)->settingsChanged();
 }
 
+void MainTabWidget::tabInserted(int index)
+{
+	Q_UNUSED(index)
+
+	if (m_loading)
+		return;
+
+	save();
+}
+
+void MainTabWidget::tabRemoved(int index)
+{
+	Q_UNUSED(index)
+
+	if (m_loading)
+		return;
+
+	save();
+}
+
+void MainTabWidget::load()
+{
+	QStringList tabDirs = Settings::get()->MainTabs;
+	m_loading = true;
+
+	if (tabDirs.empty())
+	{
+		addDataSourceWidget(Settings::get()->getWorkingDir());
+		return;
+	}
+
+	foreach (const QString &dir, tabDirs)
+		addDataSourceWidget(dir);
+
+	setCurrentIndex(Settings::get()->ActiveMainTab);
+
+	m_loading = false;
+}
+
 void MainTabWidget::addDataSourceWidget(const QString &dir)
 {
-	auto dsw = new DataSourceWidget(this);
+	auto dsw = new DataSourceWidget(dir, this);
 
 	connect(dsw, SIGNAL(showSettings(SettingsDialog::Section)),
 			this, SIGNAL(showSettings(SettingsDialog::Section)));
 	connect(dsw, SIGNAL(directoryChanged(DataSourceWidget*, QString)),
 			this, SLOT(updateTabTitle(DataSourceWidget*, QString)));
+	connect(dsw, SIGNAL(directoryChanged(DataSourceWidget*,QString)),
+			this, SLOT(save()));
 	connect(dsw, SIGNAL(workingDirChanged()),
 			this, SIGNAL(workingDirChanged()));
 
@@ -87,6 +130,7 @@ void MainTabWidget::closeTab(int index)
 
 void MainTabWidget::tabChange(int index)
 {
+	save();
 	emit newHistory(dataSourceAt(index)->history());
 }
 
@@ -96,4 +140,15 @@ void MainTabWidget::updateTabTitle(DataSourceWidget *dsw, const QString &dir)
 		indexOf(dsw),
 		QFileInfo(dir).baseName()
 	);
+}
+
+void MainTabWidget::save()
+{
+	QStringList tabDirs;
+	int cnt = count();
+
+	for (int i = 0; i < cnt; i++)
+		tabDirs << dataSourceAt(i)->currentDir();
+
+	Settings::get()->setMainTabs(tabDirs, currentIndex());
 }

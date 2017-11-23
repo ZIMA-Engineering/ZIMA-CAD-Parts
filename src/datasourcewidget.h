@@ -18,10 +18,11 @@ class DataSourceWidget : public QWidget, public Ui::DataSourceWidget
 {
 	Q_OBJECT
 public:
-	explicit DataSourceWidget(QWidget *parent = 0);
+	explicit DataSourceWidget(const QString &dir, QWidget *parent = 0);
 
 	QModelIndex currentIndex();
 	DataSourceHistory* history();
+	QString currentDir() const;
 
 signals:
 	void showSettings(SettingsDialog::Section);
@@ -44,9 +45,10 @@ public slots:
 private:
 	DataSourceHistory *m_history;
 	QStringList m_zimaUtils;
+	QString m_currentDir;
 
 private slots:
-	void setupDataSources();
+	void setupDataSources(const QString &dir);
 	void splitterMoved(int, int);
 	void handleOpenPartDirectory(const QFileInfo &fi);
 	void announceDirectoryChange(const QString &dir);

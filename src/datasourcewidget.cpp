@@ -6,7 +6,7 @@
 #include <QtDebug>
 
 
-DataSourceWidget::DataSourceWidget(QWidget *parent)
+DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
 	: QWidget(parent)
 {
 	setupUi(this);
@@ -23,7 +23,7 @@ DataSourceWidget::DataSourceWidget(QWidget *parent)
 	connect(m_history, SIGNAL(openDirectory(QString)),
 			this, SLOT(setDirectory(QString)));
 
-	setupDataSources();
+	setupDataSources(dir);
 }
 
 void DataSourceWidget::splitterMoved(int, int)
@@ -38,6 +38,7 @@ void DataSourceWidget::handleOpenPartDirectory(const QFileInfo &fi)
 
 void DataSourceWidget::announceDirectoryChange(const QString &dir)
 {
+	m_currentDir = dir;
 	emit directoryChanged(this, dir);
 }
 
@@ -56,7 +57,7 @@ void DataSourceWidget::settingsChanged()
 		qApp->processEvents();
 
 		// now setup all item==group again
-		setupDataSources();
+		setupDataSources(m_currentDir);
 	}
 
 	dirWidget->settingsChanged();
@@ -81,6 +82,7 @@ void DataSourceWidget::setDirectory(const QString &path)
 		{
 			dsList->setCurrentIndex(i);
 			dirWidget->setDirectory(path);
+			m_currentDir = path;
 		}
 	}
 }
@@ -90,6 +92,11 @@ DataSourceHistory *DataSourceWidget::history()
 	return m_history;
 }
 
+QString DataSourceWidget::currentDir() const
+{
+	return m_currentDir;
+}
+
 void DataSourceWidget::goToWorkingDirectory()
 {
 	QString wdir = Settings::get()->getWorkingDir();
@@ -97,7 +104,7 @@ void DataSourceWidget::goToWorkingDirectory()
 	m_history->track(wdir);
 }
 
-void DataSourceWidget::setupDataSources()
+void DataSourceWidget::setupDataSources(const QString &dir)
 {
 	foreach(DataSource *ds, Settings::get()->DataSources)
 	{
@@ -123,5 +130,6 @@ void DataSourceWidget::setupDataSources()
 
 	dsList->setVisibleRows(dsList->count());
 
-	goToWorkingDirectory();
+	setDirectory(dir);
+	m_history->track(dir);
 }

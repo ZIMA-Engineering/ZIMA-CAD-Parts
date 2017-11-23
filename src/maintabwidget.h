@@ -31,9 +31,15 @@ signals:
 	void workingDirChanged();
 	void newHistory(DataSourceHistory *history);
 
+protected:
+	void tabInserted(int index);
+	void tabRemoved(int index);
+
 private:
 	Ui::MainTabWidget *ui;
+	bool m_loading;
 
+	void load();
 	void addDataSourceWidget(const QString &dir);
 
 private slots:
@@ -41,6 +47,7 @@ private slots:
 	void closeTab(int index);
 	void tabChange(int index);
 	void updateTabTitle(DataSourceWidget *dsw, const QString &dir);
+	void save();
 };
 
 #endif // MAINTABWIDGET_H
