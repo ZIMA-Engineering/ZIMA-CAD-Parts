@@ -209,6 +209,9 @@ bool DataSourceView::navigateToDirectory(const QString &path)
 	if (!path.startsWith(root))
 		return false;
 
-	setCurrentIndex(m_proxy->mapFromSource(m_model->index(path)));
+	auto index = m_proxy->mapFromSource(m_model->index(path));
+	setCurrentIndex(index);
+	setExpanded(index, true);
+
 	return true;
 }
