@@ -114,6 +114,7 @@ void MainTabWidget::addDataSourceWidget(const QString &dir)
 			this, SLOT(openInANewTab(QString)));
 
 	int i = addTab(dsw, QFileInfo(dir).baseName());
+	updateTabTitle(dsw, dir);
 
 	if (count() > 1)
 		setTabsClosable(true);
@@ -143,9 +144,16 @@ void MainTabWidget::tabChange(int index)
 
 void MainTabWidget::updateTabTitle(DataSourceWidget *dsw, const QString &dir)
 {
+	int i = indexOf(dsw);
+	QString label = MetadataCache::get()->label(dir);
+	QString logoPath = dir + "/" + METADATA_DIR + "/";
+
+	if (QFile::exists(logoPath + LOGO_TEXT_FILE))
+		setTabIcon(i, QIcon(logoPath + LOGO_TEXT_FILE));
+
 	setTabText(
-		indexOf(dsw),
-		QFileInfo(dir).baseName()
+		i,
+		label.isEmpty() ? QFileInfo(dir).baseName() : label
 	);
 }
 
