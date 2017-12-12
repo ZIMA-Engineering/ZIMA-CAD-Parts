@@ -2,6 +2,7 @@
 #include "ui_directoryeditordialog.h"
 #include "settings.h"
 #include "metadata.h"
+#include "partcache.h"
 #include "directorylocaleeditwidget.h"
 
 #include <QFileDialog>
@@ -43,6 +44,11 @@ DirectoryEditorDialog::~DirectoryEditorDialog()
 	delete ui;
 }
 
+QString DirectoryEditorDialog::directoryPath() const
+{
+	return m_dirPath;
+}
+
 void DirectoryEditorDialog::apply()
 {
 	// Directory name
@@ -54,6 +60,7 @@ void DirectoryEditorDialog::apply()
 
 		if (QFile::rename(m_dirPath, dstDirPath))
 		{
+			PartCache::get()->renameDirectory(m_dirPath, dstDirPath);
 			MetadataCache::get()->clearBelow(m_dirPath);
 			m_dirPath = dstDirPath;
 

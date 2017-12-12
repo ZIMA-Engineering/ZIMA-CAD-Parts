@@ -180,7 +180,7 @@ void DataSourceView::editDirectory()
 	if (dlg.exec() == QDialog::Accepted)
 	{
 		dlg.apply();
-		emit directoryChanged(fi.absoluteFilePath());
+		emit directoryChanged(dlg.directoryPath());
 	}
 }
 

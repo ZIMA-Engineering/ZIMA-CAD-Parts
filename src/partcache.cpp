@@ -49,6 +49,16 @@ void PartCache::clear(const QString &dir)
 	emit cleared(dir);
 }
 
+void PartCache::renameDirectory(const QString &oldDir, const QString &newDir)
+{
+	if (!m_parts.contains(oldDir))
+		return;
+
+	m_parts.insert(newDir, m_parts[oldDir]);
+	m_parts.remove(oldDir);
+	emit directoryRenamed(oldDir, newDir);
+}
+
 PartCache::PartCache()
 {
 

@@ -17,6 +17,7 @@ class DirectoryEditorDialog : public QDialog
 public:
 	explicit DirectoryEditorDialog(const QFileInfo &fi, QWidget *parent = 0);
 	~DirectoryEditorDialog();
+	QString directoryPath() const;
 
 public slots:
 	void apply();

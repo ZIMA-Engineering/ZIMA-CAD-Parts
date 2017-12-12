@@ -38,6 +38,8 @@ FileModel::FileModel(QObject *parent) :
     connect(m_thumb, SIGNAL(updateModel()), this, SLOT(updateThumbnails()));
 	connect(PartCache::get(), SIGNAL(cleared(QString)),
 			this, SLOT(directoryCleared(QString)));
+	connect(PartCache::get(), SIGNAL(directoryRenamed(QString,QString)),
+			this, SLOT(directoryRenamed(QString,QString)));
 }
 
 FileModel::~FileModel()
@@ -171,6 +173,12 @@ void FileModel::directoryCleared(const QString &dir)
 {
 	if (dir == m_path)
 		refreshModel();
+}
+
+void FileModel::directoryRenamed(const QString &oldName, const QString &newName)
+{
+	if (oldName == m_path)
+		m_path = newName;
 }
 
 Qt::ItemFlags FileModel::flags(const QModelIndex& index) const

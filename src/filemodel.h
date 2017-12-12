@@ -85,6 +85,7 @@ private:
 
 private slots:
 	void directoryCleared(const QString &dir);
+	void directoryRenamed(const QString &oldName, const QString &newName);
     void updateThumbnails();
 };
 

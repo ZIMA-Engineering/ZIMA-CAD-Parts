@@ -7,6 +7,7 @@
 #include "settings.h"
 #include "directoryremover.h"
 #include "filecopier.h"
+#include "partcache.h"
 
 #include <QMessageBox>
 #include <QProcess>
@@ -43,6 +44,8 @@ FileView::FileView(QWidget *parent) :
 
 	connect(m_model, SIGNAL(directoryLoaded(QString)),
 	        this, SLOT(resizeColumnToContents()));
+	connect(PartCache::get(), SIGNAL(directoryRenamed(QString,QString)),
+			this, SLOT(directoryRenamed(QString,QString)));
 
 	connect(this, SIGNAL(activated(QModelIndex)),
 	        this, SLOT(handleActivated(QModelIndex)));
@@ -281,4 +284,10 @@ void FileView::editFile()
 
 		index = findNextPartIndex(index);
 	}
+}
+
+void FileView::directoryRenamed(const QString &oldName, const QString &newName)
+{
+	if (m_path == oldName)
+		m_path = newName;
 }

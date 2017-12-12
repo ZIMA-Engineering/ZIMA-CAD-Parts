@@ -50,6 +50,7 @@ private slots:
 	void openPart(const QModelIndex &index);
 	void showContextMenu(const QPoint &point);
 	void editFile();
+	void directoryRenamed(const QString &oldName, const QString &newName);
 };
 
 #endif // FILEVIEW_H
