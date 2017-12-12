@@ -270,10 +270,12 @@ void DirectoryEditorDialog::removeIcon()
 
 void DirectoryEditorDialog::openIconDialog()
 {
+	QString metaDir = m_dirPath +"/"+ METADATA_DIR;
+
 	QString iconFile = QFileDialog::getOpenFileName(
 		this,
 		tr("Select icon"),
-		"",
+		QFile::exists(metaDir) ? metaDir : m_dirPath,
 		"Images (*.png *.jpg *.jpeg *.gif)"
 	);
 
