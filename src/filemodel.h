@@ -50,7 +50,12 @@ public:
 
 	void settingsChanged();
 	void setDirectory(const QString &path);
-    void refreshModel();
+
+	//! Reset columns, thumbnails and force view reset
+	void refreshModel();
+
+	//! Reload parts from disk, then refreshModel() is called
+	void reloadParts();
 
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 

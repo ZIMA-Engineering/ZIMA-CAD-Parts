@@ -147,7 +147,7 @@ void FileView::deleteParts()
 void FileView::refreshRequested()
 {
     MetadataCache::get()->metadata(m_path)->reloadProe(m_model->fileInfoList());
-	m_model->refreshModel();
+	m_model->reloadParts();
 }
 
 QString FileView::currentPath()

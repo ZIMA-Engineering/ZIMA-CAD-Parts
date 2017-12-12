@@ -249,12 +249,17 @@ void FileModel::refreshModel()
 
 	setupColumns(m_path);
 
-    m_thumb->clear();
+	m_thumb->clear();
 
-    beginResetModel();
+	beginResetModel();
     endResetModel();
 
-    QApplication::restoreOverrideCursor();
+	QApplication::restoreOverrideCursor();
+}
+
+void FileModel::reloadParts()
+{
+	PartCache::get()->clear(m_path);
 }
 
 void FileModel::settingsChanged()
