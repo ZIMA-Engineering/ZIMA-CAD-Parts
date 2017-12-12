@@ -73,6 +73,11 @@ typedef enum {
 	OFFICE_PROJECT,
 	OFFICE_BASE,
     OFFICE_EML,
+	// Archives
+	ZIP,
+	RAR,
+	TAR,
+	ZIP7,
     // images
     FILE_IMAGE,
     // this must go last

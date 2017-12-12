@@ -100,6 +100,14 @@ QString File::getInternalNameForFileType(FileType::FileType type)
 		return "office-database";
     case FileType::OFFICE_EML:
         return "internet-mail";
+	case FileType::ZIP:
+		return "zip";
+	case FileType::RAR:
+		return "rar";
+	case FileType::TAR:
+		return "tar";
+	case FileType::ZIP7:
+		return "7z";
     case FileType::FILE_IMAGE:
         return "image-x-generic";
 	default:
@@ -175,6 +183,14 @@ QString File::getLabelForFileType(FileType::FileType type)
 		return QObject::tr("Office database");
     case FileType::OFFICE_EML:
         return "*.eml";
+	case FileType::ZIP:
+		return "*.zip";
+	case FileType::RAR:
+		return "*.rar";
+	case FileType::TAR:
+		return "*.tar.*";
+	case FileType::ZIP7:
+		return "*.7z";
     case FileType::FILE_IMAGE:
         return QObject::tr("Image/Picture");
 	default:
@@ -250,6 +266,14 @@ QString File::getRxForFileType(FileType::FileType type)
 		return getRxFromStringList(QStringList() << "odb" << "mdb" << "accdb" << "accde" << "accdt" << "accdr");
     case FileType::OFFICE_EML:
         return "(^.+\\.eml$)";
+	case FileType::ZIP:
+		return "(^.+\\.zip$)";
+	case FileType::RAR:
+		return "(^.+\\.rar$)";
+	case FileType::TAR:
+		return "(^.+\\.tar(\\.[^\\.]+)?$)";
+	case FileType::ZIP7:
+		return "(^.+\\.7z$)";
     case FileType::FILE_IMAGE:
         return getRxFromStringList(QStringList() << "png" << "jpg" << "jpeg");
 	default:

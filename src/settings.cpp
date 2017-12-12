@@ -221,6 +221,13 @@ void Settings::setupFilterGroups()
 	        << new ExtensionFilter(FileType::DWG)
 	        << new ExtensionFilter(FileType::DXF);
 
+	FilterGroups << FilterGroup("Archives", "Archives");
+	FilterGroups.last()
+			<< new ExtensionFilter(FileType::ZIP)
+			<< new ExtensionFilter(FileType::RAR)
+			<< new ExtensionFilter(FileType::TAR)
+			<< new ExtensionFilter(FileType::ZIP7);
+
 	FilterGroups << FilterGroup("NonCAD", "NonCAD");
 	FilterGroups.last()
 	        << new ExtensionFilter(FileType::STL)
