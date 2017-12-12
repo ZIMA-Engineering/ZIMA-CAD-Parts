@@ -209,17 +209,22 @@ void DirectoryEditorDialog::installIcon(const QString &icon, const QString &name
 	QString dstPath = iconInstallPath(name);
 	bool ok;
 
-	if (rename)
+	if (rename) {
 		ok = QFile::rename(icon, dstPath);
-	else
+
+	} else {
+		if (QFile::exists(dstPath))
+			QFile::remove(dstPath);
+
 		ok = QFile::copy(icon, dstPath);
+	}
 
 	if (!ok)
 	{
 		QMessageBox::warning(
 			this,
 			tr("Unable to copy icon"),
-			tr("Unable to copy '%1' to '%2'").arg(m_dirPath).arg(dstPath)
+			tr("Unable to copy '%1' to '%2'").arg(icon).arg(dstPath)
 		);
 	}
 }
