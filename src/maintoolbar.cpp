@@ -5,6 +5,8 @@
 #include "metadata.h"
 #include "datasourcehistory.h"
 
+#include <QStyle>
+
 MainToolBar::MainToolBar(QWidget *parent) :
 	QToolBar(parent),
 	ui(new Ui::MainToolBar),
