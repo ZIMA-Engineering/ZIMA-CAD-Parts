@@ -28,6 +28,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QWebEngineSettings>
+#include <QWebEngineProfile>
 #include <QShortcut>
 
 #include "mainwindow.h"
@@ -42,7 +43,8 @@
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	: QMainWindow(parent),
 	  ui(new Ui::MainWindowClass),
-	  translator(translator)
+	  translator(translator),
+	  m_downloader(0)
 {
 	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
@@ -92,6 +94,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 	connect(ui->tabWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
 	QWebEngineSettings::globalSettings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
+	connect(QWebEngineProfile::defaultProfile(), SIGNAL(downloadRequested(QWebEngineDownloadItem*)),
+			this, SLOT(downloadFile(QWebEngineDownloadItem*)));
 
 	settingsChanged();
 
@@ -173,4 +177,33 @@ void MainWindow::settingsChanged()
 
 	ui->toolBar->settingsChanged();
 	ui->tabWidget->settingsChanged();
+}
+
+
+void MainWindow::downloadFile(QWebEngineDownloadItem *download)
+{
+	QFileInfo fi(download->path());
+	QString filePath = Settings::get()->getWorkingDir() + "/" + fi.fileName();
+
+	qDebug() << "Downloading into" << filePath;
+
+	if (QDir().exists(filePath))
+	{
+		if (QMessageBox::question(this, tr("File Exists"),
+								  tr("File %1 already exists. Overwrite?").arg(filePath),
+								  QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+		{
+			download->cancel();
+			return;
+		}
+	}
+
+	download->setPath(filePath);
+	download->accept();
+
+	if (!m_downloader)
+		m_downloader = new WebDownloaderDialog(this);
+
+	m_downloader->enqueue(download);
+	m_downloader->show();
 }

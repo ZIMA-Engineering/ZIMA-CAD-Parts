@@ -35,14 +35,11 @@
 
 
 DirectoryWebView::DirectoryWebView(QWidget *parent) :
-	QWebEngineView(parent),
-	m_downloader(0)
+	QWebEngineView(parent)
 {
 	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
 
-	connect(page()->profile(), SIGNAL(downloadRequested(QWebEngineDownloadItem*)),
-			this, SLOT(downloadFile(QWebEngineDownloadItem*)));
 	connect(page(), SIGNAL(authenticationRequired(QUrl,QAuthenticator*)),
 			this, SLOT(authenticate(QUrl,QAuthenticator*)));
 
@@ -126,33 +123,6 @@ void DirectoryWebView::pageLoaded(bool ok)
 	)");
 }
 
-void DirectoryWebView::downloadFile(QWebEngineDownloadItem *download)
-{
-	QFileInfo fi(download->path());
-	QString filePath = Settings::get()->getWorkingDir() + "/" + fi.fileName();
-
-	qDebug() << "Downloading into" << filePath;
-
-	if (QDir().exists(filePath))
-	{
-		if (QMessageBox::question(this, tr("File Exists"),
-								  tr("File %1 already exists. Overwrite?").arg(filePath),
-		                          QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-		{
-			download->cancel();
-			return;
-		}
-	}
-
-	download->setPath(filePath);
-	download->accept();
-
-	if (!m_downloader)
-		m_downloader = new WebDownloaderDialog(this);
-
-	m_downloader->enqueue(download);
-	m_downloader->show();
-}
 
 void DirectoryWebView::authenticate(const QUrl &requestUrl, QAuthenticator *authenticator)
 {

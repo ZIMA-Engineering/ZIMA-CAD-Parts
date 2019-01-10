@@ -4,7 +4,6 @@
 #include <QNetworkReply>
 #include <QHBoxLayout>
 
-
 WebDownloaderDialog::WebDownloaderDialog(QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::WebDownloaderDialog)

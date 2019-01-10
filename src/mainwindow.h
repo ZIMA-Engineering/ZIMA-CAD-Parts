@@ -33,11 +33,13 @@
 #include <QToolButton>
 #include <QHBoxLayout>
 #include <QSignalMapper>
+#include <QWebEngineDownloadItem>
 
 #include "settingsdialog.h"
 #include "filemodel.h"
 #include "zima-cad-parts.h"
 #include "filefiltermodel.h"
+#include "webdownloaderdialog.h"
 
 class WorkingDirWidget;
 
@@ -65,6 +67,7 @@ private:
 
 	QTranslator *translator;// app ui
 	WorkingDirWidget *m_wdirWidget;
+	WebDownloaderDialog *m_downloader;
 
 	QModelIndex lastFoundIndex;
 
@@ -73,6 +76,7 @@ private:
 
 private slots:
 	void settingsChanged();
+	void downloadFile(QWebEngineDownloadItem *download);
 };
 
 class SleeperThread : public QThread

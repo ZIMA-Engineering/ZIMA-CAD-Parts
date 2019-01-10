@@ -22,7 +22,6 @@
 #define DIRECTORYWEBVIEW_H
 
 #include <QWebEngineView>
-#include <QWebEngineDownloadItem>
 
 class WebDownloaderDialog;
 
@@ -44,12 +43,10 @@ protected:
 private slots:
 	void pageLoaded(bool ok);
 	void urlChange(const QUrl &url);
-	void downloadFile(QWebEngineDownloadItem *download);
 	void authenticate(const QUrl &requestUrl, QAuthenticator *authenticator);
 
 private:
 	QString m_rootPath;
-	WebDownloaderDialog *m_downloader;
 };
 
 #endif // DIRECTORYWEBVIEW_H
