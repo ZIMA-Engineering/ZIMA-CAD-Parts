@@ -240,6 +240,7 @@ void Settings::setupFilterGroups()
 	        << new ExtensionFilter(FileType::OFFICE_PROJECT)
             << new ExtensionFilter(FileType::OFFICE_WRITER)
             << new ExtensionFilter(FileType::OFFICE_EML)
+			<< new ExtensionFilter(FileType::OFFICE_MBOX)
             << new ExtensionFilter(FileType::FILE_IMAGE);
 
 	QSettings settings;

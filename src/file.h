@@ -72,7 +72,8 @@ typedef enum {
 	OFFICE_DRAW,
 	OFFICE_PROJECT,
 	OFFICE_BASE,
-    OFFICE_EML,
+	OFFICE_EML,
+	OFFICE_MBOX,
 	// Archives
 	ZIP,
 	RAR,

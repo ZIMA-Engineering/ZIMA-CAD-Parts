@@ -100,6 +100,8 @@ QString File::getInternalNameForFileType(FileType::FileType type)
 		return "office-database";
     case FileType::OFFICE_EML:
         return "internet-mail";
+	case FileType::OFFICE_MBOX:
+		return "mail-mbox";
 	case FileType::ZIP:
 		return "zip";
 	case FileType::RAR:
@@ -183,6 +185,8 @@ QString File::getLabelForFileType(FileType::FileType type)
 		return QObject::tr("Office database");
     case FileType::OFFICE_EML:
         return "*.eml";
+	case FileType::OFFICE_MBOX:
+		return "*.mbox";
 	case FileType::ZIP:
 		return "*.zip";
 	case FileType::RAR:
@@ -266,6 +270,8 @@ QString File::getRxForFileType(FileType::FileType type)
 		return getRxFromStringList(QStringList() << "odb" << "mdb" << "accdb" << "accde" << "accdt" << "accdr");
     case FileType::OFFICE_EML:
         return "(^.+\\.eml$)";
+	case FileType::OFFICE_MBOX:
+		return "(^.+\\.mbox$)";
 	case FileType::ZIP:
 		return "(^.+\\.zip$)";
 	case FileType::RAR:
