@@ -26,8 +26,8 @@
 FileTypeList File::versionedTypes()
 {
 	return FileTypeList() << FileType::PRT_PROE
-	       << FileType::ASM
-	       << FileType::DRW
+		   << FileType::ASM_PROE
+		   << FileType::DRW_PROE
 	       << FileType::FRM
 	       << FileType::NEU_PROE;
 }
@@ -38,9 +38,9 @@ QString File::getInternalNameForFileType(FileType::FileType type)
 	{
 	case FileType::PRT_PROE:
 		return "prt_proe";
-	case FileType::ASM:
+	case FileType::ASM_PROE:
 		return "asm";
-	case FileType::DRW:
+	case FileType::DRW_PROE:
 		return "drw";
 	case FileType::FRM:
 		return "frm";
@@ -54,6 +54,10 @@ QString File::getInternalNameForFileType(FileType::FileType type)
 		return "catdrawing";
 	case FileType::PRT_NX:
 		return "prt_nx";
+	case FileType::ASM_NX:
+		return "asm_nx";
+	case FileType::DRW_NX:
+		return "drw_nx";
 	case FileType::SLDPRT:
 		return "sldprt";
 	case FileType::SLDASM:
@@ -123,9 +127,9 @@ QString File::getLabelForFileType(FileType::FileType type)
 	{
 	case FileType::PRT_PROE:
 		return "*.prt";
-	case FileType::ASM:
+	case FileType::ASM_PROE:
 		return "*.asm";
-	case FileType::DRW:
+	case FileType::DRW_PROE:
 		return "*.drw";
 	case FileType::FRM:
 		return "*.frm";
@@ -139,6 +143,10 @@ QString File::getLabelForFileType(FileType::FileType type)
 		return "*.catdrawing";
 	case FileType::PRT_NX:
 		return "*.prt";
+	case FileType::ASM_NX:
+		return "*.asm";
+	case FileType::DRW_NX:
+		return "*.drw";
 	case FileType::SLDPRT:
 		return "*.sldprt";
 	case FileType::SLDASM:
@@ -208,9 +216,9 @@ QString File::getRxForFileType(FileType::FileType type)
 	{
 	case FileType::PRT_PROE:
 		return "((^.+\\.prt)\\.(\\d+)$)";
-	case FileType::ASM:
+	case FileType::ASM_PROE:
 		return "((^.+\\.asm)\\.(\\d+)$)";
-	case FileType::DRW:
+	case FileType::DRW_PROE:
 		return "((^.+\\.drw)\\.(\\d+)$)";
 	case FileType::FRM:
 		return "((^.+\\.frm)\\.(\\d+)$)";
@@ -224,6 +232,10 @@ QString File::getRxForFileType(FileType::FileType type)
 		return "(^.+\\.catdrawing$)";
 	case FileType::PRT_NX:
 		return "(^.+\\.prt$)";
+	case FileType::ASM_NX:
+		return "(^.+\\.asm$)";
+	case FileType::DRW_NX:
+		return "(^.+\\.drw$)";
 	case FileType::SLDPRT:
 		return "(^.+\\.sldprt$)";
 	case FileType::SLDASM:
