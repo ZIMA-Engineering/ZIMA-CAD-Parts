@@ -97,9 +97,7 @@ public:
 
 	QList<Metadata*> dataIncludes();
 	QList<Metadata*> thumbnailIncludes();
-    QString path() { return m_path; }
-
-    void reloadProe(const QFileInfoList &fil);
+	QString path() { return m_path; }
 
 private:
 	QSettings *m_settings;

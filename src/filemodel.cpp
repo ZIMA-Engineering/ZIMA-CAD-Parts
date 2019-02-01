@@ -29,12 +29,14 @@
 #include "filecopier.h"
 #include "partselector.h"
 #include "partcache.h"
+#include "prtreader.h"
 
 FileModel::FileModel(QObject *parent) :
 	QAbstractItemModel(parent)
 {
 	m_iconProvider = new FileIconProvider();
     m_thumb = new ThumbnailManager(this);
+	m_prtReader = new PrtReader(this);
     connect(m_thumb, SIGNAL(updateModel()), this, SLOT(updateThumbnails()));
 	connect(PartCache::get(), SIGNAL(cleared(QString)),
 			this, SLOT(directoryCleared(QString)));
@@ -245,7 +247,8 @@ void FileModel::setDirectory(const QString &path)
 	{
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-        m_thumb->setPath(path);
+		m_thumb->setPath(path);
+		m_prtReader->stop();
 		m_path = path;
 
 		beginResetModel();
@@ -269,6 +272,8 @@ void FileModel::refreshModel()
 
 	beginResetModel();
     endResetModel();
+
+	m_prtReader->load(m_path, fileInfoList());
 
 	QApplication::restoreOverrideCursor();
 }

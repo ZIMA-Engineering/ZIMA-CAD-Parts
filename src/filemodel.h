@@ -29,6 +29,7 @@
 class FileIconProvider;
 class DirectoryRemover;
 class FileCopier;
+class PrtReader;
 
 /*! A "list files" tree. This class is used inside FileView only
  */
@@ -80,6 +81,7 @@ private:
 	FileIconProvider *m_iconProvider;
 
     ThumbnailManager *m_thumb;
+	PrtReader *m_prtReader;
 
 	void setupColumns(const QString &path);
 
