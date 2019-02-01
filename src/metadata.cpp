@@ -630,7 +630,7 @@ void Metadata::reloadProe(const QFileInfoList &fil)
             break;
 
         FileMetadata fm(i);
-        if (fm.type != FileType::ASM_PROE && fm.type != FileType::DRW_PROE && fm.type != FileType::PRT_PROE)
+        if (fm.type != FileType::ASM && fm.type != FileType::DRW && fm.type != FileType::PRT_PROE)
         {
             continue;
         }

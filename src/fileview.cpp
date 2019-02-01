@@ -220,8 +220,8 @@ void FileView::openPart(const QModelIndex &index)
 	switch (f.type)
 	{
 	case FileType::PRT_PROE:
-	case FileType::ASM_PROE:
-	case FileType::DRW_PROE:
+	case FileType::ASM:
+	case FileType::DRW:
 	case FileType::FRM:
 	case FileType::NEU_PROE:
 	{

@@ -12,11 +12,13 @@
         <file>gfx/flags/de.png</file>
         <file>gfx/flags/ru.png</file>
         <file>gfx/pin.png</file>
+        <file>gfx/icons/asm.png</file>
         <file>gfx/icons/blend.png</file>
         <file>gfx/icons/catdrawing.png</file>
         <file>gfx/icons/catpart.png</file>
         <file>gfx/icons/catproduct.png</file>
         <file>gfx/icons/dft.png</file>
+        <file>gfx/icons/drw.png</file>
         <file>gfx/icons/dwg.png</file>
         <file>gfx/icons/dxf.png</file>
         <file>gfx/icons/frm.png</file>
@@ -54,9 +56,5 @@
         <file>gfx/list-add.png</file>
         <file>gfx/tab-new.png</file>
         <file>gfx/icons/mail-mbox.png</file>
-        <file>gfx/icons/asm_nx.png</file>
-        <file>gfx/icons/drw_nx.png</file>
-        <file>gfx/icons/asm.png</file>
-        <file>gfx/icons/drw.png</file>
     </qresource>
 </RCC>
