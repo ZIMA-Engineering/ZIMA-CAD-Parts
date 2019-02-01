@@ -162,6 +162,11 @@ MetadataVersionsMap MetadataCache::partVersions(const QString &path)
 	return get(path)->partVersions();
 }
 
+void MetadataCache::clearPartVersions(const QString &path)
+{
+	return get(path)->clearPartVersions();
+}
+
 void MetadataCache::deletePart(const QString &path, const QString &part)
 {
 	return get(path)->deletePart(part);
@@ -555,6 +560,11 @@ MetadataVersionsMap Metadata::partVersions()
 	}
 
 	return m_versionsCache;
+}
+
+void Metadata::clearPartVersions()
+{
+	m_versionsCache.clear();
 }
 
 QList<Metadata *> Metadata::dataIncludes()

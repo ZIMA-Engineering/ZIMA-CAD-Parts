@@ -93,6 +93,7 @@ public:
 	 * file name for its completeBaseName
 	 */
 	MetadataVersionsMap partVersions();
+	void clearPartVersions();
 
 	QList<Metadata*> dataIncludes();
 	QList<Metadata*> thumbnailIncludes();
@@ -143,6 +144,7 @@ public:
 	QString partParam(const QString &path, const QString &fname, const QString &param);
 	QString partParam(const QString &path, const QString &fname, int index);
 	MetadataVersionsMap partVersions(const QString &path);
+	void clearPartVersions(const QString &path);
 	void deletePart(const QString &path, const QString &part);
     Metadata* metadata(const QString &path);
 

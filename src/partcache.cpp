@@ -1,4 +1,5 @@
 #include "partcache.h"
+#include "metadata.h"
 
 #include <QDir>
 #include <QSet>
@@ -45,6 +46,7 @@ void PartCache::clear(const QString &dir)
 
 	m_fsWatcher.removePath(dir);
 	m_parts.remove(dir);
+	MetadataCache::get()->clearPartVersions(dir);
 	emit cleared(dir);
 }
 
@@ -98,7 +100,10 @@ void PartCache::processDiff(const QString &dir, const QFileInfoList &newFiles)
 	m_parts.insert(dir, newFiles);
 
 	if (!removed.empty() || !added.empty())
+	{
+		MetadataCache::get()->clearPartVersions(dir);
 		emit directoryChanged(dir);
+	}
 }
 
 void PartCache::onDirectoryChange(const QString &path)
