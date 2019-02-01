@@ -13,6 +13,7 @@ public:
 	QFileInfoList parts(const QString &dir);
 	int count(const QString &dir);
 	QFileInfo partAt(const QString &dir, int index);
+	void refresh(const QString &dir);
 	void clear(const QString &dir);
 	void renameDirectory(const QString &oldDir, const QString &newDir);
 

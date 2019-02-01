@@ -39,6 +39,15 @@ QFileInfo PartCache::partAt(const QString &dir, int index)
 	return parts(dir).at(index);
 }
 
+void PartCache::refresh(const QString &dir)
+{
+	if (!m_parts.contains(dir))
+		return;
+
+	m_parts.remove(dir);
+	MetadataCache::get()->clearPartVersions(dir);
+}
+
 void PartCache::clear(const QString &dir)
 {
 	if (!m_parts.contains(dir))

@@ -46,6 +46,7 @@ private:
 private slots:
 	void resizeColumnToContents();
 	void refreshModel();
+	void reloadParts();
 	void handleActivated(const QModelIndex &index);
 	void openPart(const QModelIndex &index);
 	void showContextMenu(const QPoint &point);

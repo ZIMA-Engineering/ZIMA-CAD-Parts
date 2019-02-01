@@ -56,7 +56,7 @@ FileView::FileView(QWidget *parent) :
 	connect(this, SIGNAL(customContextMenuRequested(QPoint)),
 			this, SLOT(showContextMenu(QPoint)));
 
-	connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(refreshModel()));
+	connect(MetadataCache::get(), SIGNAL(cleared()), this, SLOT(reloadParts()));
 }
 
 void FileView::setDirectory(const QString &path)
@@ -77,7 +77,13 @@ void FileView::setDirectory(const QString &path)
 void FileView::refreshModel()
 {
 	setDirectory(m_path);
-    m_model->refreshModel();
+	m_model->refreshModel();
+}
+
+void FileView::reloadParts()
+{
+	setDirectory(m_path);
+	m_model->reloadParts();
 }
 
 void FileView::resizeColumnToContents()
@@ -166,7 +172,7 @@ void FileView::copyToWorkingDir()
 
 void FileView::directoryChanged()
 {
-	refreshModel();
+	m_model->reloadParts();
 	m_header->newDirectory(m_path);
 }
 

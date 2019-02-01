@@ -266,21 +266,23 @@ void FileModel::refreshModel()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	setupColumns(m_path);
-
-	m_thumb->clear();
-
 	beginResetModel();
-    endResetModel();
-
-	m_prtReader->load(m_path, fileInfoList());
+	endResetModel();
 
 	QApplication::restoreOverrideCursor();
 }
 
 void FileModel::reloadParts()
 {
-	PartCache::get()->clear(m_path);
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	PartCache::get()->refresh(m_path);
+
+	setupColumns(m_path);
+	m_thumb->clear();
+	m_prtReader->load(m_path, fileInfoList());
+
+	QApplication::restoreOverrideCursor();
 }
 
 void FileModel::settingsChanged()
