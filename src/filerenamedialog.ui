@@ -36,20 +36,26 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Log</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QTextEdit" name="logTextEdit">
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-     <property name="acceptRichText">
-      <bool>false</bool>
-     </property>
+    <widget class="QWidget" name="logWidget" native="true">
+     <layout class="QVBoxLayout" name="logLayout">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Log</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTextEdit" name="logTextEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="acceptRichText">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>

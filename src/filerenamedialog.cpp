@@ -21,6 +21,7 @@ FileRenameDialog::FileRenameDialog(QString dir, QFileInfo file, QWidget *parent)
 	connect(ui->closeButton, SIGNAL(clicked(bool)),
 			this, SLOT(accept()));
 
+	ui->logWidget->hide();
 	ui->closeButton->hide();
 }
 
@@ -46,13 +47,13 @@ void FileRenameDialog::rename()
 	ui->closeButton->show();
 
 	if (rn.rename(m_dir.absolutePath(), m_file, ui->fileNameLineEdit->text())) {
-		ui->logTextEdit->append(tr("Successfully renamed %1 files.").arg(m_counter));
+		accept();
 	} else {
+		ui->logWidget->show();
 		ui->logTextEdit->append(tr("Renamed %1 files and failed.").arg(m_counter));
+		ui->closeButton->setEnabled(true);
+		ui->closeButton->setText(tr("Close"));
 	}
-
-	ui->closeButton->setEnabled(true);
-	ui->closeButton->setText(tr("Close"));
 }
 
 void FileRenameDialog::fileRenamed(const QFileInfo &oldFile, const QFileInfo &newFile)
