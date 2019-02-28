@@ -3,6 +3,7 @@
 #include "filemodel.h"
 #include "filefiltermodel.h"
 #include "filedelegate.h"
+#include "filerenamedialog.h"
 #include "fileeditdialog.h"
 #include "settings.h"
 #include "directoryremover.h"
@@ -261,12 +262,34 @@ void FileView::showContextMenu(const QPoint &point)
 	if (!i.isValid())
 		return;
 
+	QFileInfo fi = fileInfo(i);
+
 	QMenu *menu = new QMenu(this);
+
+	if (fi.isFile()) {
+		menu->addAction(QIcon(":/gfx/edit-rename.png"), tr("Rename"),
+						this, SLOT(renameFile()));
+	}
 
 	menu->addAction(QIcon(":/gfx/document-edit.png"), tr("Edit"),
 					this, SLOT(editFile()));
 	menu->exec(mapToGlobal(point));
 	menu->deleteLater();
+}
+
+void FileView::renameFile()
+{
+	QModelIndex index = currentIndex();
+
+	if (!index.isValid())
+		return;
+
+	FileRenameDialog dlg(m_path, fileInfo(index));
+
+	if (dlg.exec() == QDialog::Accepted) {
+		dlg.rename();
+		m_model->reloadParts();
+	}
 }
 
 void FileView::editFile()
@@ -277,7 +300,7 @@ void FileView::editFile()
 		if (!index.isValid())
 			return;
 
-		FileEditDialog dlg(m_path, fileInfo(index).baseName());
+		FileEditDialog dlg(m_path, fileInfo(index).baseName(), this);
 
 		if (dlg.exec() != QDialog::Accepted)
 			return;

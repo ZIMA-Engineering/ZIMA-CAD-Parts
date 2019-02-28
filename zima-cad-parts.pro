@@ -109,7 +109,9 @@ SOURCES += src/zima-cad-parts.cpp \
     src/datasourcehistory.cpp \
     src/partselector.cpp \
     src/partcache.cpp \
-    src/prtreader.cpp
+    src/prtreader.cpp \
+    src/filerenamedialog.cpp \
+    src/filerenamer.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -178,7 +180,9 @@ HEADERS += src/mainwindow.h \
     src/datasourcehistory.h \
     src/partselector.h \
     src/partcache.h \
-    src/prtreader.h
+    src/prtreader.h \
+    src/filerenamedialog.h \
+    src/filerenamer.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \
@@ -203,7 +207,8 @@ FORMS += mainwindow.ui \
     src/datasourcewidget.ui \
     src/directorywidget.ui \
     src/maintabwidget.ui \
-    src/maintoolbar.ui
+    src/maintoolbar.ui \
+    src/filerenamedialog.ui
 
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc

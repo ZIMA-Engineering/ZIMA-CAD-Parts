@@ -172,6 +172,11 @@ void MetadataCache::deletePart(const QString &path, const QString &part)
 	return get(path)->deletePart(part);
 }
 
+void MetadataCache::renamePart(const QString &path, const QString &oldPart, const QString &newPart)
+{
+	return get(path)->renamePart(oldPart, newPart);
+}
+
 Metadata* MetadataCache::metadata(const QString &path)
 {
 	return get(path);
@@ -585,6 +590,16 @@ void Metadata::deletePart(const QString &part)
 		return;
 
 	m_settings->remove(QString("Parameters/%1").arg(grp));
+}
+
+void Metadata::renamePart(const QString &oldPart, const QString &newPart)
+{
+	QString oldPartGroup = oldPart.section('.', 0, 0);
+	QString newPartGroup = newPart.section('.', 0, 0);
+
+	m_settings->beginGroup("Parts");
+	rename(oldPartGroup, newPartGroup);
+	m_settings->endGroup();
 }
 
 QString Metadata::buildIncludePath(const QString &raw)
