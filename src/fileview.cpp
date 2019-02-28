@@ -286,10 +286,8 @@ void FileView::renameFile()
 
 	FileRenameDialog dlg(m_path, fileInfo(index));
 
-	if (dlg.exec() == QDialog::Accepted) {
-		dlg.rename();
+	if (dlg.exec() == QDialog::Accepted)
 		m_model->reloadParts();
-	}
 }
 
 void FileView::editFile()

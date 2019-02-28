@@ -39,6 +39,7 @@ bool FileRenamer::renameFilesInDir(const QString &dir, const QString &oldName, c
 		(QStringList() << QString("%1.*").arg(oldName)),
 		QDir::Files
 	);
+	QFile f;
 
 	foreach (const QFileInfo &fi, entries) {
 		QString newPath = QString("%1/%2.%3")
@@ -47,11 +48,12 @@ bool FileRenamer::renameFilesInDir(const QString &dir, const QString &oldName, c
 							.arg(fi.completeSuffix());
 
 		qDebug() << "Rename" << fi.absoluteFilePath() << "to" << newPath;
+		f.setFileName(fi.absoluteFilePath());
 
-		if (QFile::rename(fi.absoluteFilePath(), newPath)) {
+		if (f.rename(newPath)) {
 			emit renamed(fi, QFileInfo(newPath));
 		} else {
-			emit error(fi);
+			emit error(fi, QFileInfo(newPath), f.errorString());
 			return false;
 		}
 	}
