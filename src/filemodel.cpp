@@ -199,8 +199,33 @@ Qt::ItemFlags FileModel::flags(const QModelIndex& index) const
 
 	if (col > 1)
 		flags |= Qt::ItemIsEditable;
+	else if (col == 0)
+		flags |= Qt::ItemIsDragEnabled;
 
 	return (Qt::ItemFlag) flags;
+}
+
+QStringList FileModel::mimeTypes() const
+{
+	return QStringList() << "text/uri-list";
+}
+
+QMimeData *FileModel::mimeData(const QModelIndexList &indexes) const
+{
+	QMimeData *mimeData = new QMimeData();
+	QList<QUrl> urls;
+	auto pc = PartCache::get();
+
+	foreach (const QModelIndex &idx, indexes) {
+		if (!idx.isValid())
+			continue;
+
+		QFileInfo part = pc->partAt(m_path, idx.row());
+		urls << QUrl::fromLocalFile(part.absoluteFilePath());
+	}
+
+	mimeData->setUrls(urls);
+	return mimeData;
 }
 
 bool FileModel::setData(const QModelIndex &index, const QVariant &value, int role)

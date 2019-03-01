@@ -23,6 +23,7 @@
 
 #include <QAbstractItemModel>
 #include <QFileIconProvider>
+#include <QMimeData>
 #include "metadata.h"
 #include "thumbnailmanager.h"
 
@@ -60,6 +61,8 @@ public:
 	void reloadParts();
 
 	Qt::ItemFlags flags(const QModelIndex &index) const;
+	QStringList mimeTypes() const;
+	QMimeData* mimeData(const QModelIndexList &indexes) const;
 
 	void moveParts(FileMover *mv);
 	void deleteParts(DirectoryRemover *rm);
