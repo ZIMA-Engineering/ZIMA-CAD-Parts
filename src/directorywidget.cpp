@@ -71,6 +71,8 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
 
 	connect(ui->copyToWorkingDirButton, SIGNAL(clicked()),
 	        ui->partsTreeView, SLOT(copyToWorkingDir()));
+	connect(ui->moveButton, SIGNAL(clicked()),
+			this, SLOT(moveSelectedParts()));
 	connect(ui->btnDelete, SIGNAL(clicked()),
 	        this, SLOT(deleteSelectedParts()));
 	connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
@@ -302,6 +304,18 @@ void DirectoryWidget::previewInProductView(const QFileInfo &fi)
 	m_productView->setFile(&f);
 	// keep focus on the main window - keyboard handling
 	activateWindow();
+}
+
+void DirectoryWidget::moveSelectedParts()
+{
+	if( QMessageBox::question(this,
+							  tr("Do you really want to move selected parts?"),
+							  tr("Do you really want to move selected parts?"),
+							  QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+			==  QMessageBox::Yes)
+	{
+		ui->partsTreeView->moveParts();
+	}
 }
 
 void DirectoryWidget::setFiltersDialog()

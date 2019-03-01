@@ -7,6 +7,7 @@
 #include "fileeditdialog.h"
 #include "settings.h"
 #include "directoryremover.h"
+#include "filemover.h"
 #include "filecopier.h"
 #include "partcache.h"
 
@@ -145,6 +146,12 @@ void FileView::createIndexHtmlFile(const QString &text, const QString &fileBase)
 
 	indexFile.write(htmlIndex);
 	indexFile.close();
+}
+
+void FileView::moveParts()
+{
+	FileMover *mv = new FileMover(this);
+	m_model->moveParts(mv);
 }
 
 void FileView::deleteParts()

@@ -111,7 +111,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/partcache.cpp \
     src/prtreader.cpp \
     src/filerenamedialog.cpp \
-    src/filerenamer.cpp
+    src/filerenamer.cpp \
+    src/filemover.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -182,7 +183,8 @@ HEADERS += src/mainwindow.h \
     src/partcache.h \
     src/prtreader.h \
     src/filerenamedialog.h \
-    src/filerenamer.h
+    src/filerenamer.h \
+    src/filemover.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

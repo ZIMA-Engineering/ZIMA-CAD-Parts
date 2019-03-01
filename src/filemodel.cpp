@@ -27,6 +27,7 @@
 #include "errordialog.h"
 #include "directoryremover.h"
 #include "filecopier.h"
+#include "filemover.h"
 #include "partselector.h"
 #include "partcache.h"
 #include "prtreader.h"
@@ -289,6 +290,63 @@ void FileModel::settingsChanged()
 {
 	//setDirectory(m_path);
 }
+
+
+void FileModel::moveParts(FileMover *mv)
+{
+	QFileInfoList moveList;
+	QStringList clearList;
+	auto selector = PartSelector::get();
+	auto pc = PartCache::get();
+	auto it = selector->allSelectedIterator();
+
+	while (it.hasNext())
+	{
+		it.next();
+
+		QString dir = it.key();
+		QStringList parts = it.value();
+
+		foreach (const QString &fname, parts)
+		{
+			QFileInfo fi(fname);
+
+			if (!Settings::get()->ShowProeVersions
+					&& MetadataCache::get()->partVersions(m_path).contains(fi.completeBaseName()))
+			{
+				// When moving Pro/E files, we need to find all part versions
+				QDir d(m_path);
+				moveList << d.entryInfoList(
+					QStringList() << (fi.completeBaseName() + ".*")
+				);
+
+			} else {
+				moveList << fi;
+			}
+
+			if (fi.isDir())
+				MetadataCache::get()->clear(fname);
+
+			MetadataCache::get()->deletePart(m_path, fi.baseName());
+		}
+
+		clearList << dir;
+	}
+
+	foreach (const QFileInfo &fi, moveList)
+		mv->addSourceFile(fi);
+
+	mv->setDestination(Settings::get()->getWorkingDir());
+	mv->work();
+
+	selector->clear();
+
+	foreach (const QString &dir, clearList)
+		pc->clear(dir);
+
+	pc->clear(Settings::get()->getWorkingDir());
+}
+
 
 void FileModel::deleteParts(DirectoryRemover *rm)
 {

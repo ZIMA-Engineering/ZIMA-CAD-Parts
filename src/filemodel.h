@@ -30,6 +30,7 @@ class FileIconProvider;
 class DirectoryRemover;
 class FileCopier;
 class PrtReader;
+class FileMover;
 
 /*! A "list files" tree. This class is used inside FileView only
  */
@@ -60,6 +61,7 @@ public:
 
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 
+	void moveParts(FileMover *mv);
 	void deleteParts(DirectoryRemover *rm);
 	void copyToWorkingDir(FileCopier *cp);
 

@@ -71,6 +71,7 @@ private slots:
 
 	void previewInProductView(const QFileInfo &fi);
 
+	void moveSelectedParts();
 	void deleteSelectedParts();
 
 	void adjustThumbColumnWidth(int width);

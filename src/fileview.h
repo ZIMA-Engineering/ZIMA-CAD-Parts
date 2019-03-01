@@ -17,6 +17,7 @@ public:
 
 	QFileInfo fileInfo(const QModelIndex &filteredIndex);
 	void createIndexHtmlFile(const QString &text, const QString &fileBase);
+	void moveParts();
 	void deleteParts();
 	void refreshRequested();
 	QString currentPath();
