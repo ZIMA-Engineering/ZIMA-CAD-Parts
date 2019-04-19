@@ -2,6 +2,7 @@
 #include "ui_directorylocaleeditwidget.h"
 #include "metadata.h"
 #include "directoryeditparametersmodel.h"
+#include "lineeditvaluedelegate.h"
 
 #include <QDebug>
 
@@ -20,6 +21,7 @@ DirectoryLocaleEditWidget::DirectoryLocaleEditWidget(Metadata *meta, const QStri
 
 	ui->labelLineEdit->setText(meta->getLabel(lang));
 	ui->parameterTreeView->setModel(model);
+	ui->parameterTreeView->setItemDelegate(new LineEditValueDelegate(this));
 
 	connect(ui->addParameterButton, SIGNAL(clicked()),
 			this, SLOT(addNewParameter()));
