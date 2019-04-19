@@ -86,7 +86,6 @@ SOURCES += src/zima-cad-parts.cpp \
     src/extensions/productview/imageproductview.cpp \
     src/thumbnailmanager.cpp \
     src/webauthenticationdialog.cpp \
-    src/filedelegate.cpp \
     src/fileeditdialog.cpp \
     src/fileviewheader.cpp \
     src/createdirectorydialog.cpp \
@@ -112,7 +111,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/prtreader.cpp \
     src/filerenamedialog.cpp \
     src/filerenamer.cpp \
-    src/filemover.cpp
+    src/filemover.cpp \
+    src/lineeditvaluedelegate.cpp
 
 HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
@@ -158,7 +158,6 @@ HEADERS += src/mainwindow.h \
     src/extensions/productview/imageproductview.h \
     src/thumbnailmanager.h \
     src/webauthenticationdialog.h \
-    src/filedelegate.h \
     src/fileeditdialog.h \
     src/fileviewheader.h \
     src/createdirectorydialog.h \
@@ -184,7 +183,8 @@ HEADERS += src/mainwindow.h \
     src/prtreader.h \
     src/filerenamedialog.h \
     src/filerenamer.h \
-    src/filemover.h
+    src/filemover.h \
+    src/lineeditvaluedelegate.h
 
 FORMS += mainwindow.ui \
     settingsdialog.ui \

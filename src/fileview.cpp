@@ -2,7 +2,7 @@
 #include "fileviewheader.h"
 #include "filemodel.h"
 #include "filefiltermodel.h"
-#include "filedelegate.h"
+#include "lineeditvaluedelegate.h"
 #include "filerenamedialog.h"
 #include "fileeditdialog.h"
 #include "settings.h"
@@ -39,7 +39,7 @@ FileView::FileView(QWidget *parent) :
 	connect(m_header, SIGNAL(filterColumn(int,QString)),
 			m_proxy, SLOT(filterColumn(int,QString)));
 
-	setItemDelegate(new FileDelegate(this));
+	setItemDelegate(new LineEditValueDelegate(this));
 	setEditTriggers(QAbstractItemView::SelectedClicked);
 
 	setContextMenuPolicy(Qt::CustomContextMenu);
