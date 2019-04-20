@@ -95,10 +95,7 @@ void DirectoryLocaleEditWidget::parameterHandleChange(const QString &handle, con
 void DirectoryLocaleEditWidget::removeSelectedParameter()
 {
 	 QModelIndex index = ui->parameterTreeView->currentIndex();
-	 QString handle = m_model->data(
-		index,
-		Qt::DisplayRole
-	).toString();
+	 QString handle = handleForIndex(index);
 
 	if (!index.isValid())
 		return;
@@ -145,10 +142,7 @@ void DirectoryLocaleEditWidget::reorderParameters(const QStringList &parameters)
 void DirectoryLocaleEditWidget::moveSelectedParameterUp()
 {
 	QModelIndex index = ui->parameterTreeView->currentIndex();
-	QString handle = m_model->data(
-	   index,
-	   Qt::DisplayRole
-   ).toString();
+	QString handle = handleForIndex(index);
 
    if (!index.isValid())
 	   return;
@@ -160,16 +154,21 @@ void DirectoryLocaleEditWidget::moveSelectedParameterUp()
 void DirectoryLocaleEditWidget::moveSelectedParameterDown()
 {
 	QModelIndex index = ui->parameterTreeView->currentIndex();
-	QString handle = m_model->data(
-	   index,
-	   Qt::DisplayRole
-   ).toString();
+	QString handle = handleForIndex(index);
 
    if (!index.isValid())
 	   return;
 
    m_model->moveParameter(handle, +1);
    ui->parameterTreeView->setCurrentIndex(m_model->index(index.row() + 1, 1));
+}
+
+QString DirectoryLocaleEditWidget::handleForIndex(const QModelIndex &index)
+{
+	return m_model->data(
+		m_model->index(index.row(), 1),
+		Qt::DisplayRole
+	).toString();
 }
 
 void DirectoryLocaleEditWidget::toggleParameterMoveButtons()

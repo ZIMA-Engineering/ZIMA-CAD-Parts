@@ -41,6 +41,7 @@ private:
 	QString m_lang;
 	DirectoryEditParametersModel *m_model;
 
+	QString handleForIndex(const QModelIndex &index);
 	void toggleParameterMoveButtons();
 
 private slots:
