@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class Metadata;
+class DirectoryEditParametersModel;
 
 namespace Ui {
 class DirectoryLocaleEditWidget;
@@ -26,6 +27,8 @@ public slots:
 	void parameterSelected(const QModelIndex &current, const QModelIndex &previous);
 	void removeParameter(const QString &handle);
 	void reorderParameters(const QStringList &parameters);
+	void moveSelectedParameterUp();
+	void moveSelectedParameterDown();
 
 signals:
 	void parameterAdded(const QString &handle);
@@ -36,6 +39,9 @@ signals:
 private:
 	Ui::DirectoryLocaleEditWidget *ui;
 	QString m_lang;
+	DirectoryEditParametersModel *m_model;
+
+	void toggleParameterMoveButtons();
 
 private slots:
 	void addNewParameter();

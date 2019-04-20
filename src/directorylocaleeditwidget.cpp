@@ -13,23 +13,32 @@ DirectoryLocaleEditWidget::DirectoryLocaleEditWidget(Metadata *meta, const QStri
 {
 	ui->setupUi(this);
 
-	auto model = new DirectoryEditParametersModel(
+	m_model = new DirectoryEditParametersModel(
 		meta->parameterHandles(),
 		meta->parametersWithLabels(lang),
 		this
 	);
 
 	ui->labelLineEdit->setText(meta->getLabel(lang));
-	ui->parameterTreeView->setModel(model);
+	ui->parameterTreeView->setModel(m_model);
 	ui->parameterTreeView->setItemDelegate(new LineEditValueDelegate(this));
+
+	ui->moveParameterUpButton->setIcon(style()->standardIcon(QStyle::SP_ArrowUp));
+	ui->moveParameterDownButton->setIcon(style()->standardIcon(QStyle::SP_ArrowDown));
+
+	toggleParameterMoveButtons();
 
 	connect(ui->addParameterButton, SIGNAL(clicked()),
 			this, SLOT(addNewParameter()));
 	connect(ui->removeParameterButton, SIGNAL(clicked()),
 			this, SLOT(removeSelectedParameter()));
-	connect(model, SIGNAL(parameterHandleChanged(QString,QString)),
+	connect(ui->moveParameterUpButton, SIGNAL(clicked()),
+			this, SLOT(moveSelectedParameterUp()));
+	connect(ui->moveParameterDownButton, SIGNAL(clicked()),
+			this, SLOT(moveSelectedParameterDown()));
+	connect(m_model, SIGNAL(parameterHandleChanged(QString,QString)),
 			this, SIGNAL(parameterHandleChanged(QString,QString)));
-	connect(model, SIGNAL(parametersReordered(QStringList)),
+	connect(m_model, SIGNAL(parametersReordered(QStringList)),
 			this, SIGNAL(parametersReordered(QStringList)));
 	connect(ui->parameterTreeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
 			this, SLOT(parameterSelected(QModelIndex,QModelIndex)));
@@ -49,8 +58,7 @@ void DirectoryLocaleEditWidget::apply(Metadata *meta)
 {
 	meta->setLabel(m_lang, ui->labelLineEdit->text());
 
-	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
-	QHashIterator<QString, QString> i(model->parameterLabels());
+	QHashIterator<QString, QString> i(m_model->parameterLabels());
 
 	while (i.hasNext())
 	{
@@ -65,32 +73,29 @@ void DirectoryLocaleEditWidget::apply(Metadata *meta)
 
 void DirectoryLocaleEditWidget::addParameter(const QString &handle)
 {
-	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
-
 	// If true, this widget is where the signal originated, so we
 	// do not want to add another column
-	if (model->hasParameter(handle))
+	if (m_model->hasParameter(handle))
 		return;
 
-	model->addParameter(handle);
+	m_model->addParameter(handle);
+	toggleParameterMoveButtons();
 }
 
 void DirectoryLocaleEditWidget::parameterHandleChange(const QString &handle, const QString &newHandle)
 {
-	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
-
 	// If true, this widget is where the signal originated, so we
 	// do not want to add another column
-	if (model->hasParameter(newHandle))
+	if (m_model->hasParameter(newHandle))
 		return;
 
-	model->changeHandle(handle, newHandle);
+	m_model->changeHandle(handle, newHandle);
 }
 
 void DirectoryLocaleEditWidget::removeSelectedParameter()
 {
 	 QModelIndex index = ui->parameterTreeView->currentIndex();
-	 QString handle = ui->parameterTreeView->model()->data(
+	 QString handle = m_model->data(
 		index,
 		Qt::DisplayRole
 	).toString();
@@ -98,15 +103,18 @@ void DirectoryLocaleEditWidget::removeSelectedParameter()
 	if (!index.isValid())
 		return;
 
-	if (!ui->parameterTreeView->model()->removeRows(index.row(), 1, index.parent()))
+	if (!m_model->removeRows(index.row(), 1, index.parent()))
 		return;
 
 	emit parameterRemoved(handle);
+	toggleParameterMoveButtons();
 }
 
 void DirectoryLocaleEditWidget::parameterSelected(const QModelIndex &current, const QModelIndex &previous)
 {
 	Q_UNUSED(previous)
+
+	toggleParameterMoveButtons();
 
 	if (!current.isValid())
 	{
@@ -119,37 +127,89 @@ void DirectoryLocaleEditWidget::parameterSelected(const QModelIndex &current, co
 
 void DirectoryLocaleEditWidget::removeParameter(const QString &handle)
 {
-	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
-
 	// If true, this widget is where the signal originated, so we
 	// do not want to add another column
-	if (!model->hasParameter(handle))
+	if (!m_model->hasParameter(handle))
 		return;
 
-	model->removeParameter(handle);
+	m_model->removeParameter(handle);
+	toggleParameterMoveButtons();
 }
 
 void DirectoryLocaleEditWidget::reorderParameters(const QStringList &parameters)
 {
-	auto model = static_cast<DirectoryEditParametersModel*>(ui->parameterTreeView->model());
-	model->reorderParameters(parameters);
+	m_model->reorderParameters(parameters);
+	toggleParameterMoveButtons();
+}
+
+void DirectoryLocaleEditWidget::moveSelectedParameterUp()
+{
+	QModelIndex index = ui->parameterTreeView->currentIndex();
+	QString handle = m_model->data(
+	   index,
+	   Qt::DisplayRole
+   ).toString();
+
+   if (!index.isValid())
+	   return;
+
+   m_model->moveParameter(handle, -1);
+   ui->parameterTreeView->setCurrentIndex(m_model->index(index.row() - 1, 1));
+}
+
+void DirectoryLocaleEditWidget::moveSelectedParameterDown()
+{
+	QModelIndex index = ui->parameterTreeView->currentIndex();
+	QString handle = m_model->data(
+	   index,
+	   Qt::DisplayRole
+   ).toString();
+
+   if (!index.isValid())
+	   return;
+
+   m_model->moveParameter(handle, +1);
+   ui->parameterTreeView->setCurrentIndex(m_model->index(index.row() + 1, 1));
+}
+
+void DirectoryLocaleEditWidget::toggleParameterMoveButtons()
+{
+	QModelIndex index = ui->parameterTreeView->currentIndex();
+	int row = index.row();
+	int count = m_model->rowCount(QModelIndex());
+	bool up = false, down = false;
+
+	if (!index.isValid()) {
+		up = down = false;
+	} else if (row == 0) {
+		up = false;
+		down = (row + 1) < count;
+	} else if ((row + 1) == count) {
+		up = true;
+		down = false;
+	} else {
+		up = down = true;
+	}
+
+	ui->moveParameterUpButton->setEnabled(up);
+	ui->moveParameterDownButton->setEnabled(down);
 }
 
 void DirectoryLocaleEditWidget::addNewParameter()
 {
 	QModelIndex root = ui->parameterTreeView->rootIndex();
-	auto model = ui->parameterTreeView->model();
-	int row = model->rowCount(root);
+	int row = m_model->rowCount(root);
 
-	if (!model->insertRows(row, 1, root))
+	if (!m_model->insertRows(row, 1, root))
 		return;
 
-	QModelIndex current = model->index(row, 0, root);
+	QModelIndex current = m_model->index(row, 0, root);
 	ui->parameterTreeView->setCurrentIndex(current);
 	ui->parameterTreeView->edit(current);
 
-	emit parameterAdded(model->data(
-		model->index(row, 1, root),
+	emit parameterAdded(m_model->data(
+		m_model->index(row, 1, root),
 		Qt::DisplayRole
 	).toString());
+	toggleParameterMoveButtons();
 }

@@ -301,6 +301,25 @@ void DirectoryEditParametersModel::removeParameter(const QString &handle)
 	endRemoveRows();
 }
 
+void DirectoryEditParametersModel::moveParameter(const QString &handle, int move)
+{
+	int currentIndex = m_parameters.indexOf(handle);
+	int newIndex = currentIndex + move;
+	QModelIndex firstIndex, lastIndex;
+
+	if (currentIndex == -1 || move == 0)
+		return;
+
+	m_parameters.removeAt(currentIndex);
+	m_parameters.insert(newIndex, handle);
+
+	firstIndex = index(0, 0, QModelIndex());
+	lastIndex = index(m_parameters.count() - 1, 1, QModelIndex());
+
+	emit dataChanged(firstIndex, lastIndex);
+	emit parametersReordered(m_parameters);
+}
+
 void DirectoryEditParametersModel::reorderParameters(const QStringList &parameters)
 {
 	if (m_parameters == parameters)

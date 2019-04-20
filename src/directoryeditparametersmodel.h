@@ -30,6 +30,7 @@ public:
 	bool hasParameter(const QString &handle) const;
 	void changeHandle(const QString &handle, const QString &newHandle);
 	void removeParameter(const QString &handle);
+	void moveParameter(const QString &handle, int move);
 	void reorderParameters(const QStringList &parameters);
 
 signals:
