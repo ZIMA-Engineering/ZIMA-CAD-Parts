@@ -215,6 +215,8 @@ QMimeData *FileModel::mimeData(const QModelIndexList &indexes) const
 	QMimeData *mimeData = new QMimeData();
 	QList<QUrl> urls;
 	auto pc = PartCache::get();
+	auto selector = PartSelector::get();
+	auto it = selector->allSelectedIterator();
 
 	foreach (const QModelIndex &idx, indexes) {
 		if (!idx.isValid())
@@ -223,6 +225,21 @@ QMimeData *FileModel::mimeData(const QModelIndexList &indexes) const
 		QFileInfo part = pc->partAt(m_path, idx.row());
 		urls << QUrl::fromLocalFile(part.absoluteFilePath());
 	}
+
+	while (it.hasNext()) {
+		it.next();
+
+		QStringList parts = it.value();
+
+		foreach (const QString &part, parts) {
+			QUrl url = QUrl::fromLocalFile(part);
+
+			if (!urls.contains(url))
+				urls << url;
+		}
+	}
+
+	selector->clear();
 
 	mimeData->setUrls(urls);
 	return mimeData;
