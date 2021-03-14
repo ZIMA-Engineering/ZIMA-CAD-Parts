@@ -1,79 +1,79 @@
 NavBar {
-    border: 1px solid rgba(0, 45, 150, 255);
+    border: 1px solid #002d96;
 }
 NavBarHeader {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(89, 135, 214, 255), stop:1 rgba(5, 57, 148, 255));
-    color: #ffffff;
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #5987d6, stop:1 #053994);
+    color: #fff;
     font-size: 14px;
     font-weight: bold;
     padding-left: 3px;
-    border: 0px;
+    border: 0;
 }
 NavBarHeader QToolButton {
     border: none;
     background: none;
-    color: #ffffff;
+    color: #fff;
     font-family: "Arial";
     font-size: 14px;
 }
 NavBarHeader QToolButton:checked {
     border: none;
     background: none;
-    color: #ffffff;
+    color: #fff;
 }
 NavBarHeader QToolButton:hover {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 220, 255), stop:1 rgba(247, 192, 91, 255));
-    color: #000000;
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #ffd, stop:1 #f7c05b);
+    color: #000;
 }
 NavBarHeader QToolButton:pressed {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(232, 127, 8, 255), stop:1 rgba(248, 219, 124, 255));
-    color: #000000;
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e87f08, stop:1 #f8db7c);
+    color: #000;
 }
 NavBarSplitter:handle {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(89, 135, 214, 255), stop:1 rgba(15, 67, 157, 255));
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #5987d6, stop:1 #0f439d);
     background-image: url(:/styles/splitter2003blue.png);
     background-position: center;
     background-repeat: no-repeat;
 }
 NavBarSplitter:handle:vertical {
-	height: 6px;
+    height: 6px;
 }
 NavBarButton {
-    border-top: 1px solid rgba(0, 45, 150, 255);
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(203, 225, 252, 255), stop:1 rgba(126, 166, 225, 255));
-	font-weight: bold; 
+    border-top: 1px solid #002d96;
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #cbe1fc, stop:1 #7ea6e1);
+    font-weight: bold;
 }
 NavBarButton:hover {
-	background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 220, 255), stop:1 rgba(247, 192, 91, 255));
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #ffd, stop:1 #f7c05b);
 }
 NavBarButton:hover:checked {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(232, 127, 8, 255), stop:1 rgba(248, 219, 124, 255));
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e87f08, stop:1 #f8db7c);
 }
 NavBarButton:checked {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(251, 230, 148, 255), stop:1 rgba(239, 150, 21, 255));
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #fbe694, stop:1 #ef9615);
 }
 NavBarButton:pressed {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(232, 127, 8, 255), stop:1 rgba(248, 219, 124, 255));
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e87f08, stop:1 #f8db7c);
 }
 NavBarToolBar {
-    border-top: 1px solid rgba(0, 45, 150, 255);
-	background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(203, 225, 252, 255), stop:1 rgba(126, 166, 225, 255));
+    border-top: 1px solid #002d96;
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #cbe1fc, stop:1 #7ea6e1);
 }
 NavBarToolBar QToolButton {
-	background-color: none;
-	border: 0px;
+    background-color: none;
+    border: 0;
 }
 NavBarToolBar QToolButton:hover {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 220, 255), stop:1 rgba(247, 192, 91, 255));
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #ffd, stop:1 #f7c05b);
 }
 NavBarToolBar QToolButton:hover:checked {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(232, 127, 8, 255), stop:1 rgba(248, 219, 124, 255));
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e87f08, stop:1 #f8db7c);
 }
 NavBarToolBar QToolButton:checked {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(251, 230, 148, 255), stop:1 rgba(239, 150, 21, 255));
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #fbe694, stop:1 #ef9615);
 }
 NavBarToolBar QToolButton:pressed {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(232, 127, 8, 255), stop:1 rgba(248, 219, 124, 255));
+    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e87f08, stop:1 #f8db7c);
 }
 NavBarToolBar QToolButton::menu-indicator {
     image: url(:/styles/downarrowblue.png);
@@ -81,26 +81,26 @@ NavBarToolBar QToolButton::menu-indicator {
     subcontrol-position: center;
 }
 NavBarTitleButton {
-    border-left  : 1px solid #ffffff;
-    border-top   : 1px solid #ffffff;
+    border-left  : 1px solid #fff;
+    border-top   : 1px solid #fff;
     border-right : none;
     border-bottom: none;
-    background-color: rgba(203, 225, 252, 255);
-    color: rgba(21, 66, 139, 255);
+    background-color: #cbe1fc;
+    color: #15428b;
     font-size: 14px;
     font-weight: bold;
 }
 NavBarTitleButton:hover {
     border: none;
-    background-color: rgb(255, 231, 162);
+    background-color: #ffe7a2;
 }
 NavBarTitleButton:pressed {
     border: none;
-    background-color: rgb(251, 140, 60);
+    background-color: #fb8c3c;
 }
 QFrame#navBarPopup {
-    border: 1px solid rgba(0, 45, 150, 255);
-    background-color: rgba(126, 166, 225, 255);
+    border: 1px solid #002d96;
+    background-color: #7ea6e1;
 }
 QFrame#navBarPopup QSizeGrip {
     background-image: url(:/styles/sizegrip2003blue.png);
@@ -108,5 +108,5 @@ QFrame#navBarPopup QSizeGrip {
     background-repeat: no-repeat;
 }
 NavBar QStackedWidget {
-    background-color: #ffffff;
+    background-color: #fff;
 }
