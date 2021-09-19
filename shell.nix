@@ -1,14 +1,14 @@
 { pkgs ? (import <nixpkgs> {}) }:
 let
   f =
-    { stdenv, qt59, qtcreator, pkgconfig, qmake, x11, openssl, gdb }:
+    { stdenv, qt5Full, qtcreator, pkgconfig, qmake, x11, openssl, gdb }:
     stdenv.mkDerivation {
       name = "ZIMA-CAD-Parts";
       src = ./.;
-      nativeBuildInputs = [ qt59.full qtcreator pkgconfig qmake x11 gdb ];
+      nativeBuildInputs = [ qt5Full qtcreator pkgconfig qmake x11 gdb ];
       buildInputs = [ openssl ];
       shellHook = ''
-        echo ${qt59.full}
+        echo ${qt5Full}
       '';
     };
-in pkgs.libsForQt59.callPackage f {}
+in pkgs.libsForQt5.callPackage f {}
