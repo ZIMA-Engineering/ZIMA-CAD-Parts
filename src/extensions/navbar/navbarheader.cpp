@@ -25,8 +25,8 @@
  * @param parent Parent widget, passed to QLabel constructor
  * @param f WindowFlags, passed to QLabel constructor
  */
-NavBarHeader::NavBarHeader(QWidget *parent, Qt::WindowFlags f):
-    QLabel(parent, f)
+NavBarHeader::NavBarHeader(QWidget *parent):
+	QLabel(parent)
 {
     createButton();
 }
@@ -37,8 +37,8 @@ NavBarHeader::NavBarHeader(QWidget *parent, Qt::WindowFlags f):
  * @param parent Parent widget, passed to QLabel constructor
  * @param f WindowFlags, passed to QLabel constructor
  */
-NavBarHeader::NavBarHeader(const QString &text, QWidget *parent, Qt::WindowFlags f):
-    QLabel(text, parent, f)
+NavBarHeader::NavBarHeader(const QString &text, QWidget *parent):
+	QLabel(text, parent)
 {
     createButton();
 }
@@ -87,7 +87,7 @@ void NavBarTitleButton::paintEvent(QPaintEvent *e)
 
     p.setFont(font());
     QFontMetrics fm(font());
-    p.translate(width()/2 + fm.ascent()/2, height()/2 + fm.width(text())/2);
+	p.translate(width()/2 + fm.ascent()/2, height()/2 + fm.horizontalAdvance(text())/2);
     p.rotate(270);
     p.drawText(0, 0, text());
 }

@@ -54,8 +54,8 @@
  * @param parent Parent widget
  * @param f WindowFlags, passed to QFrame constructor
  */
-NavBar::NavBar(QWidget *parent, Qt::WindowFlags f):
-    QFrame(parent, f)
+NavBar::NavBar(QWidget *parent):
+	QFrame(parent)
 {
     collapsedState  = false;
     autoPopupMode   = false;
@@ -400,8 +400,11 @@ void NavBar::changeEvent(QEvent *e)
 
 void NavBar::resizeContent(const QSize &size, int rowheight)
 {
-    int left, top, right, bottom;
-    getContentsMargins(&left, &top, &right, &bottom);
+	auto margins = contentsMargins();
+	int left = margins.left();
+	int right = margins.right();
+	int top = margins.top();
+	int bottom = margins.bottom();
 
     if(headerVisible && (!collapsedState))
     {
