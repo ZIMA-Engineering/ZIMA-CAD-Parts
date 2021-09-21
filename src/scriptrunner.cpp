@@ -24,6 +24,7 @@ void ScriptRunner::run(const QFileInfo &script, const QFileInfo &dir)
 	auto env = QProcessEnvironment::systemEnvironment();
 	env.insert("ZCP_WORKDIR", Settings::get()->getWorkingDir());
 	env.insert("ZCP_DATASOURCE_ROOT", m_dsPath);
+	env.insert("ZCP_DIRECTORY", dir.absoluteFilePath());
 	proc->setProcessEnvironment(env);
 
 	connect(
