@@ -9,8 +9,11 @@ class ScriptRunner : public QObject
 {
 	Q_OBJECT
 public:
-	explicit ScriptRunner(QObject *parent = nullptr);
+	explicit ScriptRunner(const QString &dsPath, QObject *parent = nullptr);
 	void run(const QFileInfo &script, const QFileInfo &dir);
+
+private:
+	QString m_dsPath;
 
 private slots:
 	void onScriptStarted(const QFileInfo &script, QProcess *process);

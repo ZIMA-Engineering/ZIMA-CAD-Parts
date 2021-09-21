@@ -4,7 +4,9 @@
 #include <QMessageBox>
 #include <QDebug>
 
-ScriptRunner::ScriptRunner(QObject *parent) : QObject(parent)
+ScriptRunner::ScriptRunner(const QString &dsPath, QObject *parent) :
+	QObject(parent),
+	m_dsPath(dsPath)
 {
 
 }
@@ -21,6 +23,7 @@ void ScriptRunner::run(const QFileInfo &script, const QFileInfo &dir)
 
 	auto env = QProcessEnvironment::systemEnvironment();
 	env.insert("ZCP_WORKDIR", Settings::get()->getWorkingDir());
+	env.insert("ZCP_DATASOURCE_ROOT", m_dsPath);
 	proc->setProcessEnvironment(env);
 
 	connect(

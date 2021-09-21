@@ -39,7 +39,7 @@ DataSourceView::DataSourceView(const QString &rootPath, QWidget *parent) :
 	setContextMenuPolicy(Qt::CustomContextMenu);
 
 	m_signalMapper = new QSignalMapper(this);
-	m_scriptRunner = new ScriptRunner(this);
+	m_scriptRunner = new ScriptRunner(m_path, this);
 
 	connect(m_signalMapper, SIGNAL(mapped(QString)),
 			this, SLOT(spawnZimaUtilityOnDir(QString)));
