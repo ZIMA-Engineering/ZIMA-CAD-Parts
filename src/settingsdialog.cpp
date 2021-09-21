@@ -43,7 +43,7 @@ public:
 
 	static QVariant asQVariant(T* ptr)
 	{
-		return qVariantFromValue((void *) ptr);
+		return QVariant::fromValue((void *) ptr);
 	}
 };
 

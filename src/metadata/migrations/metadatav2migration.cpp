@@ -156,7 +156,7 @@ bool MetadataV2Migration::migrate()
 	// Directory parameters
 	QStringList paramHandles;
 
-	qSort(columnNumbers);
+	std::sort(columnNumbers.begin(), columnNumbers.end());
 
 	foreach (int col, columnNumbers)
 		paramHandles << paramHandle(col);
