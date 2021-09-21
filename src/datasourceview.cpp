@@ -77,19 +77,26 @@ QFileInfo DataSourceView::currentFileInfo()
 void DataSourceView::addScriptsToContextMenu(QMenu *menu)
 {
 	auto fi = currentFileInfo();
-	QDir d(fi.absoluteFilePath() + "/" + SCRIPT_DIR);
 
-	if (!d.exists())
+	QDir dsDir(m_path + "/" + SCRIPT_DIR);
+	QDir localDir(fi.absoluteFilePath() + "/" + SCRIPT_DIR);
+
+	if (!dsDir.exists() && !localDir.exists())
 		return;
 
-	auto scripts = d.entryInfoList(QDir::Files | QDir::Executable);
+	auto globalScripts = dsDir.entryInfoList(QDir::Files | QDir::Executable);
+	auto localScripts = localDir.entryInfoList(QDir::Files | QDir::Executable);
 
-	if (scripts.isEmpty())
+	if (globalScripts.empty() && localScripts.empty())
 		return;
 
 	auto submenu = menu->addMenu(QIcon(":/gfx/arrow-right.png"), tr("Scripts..."));
 
-	foreach (auto script, scripts) {
+	foreach (auto script, globalScripts) {
+		submenu->addAction(script.fileName(), [=](){ this->runScriptOnDir(fi, script); });
+	}
+
+	foreach (auto script, localScripts) {
 		submenu->addAction(script.fileName(), [=](){ this->runScriptOnDir(fi, script); });
 	}
 

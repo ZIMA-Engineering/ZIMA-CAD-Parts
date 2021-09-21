@@ -95,7 +95,9 @@ Prototype can have pre-configured `metadata.ini`, index files and so on.
 Prototypes are stored in `0000-index/prototypes/`.
 
 ## Scripts
-Executable files are stored in `0000-index/scripts`. ZCP offers to run them
+Executable files are stored in `0000-index/scripts`. Scripts stored
+in `0000-index/scripts` of the data source's root directory are offered
+for all directories within the data source. ZCP offers to run the scripts
 in a per-directory context menu. All executable files from the directory
 are offered to the user.
 
