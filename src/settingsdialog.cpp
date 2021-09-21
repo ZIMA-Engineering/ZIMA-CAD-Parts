@@ -72,6 +72,8 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	        this, SLOT(productViewButton_clicked()));
 	connect(m_ui->textEditorButton, SIGNAL(clicked()),
 			this, SLOT(textEditorButton_clicked()));
+	connect(m_ui->terminalButton, SIGNAL(clicked()),
+			this, SLOT(terminalButton_clicked()));
 
 	m_editedDS = Settings::get()->DataSources;
 	setupDatasourceList();
@@ -85,6 +87,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperDirWebViewToolBar);
 	m_ui->productViewEdit->setText(Settings::get()->ExtensionsProductViewPath);
 	m_ui->textEditorLineEdit->setText(Settings::get()->TextEditorPath);
+	m_ui->terminalLineEdit->setText(Settings::get()->TerminalPath);
 
 	connect(m_ui->proeButton, SIGNAL(clicked()),
 	        this, SLOT(proeButton_clicked()));
@@ -149,6 +152,7 @@ void SettingsDialog::accept()
 	Settings::get()->DeveloperDirWebViewToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
 	Settings::get()->ExtensionsProductViewPath = m_ui->productViewEdit->text();
 	Settings::get()->TextEditorPath = m_ui->textEditorLineEdit->text();
+	Settings::get()->TerminalPath = m_ui->terminalLineEdit->text();
 
 
 	QString lang = Settings::get()->langIndexToName( m_ui->languageComboBox->currentIndex() );
@@ -344,4 +348,12 @@ void SettingsDialog::textEditorButton_clicked()
 				  QDir::currentPath());
 	if (!str.isEmpty())
 		m_ui->textEditorLineEdit->setText(str);
+}
+
+void SettingsDialog::terminalButton_clicked()
+{
+	QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - select terminal"),
+				  QDir::currentPath());
+	if (!str.isEmpty())
+		m_ui->terminalLineEdit->setText(str);
 }

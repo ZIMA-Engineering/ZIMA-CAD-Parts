@@ -67,6 +67,7 @@ private slots:
 	void proeButton_clicked();
 	void productViewButton_clicked();
 	void textEditorButton_clicked();
+	void terminalButton_clicked();
 
 private:
 	Ui::SettingsDialog  *m_ui;

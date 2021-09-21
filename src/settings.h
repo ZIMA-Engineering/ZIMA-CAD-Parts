@@ -11,6 +11,7 @@
 #define METADATA_DIR "0000-index"
 #define THUMBNAILS_DIR "0000-index/thumbnails"
 #define PROTOTYPE_DIR "0000-index/prototypes"
+#define SCRIPT_DIR "0000-index/scripts"
 // If presented - display only the logo
 #define LOGO_FILE "logo.png"
 // if presented - display logo and text
@@ -120,6 +121,9 @@ public:
 
 	//! Executable of the Pro/E
 	QString ProeExecutable;
+
+	// Terminal executable
+	QString TerminalPath;
 
 	//! Internal flag if there was change in datasources to be updated in ServersWidget
 	bool DataSourcesNeedsUpdate;

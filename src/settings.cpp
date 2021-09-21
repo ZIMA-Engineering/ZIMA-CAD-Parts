@@ -72,6 +72,7 @@ void Settings::load()
 	ExtensionsProductViewPosition = s.value("Extensions/ProductView/position").toPoint();
 	ProeExecutable = s.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
 	TextEditorPath = s.value("ExternalPrograms/TextEditorPath").toString();
+	TerminalPath = s.value("ExternalPrograms/TerminalPath").toString();
 
 	MainTabs = s.value("Tabs/Open", QStringList()).toStringList();
 	ActiveMainTab = s.value("Tabs/Active", 0).toInt();
@@ -120,6 +121,7 @@ void Settings::save()
 	s.setValue("ExtensionsProductViewPath", ExtensionsProductViewPath);
 	s.setValue("ExternalPrograms/ProE/Executable", ProeExecutable);
 	s.setValue("ExternalPrograms/TextEditorPath", TextEditorPath);
+	s.setValue("ExternalPrograms/TerminalPath", TerminalPath);
 	s.setValue("Extensions/ProductView/geometry", ExtensionsProductViewGeometry);
 	s.setValue("Extensions/ProductView/position", ExtensionsProductViewPosition);
 
