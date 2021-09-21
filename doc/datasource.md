@@ -101,5 +101,9 @@ are offered to the user.
 
 The scripts are run through a terminal configured in ZCP settings.
 The current working directory is set to the directory the script is run
-on. ZCP working directory is available through environment variable
-`ZWP_WORKDIR`.
+on. The following environment variables are set:
+
+  - `ZCP_WORKDIR` - the global working directory
+  - `ZCP_DATASOURCE_ROOT` - absolute path to the datasource root directory
+  - `ZCP_DIRECTORY` - absolute path to the directory the script is run on (same
+    as the processes' working directory)
