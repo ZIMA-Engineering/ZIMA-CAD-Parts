@@ -57,5 +57,6 @@
         <file>gfx/tab-new.png</file>
         <file>gfx/icons/mail-mbox.png</file>
         <file>gfx/edit-rename.png</file>
+        <file>gfx/arrow-right.png</file>
     </qresource>
 </RCC>

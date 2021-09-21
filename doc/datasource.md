@@ -93,3 +93,13 @@ Directory can have multiple prototypes, which can be used when creating
 subdirectories. Selected prototype is simply copied to the new directory.
 Prototype can have pre-configured `metadata.ini`, index files and so on.
 Prototypes are stored in `0000-index/prototypes/`.
+
+## Scripts
+Executable files are stored in `0000-index/scripts`. ZCP offers to run them
+in a per-directory context menu. All executable files from the directory
+are offered to the user.
+
+The scripts are run through a terminal configured in ZCP settings.
+The current working directory is set to the directory the script is run
+on. ZCP working directory is available through environment variable
+`ZWP_WORKDIR`.

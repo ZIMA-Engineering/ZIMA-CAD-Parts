@@ -7,6 +7,7 @@
 #include "directorycreator.h"
 #include "directoryeditordialog.h"
 #include "directoryremover.h"
+#include "scriptrunner.h"
 
 #include <QHeaderView>
 #include <QDesktopServices>
@@ -38,9 +39,10 @@ DataSourceView::DataSourceView(const QString &rootPath, QWidget *parent) :
 	setContextMenuPolicy(Qt::CustomContextMenu);
 
 	m_signalMapper = new QSignalMapper(this);
+	m_scriptRunner = new ScriptRunner(this);
 
 	connect(m_signalMapper, SIGNAL(mapped(QString)),
-	        this, SLOT(spawnZimaUtilityOnDir(QString)));
+			this, SLOT(spawnZimaUtilityOnDir(QString)));
 	connect(this, SIGNAL(customContextMenuRequested(QPoint)),
 	        this, SLOT(showContextMenu(QPoint)));
 	connect(this, SIGNAL(clicked(QModelIndex)),
@@ -72,6 +74,28 @@ QFileInfo DataSourceView::currentFileInfo()
 	return m_model->fileInfo(srcIndex).absoluteFilePath();
 }
 
+void DataSourceView::addScriptsToContextMenu(QMenu *menu)
+{
+	auto fi = currentFileInfo();
+	QDir d(fi.absoluteFilePath() + "/" + SCRIPT_DIR);
+
+	if (!d.exists())
+		return;
+
+	auto scripts = d.entryInfoList(QDir::Files | QDir::Executable);
+
+	if (scripts.isEmpty())
+		return;
+
+	auto submenu = menu->addMenu(QIcon(":/gfx/arrow-right.png"), tr("Scripts..."));
+
+	foreach (auto script, scripts) {
+		submenu->addAction(script.fileName(), [=](){ this->runScriptOnDir(fi, script); });
+	}
+
+	menu->addSeparator();
+}
+
 void DataSourceView::showContextMenu(const QPoint &point)
 {
 	QModelIndex i = currentIndex();
@@ -92,6 +116,8 @@ void DataSourceView::showContextMenu(const QPoint &point)
 	menu->addAction(QIcon(":/gfx/list-remove.png"), tr("Delete"), this, SLOT(deleteDirectory()));
 
 	menu->addSeparator();
+
+	addScriptsToContextMenu(menu);
 
 	m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), tr("Clean with ZIMA-PTC-Cleaner"), m_signalMapper, SLOT(map())),
 	                           ZimaUtils::internalNameForUtility(ZimaUtils::ZimaPtcCleaner));
@@ -198,6 +224,13 @@ void DataSourceView::deleteDirectory()
 		rm->setMessage(tr("Please wait while the directory is being removed..."));
 		rm->work();
 	}
+}
+
+void DataSourceView::runScriptOnDir(const QFileInfo &dir, const QFileInfo &script)
+{
+	qDebug() << "Run" << script << "on" << dir;
+
+	m_scriptRunner->run(script, dir);
 }
 
 bool DataSourceView::navigateToDirectory(const QString &path)

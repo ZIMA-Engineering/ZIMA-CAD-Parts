@@ -7,9 +7,9 @@
 
 class DataSourceModel;
 class DataSourceProxyModel;
+class ScriptRunner;
 class QSignalMapper;
 class QFileInfo;
-
 
 /*! Main class for "directory tree" widget. Every datasource has one
  * ServersView.
@@ -37,8 +37,10 @@ private:
 	DataSourceModel *m_model;
 	DataSourceProxyModel *m_proxy;
 	QSignalMapper *m_signalMapper;
+	ScriptRunner *m_scriptRunner;
 
 	QFileInfo currentFileInfo();
+	void addScriptsToContextMenu(QMenu *menu);
 
 private slots:
 	void refreshModel();
@@ -51,6 +53,7 @@ private slots:
 	void createDirectory();
 	void editDirectory();
 	void deleteDirectory();
+	void runScriptOnDir(const QFileInfo &dir, const QFileInfo &script);
 };
 
 #endif // DATASOURCEVIEW_H

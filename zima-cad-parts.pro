@@ -27,6 +27,7 @@ INCLUDEPATH += libqdxf/libdxfrw/src
 
 SOURCES += src/zima-cad-parts.cpp \
     src/mainwindow.cpp \
+    src/scriptrunner.cpp \
     src/settingsdialog.cpp \
     src/file.cpp \
     src/filemodel.cpp \
@@ -115,6 +116,7 @@ SOURCES += src/zima-cad-parts.cpp \
     src/lineeditvaluedelegate.cpp
 
 HEADERS += src/mainwindow.h \
+    src/scriptrunner.h \
     src/settingsdialog.h \
     src/file.h \
     src/filemodel.h \
