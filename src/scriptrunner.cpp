@@ -84,7 +84,7 @@ void ScriptRunner::onScriptFinished(const QFileInfo &script, QProcess *process,
 		QMessageBox::warning(
 			0,
 			tr("Script failed"),
-			tr("Script '%s' failed with exit status %2 with error output:<br><br><pre>%3</pre>")
+			tr("Script '%1' failed with exit status %2 with error output:<br><br><pre>%3</pre>")
 				.arg(script.absoluteFilePath())
 				.arg(exitCode)
 				.arg(QString(process->readAllStandardError()))
