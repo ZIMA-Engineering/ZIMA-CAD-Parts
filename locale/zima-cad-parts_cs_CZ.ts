@@ -230,82 +230,97 @@
         <translation>Obecné</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="30"/>
+        <location filename="../src/directoryeditordialog.ui" line="51"/>
         <source>Language</source>
         <translation>Jazyk</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="37"/>
+        <location filename="../src/directoryeditordialog.ui" line="58"/>
         <source>Remove icon</source>
         <translation>Odstranit ikonu</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="57"/>
+        <location filename="../src/directoryeditordialog.ui" line="44"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="77"/>
+        <location filename="../src/directoryeditordialog.ui" line="98"/>
         <source>Add icon</source>
         <translation>Přidat ikonu</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="80"/>
+        <location filename="../src/directoryeditordialog.ui" line="101"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="87"/>
+        <location filename="../src/directoryeditordialog.ui" line="81"/>
         <source>Icon</source>
         <translation>Ikona</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="94"/>
+        <location filename="../src/directoryeditordialog.ui" line="88"/>
         <source>Subdirectories as parts</source>
         <translation>Podadresáře jako díly</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="111"/>
+        <location filename="../src/directoryeditordialog.ui" line="108"/>
+        <source>Sort order</source>
+        <translation>Způsob řazení</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="116"/>
+        <source>Ascending</source>
+        <translation>Vzestupně</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="121"/>
+        <source>Descending</source>
+        <translation>Sestupně</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="132"/>
         <source>Localized</source>
         <translation>Přeloženo</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="70"/>
+        <location filename="../src/directoryeditordialog.cpp" line="71"/>
         <source>Unable to rename directory</source>
         <translation>Adresář nelze přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="71"/>
+        <location filename="../src/directoryeditordialog.cpp" line="72"/>
         <source>Unable to rename directory &apos;%1&apos;</source>
         <translation>Adresář &apos;%1&apos; nelze přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="198"/>
+        <location filename="../src/directoryeditordialog.cpp" line="206"/>
         <source>No icon</source>
         <translation>Žádná ikona</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="233"/>
+        <location filename="../src/directoryeditordialog.cpp" line="241"/>
         <source>Unable to copy icon</source>
         <translation>Ikonu nelze zkopírovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="234"/>
+        <location filename="../src/directoryeditordialog.cpp" line="242"/>
         <source>Unable to copy &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Nelze zkopírovat &apos;%1&apos; do &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="245"/>
+        <location filename="../src/directoryeditordialog.cpp" line="253"/>
         <source>Unable to remove icon</source>
         <translation>Ikonu nelze odstranit</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="246"/>
+        <location filename="../src/directoryeditordialog.cpp" line="254"/>
         <source>Unable to remove icon &apos;%1&apos;</source>
         <translation>Nelze odstranit ikonu &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="289"/>
+        <location filename="../src/directoryeditordialog.cpp" line="313"/>
         <source>Select icon</source>
         <translation>Vyberte ikonu</translation>
     </message>
@@ -702,42 +717,42 @@
 <context>
     <name>FileView</name>
     <message>
-        <location filename="../src/fileview.cpp" line="130"/>
+        <location filename="../src/fileview.cpp" line="132"/>
         <source>HTML index file already exists</source>
         <translation>HTML index soubor již existuje</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="131"/>
+        <location filename="../src/fileview.cpp" line="133"/>
         <source>HTML index for already exists, would you like to overwrite it?</source>
         <translation>HTML index soubor již existuje. Přepsat jej?</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="160"/>
+        <location filename="../src/fileview.cpp" line="162"/>
         <source>Please wait while the parts are being removed...</source>
         <translation>Prosím čekejte, díly se odstraňují...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="177"/>
+        <location filename="../src/fileview.cpp" line="179"/>
         <source>Please wait while the parts are being copied...</source>
         <translation>Prosím čekejte, díly se kopírují...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="253"/>
+        <location filename="../src/fileview.cpp" line="256"/>
         <source>ProE Startup Error</source>
         <translation>Chyba startu ProE</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="254"/>
+        <location filename="../src/fileview.cpp" line="257"/>
         <source>An error occured while ProE has been requested to start</source>
         <translation>Při spouštění ProE nastala chyba</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="277"/>
+        <location filename="../src/fileview.cpp" line="280"/>
         <source>Rename</source>
         <translation>Přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="281"/>
+        <location filename="../src/fileview.cpp" line="284"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
