@@ -8,7 +8,9 @@ WebDownloaderWidget::WebDownloaderWidget(QWebEngineDownloadItem *download, QWidg
 {
 	ui->setupUi(this);
 
-	ui->fnameLabel->setText(download->path());
+	ui->fnameLabel->setText(
+		QString("%1/%2").arg(download->downloadDirectory()).arg(download->downloadFileName())
+	);
 
 	ui->progressBar->setMinimum(0);
 	ui->progressBar->setMaximum(download->totalBytes());

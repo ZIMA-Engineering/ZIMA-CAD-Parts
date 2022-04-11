@@ -94,8 +94,11 @@ void PartCache::processDiff(const QString &dir, const QFileInfoList &newFiles)
 {
 	const QFileInfoList oldFiles = m_parts.value(dir);
 
-	QSet<QFileInfo> removed = oldFiles.toSet().subtract(newFiles.toSet());
-	QSet<QFileInfo> added = newFiles.toSet().subtract(oldFiles.toSet());
+	QSet<QFileInfo> removed(oldFiles.begin(), oldFiles.end());
+	removed.subtract(QSet<QFileInfo>(newFiles.begin(), newFiles.end()));
+
+	QSet<QFileInfo> added(newFiles.begin(), newFiles.end());
+	added.subtract(QSet<QFileInfo>(oldFiles.begin(), oldFiles.end()));
 
 	foreach (const QFileInfo &fi, removed) {
 		qDebug() << "Part" << fi.baseName() << "removed from" << dir;

@@ -53,7 +53,7 @@ void NavBarOptionsDialog::movePageUp()
 
     if(row > 0)
     {
-        pages.swap(row, row-1);
+        pages.swapItemsAt(row, row-1);
         fillListWidget();
         pageListWidget->setCurrentRow(row-1);
     }
@@ -65,7 +65,7 @@ void NavBarOptionsDialog::movePageDown()
 
     if(row < pages.size()-1)
     {
-        pages.swap(row, row+1);
+        pages.swapItemsAt(row, row+1);
         fillListWidget();
         pageListWidget->setCurrentRow(row+1);
     }

@@ -363,7 +363,7 @@ QHash<QString, QString> Metadata::parametersWithLabels(const QString &lang)
 		ret.clear();
 
 		foreach(Metadata *include, dataIncludes())
-			ret.unite(include->parametersWithLabels(lang));
+			ret.insert(include->parametersWithLabels(lang));
 	}
 
 	return ret;

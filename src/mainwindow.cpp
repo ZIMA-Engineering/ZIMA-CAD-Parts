@@ -182,24 +182,10 @@ void MainWindow::settingsChanged()
 
 void MainWindow::downloadFile(QWebEngineDownloadItem *download)
 {
-	QFileInfo fi(download->path());
-	QString filePath = Settings::get()->getWorkingDir() + "/" + fi.fileName();
-
-	qDebug() << "Downloading into" << filePath;
-
-	if (QDir().exists(filePath))
-	{
-		if (QMessageBox::question(this, tr("File Exists"),
-								  tr("File %1 already exists. Overwrite?").arg(filePath),
-								  QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-		{
-			download->cancel();
-			return;
-		}
-	}
-
-	download->setPath(filePath);
+	download->setDownloadDirectory(Settings::get()->getWorkingDir());
 	download->accept();
+
+	qDebug() << "Downloading into" << download->downloadDirectory() << download->downloadFileName();
 
 	if (!m_downloader)
 		m_downloader = new WebDownloaderDialog(this);

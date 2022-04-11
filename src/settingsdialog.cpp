@@ -280,7 +280,7 @@ void SettingsDialog::datasourceUpButton_clicked()
 		QListWidgetItem *temp = lw->takeItem(ix);
 		lw->insertItem(ix-1, temp);
 		lw->setCurrentRow(ix-1);
-		m_editedDS.swap(ix, ix-1);
+		m_editedDS.swapItemsAt(ix, ix-1);
 	}
 }
 
@@ -294,7 +294,7 @@ void SettingsDialog::datasourceDownButton_clicked()
 		QListWidgetItem *temp = lw->takeItem(ix);
 		lw->insertItem(ix+1, temp);
 		lw->setCurrentRow(ix+1);
-		m_editedDS.swap(ix, ix+1);
+		m_editedDS.swapItemsAt(ix, ix+1);
 	}
 }
 
