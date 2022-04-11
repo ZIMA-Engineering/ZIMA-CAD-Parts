@@ -47,6 +47,8 @@ private:
 	bool hasAnyLabel();
 	bool hasIcon(const QString &name) const;
 	QString iconInstallPath(const QString &name) const;
+	int sortOrderToIndex(Qt::SortOrder sortOrder);
+	Qt::SortOrder sortOrderFromIndex(int i);
 
 private slots:
 	void removeIcon();

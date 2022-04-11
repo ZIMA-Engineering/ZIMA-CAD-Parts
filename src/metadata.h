@@ -65,6 +65,9 @@ public:
 
 	void setLabel(const QString &lang, const QString &newLabel);
 
+	Qt::SortOrder sortOrder() const;
+	void setSortOrder(Qt::SortOrder sortOrder);
+
 	bool showDirectoriesAsParts() const;
 	void setShowDirectoriesAsParts(bool enabled);
 
@@ -124,6 +127,8 @@ private:
 	void rename(const QString &oldName, const QString &newName);
 	void recursiveRename(const QString &path, QHash<QString, QVariant> &settings);
 	QList<Metadata*> includedMetadatas(QStringList paths);
+	Qt::SortOrder sortOrderFromString(const QString &sortOrder) const;
+	QString sortOrderToString(Qt::SortOrder sortOrder) const;
 };
 
 /*! An access singleton to the Metadata cache.
@@ -140,6 +145,7 @@ public:
 
 	bool showLabel(const QString &path);
 	QString label(const QString &path);
+	Qt::SortOrder sortOrder(const QString &path);
 	bool showDirectoriesAsParts(const QString &path);
 	QStringList parameterHandles(const QString &path);
 	QStringList parameterLabels(const QString &path);

@@ -36,6 +36,7 @@ DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *paren
 	connect(ui->iconButton, SIGNAL(clicked()),
 			this, SLOT(openIconDialog()));
 
+	ui->sortOrderComboBox->setCurrentIndex(sortOrderToIndex(m_meta->sortOrder()));
 	ui->subdirPartsCheckBox->setChecked(m_meta->showDirectoriesAsParts());
 }
 
@@ -88,8 +89,15 @@ void DirectoryEditorDialog::apply()
 		installIcon(iconInstallPath(LOGO_TEXT_FILE), LOGO_FILE, true);
 	}
 
+	auto metadata = MetadataCache::get()->metadata(m_dirPath);
+
+	// Sort order
+	metadata->setSortOrder(
+		sortOrderFromIndex(ui->sortOrderComboBox->currentIndex())
+	);
+
 	// Subdirectory parts
-	MetadataCache::get()->metadata(m_dirPath)->setShowDirectoriesAsParts(
+	metadata->setShowDirectoriesAsParts(
 		ui->subdirPartsCheckBox->isChecked()
 	);
 
@@ -97,7 +105,7 @@ void DirectoryEditorDialog::apply()
 	if (!m_deletedParameters.isEmpty())
 	{
 		foreach (const QString &handle, m_deletedParameters)
-			MetadataCache::get()->metadata(m_dirPath)->removeParameter(handle);
+			metadata->removeParameter(handle);
 	}
 
 	if (!m_handleChanges.isEmpty())
@@ -107,14 +115,14 @@ void DirectoryEditorDialog::apply()
 		while (i.hasNext())
 		{
 			i.next();
-			MetadataCache::get()->metadata(m_dirPath)->renameParameter(
+			metadata->renameParameter(
 				i.key(),
 				i.value()
 			);
 		}
 	}
 
-	MetadataCache::get()->metadata(m_dirPath)->setParameterHandles(m_parameters);
+	metadata->setParameterHandles(m_parameters);
 
 	// Locales
 	int cnt = ui->stackedWidget->count();
@@ -122,7 +130,7 @@ void DirectoryEditorDialog::apply()
 	for (int i = 0; i < cnt; i++)
 	{
 		static_cast<DirectoryLocaleEditWidget*>(ui->stackedWidget->widget(i))->apply(
-			MetadataCache::get()->metadata(m_dirPath)
+			metadata
 		);
 	}
 }
@@ -271,6 +279,22 @@ bool DirectoryEditorDialog::hasIcon(const QString &name) const
 QString DirectoryEditorDialog::iconInstallPath(const QString &name) const
 {
 	return m_dirPath +"/"+ METADATA_DIR + "/" + name;
+}
+
+int DirectoryEditorDialog::sortOrderToIndex(Qt::SortOrder sortOrder)
+{
+	if (sortOrder == Qt::AscendingOrder)
+		return 0;
+	else
+		return 1;
+}
+
+Qt::SortOrder DirectoryEditorDialog::sortOrderFromIndex(int i)
+{
+	if (i == 0)
+		return Qt::AscendingOrder;
+	else
+		return Qt::DescendingOrder;
 }
 
 void DirectoryEditorDialog::removeIcon()

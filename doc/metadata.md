@@ -29,6 +29,9 @@ example.
     ; List of directory parameters
     Parameters = length, diameter
 
+    ; Default sorting
+    SortOrder = ascending/descending
+
     ; Section for configuration of parameters defined above
     [Parameters]
     length\Label\en = Length [mm]

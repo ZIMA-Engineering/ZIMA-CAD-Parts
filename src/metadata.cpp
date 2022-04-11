@@ -132,6 +132,11 @@ QString MetadataCache::label(const QString &path)
 	return get(path)->getLabel();
 }
 
+Qt::SortOrder MetadataCache::sortOrder(const QString &path)
+{
+	return get(path)->sortOrder();
+}
+
 bool MetadataCache::showDirectoriesAsParts(const QString &path)
 {
 	return get(path)->showDirectoriesAsParts();
@@ -265,6 +270,16 @@ void Metadata::setLabel(const QString &lang, const QString &newLabel)
 	label.clear();
 
 	m_settings->setValue(QString("Directory/Label/%1").arg(lang), newLabel);
+}
+
+Qt::SortOrder Metadata::sortOrder() const
+{
+	return sortOrderFromString(m_settings->value("Directory/SortOrder", "ascending").toString());
+}
+
+void Metadata::setSortOrder(Qt::SortOrder sortOrder)
+{
+	m_settings->setValue("Directory/SortOrder", sortOrderToString(sortOrder));
 }
 
 bool Metadata::showDirectoriesAsParts() const
@@ -546,6 +561,25 @@ QList<Metadata *> Metadata::includedMetadatas(QStringList paths)
 		ret << MetadataCache::get()->metadata(path);
 
 	return ret;
+}
+
+Qt::SortOrder Metadata::sortOrderFromString(const QString &sortOrder) const
+{
+	if (sortOrder == "descending")
+		return Qt::DescendingOrder;
+	else
+		return Qt::AscendingOrder;
+}
+
+QString Metadata::sortOrderToString(Qt::SortOrder sortOrder) const
+{
+	switch (sortOrder)
+	{
+	case Qt::DescendingOrder:
+		return "descending";
+	default:
+		return "ascending";
+	}
 }
 
 MetadataVersionsMap Metadata::partVersions()

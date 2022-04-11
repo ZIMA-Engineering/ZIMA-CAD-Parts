@@ -74,6 +74,8 @@ void FileView::setDirectory(const QString &path)
 	m_proxy->resetFilters();
 	//setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
 	resizeColumnToContents();
+
+	sortByColumn(0, MetadataCache::get()->sortOrder(m_path));
 }
 
 void FileView::refreshModel()
@@ -182,6 +184,7 @@ void FileView::directoryChanged()
 {
 	m_model->reloadParts();
 	m_header->newDirectory(m_path);
+	sortByColumn(0, MetadataCache::get()->sortOrder(m_path));
 }
 
 void FileView::scrollContentsBy(int dx, int dy)
