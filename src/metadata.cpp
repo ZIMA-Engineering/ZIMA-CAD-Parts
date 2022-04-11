@@ -177,6 +177,11 @@ void MetadataCache::renamePart(const QString &path, const QString &oldPart, cons
 	return get(path)->renamePart(oldPart, newPart);
 }
 
+void MetadataCache::pruneParts(const QString &path)
+{
+	return get(path)->pruneParts();
+}
+
 Metadata* MetadataCache::metadata(const QString &path)
 {
 	return get(path);
@@ -599,6 +604,32 @@ void Metadata::renamePart(const QString &oldPart, const QString &newPart)
 
 	m_settings->beginGroup("Parts");
 	rename(oldPartGroup, newPartGroup);
+	m_settings->endGroup();
+}
+
+void Metadata::pruneParts()
+{
+	QDir d(m_path);
+	QFileInfoList files = d.entryInfoList(QStringList(),
+										  QDir::Files | QDir::Dirs | QDir::Readable,
+										  QDir::Name);
+
+	m_settings->beginGroup("Parts");
+	QStringList parts = m_settings->childGroups();
+
+	// Walk through files and find existing parts
+	foreach (const QFileInfo &fi, files)
+	{
+		parts.removeOne(fi.baseName());
+	}
+
+	// Remove parts without files
+	foreach (const QString &part, parts)
+	{
+		qDebug() << "Pruning part" << part << "from metadata" << m_path;
+		m_settings->remove(part);
+	}
+
 	m_settings->endGroup();
 }
 

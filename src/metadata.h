@@ -89,6 +89,9 @@ public:
 
 	void deletePart(const QString &part);
 	void renamePart(const QString &oldPart, const QString &newPart);
+
+	void pruneParts();
+
 	/*! Load part versions.
 	 * Implementation: list name-ordered directory and use only the latest
 	 * file name for its completeBaseName
@@ -146,6 +149,7 @@ public:
 	void clearPartVersions(const QString &path);
 	void deletePart(const QString &path, const QString &part);
 	void renamePart(const QString &path, const QString &oldPart, const QString &newPart);
+	void pruneParts(const QString &path);
     Metadata* metadata(const QString &path);
 
 signals:

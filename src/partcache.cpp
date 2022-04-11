@@ -45,6 +45,7 @@ void PartCache::refresh(const QString &dir)
 		return;
 
 	m_parts.remove(dir);
+	MetadataCache::get()->pruneParts(dir);
 	MetadataCache::get()->clearPartVersions(dir);
 }
 
