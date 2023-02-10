@@ -54,7 +54,8 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
 		if (f.fileInfo.baseName() == METADATA_DIR)
 			return false;
 
-		return MetadataCache::get()->showDirectoriesAsParts(fm->path());
+		return MetadataCache::get()->showDirectoriesAsParts(fm->path())
+				&& isFiltered(fm->path(), f.fileInfo.baseName());
 	}
 	else if (!Settings::get()->filtersRegex.exactMatch(f.fileInfo.fileName()))
 	{
