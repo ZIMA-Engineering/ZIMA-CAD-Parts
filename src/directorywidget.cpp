@@ -150,7 +150,7 @@ void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
 	foreach(QString index, indexes)
 	{
 		QString prefix = index.section('.', 0, 0);
-		if(prefix.lastIndexOf('_') == prefix.count()-3
+		if(prefix.lastIndexOf('_') == prefix.length()-3
 		        && prefix.right(2) == Settings::get()->getCurrentLanguageCode().left(2))
 		{
 			selectedIndex = index;
