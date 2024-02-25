@@ -81,6 +81,8 @@ typedef enum {
 	ZIP7,
     // images
     FILE_IMAGE,
+	// audio
+	FILE_AUDIO,
     // this must go last
     TYPES_COUNT,
 	UNDEFINED

@@ -58,5 +58,6 @@
         <file>gfx/icons/mail-mbox.png</file>
         <file>gfx/edit-rename.png</file>
         <file>gfx/arrow-right.png</file>
+        <file>gfx/icons/audio-x-generic.png</file>
     </qresource>
 </RCC>

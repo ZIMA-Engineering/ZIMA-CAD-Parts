@@ -113,6 +113,8 @@ QString File::getInternalNameForFileType(FileType::FileType type)
 		return "7z";
     case FileType::FILE_IMAGE:
         return "image-x-generic";
+	case FileType::FILE_AUDIO:
+		return "audio-x-generic";
 	default:
 		return "undefined";
 	}
@@ -198,6 +200,8 @@ QString File::getLabelForFileType(FileType::FileType type)
 		return "*.7z";
     case FileType::FILE_IMAGE:
         return QObject::tr("Image/Picture");
+	case FileType::FILE_AUDIO:
+		return QObject::tr("Audio/Music");
 	default:
 		return "undefined";
 	}
@@ -283,6 +287,8 @@ QString File::getRxForFileType(FileType::FileType type)
 		return "(^.+\\.7z$)";
     case FileType::FILE_IMAGE:
         return getRxFromStringList(QStringList() << "png" << "jpg" << "jpeg");
+	case FileType::FILE_AUDIO:
+		return getRxFromStringList(QStringList() << "flac" << "m4a" << "mp3" << "ogg" << "wav");
 	default:
 		return "";
 	}

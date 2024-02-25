@@ -243,7 +243,8 @@ void Settings::setupFilterGroups()
             << new ExtensionFilter(FileType::OFFICE_WRITER)
             << new ExtensionFilter(FileType::OFFICE_EML)
 			<< new ExtensionFilter(FileType::OFFICE_MBOX)
-            << new ExtensionFilter(FileType::FILE_IMAGE);
+			<< new ExtensionFilter(FileType::FILE_IMAGE)
+			<< new ExtensionFilter(FileType::FILE_AUDIO);
 
 	QSettings settings;
 	settings.beginGroup("PartFilters");
