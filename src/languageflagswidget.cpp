@@ -36,8 +36,8 @@ LanguageFlagsWidget::LanguageFlagsWidget(QWidget *parent) :
 
 	setLayout(lay);
 
-	connect(m_buttons, SIGNAL(buttonClicked(int)),
-	        this, SLOT(changeLanguage(int)));
+	connect(m_buttons, SIGNAL(idClicked(int)),
+			this, SLOT(changeLanguage(int)));
 
 	int langIndex = Settings::get()->langIndex(Settings::get()->getCurrentLanguageCode()) - 1;
 	// this needs to go after connect to emit the signal

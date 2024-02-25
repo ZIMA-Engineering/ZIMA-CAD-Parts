@@ -90,11 +90,11 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 	m_ui->terminalLineEdit->setText(Settings::get()->TerminalPath);
 
 	connect(m_ui->proeButton, SIGNAL(clicked()),
-	        this, SLOT(proeButton_clicked()));
+			this, SLOT(proeButton_clicked()));
 
 	zimaUtilSignalMapper = new QSignalMapper(this);
 
-	connect(zimaUtilSignalMapper, SIGNAL(mapped(int)), this, SLOT(setZimaUtilPath(int)));
+	connect(zimaUtilSignalMapper, SIGNAL(mappedInt(int)), this, SLOT(setZimaUtilPath(int)));
 
 	QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
 	int i = 0;

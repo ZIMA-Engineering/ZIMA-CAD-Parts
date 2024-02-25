@@ -21,7 +21,7 @@ FileViewHeader::FileViewHeader(FileModel *model, QWidget *parent) :
 	setDefaultAlignment(Qt::AlignTop);
 
 	m_mapper = new QSignalMapper(this);
-	connect(m_mapper, SIGNAL(mapped(int)), this, SLOT(filter(int)));
+	connect(m_mapper, SIGNAL(mappedInt(int)), this, SLOT(filter(int)));
 }
 
 
