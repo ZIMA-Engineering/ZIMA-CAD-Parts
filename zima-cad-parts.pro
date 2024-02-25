@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-05-18T21:26:48
 # -------------------------------------------------
-QT += network opengl widgets webengine webenginewidgets
+QT += core5compat network opengl widgets webenginewidgets
 TARGET = ZIMA-CAD-Parts
 TEMPLATE = app
 
