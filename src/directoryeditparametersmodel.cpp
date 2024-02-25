@@ -181,7 +181,7 @@ QMimeData *DirectoryEditParametersModel::mimeData(const QModelIndexList &indexes
 	QMimeData *mimeData = new QMimeData();
 	QByteArray encodedData;
 
-	QDataStream stream(&encodedData, QIODevice::WriteOnly);
+	QDataStream stream(&encodedData, QIODeviceBase::WriteOnly);
 
 	foreach (const QModelIndex &idx, indexes) {
 		if (!idx.isValid())
@@ -228,7 +228,7 @@ bool DirectoryEditParametersModel::dropMimeData(const QMimeData *data, Qt::DropA
 		beginRow = rowCount(QModelIndex());
 
 	QByteArray encodedData = data->data("application/vnd.zcp.parameter.list");
-	QDataStream stream(&encodedData, QIODevice::ReadOnly);
+	QDataStream stream(&encodedData, QIODeviceBase::ReadOnly);
 	QStringList handles;
 
 	while (!stream.atEnd())
