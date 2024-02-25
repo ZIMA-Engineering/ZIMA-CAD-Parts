@@ -201,7 +201,6 @@ Metadata::Metadata(const QString &path, QObject *parent)
 		m_path + "/" + METADATA_DIR + "/" + METADATA_FILE,
 		QSettings::IniFormat
 	);
-	m_settings->setIniCodec("utf-8");
 
 	int v = version();
 

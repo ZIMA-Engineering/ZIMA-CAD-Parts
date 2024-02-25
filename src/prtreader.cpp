@@ -38,7 +38,6 @@ void PtrReaderThread::parseFile(const QFileInfo &fi)
 	QFile f(fi.absoluteFilePath());
 	f.open(QIODevice::ReadOnly);
 	QTextStream s(&f);
-	s.setCodec("UTF-8"); // just guessing here... but it works somehow
 
 	while (!s.atEnd())
 	{
