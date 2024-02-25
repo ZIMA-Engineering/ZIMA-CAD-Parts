@@ -71,7 +71,7 @@ QFileInfo DataSourceView::currentFileInfo()
 		return QFileInfo();
 
 	QModelIndex srcIndex = m_proxy->mapToSource(index);
-	return m_model->fileInfo(srcIndex).absoluteFilePath();
+	return m_model->fileInfo(srcIndex);
 }
 
 void DataSourceView::addScriptsToContextMenu(QMenu *menu)

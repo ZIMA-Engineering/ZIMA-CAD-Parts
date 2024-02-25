@@ -468,7 +468,7 @@ void FileModel::copyToWorkingDir(FileCopier *cp)
 			QFileInfo fi(fname);
 			cp->addSourceFile(fi);
 
-			QString thumbPath = m_thumb->path(fi.baseName());
+			QString thumbPath = m_thumb->path(QFileInfo(fi.baseName()));
 
 			if (!thumbPath.isEmpty())
 				cp->addSourceFile(QFileInfo(thumbPath), THUMBNAILS_DIR);
