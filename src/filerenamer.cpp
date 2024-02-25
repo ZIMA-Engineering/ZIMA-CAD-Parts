@@ -15,9 +15,22 @@ FileRenamer::FileRenamer(QObject *parent)
 
 bool FileRenamer::rename(const QString &dir, const QFileInfo &file, QString newName)
 {
-	/* Files in the current directory */
-	if (!renameFilesInDir(dir, file.baseName(), newName))
-		return false;
+	bool isDir = file.isDir();
+	QString newDirPath;
+
+	if (isDir) {
+		/* Rename part directory */
+		newDirPath = file.absolutePath() +"/"+ newName;
+
+		qDebug() << "Rename" << file.absoluteFilePath() << "to" << newDirPath;
+
+		if (!QFile::rename(file.absoluteFilePath(), newDirPath))
+			return false;
+	} else {
+		/* Files in the current directory */
+		if (!renameFilesInDir(dir, file.baseName(), newName))
+			return false;
+	}
 
 	/* Thumbnails in index directory */
 	if (!renameFilesInDir(dir + "/" + THUMBNAILS_DIR, file.baseName(), newName))
@@ -25,6 +38,12 @@ bool FileRenamer::rename(const QString &dir, const QFileInfo &file, QString newN
 
 	/* Metadata */
 	MetadataCache::get()->renamePart(dir, file.baseName(), newName);
+
+	/* Directory rename */
+	if (isDir) {
+		PartCache::get()->renameDirectory(file.absoluteFilePath(), newDirPath);
+		MetadataCache::get()->clearBelow(file.absoluteFilePath());
+	}
 
 	/* Refresh models/views */
 	PartCache::get()->refresh(dir);

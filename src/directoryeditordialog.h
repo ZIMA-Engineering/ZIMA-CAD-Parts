@@ -57,6 +57,7 @@ private slots:
 	void parameterHandleChange(const QString &handle, const QString &newHandle);
 	void parameterRemoval(const QString &handle);
 	void reorderParameters(const QStringList &parameters);
+	void renameError(const QFileInfo &oldFile, const QFileInfo &newFile, const QString &error);
 };
 
 #endif // DIRECTORYEDITORDIALOG_H

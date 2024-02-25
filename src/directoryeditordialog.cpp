@@ -4,6 +4,7 @@
 #include "metadata.h"
 #include "partcache.h"
 #include "directorylocaleeditwidget.h"
+#include "filerenamer.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -57,19 +58,18 @@ void DirectoryEditorDialog::apply()
 
 	if (name != m_fi.fileName())
 	{
-		QString dstDirPath = m_fi.absolutePath() +"/"+ name;
+		FileRenamer rn;
 
-		if (QFile::rename(m_dirPath, dstDirPath))
-		{
-			PartCache::get()->renameDirectory(m_dirPath, dstDirPath);
-			MetadataCache::get()->clearBelow(m_dirPath);
-			m_dirPath = dstDirPath;
+		connect(&rn, SIGNAL(error(QFileInfo,QFileInfo,QString)),
+				this, SLOT(renameError(QFileInfo,QFileInfo,QString)));
 
+		if (rn.rename(m_fi.absolutePath(), m_fi, name)) {
+			m_dirPath = m_fi.absolutePath() +"/"+ name;
 		} else {
 			QMessageBox::warning(
 				this,
-				tr("Unable to rename directory"),
-				tr("Unable to rename directory '%1'").arg(m_dirPath)
+				tr("Failed to rename directory"),
+				tr("Failed to rename directory '%1'").arg(m_dirPath)
 			);
 		}
 	}
@@ -370,4 +370,13 @@ void DirectoryEditorDialog::parameterRemoval(const QString &handle)
 void DirectoryEditorDialog::reorderParameters(const QStringList &parameters)
 {
 	m_parameters = parameters;
+}
+
+void DirectoryEditorDialog::renameError(const QFileInfo &oldFile, const QFileInfo &newFile, const QString &error)
+{
+	QMessageBox::warning(
+		this,
+		tr("Unable to rename file"),
+		tr("Unable to rename file '%1' to '%2': %3").arg(oldFile.absoluteFilePath()).arg(newFile.absoluteFilePath()).arg(error)
+	);
 }

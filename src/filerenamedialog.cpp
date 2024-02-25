@@ -12,6 +12,11 @@ FileRenameDialog::FileRenameDialog(QString dir, QFileInfo file, QWidget *parent)
 	ui->setupUi(this);
 
 	setWindowTitle(tr("Rename %1").arg(file.baseName()));
+
+	if (m_file.isDir()) {
+		ui->fileNameLabel->setText(tr("Directory name"));
+	}
+
 	ui->fileNameLineEdit->setText(file.baseName());
 
 	connect(ui->renameButton, SIGNAL(clicked(bool)),

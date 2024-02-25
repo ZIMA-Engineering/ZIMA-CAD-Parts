@@ -272,14 +272,10 @@ void FileView::showContextMenu(const QPoint &point)
 	if (!i.isValid())
 		return;
 
-	QFileInfo fi = fileInfo(i);
-
 	QMenu *menu = new QMenu(this);
 
-	if (fi.isFile()) {
-		menu->addAction(QIcon(":/gfx/edit-rename.png"), tr("Rename"),
-						this, SLOT(renameFile()));
-	}
+	menu->addAction(QIcon(":/gfx/edit-rename.png"), tr("Rename"),
+					this, SLOT(renameFile()));
 
 	menu->addAction(QIcon(":/gfx/document-edit.png"), tr("Edit"),
 					this, SLOT(editFile()));
