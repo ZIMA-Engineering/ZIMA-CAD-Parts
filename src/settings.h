@@ -135,7 +135,7 @@ public:
 	/** A filter regexp for proxy file model in ServerTabWidget.
 	 *  Calculated in Settings::recalculateFilters()
 	 */
-	QRegExp filtersRegex;
+	QRegularExpression filtersRegex;
 	//! Recalculate the filtersRegex by user config
 	void recalculateFilters();
 

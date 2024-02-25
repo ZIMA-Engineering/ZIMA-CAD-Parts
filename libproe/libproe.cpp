@@ -24,7 +24,7 @@
 int proe_get_attr(attr_arr_t &attrs, QTextStream &s)
 {
 	QString str;
-	QRegExp rgx(REGEX_DESC);
+	QRegularExpression rgx(REGEX_DESC);
 	qint64 pos;
 
 	do {
@@ -36,7 +36,7 @@ int proe_get_attr(attr_arr_t &attrs, QTextStream &s)
         //    qDebug() << "Infinite loop threshold reached. Skipping.";
         //    return 1;
        // }
-	} while (!str.isNull() && rgx.indexIn(str) != 0 &&
+	} while (!str.isNull() && rgx.match(str).capturedStart() != 0 &&
              s.status() == QTextStream::Ok);
 	
 	s.seek(pos);
@@ -44,14 +44,15 @@ int proe_get_attr(attr_arr_t &attrs, QTextStream &s)
 	rgx.setPattern(REGEX_ATTR);
 	int len_n, len_v;
 	int offset = 0;
+	QRegularExpressionMatch match;
 	
 	/* Data composition:
 	 * <garbage><attribute mark><attribute name><\0><ATTR_SPLIT_STR>
 	 * <attribute value><\0><some other stuff...>
 	 */
 	
-	while ((offset = rgx.indexIn(str, offset)) != -1) {
-		offset += rgx.matchedLength();
+	while ((match = rgx.match(str, offset)).capturedStart() != -1) {
+		offset += match.capturedLength();
 		len_n = str.indexOf(QChar('\0'), offset);// + rgx.matchedLength());
 		len_v = str.indexOf(QChar('\0'), len_n + sizeof(ATTR_SPLIT_STR));
 		len_v = len_v - len_n - sizeof(ATTR_SPLIT_STR);

@@ -1,5 +1,7 @@
 #include "metadatav2migration.h"
 
+#include <QRegularExpression>
+
 bool MetadataV2Migration::migrate()
 {
 	// First check if we're on the correct version, but the version
@@ -12,7 +14,7 @@ bool MetadataV2Migration::migrate()
 
 
 	/*** Gather data from the old metadata ***/
-	QRegExp colRx("^\\d+$");
+	QRegularExpression colRx("^\\d+$");
 	QStringList langs;
 	langs << "cs" << "en" << "de" << "ru";
 	QHash<QString, QString> dirLabels;
@@ -45,7 +47,7 @@ bool MetadataV2Migration::migrate()
 
 			foreach (const QString &col, m_settings->childKeys())
 			{
-				if (!colRx.exactMatch(col))
+				if (!colRx.match(col).hasMatch())
 					continue;
 
 				int colNum = col.toInt();
@@ -90,7 +92,7 @@ bool MetadataV2Migration::migrate()
 
 		foreach (const QString &col, m_settings->childKeys())
 		{
-			if (!colRx.exactMatch(col))
+			if (!colRx.match(col).hasMatch())
 				continue;
 
 			QVariant v = m_settings->value(col);

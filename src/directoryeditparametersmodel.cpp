@@ -2,6 +2,7 @@
 #include <QGuiApplication>
 #include <QFont>
 #include <QBrush>
+#include <QRegularExpression>
 #include <QDebug>
 
 DirectoryEditParametersModel::DirectoryEditParametersModel(QStringList parameters, QHash<QString, QString> labels, QObject *parent) :
@@ -335,15 +336,17 @@ void DirectoryEditParametersModel::reorderParameters(const QStringList &paramete
 
 QString DirectoryEditParametersModel::newParameterHandle()
 {
-	QRegExp rx("param(\\d\\d)");
+	QRegularExpression rx("param(\\d\\d)");
 	int max = 0;
 
 	foreach (const QString &param, m_parameters)
 	{
-		if (rx.indexIn(param) < 0)
+		auto match = rx.match(param);
+
+		if (!match.hasMatch())
 			continue;
 
-		int i = rx.cap(1).toInt();
+		int i = match.captured().toInt();
 
 		if (i > max)
 			max = i;

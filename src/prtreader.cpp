@@ -2,6 +2,7 @@
 #include "file.h"
 #include "metadata.h"
 
+#include <QRegularExpression>
 #include <QDebug>
 
 PtrReaderThread::PtrReaderThread(QFileInfoList partList) :
@@ -58,7 +59,7 @@ void PtrReaderThread::parseFile(const QFileInfo &fi)
 		{
 			QString s = it.next();
 			// \r is another strange char. It seems it used in all user defined attributes
-			s = s.replace(QRegExp("^.+\\r"), "");
+			s = s.replace(QRegularExpression("^.+\\r"), "");
 			QStringList vals = s.split("'");
 			if (vals.size() != 2)
 			{
@@ -66,7 +67,7 @@ void PtrReaderThread::parseFile(const QFileInfo &fi)
 				continue;
 			}
 			// user defined attributes are uppercased ASCII chars only
-			QString key = vals[0].replace(QRegExp("[^A-Z]"), "");
+			QString key = vals[0].replace(QRegularExpression("[^A-Z]"), "");
 			if (key.isEmpty())
 			{
 				qDebug() << "key is empty, skipping:" << s;

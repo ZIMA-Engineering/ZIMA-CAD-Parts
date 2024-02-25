@@ -322,7 +322,7 @@ void Settings::recalculateFilters()
 
 	expressions.removeDuplicates();
 
-	filtersRegex = QRegExp("^" + expressions.join("|") + "$", Qt::CaseInsensitive);
+	filtersRegex = QRegularExpression("^" + expressions.join("|") + "$", QRegularExpression::CaseInsensitiveOption);
 }
 
 QString Settings::getCurrentLanguageCode()

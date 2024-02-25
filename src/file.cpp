@@ -21,6 +21,7 @@
 #include "file.h"
 
 #include <QFileIconProvider>
+#include <QRegularExpression>
 
 
 FileTypeList File::versionedTypes()
@@ -320,11 +321,10 @@ void FileMetadata::detectFileType()
 {
 	for(int i = 0; i < FileType::TYPES_COUNT; i++)
 	{
-		QRegExp rx(File::getRxForFileType((FileType::FileType)i));
-		// *.dxf vs. *.DXF in some examples
-		rx.setCaseSensitivity(Qt::CaseInsensitive);
+		QRegularExpression rx(File::getRxForFileType((FileType::FileType)i), QRegularExpression::CaseInsensitiveOption);
+		auto match = rx.match(fileInfo.fileName());
 
-		if(rx.exactMatch(fileInfo.fileName()))
+		if(match.hasMatch())
 		{
 			type = (FileType::FileType)i;
 			break;
