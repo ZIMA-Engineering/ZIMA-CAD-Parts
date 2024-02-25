@@ -2,7 +2,7 @@
 #define WEBDOWNLOADERWIDGET_H
 
 #include <QWidget>
-#include <QWebEngineDownloadItem>
+#include <QWebEngineDownloadRequest>
 
 namespace Ui {
 class WebDownloaderWidget;
@@ -13,16 +13,16 @@ class WebDownloaderWidget : public QWidget
 	Q_OBJECT
 
 public:
-	explicit WebDownloaderWidget(QWebEngineDownloadItem *download, QWidget *parent = 0);
+	explicit WebDownloaderWidget(QWebEngineDownloadRequest *download, QWidget *parent = 0);
 	~WebDownloaderWidget();
 
 private:
 	Ui::WebDownloaderWidget *ui;
 
-	QWebEngineDownloadItem *m_download;
+	QWebEngineDownloadRequest *m_download;
 
 private slots:
-	void stateChange(QWebEngineDownloadItem::DownloadState state);
+	void stateChange(QWebEngineDownloadRequest::DownloadState state);
 	void abort();
 	void downloadProgress(qint64 received, qint64 total);
 

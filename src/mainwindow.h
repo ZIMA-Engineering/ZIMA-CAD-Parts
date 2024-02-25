@@ -33,7 +33,7 @@
 #include <QToolButton>
 #include <QHBoxLayout>
 #include <QSignalMapper>
-#include <QWebEngineDownloadItem>
+#include <QWebEngineDownloadRequest>
 
 #include "settingsdialog.h"
 #include "filemodel.h"
@@ -76,7 +76,7 @@ private:
 
 private slots:
 	void settingsChanged();
-	void downloadFile(QWebEngineDownloadItem *download);
+	void downloadFile(QWebEngineDownloadRequest *download);
 };
 
 class SleeperThread : public QThread

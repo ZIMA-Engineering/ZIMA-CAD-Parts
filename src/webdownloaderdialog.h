@@ -2,7 +2,7 @@
 #define WEBDOWLOADERDIALOG_H
 
 #include <QDialog>
-#include <QWebEngineDownloadItem>
+#include <QWebEngineDownloadRequest>
 
 #include "webdownloaderwidget.h"
 
@@ -22,7 +22,7 @@ public:
 	explicit WebDownloaderDialog(QWidget *parent = 0);
 	~WebDownloaderDialog();
 
-	void enqueue(QWebEngineDownloadItem *download);
+	void enqueue(QWebEngineDownloadRequest *download);
 
 private:
 	Ui::WebDownloaderDialog *ui;

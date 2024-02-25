@@ -93,9 +93,11 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
 	connect(ui->tabWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
-	QWebEngineSettings::globalSettings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
-	connect(QWebEngineProfile::defaultProfile(), SIGNAL(downloadRequested(QWebEngineDownloadItem*)),
-			this, SLOT(downloadFile(QWebEngineDownloadItem*)));
+	auto defaultProfile = QWebEngineProfile::defaultProfile();
+
+	defaultProfile->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
+	connect(defaultProfile, SIGNAL(downloadRequested(QWebEngineDownloadRequest*)),
+			this, SLOT(downloadFile(QWebEngineDownloadRequest*)));
 
 	settingsChanged();
 
@@ -180,7 +182,7 @@ void MainWindow::settingsChanged()
 }
 
 
-void MainWindow::downloadFile(QWebEngineDownloadItem *download)
+void MainWindow::downloadFile(QWebEngineDownloadRequest *download)
 {
 	download->setDownloadDirectory(Settings::get()->getWorkingDir());
 	download->accept();

@@ -20,7 +20,7 @@ WebDownloaderDialog::~WebDownloaderDialog()
 	delete ui;
 }
 
-void WebDownloaderDialog::enqueue(QWebEngineDownloadItem *download)
+void WebDownloaderDialog::enqueue(QWebEngineDownloadRequest *download)
 {
 	WebDownloaderWidget *w = new WebDownloaderWidget(download, this);
 	// always insert w at the latest position before spacer
