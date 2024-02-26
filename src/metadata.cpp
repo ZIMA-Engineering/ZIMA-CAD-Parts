@@ -627,7 +627,7 @@ void Metadata::deletePart(const QString &part)
     if(grp.isEmpty())
         return;
 
-    m_settings->remove(QString("Parameters/%1").arg(grp));
+    m_settings->remove(QString("Parts/%1").arg(grp));
 }
 
 void Metadata::renamePart(const QString &oldPart, const QString &newPart)
