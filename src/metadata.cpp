@@ -631,7 +631,7 @@ MetadataVersionsMap Metadata::partVersions()
         fi.setFile(i);
         foreach(FileType::FileType t, File::versionedTypes())
         {
-            if (partVersionType(t, QFileInfo(fi.fileName())))
+            if (partVersionType(t, fi))
                 break;
         }
     }
