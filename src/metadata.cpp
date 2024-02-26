@@ -117,6 +117,18 @@ void MetadataCache::leave()
     m_mutex.unlock();
 }
 
+QSet<QString> MetadataCache::commonParams(const QString &path1, const QString &path2)
+{
+    auto params1 = get(path1)->parameterHandles();
+    auto params2 = get(path2)->parameterHandles();
+
+    QSet<QString> set1(params1.begin(), params1.end());
+    QSet<QString> set2(params2.begin(), params2.end());
+
+    QSet<QString> common(set1.intersect(set2));
+    return common;
+}
+
 bool MetadataCache::showLabel(const QString &path)
 {
     return !QDir().exists(path + "/" + METADATA_DIR + "/" + LOGO_FILE);
@@ -180,6 +192,28 @@ void MetadataCache::deletePart(const QString &path, const QString &part)
 void MetadataCache::renamePart(const QString &path, const QString &oldPart, const QString &newPart)
 {
     return get(path)->renamePart(oldPart, newPart);
+}
+
+void MetadataCache::copyPart(const QString &srcPath, const QString &part, const QString &dstPath)
+{
+    auto srcMeta = get(srcPath);
+    auto dstMeta = get(dstPath);
+
+    foreach (const QString &param, commonParams(srcPath, dstPath)) {
+        dstMeta->setPartParam(part, param, srcMeta->partParam(part, param));
+    }
+}
+
+void MetadataCache::movePart(const QString &srcPath, const QString &part, const QString &dstPath)
+{
+    auto srcMeta = get(srcPath);
+    auto dstMeta = get(dstPath);
+
+    foreach (const QString &param, commonParams(srcPath, dstPath)) {
+        dstMeta->setPartParam(part, param, srcMeta->partParam(part, param));
+    }
+
+    srcMeta->deletePart(part);
 }
 
 void MetadataCache::pruneParts(const QString &path)

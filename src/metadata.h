@@ -157,6 +157,8 @@ public:
     void clearPartVersions(const QString &path);
     void deletePart(const QString &path, const QString &part);
     void renamePart(const QString &path, const QString &oldPart, const QString &newPart);
+    void copyPart(const QString &srcPath, const QString &part, const QString &dstPath);
+    void movePart(const QString &srcPath, const QString &part, const QString &dstPath);
     void pruneParts(const QString &path);
     Metadata* metadata(const QString &path);
 
@@ -184,6 +186,7 @@ private:
     Metadata* get(const QString &path);
     void enter();
     void leave();
+    QSet<QString> commonParams(const QString &path1, const QString &path2);
 };
 
 #endif // METADATA_H

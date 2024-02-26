@@ -341,6 +341,8 @@ void FileModel::moveParts(FileMover *mv)
     auto selector = PartSelector::get();
     auto pc = PartCache::get();
     auto it = selector->allSelectedIterator();
+    auto dstDir = Settings::get()->getWorkingDir();
+    auto metaCache = MetadataCache::get();
 
     while (it.hasNext())
     {
@@ -354,7 +356,7 @@ void FileModel::moveParts(FileMover *mv)
             QFileInfo fi(fname);
 
             if (!Settings::get()->ShowProeVersions
-                    && MetadataCache::get()->partVersions(m_path).contains(fi.completeBaseName()))
+                    && metaCache->partVersions(m_path).contains(fi.completeBaseName()))
             {
                 // When moving Pro/E files, we need to find all part versions
                 QDir d(m_path);
@@ -367,9 +369,9 @@ void FileModel::moveParts(FileMover *mv)
             }
 
             if (fi.isDir())
-                MetadataCache::get()->clear(fname);
+                metaCache->clear(fname);
 
-            MetadataCache::get()->deletePart(m_path, fi.baseName());
+            metaCache->movePart(dir, fi.baseName(), dstDir);
         }
 
         clearList << dir;
@@ -378,7 +380,7 @@ void FileModel::moveParts(FileMover *mv)
     foreach (const QFileInfo &fi, moveList)
         mv->addSourceFile(fi);
 
-    mv->setDestination(Settings::get()->getWorkingDir());
+    mv->setDestination(dstDir);
     mv->work();
 
     selector->clear();
@@ -386,7 +388,7 @@ void FileModel::moveParts(FileMover *mv)
     foreach (const QString &dir, clearList)
         pc->clear(dir);
 
-    pc->clear(Settings::get()->getWorkingDir());
+    pc->clear(dstDir);
 }
 
 
@@ -430,7 +432,7 @@ void FileModel::deleteParts(DirectoryRemover *rm)
             if (fi.isDir())
                 MetadataCache::get()->clear(fname);
 
-            MetadataCache::get()->deletePart(m_path, fi.baseName());
+            MetadataCache::get()->deletePart(dir, fi.baseName());
         }
 
         clearList << dir;
@@ -450,6 +452,8 @@ void FileModel::copyToWorkingDir(FileCopier *cp)
 {
     auto selector = PartSelector::get();
     auto it = selector->allSelectedIterator();
+    auto dstDir = Settings::get()->getWorkingDir();
+    auto metaCache = MetadataCache::get();
 
     while (it.hasNext())
     {
@@ -457,7 +461,7 @@ void FileModel::copyToWorkingDir(FileCopier *cp)
         QString key = it.key();
 
         // do not copy files from WD into WD
-        if (key == Settings::get()->getWorkingDir())
+        if (key == dstDir)
         {
             selector->clear(key);
             continue;
@@ -474,15 +478,17 @@ void FileModel::copyToWorkingDir(FileCopier *cp)
                 cp->addSourceFile(QFileInfo(thumbPath), THUMBNAILS_DIR);
 
             selector->clear(key, fname);
+
+            metaCache->copyPart(key, fi.baseName(), dstDir);
         }
     }
 
-    cp->setDestination(Settings::get()->getWorkingDir());
+    cp->setDestination(dstDir);
     cp->setStopOnError(false);
 
     cp->work();
     selector->clear();
-    PartCache::get()->clear(Settings::get()->getWorkingDir());
+    PartCache::get()->clear(dstDir);
 }
 
 
