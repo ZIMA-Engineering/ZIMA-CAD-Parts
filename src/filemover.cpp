@@ -22,6 +22,18 @@ void FileMover::addSourceFile(const QFileInfo &fi, const QString &dstSubdir)
     m_sourceFiles << QPair<QFileInfo, QString>(fi, dstSubdir);
 }
 
+void FileMover::addSourceFiles(QFileInfoList sourceFiles)
+{
+    foreach (const QFileInfo &fi, sourceFiles)
+        addSourceFile(fi);
+}
+
+void FileMover::addSourceFiles(QFileInfoList sourceFiles, const QString &dstSubdir)
+{
+    foreach (const QFileInfo &fi, sourceFiles)
+        addSourceFile(fi, dstSubdir);
+}
+
 void FileMover::setDestination(const QString &dst)
 {
     m_dst = dst;

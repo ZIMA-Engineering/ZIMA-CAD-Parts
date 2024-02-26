@@ -336,7 +336,6 @@ void FileModel::settingsChanged()
 
 void FileModel::moveParts(FileMover *mv)
 {
-    QFileInfoList moveList;
     QStringList clearList;
     auto selector = PartSelector::get();
     auto pc = PartCache::get();
@@ -360,13 +359,16 @@ void FileModel::moveParts(FileMover *mv)
             {
                 // When moving Pro/E files, we need to find all part versions
                 QDir d(m_path);
-                moveList << d.entryInfoList(
-                             QStringList() << (fi.completeBaseName() + ".*")
-                         );
+                mv->addSourceFiles(d.entryInfoList(QStringList() << (fi.completeBaseName() + ".*")));
 
             } else {
-                moveList << fi;
+                mv->addSourceFile(fi);
             }
+
+            QString thumbPath = m_thumb->path(fi);
+
+            if (!thumbPath.isEmpty())
+                mv->addSourceFile(QFileInfo(thumbPath), THUMBNAILS_DIR);
 
             if (fi.isDir())
                 metaCache->clear(fname);
@@ -376,9 +378,6 @@ void FileModel::moveParts(FileMover *mv)
 
         clearList << dir;
     }
-
-    foreach (const QFileInfo &fi, moveList)
-        mv->addSourceFile(fi);
 
     mv->setDestination(dstDir);
     mv->work();

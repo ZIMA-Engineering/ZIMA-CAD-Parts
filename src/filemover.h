@@ -17,6 +17,8 @@ public:
     explicit FileMover(QWidget *parent = nullptr);
     void addSourceFile(const QFileInfo &fi);
     void addSourceFile(const QFileInfo &fi, const QString &dstSubdir);
+    void addSourceFiles(QFileInfoList sourceFiles);
+    void addSourceFiles(QFileInfoList sourceFiles, const QString &dstSubdir);
     void setDestination(const QString &dst);
 
 public slots:
