@@ -35,76 +35,76 @@
 
 
 DirectoryWebView::DirectoryWebView(QWidget *parent) :
-	QWebEngineView(parent)
+    QWebEngineView(parent)
 {
-	connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
-	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
+    connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
+    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
 
-	connect(page(), SIGNAL(authenticationRequired(QUrl,QAuthenticator*)),
-			this, SLOT(authenticate(QUrl,QAuthenticator*)));
+    connect(page(), SIGNAL(authenticationRequired(QUrl,QAuthenticator*)),
+            this, SLOT(authenticate(QUrl,QAuthenticator*)));
 
-	loadAboutPage();
+    loadAboutPage();
 }
 
 void DirectoryWebView::setRootPath(QString path)
 {
-	m_rootPath = path;
+    m_rootPath = path;
 }
 
 void DirectoryWebView::loadAboutPage()
 {
-	QString url = ":/data/zima-cad-parts%1.html";
-	QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
-	QString filename = (QFile::exists(localized) ? localized : url.arg("") );
+    QString url = ":/data/zima-cad-parts%1.html";
+    QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
+    QString filename = (QFile::exists(localized) ? localized : url.arg("") );
 
-	QFile f(filename);
-	f.open(QIODevice::ReadOnly);
-	QTextStream stream(&f);
+    QFile f(filename);
+    f.open(QIODevice::ReadOnly);
+    QTextStream stream(&f);
 
-	setHtml( stream.readAll().replace("%VERSION%", VERSION) );
+    setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
 
 DirectoryWebView* DirectoryWebView::createWindow(QWebEnginePage::WebWindowType type)
 {
-	Q_UNUSED(type)
+    Q_UNUSED(type)
 
-	QDialog *popup = new QDialog(this);
-	QVBoxLayout *layout = new QVBoxLayout;
+    QDialog *popup = new QDialog(this);
+    QVBoxLayout *layout = new QVBoxLayout;
 
-	DirectoryWebView *webview = new DirectoryWebView(this);
-	layout->addWidget(webview);
+    DirectoryWebView *webview = new DirectoryWebView(this);
+    layout->addWidget(webview);
 
-	popup->setLayout(layout);
-	popup->setWindowTitle(tr("ZIMA-CAD-Parts Technical Specifications"));
-	popup->setWindowFlags(popup->windowFlags() | Qt::WindowMinMaxButtonsHint);
-	popup->show();
-	return webview;
+    popup->setLayout(layout);
+    popup->setWindowTitle(tr("ZIMA-CAD-Parts Technical Specifications"));
+    popup->setWindowFlags(popup->windowFlags() | Qt::WindowMinMaxButtonsHint);
+    popup->show();
+    return webview;
 }
 
 void DirectoryWebView::urlChange(const QUrl &url)
 {
-	if(this->url() == url)
-		return;
+    if(this->url() == url)
+        return;
 
-	if(url.scheme() == "about" || url.scheme() == "ZIMA-CAD-Parts")
-		loadAboutPage();
+    if(url.scheme() == "about" || url.scheme() == "ZIMA-CAD-Parts")
+        loadAboutPage();
 }
 
 void DirectoryWebView::pageLoaded(bool ok)
 {
-	Q_UNUSED(ok);
+    Q_UNUSED(ok);
 
-	if(url().scheme() != "file")
-		return;
+    if(url().scheme() != "file")
+        return;
 
-	// TODO:
-	//   This does not really work, because m_rootPath is never set!
-	//   It should be set to the current data source's root.
-	page()->runJavaScript(QString(R"(
+    // TODO:
+    //   This does not really work, because m_rootPath is never set!
+    //   It should be set to the current data source's root.
+    page()->runJavaScript(QString(R"(
 		window.ZCP = {rootPath: "%1"};
 	)").arg(m_rootPath));
 
-	page()->runJavaScript(R"(
+    page()->runJavaScript(R"(
 		(function () {
 		var elements = document.querySelectorAll('* [href], * [src]');
 		for (var i = 0; i < elements.length; i++) {
@@ -124,12 +124,12 @@ void DirectoryWebView::pageLoaded(bool ok)
 
 void DirectoryWebView::authenticate(const QUrl &requestUrl, QAuthenticator *authenticator)
 {
-	Q_UNUSED(requestUrl)
+    Q_UNUSED(requestUrl)
 
-	WebAuthenticationDialog dlg(authenticator);
+    WebAuthenticationDialog dlg(authenticator);
 
-	if (dlg.exec() != QDialog::Accepted)
-		return;
+    if (dlg.exec() != QDialog::Accepted)
+        return;
 
-	dlg.authenticate();
+    dlg.authenticate();
 }

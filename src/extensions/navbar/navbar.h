@@ -39,7 +39,7 @@ class NavBar : public QFrame
 public:
     enum { NavBarMarker = 0x4e427232 };
 
-	explicit NavBar(QWidget *parent = 0);
+    explicit NavBar(QWidget *parent = 0);
     ~NavBar();
 
     int      addPage(QWidget *page);

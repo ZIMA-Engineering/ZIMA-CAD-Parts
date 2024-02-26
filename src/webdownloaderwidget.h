@@ -10,21 +10,21 @@ class WebDownloaderWidget;
 
 class WebDownloaderWidget : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit WebDownloaderWidget(QWebEngineDownloadRequest *download, QWidget *parent = 0);
-	~WebDownloaderWidget();
+    explicit WebDownloaderWidget(QWebEngineDownloadRequest *download, QWidget *parent = 0);
+    ~WebDownloaderWidget();
 
 private:
-	Ui::WebDownloaderWidget *ui;
+    Ui::WebDownloaderWidget *ui;
 
-	QWebEngineDownloadRequest *m_download;
+    QWebEngineDownloadRequest *m_download;
 
 private slots:
-	void stateChange(QWebEngineDownloadRequest::DownloadState state);
-	void abort();
-	void downloadProgress(qint64 received, qint64 total);
+    void stateChange(QWebEngineDownloadRequest::DownloadState state);
+    void abort();
+    void downloadProgress(qint64 received, qint64 total);
 
 };
 

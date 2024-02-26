@@ -29,61 +29,61 @@
 
 
 FiltersDialog::FiltersDialog(QWidget *parent) :
-	QDialog(parent),
-	ui(new Ui::FiltersDialog)
+    QDialog(parent),
+    ui(new Ui::FiltersDialog)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	int cnt = Settings::get()->FilterGroups.count();
-	for(int i = 0; i < cnt; i++)
-	{
-		ui->treeWidget->addTopLevelItem(Settings::get()->FilterGroups[i].widget());
-		ui->listWidget->addItem(Settings::get()->FilterGroups[i].label);
-	}
+    int cnt = Settings::get()->FilterGroups.count();
+    for(int i = 0; i < cnt; i++)
+    {
+        ui->treeWidget->addTopLevelItem(Settings::get()->FilterGroups[i].widget());
+        ui->listWidget->addItem(Settings::get()->FilterGroups[i].label);
+    }
 
-	ui->treeWidget->expandAll();
-	ui->treeWidget->setFocus();
+    ui->treeWidget->expandAll();
+    ui->treeWidget->setFocus();
 
-	connect(ui->listWidget, SIGNAL(currentRowChanged(int)),
-	        this, SLOT(listWidget_currentRowChanged(int)));
-	connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-	        this, SLOT(treeWidget_currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    connect(ui->listWidget, SIGNAL(currentRowChanged(int)),
+            this, SLOT(listWidget_currentRowChanged(int)));
+    connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+            this, SLOT(treeWidget_currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 }
 
 FiltersDialog::~FiltersDialog()
 {
-	delete ui;
+    delete ui;
 }
 
 void FiltersDialog::accept()
 {
-	int cnt = Settings::get()->FilterGroups.count();
+    int cnt = Settings::get()->FilterGroups.count();
 
-	for(int i = 0; i < cnt; i++)
-		Settings::get()->FilterGroups[i].apply();
+    for(int i = 0; i < cnt; i++)
+        Settings::get()->FilterGroups[i].apply();
 
-	Settings::get()->recalculateFilters();
-	QDialog::accept();
+    Settings::get()->recalculateFilters();
+    QDialog::accept();
 }
 
 void FiltersDialog::listWidget_currentRowChanged(int row)
 {
-	ui->listWidget->blockSignals(true);
-	ui->treeWidget->setCurrentItem(Settings::get()->FilterGroups[row].currentItem());
-	ui->listWidget->blockSignals(false);
+    ui->listWidget->blockSignals(true);
+    ui->treeWidget->setCurrentItem(Settings::get()->FilterGroups[row].currentItem());
+    ui->listWidget->blockSignals(false);
 }
 
 void FiltersDialog::treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
-	if (!current)
-		return;
+    if (!current)
+        return;
 
-	ui->listWidget->blockSignals(true);
-	QTreeWidgetItem *parent = current->parent();
-	if (!parent)
-		parent = current;
+    ui->listWidget->blockSignals(true);
+    QTreeWidgetItem *parent = current->parent();
+    if (!parent)
+        parent = current;
 
-	int ix = ui->treeWidget->indexOfTopLevelItem(parent);
-	ui->listWidget->setCurrentRow(ix);
-	ui->listWidget->blockSignals(false);
+    int ix = ui->treeWidget->indexOfTopLevelItem(parent);
+    ui->listWidget->setCurrentRow(ix);
+    ui->listWidget->blockSignals(false);
 }

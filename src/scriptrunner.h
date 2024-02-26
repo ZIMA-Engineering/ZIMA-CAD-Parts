@@ -7,20 +7,20 @@
 
 class ScriptRunner : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit ScriptRunner(const QString &dsPath, QObject *parent = nullptr);
-	void run(const QFileInfo &script, const QFileInfo &dir);
+    explicit ScriptRunner(const QString &dsPath, QObject *parent = nullptr);
+    void run(const QFileInfo &script, const QFileInfo &dir);
 
 private:
-	QString m_dsPath;
+    QString m_dsPath;
 
 private slots:
-	void onScriptStarted(const QFileInfo &script, QProcess *process);
-	void onScriptError(const QFileInfo &script, QProcess *process,
-					   QProcess::ProcessError error);
-	void onScriptFinished(const QFileInfo &script, QProcess *process,
-						  int exitCode, QProcess::ExitStatus exitStatus);
+    void onScriptStarted(const QFileInfo &script, QProcess *process);
+    void onScriptError(const QFileInfo &script, QProcess *process,
+                       QProcess::ProcessError error);
+    void onScriptFinished(const QFileInfo &script, QProcess *process,
+                          int exitCode, QProcess::ExitStatus exitStatus);
 };
 
 #endif // SCRIPTRUNNER_H

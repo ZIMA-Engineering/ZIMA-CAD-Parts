@@ -6,133 +6,133 @@
 #include <QDebug>
 
 PtrReaderThread::PtrReaderThread(QFileInfoList partList) :
-	m_partList(partList)
+    m_partList(partList)
 {
 
 }
 
 void PtrReaderThread::run()
 {
-	QList<int> fileTypes;
-	fileTypes << FileType::ASM
-			  << FileType::DRW
-			  << FileType::PRT_PROE;
+    QList<int> fileTypes;
+    fileTypes << FileType::ASM
+              << FileType::DRW
+              << FileType::PRT_PROE;
 
-	foreach (const QFileInfo &fi, m_partList)
-	{
-		if (isInterruptionRequested())
-			return;
+    foreach (const QFileInfo &fi, m_partList)
+    {
+        if (isInterruptionRequested())
+            return;
 
-		FileMetadata fm(fi);
+        FileMetadata fm(fi);
 
-		if (!fileTypes.contains(fm.type))
-			continue;
+        if (!fileTypes.contains(fm.type))
+            continue;
 
-		qDebug() << "Parsing prt file" << fi.absoluteFilePath();
-		parseFile(fi);
-	}
+        qDebug() << "Parsing prt file" << fi.absoluteFilePath();
+        parseFile(fi);
+    }
 }
 
 void PtrReaderThread::parseFile(const QFileInfo &fi)
 {
-	QFile f(fi.absoluteFilePath());
-	f.open(QIODevice::ReadOnly);
-	QTextStream s(&f);
+    QFile f(fi.absoluteFilePath());
+    f.open(QIODevice::ReadOnly);
+    QTextStream s(&f);
 
-	while (!s.atEnd())
-	{
-		QString line = s.readLine();
+    while (!s.atEnd())
+    {
+        QString line = s.readLine();
 
-		if (!line.startsWith("description") || line.startsWith("descriptions"))
-			continue;
+        if (!line.startsWith("description") || line.startsWith("descriptions"))
+            continue;
 
-		// some all-used separator or whatever. It seems it does not have any meaning
-		line = line.replace("\xEF\xBF\xBD", "");
-		// another all-arround used value
-		line = line.replace("\x00", "");
-		// then it seems like key and value is separated by "\x15"
-		QStringList l = line.split("\x15");
-		//qDebug() << l;
-		QStringListIterator it(l);
-		while (it.hasNext())
-		{
-			QString s = it.next();
-			// \r is another strange char. It seems it used in all user defined attributes
-			s = s.replace(QRegularExpression("^.+\\r"), "");
-			QStringList vals = s.split("'");
-			if (vals.size() != 2)
-			{
-				qWarning() << "attribute unexpected:" << s << vals << "it needs to be split";
-				continue;
-			}
-			// user defined attributes are uppercased ASCII chars only
-			QString key = vals[0].replace(QRegularExpression("[^A-Z]"), "");
-			if (key.isEmpty())
-			{
-				qDebug() << "key is empty, skipping:" << s;
-				continue;
-			} else {
-				qDebug() << "found key:" << key;
-			}
+        // some all-used separator or whatever. It seems it does not have any meaning
+        line = line.replace("\xEF\xBF\xBD", "");
+        // another all-arround used value
+        line = line.replace("\x00", "");
+        // then it seems like key and value is separated by "\x15"
+        QStringList l = line.split("\x15");
+        //qDebug() << l;
+        QStringListIterator it(l);
+        while (it.hasNext())
+        {
+            QString s = it.next();
+            // \r is another strange char. It seems it used in all user defined attributes
+            s = s.replace(QRegularExpression("^.+\\r"), "");
+            QStringList vals = s.split("'");
+            if (vals.size() != 2)
+            {
+                qWarning() << "attribute unexpected:" << s << vals << "it needs to be split";
+                continue;
+            }
+            // user defined attributes are uppercased ASCII chars only
+            QString key = vals[0].replace(QRegularExpression("[^A-Z]"), "");
+            if (key.isEmpty())
+            {
+                qDebug() << "key is empty, skipping:" << s;
+                continue;
+            } else {
+                qDebug() << "found key:" << key;
+            }
 
-			QString val = vals[1].split("\x14")[0];
-			val.chop(1);
-			val.remove(0,2);
-			qDebug() << "    value:" << val << (val.isEmpty() ? "skipping" : "will be used") << "; original:" << vals[1];
+            QString val = vals[1].split("\x14")[0];
+            val.chop(1);
+            val.remove(0,2);
+            qDebug() << "    value:" << val << (val.isEmpty() ? "skipping" : "will be used") << "; original:" << vals[1];
 
-			// try to find metadata.ini index
-			QString fname = fi.fileName();
-			QString key1 = key.toLower();
+            // try to find metadata.ini index
+            QString fname = fi.fileName();
+            QString key1 = key.toLower();
 
-			emit partParam(fname, key1, val);
-		}
+            emit partParam(fname, key1, val);
+        }
 
-		break;
-	}
+        break;
+    }
 }
 
 PrtReader::PrtReader(QObject *parent)
-	: QObject(parent),
-	  m_thread(nullptr)
+    : QObject(parent),
+      m_thread(nullptr)
 {
 
 }
 
 bool PrtReader::isRunning() const
 {
-	return m_thread != nullptr;
+    return m_thread != nullptr;
 }
 
 void PrtReader::load(const QString &dir, const QFileInfoList &partList)
 {
-	if (isRunning())
-		stop();
+    if (isRunning())
+        stop();
 
-	m_dir = dir;
-	m_thread = new PtrReaderThread(partList);
-	connect(m_thread, SIGNAL(partParam(QString,QString,QString)),
-			this, SLOT(setPartParam(QString,QString,QString)));
-	m_thread->start();
+    m_dir = dir;
+    m_thread = new PtrReaderThread(partList);
+    connect(m_thread, SIGNAL(partParam(QString,QString,QString)),
+            this, SLOT(setPartParam(QString,QString,QString)));
+    m_thread->start();
 }
 
 void PrtReader::stop()
 {
-	if (isRunning())
-	{
-		disconnect(m_thread, SIGNAL(partParam(QString,QString,QString)),
-				   this, SLOT(setPartParam(QString,QString,QString)));
+    if (isRunning())
+    {
+        disconnect(m_thread, SIGNAL(partParam(QString,QString,QString)),
+                   this, SLOT(setPartParam(QString,QString,QString)));
 
-		m_thread->requestInterruption();
-		m_thread->wait();
-		m_thread->deleteLater();
-		m_thread = nullptr;
-	}
+        m_thread->requestInterruption();
+        m_thread->wait();
+        m_thread->deleteLater();
+        m_thread = nullptr;
+    }
 }
 
 void PrtReader::setPartParam(const QString &part, const QString &param, const QString &value)
 {
-	Metadata *m = MetadataCache::get()->metadata(m_dir);
+    Metadata *m = MetadataCache::get()->metadata(m_dir);
 
-	if (m->parameterHandles().contains(param))
-		m->setPartParam(part, param, value);
+    if (m->parameterHandles().contains(param))
+        m->setPartParam(part, param, value);
 }

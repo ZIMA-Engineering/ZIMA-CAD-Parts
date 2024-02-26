@@ -54,81 +54,83 @@ typedef QHash<QString,QString> MetadataVersionsMap;
  */
 class Metadata : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit Metadata(const QString &path, QObject *parent = 0);
-	~Metadata();
+    explicit Metadata(const QString &path, QObject *parent = 0);
+    ~Metadata();
 
-	//! Label for current directory (tree)
-	QString getLabel();
-	QString getLabel(const QString &lang);
+    //! Label for current directory (tree)
+    QString getLabel();
+    QString getLabel(const QString &lang);
 
-	void setLabel(const QString &lang, const QString &newLabel);
+    void setLabel(const QString &lang, const QString &newLabel);
 
-	Qt::SortOrder sortOrder() const;
-	void setSortOrder(Qt::SortOrder sortOrder);
+    Qt::SortOrder sortOrder() const;
+    void setSortOrder(Qt::SortOrder sortOrder);
 
-	bool showDirectoriesAsParts() const;
-	void setShowDirectoriesAsParts(bool enabled);
+    bool showDirectoriesAsParts() const;
+    void setShowDirectoriesAsParts(bool enabled);
 
-	QStringList parameterHandles();
-	void setParameterHandles(const QStringList &handles);
+    QStringList parameterHandles();
+    void setParameterHandles(const QStringList &handles);
 
-	//! Labels for FileModel
-	QStringList parameterLabels();
-	QStringList parameterLabels(const QString &lang);
-	QHash<QString, QString> parametersWithLabels(const QString &lang);
+    //! Labels for FileModel
+    QStringList parameterLabels();
+    QStringList parameterLabels(const QString &lang);
+    QHash<QString, QString> parametersWithLabels(const QString &lang);
 
-	void setParameterLabel(const QString &param, const QString &lang, const QString &value);
-	void renameParameter(const QString &handle, const QString &newHandle);
-	void removeParameter(const QString &handle);
+    void setParameterLabel(const QString &param, const QString &lang, const QString &value);
+    void renameParameter(const QString &handle, const QString &newHandle);
+    void removeParameter(const QString &handle);
 
-	//! Value for FileModel
-	QString partParam(const QString &partName, const QString &param);
-	QString partParam(const QString &partName, int index);
+    //! Value for FileModel
+    QString partParam(const QString &partName, const QString &param);
+    QString partParam(const QString &partName, int index);
 
     //! Set new value for given param
-	void setPartParam(const QString &partName, const QString &param, const QString &value);
+    void setPartParam(const QString &partName, const QString &param, const QString &value);
 
-	void deletePart(const QString &part);
-	void renamePart(const QString &oldPart, const QString &newPart);
+    void deletePart(const QString &part);
+    void renamePart(const QString &oldPart, const QString &newPart);
 
-	void pruneParts();
+    void pruneParts();
 
-	/*! Load part versions.
-	 * Implementation: list name-ordered directory and use only the latest
-	 * file name for its completeBaseName
-	 */
-	MetadataVersionsMap partVersions();
-	void clearPartVersions();
+    /*! Load part versions.
+     * Implementation: list name-ordered directory and use only the latest
+     * file name for its completeBaseName
+     */
+    MetadataVersionsMap partVersions();
+    void clearPartVersions();
 
-	QList<Metadata*> dataIncludes();
-	QList<Metadata*> thumbnailIncludes();
-	QString path() { return m_path; }
+    QList<Metadata*> dataIncludes();
+    QList<Metadata*> thumbnailIncludes();
+    QString path() {
+        return m_path;
+    }
 
 private:
-	QSettings *m_settings;
+    QSettings *m_settings;
 
-	QString m_path;
-	QStringList m_dataIncludes;
-	QStringList m_thumbIncludes;
-	int m_loadedIncludes;
-	QStringList m_parameterLabels;
-	QString label;
+    QString m_path;
+    QStringList m_dataIncludes;
+    QStringList m_thumbIncludes;
+    int m_loadedIncludes;
+    QStringList m_parameterLabels;
+    QString label;
 
-	MetadataVersionsMap m_versionsCache;
+    MetadataVersionsMap m_versionsCache;
 
-	void setup();
-	int version();
-	bool isEmpty();
-	QString buildIncludePath(const QString &raw);
-	QStringList buildIncludePaths(const QStringList &raw);
-	bool partVersionType(FileType::FileType t, const QFileInfo &fi);
-	void rename(const QString &oldName, const QString &newName);
-	void recursiveRename(const QString &path, QHash<QString, QVariant> &settings);
-	QList<Metadata*> includedMetadatas(QStringList paths);
-	Qt::SortOrder sortOrderFromString(const QString &sortOrder) const;
-	QString sortOrderToString(Qt::SortOrder sortOrder) const;
+    void setup();
+    int version();
+    bool isEmpty();
+    QString buildIncludePath(const QString &raw);
+    QStringList buildIncludePaths(const QStringList &raw);
+    bool partVersionType(FileType::FileType t, const QFileInfo &fi);
+    void rename(const QString &oldName, const QString &newName);
+    void recursiveRename(const QString &path, QHash<QString, QVariant> &settings);
+    QList<Metadata*> includedMetadatas(QStringList paths);
+    Qt::SortOrder sortOrderFromString(const QString &sortOrder) const;
+    QString sortOrderToString(Qt::SortOrder sortOrder) const;
 };
 
 /*! An access singleton to the Metadata cache.
@@ -137,51 +139,51 @@ private:
  */
 class MetadataCache : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
 
-	//! The main access method to Metadata
-	static MetadataCache *get();
+    //! The main access method to Metadata
+    static MetadataCache *get();
 
-	bool showLabel(const QString &path);
-	QString label(const QString &path);
-	Qt::SortOrder sortOrder(const QString &path);
-	bool showDirectoriesAsParts(const QString &path);
-	QStringList parameterHandles(const QString &path);
-	QStringList parameterLabels(const QString &path);
-	QString partParam(const QString &path, const QString &fname, const QString &param);
-	QString partParam(const QString &path, const QString &fname, int index);
-	MetadataVersionsMap partVersions(const QString &path);
-	void clearPartVersions(const QString &path);
-	void deletePart(const QString &path, const QString &part);
-	void renamePart(const QString &path, const QString &oldPart, const QString &newPart);
-	void pruneParts(const QString &path);
+    bool showLabel(const QString &path);
+    QString label(const QString &path);
+    Qt::SortOrder sortOrder(const QString &path);
+    bool showDirectoriesAsParts(const QString &path);
+    QStringList parameterHandles(const QString &path);
+    QStringList parameterLabels(const QString &path);
+    QString partParam(const QString &path, const QString &fname, const QString &param);
+    QString partParam(const QString &path, const QString &fname, int index);
+    MetadataVersionsMap partVersions(const QString &path);
+    void clearPartVersions(const QString &path);
+    void deletePart(const QString &path, const QString &part);
+    void renamePart(const QString &path, const QString &oldPart, const QString &newPart);
+    void pruneParts(const QString &path);
     Metadata* metadata(const QString &path);
 
 signals:
-	//! Emitted when is the cache content invalidated. All dependent objects should reset themself.
-	void cleared();
+    //! Emitted when is the cache content invalidated. All dependent objects should reset themself.
+    void cleared();
 
 public slots:
-	void clear();
-	void clear(const QString &path);
-	void clearBelow(const QString &path);
+    void clear();
+    void clear(const QString &path);
+    void clearBelow(const QString &path);
 
 private:
-	//! Singleton handling
-	static MetadataCache *m_instance;
-	QMutex m_mutex;
+    //! Singleton handling
+    static MetadataCache *m_instance;
+    QMutex m_mutex;
 
-	MetadataCache();
-	//MetadataCache(const MetadataCache &) {};
-	~MetadataCache();
+    MetadataCache();
+    //MetadataCache(const MetadataCache &) {};
+    ~MetadataCache();
 
-	QHash<QString,Metadata*> m_map;
+    QHash<QString,Metadata*> m_map;
 
-	Metadata* load(const QString &path);
-	Metadata* get(const QString &path);
-	void enter();
-	void leave();
+    Metadata* load(const QString &path);
+    Metadata* get(const QString &path);
+    void enter();
+    void leave();
 };
 
 #endif // METADATA_H

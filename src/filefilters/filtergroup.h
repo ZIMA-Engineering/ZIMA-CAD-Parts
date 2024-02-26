@@ -10,22 +10,22 @@ class FileFilter;
 class FilterGroup
 {
 public:
-	FilterGroup(QString internalName, QString label) : label(label), internalName(internalName), enabled(0) {}
-	FilterGroup& operator<<(FileFilter* f);
-	QTreeWidgetItem* widget();
-	void apply();
+    FilterGroup(QString internalName, QString label) : label(label), internalName(internalName), enabled(0) {}
+    FilterGroup& operator<<(FileFilter* f);
+    QTreeWidgetItem* widget();
+    void apply();
 
-	QTreeWidgetItem* currentItem() {
-		return item;
-	}
+    QTreeWidgetItem* currentItem() {
+        return item;
+    }
 
-	QString label;
-	QString internalName;
-	QList<FileFilter*> filters;
-	bool enabled;
+    QString label;
+    QString internalName;
+    QList<FileFilter*> filters;
+    bool enabled;
 
 private:
-	QTreeWidgetItem *item;
+    QTreeWidgetItem *item;
 };
 
 #endif // FILTERGROUP_H

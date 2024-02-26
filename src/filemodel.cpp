@@ -33,119 +33,119 @@
 #include "prtreader.h"
 
 FileModel::FileModel(QObject *parent) :
-	QAbstractItemModel(parent)
+    QAbstractItemModel(parent)
 {
-	m_iconProvider = new FileIconProvider();
+    m_iconProvider = new FileIconProvider();
     m_thumb = new ThumbnailManager(this);
-	m_prtReader = new PrtReader(this);
+    m_prtReader = new PrtReader(this);
     connect(m_thumb, SIGNAL(updateModel()), this, SLOT(updateThumbnails()));
-	connect(PartCache::get(), SIGNAL(cleared(QString)),
-			this, SLOT(directoryCleared(QString)));
-	connect(PartCache::get(), SIGNAL(directoryRenamed(QString,QString)),
-			this, SLOT(directoryRenamed(QString,QString)));
-	connect(PartCache::get(), SIGNAL(directoryChanged(QString)),
-			this, SLOT(directoryChanged(QString)));
+    connect(PartCache::get(), SIGNAL(cleared(QString)),
+            this, SLOT(directoryCleared(QString)));
+    connect(PartCache::get(), SIGNAL(directoryRenamed(QString,QString)),
+            this, SLOT(directoryRenamed(QString,QString)));
+    connect(PartCache::get(), SIGNAL(directoryChanged(QString)),
+            this, SLOT(directoryChanged(QString)));
 }
 
 FileModel::~FileModel()
 {
-	delete m_iconProvider;
+    delete m_iconProvider;
 }
 
 QModelIndex FileModel::index(int row, int column,
                              const QModelIndex &parent) const
 {
-	Q_UNUSED(parent);
-	return createIndex(row, column);
+    Q_UNUSED(parent);
+    return createIndex(row, column);
 }
 
 QModelIndex FileModel::parent(const QModelIndex &child) const
 {
-	Q_UNUSED(child);
-	return QModelIndex();
+    Q_UNUSED(child);
+    return QModelIndex();
 }
 
 int FileModel::columnCount(const QModelIndex & parent) const
 {
-	Q_UNUSED(parent);
-	return m_columnLabels.count();
+    Q_UNUSED(parent);
+    return m_columnLabels.count();
 }
 
 int FileModel::rowCount(const QModelIndex & parent) const
 {
-	if (!parent.column()) return 0;
-	return PartCache::get()->count(m_path);
+    if (!parent.column()) return 0;
+    return PartCache::get()->count(m_path);
 }
 
 QVariant FileModel::data(const QModelIndex &index, int role) const
 {
-	auto pc = PartCache::get();
+    auto pc = PartCache::get();
 
-	if (!index.isValid() || m_path.isEmpty() || !pc->count(m_path))
-		return QVariant();
+    if (!index.isValid() || m_path.isEmpty() || !pc->count(m_path))
+        return QVariant();
 
-	QFileInfo part = pc->partAt(m_path, index.row());
-	const int col = index.column();
+    QFileInfo part = pc->partAt(m_path, index.row());
+    const int col = index.column();
 
-	// first handle standard QFileSystemModel data
-	if (col == 0 && role == Qt::CheckStateRole)
-	{
-		return PartSelector::get()->isSelected(
-			m_path,
-			part.absoluteFilePath()
-		);
-	}
-	else if (col == 0 && role == Qt::DisplayRole)
-	{
-		return part.fileName();
-	}
-	else if (col == 0 && role == Qt::DecorationRole)
-	{
-		return m_iconProvider->icon(part);
-	}
-	// custom columns:
-	// thumbnail
-	else if (col == 1)
-	{
-		QString key(part.baseName());
-		switch( role )
-		{
-		case Qt::DecorationRole:
+    // first handle standard QFileSystemModel data
+    if (col == 0 && role == Qt::CheckStateRole)
+    {
+        return PartSelector::get()->isSelected(
+                   m_path,
+                   part.absoluteFilePath()
+               );
+    }
+    else if (col == 0 && role == Qt::DisplayRole)
+    {
+        return part.fileName();
+    }
+    else if (col == 0 && role == Qt::DecorationRole)
+    {
+        return m_iconProvider->icon(part);
+    }
+    // custom columns:
+    // thumbnail
+    else if (col == 1)
+    {
+        QString key(part.baseName());
+        switch( role )
+        {
+        case Qt::DecorationRole:
         {
             // TODO/FIXME: this is quite slow. Think about optimization
-			FileMetadata m(part);
+            FileMetadata m(part);
             // generate thumbnail for image files
             if (m.type == FileType::FILE_IMAGE)
             {
-				return QPixmap(m.fileInfo.absoluteFilePath()).scaled(
-					Settings::get()->GUIThumbWidth,
-					Settings::get()->GUIThumbWidth,
-					Qt::KeepAspectRatio
-				);
+                return QPixmap(m.fileInfo.absoluteFilePath()).scaled(
+                           Settings::get()->GUIThumbWidth,
+                           Settings::get()->GUIThumbWidth,
+                           Qt::KeepAspectRatio
+                       );
             }
             else
-				return m_thumb->thumbnail(part);
-			break;
+                return m_thumb->thumbnail(part);
+            break;
         }
-		case Qt::SizeHintRole:
+        case Qt::SizeHintRole:
             return QSize(Settings::get()->GUIThumbWidth,
                          Settings::get()->GUIThumbWidth);
             break;
-		case Qt::ToolTipRole:
-			return m_thumb->tooltip(part);
-			break;
-		}
-	} // additional metadata
-	else if (role == Qt::DisplayRole && col > 1)
-	{
-		return MetadataCache::get()->partParam(
-			m_path,
-			part.fileName(),
-			m_parameterHandles[col - 2]
-		);
-	}
+        case Qt::ToolTipRole:
+            return m_thumb->tooltip(part);
+            break;
+        }
+    } // additional metadata
+    else if (role == Qt::DisplayRole && col > 1)
+    {
+        return MetadataCache::get()->partParam(
+                   m_path,
+                   part.fileName(),
+                   m_parameterHandles[col - 2]
+               );
+    }
 
-	return QVariant();
+    return QVariant();
 }
 
 void FileModel::updateThumbnails()
@@ -157,332 +157,332 @@ void FileModel::updateThumbnails()
 
 QFileInfo FileModel::fileInfo(const QModelIndex &ix)
 {
-	return PartCache::get()->partAt(m_path, ix.row());
+    return PartCache::get()->partAt(m_path, ix.row());
 }
 
 QFileInfoList FileModel::fileInfoList()
 {
-	return PartCache::get()->parts(m_path);
+    return PartCache::get()->parts(m_path);
 }
 
 void FileModel::setupColumns(const QString &path)
 {
-	m_columnLabels.clear();
-	m_columnLabels << tr("Part name") << "Thumbnail";
-	m_columnLabels << MetadataCache::get()->parameterLabels(path);
+    m_columnLabels.clear();
+    m_columnLabels << tr("Part name") << "Thumbnail";
+    m_columnLabels << MetadataCache::get()->parameterLabels(path);
 
-	m_parameterHandles = MetadataCache::get()->parameterHandles(path);
+    m_parameterHandles = MetadataCache::get()->parameterHandles(path);
 }
 
 void FileModel::directoryCleared(const QString &dir)
 {
-	if (dir == m_path)
-		refreshModel();
+    if (dir == m_path)
+        refreshModel();
 }
 
 void FileModel::directoryRenamed(const QString &oldName, const QString &newName)
 {
-	if (oldName == m_path)
-		m_path = newName;
+    if (oldName == m_path)
+        m_path = newName;
 }
 
 void FileModel::directoryChanged(const QString &dir)
 {
-	if (dir == m_path)
-		refreshModel();
+    if (dir == m_path)
+        refreshModel();
 }
 
 Qt::ItemFlags FileModel::flags(const QModelIndex& index) const
 {
-	int col = index.column();
-	int flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+    int col = index.column();
+    int flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
 
-	if (col > 1)
-		flags |= Qt::ItemIsEditable;
-	else if (col == 0)
-		flags |= Qt::ItemIsDragEnabled;
+    if (col > 1)
+        flags |= Qt::ItemIsEditable;
+    else if (col == 0)
+        flags |= Qt::ItemIsDragEnabled;
 
-	return (Qt::ItemFlag) flags;
+    return (Qt::ItemFlag) flags;
 }
 
 QStringList FileModel::mimeTypes() const
 {
-	return QStringList() << "text/uri-list";
+    return QStringList() << "text/uri-list";
 }
 
 QMimeData *FileModel::mimeData(const QModelIndexList &indexes) const
 {
-	QMimeData *mimeData = new QMimeData();
-	QList<QUrl> urls;
-	auto pc = PartCache::get();
-	auto selector = PartSelector::get();
-	auto it = selector->allSelectedIterator();
+    QMimeData *mimeData = new QMimeData();
+    QList<QUrl> urls;
+    auto pc = PartCache::get();
+    auto selector = PartSelector::get();
+    auto it = selector->allSelectedIterator();
 
-	foreach (const QModelIndex &idx, indexes) {
-		if (!idx.isValid())
-			continue;
+    foreach (const QModelIndex &idx, indexes) {
+        if (!idx.isValid())
+            continue;
 
-		QFileInfo part = pc->partAt(m_path, idx.row());
-		urls << QUrl::fromLocalFile(part.absoluteFilePath());
-	}
+        QFileInfo part = pc->partAt(m_path, idx.row());
+        urls << QUrl::fromLocalFile(part.absoluteFilePath());
+    }
 
-	while (it.hasNext()) {
-		it.next();
+    while (it.hasNext()) {
+        it.next();
 
-		QStringList parts = it.value();
+        QStringList parts = it.value();
 
-		foreach (const QString &part, parts) {
-			QUrl url = QUrl::fromLocalFile(part);
+        foreach (const QString &part, parts) {
+            QUrl url = QUrl::fromLocalFile(part);
 
-			if (!urls.contains(url))
-				urls << url;
-		}
-	}
+            if (!urls.contains(url))
+                urls << url;
+        }
+    }
 
-	selector->clear();
+    selector->clear();
 
-	mimeData->setUrls(urls);
-	return mimeData;
+    mimeData->setUrls(urls);
+    return mimeData;
 }
 
 bool FileModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-	QFileInfo part = fileInfo(index);
+    QFileInfo part = fileInfo(index);
 
-	if (role == Qt::CheckStateRole)
-	{
-		PartSelector::get()->toggle(
-			m_path,
-			part.absoluteFilePath()
-		);
+    if (role == Qt::CheckStateRole)
+    {
+        PartSelector::get()->toggle(
+            m_path,
+            part.absoluteFilePath()
+        );
 
-		emit dataChanged(index, index);
-		return true;
+        emit dataChanged(index, index);
+        return true;
 
-	} else if (role == Qt::EditRole && index.column() > 1) {
-		MetadataCache::get()->metadata(m_path)->setPartParam(
-			part.fileName(),
-			m_parameterHandles[ index.column() - 2 ],
-			value.toString()
-		);
+    } else if (role == Qt::EditRole && index.column() > 1) {
+        MetadataCache::get()->metadata(m_path)->setPartParam(
+            part.fileName(),
+            m_parameterHandles[ index.column() - 2 ],
+            value.toString()
+        );
 
-		emit dataChanged(index, index);
-		return true;
-	}
+        emit dataChanged(index, index);
+        return true;
+    }
 
-	return QAbstractItemModel::setData(index, value, role);
+    return QAbstractItemModel::setData(index, value, role);
 }
 
 QVariant FileModel::headerData (int section, Qt::Orientation orientation, int role) const
 {
-	if( role != Qt::DisplayRole || orientation != Qt::Horizontal || !m_columnLabels.size())
-		return QVariant();
+    if( role != Qt::DisplayRole || orientation != Qt::Horizontal || !m_columnLabels.size())
+        return QVariant();
 
-	return m_columnLabels[section];
+    return m_columnLabels[section];
 }
 
 void FileModel::setDirectory(const QString &path)
 {
-	// this has to go before path != m_path check to reload the header translations
-	setupColumns(path);
+    // this has to go before path != m_path check to reload the header translations
+    setupColumns(path);
 
-	if (path != m_path)
-	{
-		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    if (path != m_path)
+    {
+        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-		m_thumb->setPath(path);
-		m_prtReader->stop();
-		m_path = path;
+        m_thumb->setPath(path);
+        m_prtReader->stop();
+        m_path = path;
 
-		beginResetModel();
-		endResetModel();
+        beginResetModel();
+        endResetModel();
 
-		QApplication::restoreOverrideCursor();
-	}
+        QApplication::restoreOverrideCursor();
+    }
 
-	// simulating "directory loaded" signal even when is the path the
-	// same as before to recalculate the column sizes in view
-	emit directoryLoaded(m_path);
+    // simulating "directory loaded" signal even when is the path the
+    // same as before to recalculate the column sizes in view
+    emit directoryLoaded(m_path);
 }
 
 void FileModel::refreshModel()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	beginResetModel();
-	endResetModel();
+    beginResetModel();
+    endResetModel();
 
-	QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
 }
 
 void FileModel::reloadParts()
 {
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	PartCache::get()->refresh(m_path);
+    PartCache::get()->refresh(m_path);
 
-	setupColumns(m_path);
-	m_thumb->clear();
-	m_prtReader->load(m_path, fileInfoList());
+    setupColumns(m_path);
+    m_thumb->clear();
+    m_prtReader->load(m_path, fileInfoList());
 
-	QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
 }
 
 void FileModel::settingsChanged()
 {
-	//setDirectory(m_path);
+    //setDirectory(m_path);
 }
 
 
 void FileModel::moveParts(FileMover *mv)
 {
-	QFileInfoList moveList;
-	QStringList clearList;
-	auto selector = PartSelector::get();
-	auto pc = PartCache::get();
-	auto it = selector->allSelectedIterator();
+    QFileInfoList moveList;
+    QStringList clearList;
+    auto selector = PartSelector::get();
+    auto pc = PartCache::get();
+    auto it = selector->allSelectedIterator();
 
-	while (it.hasNext())
-	{
-		it.next();
+    while (it.hasNext())
+    {
+        it.next();
 
-		QString dir = it.key();
-		QStringList parts = it.value();
+        QString dir = it.key();
+        QStringList parts = it.value();
 
-		foreach (const QString &fname, parts)
-		{
-			QFileInfo fi(fname);
+        foreach (const QString &fname, parts)
+        {
+            QFileInfo fi(fname);
 
-			if (!Settings::get()->ShowProeVersions
-					&& MetadataCache::get()->partVersions(m_path).contains(fi.completeBaseName()))
-			{
-				// When moving Pro/E files, we need to find all part versions
-				QDir d(m_path);
-				moveList << d.entryInfoList(
-					QStringList() << (fi.completeBaseName() + ".*")
-				);
+            if (!Settings::get()->ShowProeVersions
+                    && MetadataCache::get()->partVersions(m_path).contains(fi.completeBaseName()))
+            {
+                // When moving Pro/E files, we need to find all part versions
+                QDir d(m_path);
+                moveList << d.entryInfoList(
+                             QStringList() << (fi.completeBaseName() + ".*")
+                         );
 
-			} else {
-				moveList << fi;
-			}
+            } else {
+                moveList << fi;
+            }
 
-			if (fi.isDir())
-				MetadataCache::get()->clear(fname);
+            if (fi.isDir())
+                MetadataCache::get()->clear(fname);
 
-			MetadataCache::get()->deletePart(m_path, fi.baseName());
-		}
+            MetadataCache::get()->deletePart(m_path, fi.baseName());
+        }
 
-		clearList << dir;
-	}
+        clearList << dir;
+    }
 
-	foreach (const QFileInfo &fi, moveList)
-		mv->addSourceFile(fi);
+    foreach (const QFileInfo &fi, moveList)
+        mv->addSourceFile(fi);
 
-	mv->setDestination(Settings::get()->getWorkingDir());
-	mv->work();
+    mv->setDestination(Settings::get()->getWorkingDir());
+    mv->work();
 
-	selector->clear();
+    selector->clear();
 
-	foreach (const QString &dir, clearList)
-		pc->clear(dir);
+    foreach (const QString &dir, clearList)
+        pc->clear(dir);
 
-	pc->clear(Settings::get()->getWorkingDir());
+    pc->clear(Settings::get()->getWorkingDir());
 }
 
 
 void FileModel::deleteParts(DirectoryRemover *rm)
 {
-	// TODO: this code basically ignores all errors, so we delete metadata
-	// of parts that are still on disk, e.g. because ZCP does not have permissions
-	// to delete them. Undeleted parts are also unchecked. Errors are reported to
-	// the user though via QMessageBox.
+    // TODO: this code basically ignores all errors, so we delete metadata
+    // of parts that are still on disk, e.g. because ZCP does not have permissions
+    // to delete them. Undeleted parts are also unchecked. Errors are reported to
+    // the user though via QMessageBox.
 
-	QFileInfoList deleteList;
-	QStringList clearList;
-	auto selector = PartSelector::get();
-	auto pc = PartCache::get();
-	auto it = selector->allSelectedIterator();
+    QFileInfoList deleteList;
+    QStringList clearList;
+    auto selector = PartSelector::get();
+    auto pc = PartCache::get();
+    auto it = selector->allSelectedIterator();
 
-	while (it.hasNext())
-	{
-		it.next();
+    while (it.hasNext())
+    {
+        it.next();
 
-		QString dir = it.key();
-		QStringList parts = it.value();
+        QString dir = it.key();
+        QStringList parts = it.value();
 
-		foreach (const QString &fname, parts)
-		{
-			QFileInfo fi(fname);
+        foreach (const QString &fname, parts)
+        {
+            QFileInfo fi(fname);
 
-			if (!Settings::get()->ShowProeVersions
-					&& MetadataCache::get()->partVersions(m_path).contains(fi.completeBaseName()))
-			{
-				// When deleting Pro/E files, we need to find all part versions
-				QDir d(m_path);
-				deleteList << d.entryInfoList(
-					QStringList() << (fi.completeBaseName() + ".*")
-				);
+            if (!Settings::get()->ShowProeVersions
+                    && MetadataCache::get()->partVersions(m_path).contains(fi.completeBaseName()))
+            {
+                // When deleting Pro/E files, we need to find all part versions
+                QDir d(m_path);
+                deleteList << d.entryInfoList(
+                               QStringList() << (fi.completeBaseName() + ".*")
+                           );
 
-			} else {
-				deleteList << fi;
-			}
+            } else {
+                deleteList << fi;
+            }
 
-			if (fi.isDir())
-				MetadataCache::get()->clear(fname);
+            if (fi.isDir())
+                MetadataCache::get()->clear(fname);
 
-			MetadataCache::get()->deletePart(m_path, fi.baseName());
-		}
+            MetadataCache::get()->deletePart(m_path, fi.baseName());
+        }
 
-		clearList << dir;
-	}
+        clearList << dir;
+    }
 
-	rm->addFiles(deleteList);
-	rm->setStopOnError(false);
-	rm->work();
+    rm->addFiles(deleteList);
+    rm->setStopOnError(false);
+    rm->work();
 
-	selector->clear();
+    selector->clear();
 
-	foreach (const QString &dir, clearList)
-		pc->clear(dir);
+    foreach (const QString &dir, clearList)
+        pc->clear(dir);
 }
 
 void FileModel::copyToWorkingDir(FileCopier *cp)
 {
-	auto selector = PartSelector::get();
-	auto it = selector->allSelectedIterator();
+    auto selector = PartSelector::get();
+    auto it = selector->allSelectedIterator();
 
-	while (it.hasNext())
-	{
-		it.next();
-		QString key = it.key();
+    while (it.hasNext())
+    {
+        it.next();
+        QString key = it.key();
 
-		// do not copy files from WD into WD
-		if (key == Settings::get()->getWorkingDir())
-		{
-			selector->clear(key);
-			continue;
-		}
+        // do not copy files from WD into WD
+        if (key == Settings::get()->getWorkingDir())
+        {
+            selector->clear(key);
+            continue;
+        }
 
-		foreach (const QString &fname, it.value())
-		{
-			QFileInfo fi(fname);
-			cp->addSourceFile(fi);
+        foreach (const QString &fname, it.value())
+        {
+            QFileInfo fi(fname);
+            cp->addSourceFile(fi);
 
-			QString thumbPath = m_thumb->path(QFileInfo(fi.baseName()));
+            QString thumbPath = m_thumb->path(QFileInfo(fi.baseName()));
 
-			if (!thumbPath.isEmpty())
-				cp->addSourceFile(QFileInfo(thumbPath), THUMBNAILS_DIR);
+            if (!thumbPath.isEmpty())
+                cp->addSourceFile(QFileInfo(thumbPath), THUMBNAILS_DIR);
 
-			selector->clear(key, fname);
-		}
-	}
+            selector->clear(key, fname);
+        }
+    }
 
-	cp->setDestination(Settings::get()->getWorkingDir());
-	cp->setStopOnError(false);
+    cp->setDestination(Settings::get()->getWorkingDir());
+    cp->setStopOnError(false);
 
-	cp->work();
-	selector->clear();
-	PartCache::get()->clear(Settings::get()->getWorkingDir());
+    cp->work();
+    selector->clear();
+    PartCache::get()->clear(Settings::get()->getWorkingDir());
 }
 
 
@@ -492,21 +492,21 @@ FileIconProvider::FileIconProvider()
 
 QIcon FileIconProvider::icon ( IconType type ) const
 {
-	return QFileIconProvider::icon(type);
+    return QFileIconProvider::icon(type);
 }
 
 QIcon FileIconProvider::icon ( const QFileInfo & info ) const
 {
-	FileMetadata fi(info);
-	QString s = QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(fi.type));
+    FileMetadata fi(info);
+    QString s = QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(fi.type));
 
-	if (QFile::exists(s))
-		return QPixmap(s);
+    if (QFile::exists(s))
+        return QPixmap(s);
 
-	return QFileIconProvider().icon(info).pixmap(64);
+    return QFileIconProvider().icon(info).pixmap(64);
 }
 
 QString FileIconProvider::type ( const QFileInfo & info ) const
 {
-	return QFileIconProvider::type(info);
+    return QFileIconProvider::type(info);
 }

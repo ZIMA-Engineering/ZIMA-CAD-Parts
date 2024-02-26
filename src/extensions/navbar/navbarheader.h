@@ -13,8 +13,8 @@ class NavBarHeader: public QLabel
     Q_OBJECT
 
 public:
-	explicit NavBarHeader(QWidget *parent = 0);
-	explicit NavBarHeader(const QString & text, QWidget *parent = 0);
+    explicit NavBarHeader(QWidget *parent = 0);
+    explicit NavBarHeader(const QString & text, QWidget *parent = 0);
 
     QToolButton *button;
 

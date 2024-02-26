@@ -35,19 +35,19 @@ class FiltersDialog;
 
 class FiltersDialog : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit FiltersDialog(QWidget *parent = 0);
-	~FiltersDialog();
-	void accept();
+    explicit FiltersDialog(QWidget *parent = 0);
+    ~FiltersDialog();
+    void accept();
 
 private:
-	Ui::FiltersDialog *ui;
+    Ui::FiltersDialog *ui;
 
 private slots:
-	void listWidget_currentRowChanged(int row);
-	void treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*);
+    void listWidget_currentRowChanged(int row);
+    void treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*);
 };
 
 #endif // FILTERSDIALOG_H

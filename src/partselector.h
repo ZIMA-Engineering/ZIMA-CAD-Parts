@@ -6,24 +6,24 @@
 
 class PartSelector : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	static PartSelector *get();
-	void select(const QString &dir, const QString &partPath);
-	bool isSelected(const QString &dir, const QString &partPath) const;
-	void clear();
-	void clear(const QString &dir);
-	void clear(const QString &dir, const QString &partPath);
-	void toggle(const QString &dir, const QString &partPath);
-	QStringList allSelected() const;
-	QHashIterator<QString, QStringList> allSelectedIterator() const;
+    static PartSelector *get();
+    void select(const QString &dir, const QString &partPath);
+    bool isSelected(const QString &dir, const QString &partPath) const;
+    void clear();
+    void clear(const QString &dir);
+    void clear(const QString &dir, const QString &partPath);
+    void toggle(const QString &dir, const QString &partPath);
+    QStringList allSelected() const;
+    QHashIterator<QString, QStringList> allSelectedIterator() const;
 
 private:
-	static PartSelector *m_instance;
-	QHash<QString, QStringList> m_selected;
+    static PartSelector *m_instance;
+    QHash<QString, QStringList> m_selected;
 
-	PartSelector();
+    PartSelector();
 };
 
 #endif // PARTSELECTOR_H

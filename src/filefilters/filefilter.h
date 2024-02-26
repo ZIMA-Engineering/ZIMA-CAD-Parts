@@ -13,25 +13,25 @@ class FilterGroup;
 class FileFilter
 {
 public:
-	enum FileFilters {
-		Extension,
-		Version
-	};
+    enum FileFilters {
+        Extension,
+        Version
+    };
 
     FileFilter(FileType::FileType type);
-	virtual FileFilters filterType() = 0;
-	virtual void load(QSettings *settings) = 0;
-	virtual void save(QSettings *settings) = 0;
-	virtual QTreeWidgetItem* widget() = 0;
+    virtual FileFilters filterType() = 0;
+    virtual void load(QSettings *settings) = 0;
+    virtual void save(QSettings *settings) = 0;
+    virtual QTreeWidgetItem* widget() = 0;
 
-	virtual void apply();
+    virtual void apply();
 
     FileType::FileType type;
-	bool enabled;
-	FilterGroup *group;
+    bool enabled;
+    FilterGroup *group;
 
 protected:
-	QTreeWidgetItem *item;
+    QTreeWidgetItem *item;
 };
 
 #endif // FILEFILTER_H

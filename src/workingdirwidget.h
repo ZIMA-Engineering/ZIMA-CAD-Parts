@@ -15,16 +15,16 @@ class WorkingDirWidget;
  */
 class WorkingDirWidget : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit WorkingDirWidget(QWidget *parent = 0);
-	~WorkingDirWidget();
+    explicit WorkingDirWidget(QWidget *parent = 0);
+    ~WorkingDirWidget();
 
-	void settingsChanged();
+    void settingsChanged();
 
 private:
-	Ui::WorkingDirWidget *ui;
+    Ui::WorkingDirWidget *ui;
 
 };
 

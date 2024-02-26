@@ -39,36 +39,36 @@ class FileMetadata;
  */
 class ProductView : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	//! The parent cannot be 0/null because it's used in addProviders call
-	explicit ProductView(QWidget *parent);
-	~ProductView();
+    //! The parent cannot be 0/null because it's used in addProviders call
+    explicit ProductView(QWidget *parent);
+    ~ProductView();
 
 public slots:
-	/** \brief Set the file which will be displayed
-	 */
-	void setFile(FileMetadata* f);
-	void hide();
+    /** \brief Set the file which will be displayed
+     */
+    void setFile(FileMetadata* f);
+    void hide();
 
 private:
-	QHash<FileType::FileType, AbstractProductView*> providers;
-	AbstractProductView *m_current;
+    QHash<FileType::FileType, AbstractProductView*> providers;
+    AbstractProductView *m_current;
 //	FailbackProductView *failbackProvider;
 
-	//! The main registration function
-	template <class T> void addProviders()
-	{
-		T *provider = new T(qobject_cast<QWidget*>(parent()));
-		provider->hide();
-		foreach(FileType::FileType i, provider->canHandle())
-		{
-			providers[i] = provider;
-		}
-	}
+    //! The main registration function
+    template <class T> void addProviders()
+    {
+        T *provider = new T(qobject_cast<QWidget*>(parent()));
+        provider->hide();
+        foreach(FileType::FileType i, provider->canHandle())
+        {
+            providers[i] = provider;
+        }
+    }
 
-	void saveSettings();
+    void saveSettings();
 };
 
 #endif // PRODUCTVIEW_H

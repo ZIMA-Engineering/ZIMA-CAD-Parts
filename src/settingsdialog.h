@@ -36,47 +36,47 @@ class SettingsDialog;
 }
 
 class SettingsDialog : public QDialog {
-	Q_OBJECT
-	Q_DISABLE_COPY(SettingsDialog)
+    Q_OBJECT
+    Q_DISABLE_COPY(SettingsDialog)
 public:
-	enum Section {
-		General=0,
-		DataSources,
-		ExternalPrograms,
-		DeveloperMode,
-		ProductView,
-		SectionCount
-	};
+    enum Section {
+        General=0,
+        DataSources,
+        ExternalPrograms,
+        DeveloperMode,
+        ProductView,
+        SectionCount
+    };
 
-	explicit SettingsDialog(QTranslator **translator, QWidget *parent = 0);
-	virtual ~SettingsDialog();
+    explicit SettingsDialog(QTranslator **translator, QWidget *parent = 0);
+    virtual ~SettingsDialog();
 
-	void setSection(Section s);
+    void setSection(Section s);
 
 protected:
-	virtual void changeEvent(QEvent *e);
-	virtual void accept();
+    virtual void changeEvent(QEvent *e);
+    virtual void accept();
 
 private slots:
-	void addDataSource();
-	void editDataSource();
-	void removeDataSource();
-	void datasourceUpButton_clicked();
-	void datasourceDownButton_clicked();
-	void setZimaUtilPath(int util);
-	void proeButton_clicked();
-	void productViewButton_clicked();
-	void textEditorButton_clicked();
-	void terminalButton_clicked();
+    void addDataSource();
+    void editDataSource();
+    void removeDataSource();
+    void datasourceUpButton_clicked();
+    void datasourceDownButton_clicked();
+    void setZimaUtilPath(int util);
+    void proeButton_clicked();
+    void productViewButton_clicked();
+    void textEditorButton_clicked();
+    void terminalButton_clicked();
 
 private:
-	Ui::SettingsDialog  *m_ui;
-	QTranslator **translator;
-	QSignalMapper *zimaUtilSignalMapper;
-	QList<QLineEdit*> zimaUtilLineEdits;
-	DataSourceList m_editedDS;
+    Ui::SettingsDialog  *m_ui;
+    QTranslator **translator;
+    QSignalMapper *zimaUtilSignalMapper;
+    QList<QLineEdit*> zimaUtilLineEdits;
+    DataSourceList m_editedDS;
 
-	void setupDatasourceList();
+    void setupDatasourceList();
 };
 
 #endif // SETTINGSDIALOG_H

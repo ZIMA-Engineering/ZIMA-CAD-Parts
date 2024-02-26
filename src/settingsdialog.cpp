@@ -36,15 +36,15 @@
 template <class T> class PtrVariant
 {
 public:
-	static T* asPtr(QVariant v)
-	{
-		return  (T *) v.value<void *>();
-	}
+    static T* asPtr(QVariant v)
+    {
+        return  (T *) v.value<void *>();
+    }
 
-	static QVariant asQVariant(T* ptr)
-	{
-		return QVariant::fromValue((void *) ptr);
-	}
+    static QVariant asQVariant(T* ptr)
+    {
+        return QVariant::fromValue((void *) ptr);
+    }
 };
 
 // store datasource in qlistwidgetitem to save additional qlist handling
@@ -55,305 +55,305 @@ public:
 
 
 SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
-	QDialog(parent),
-	m_ui(new Ui::SettingsDialog),
-	translator(translator)
+    QDialog(parent),
+    m_ui(new Ui::SettingsDialog),
+    translator(translator)
 {
-	m_ui->setupUi(this);
+    m_ui->setupUi(this);
 
-	connect(m_ui->btnAdd, SIGNAL(clicked()), this, SLOT(addDataSource()));
-	connect(m_ui->editBtn, SIGNAL(clicked()), this, SLOT(editDataSource()));
-	connect(m_ui->btnRemove, SIGNAL(clicked()), this, SLOT(removeDataSource()));
-	connect(m_ui->datasourceUpButton, SIGNAL(clicked()),
-	        this, SLOT(datasourceUpButton_clicked()));
-	connect(m_ui->datasourceDownButton, SIGNAL(clicked()),
-	        this, SLOT(datasourceDownButton_clicked()));
-	connect(m_ui->productViewButton, SIGNAL(clicked()),
-	        this, SLOT(productViewButton_clicked()));
-	connect(m_ui->textEditorButton, SIGNAL(clicked()),
-			this, SLOT(textEditorButton_clicked()));
-	connect(m_ui->terminalButton, SIGNAL(clicked()),
-			this, SLOT(terminalButton_clicked()));
+    connect(m_ui->btnAdd, SIGNAL(clicked()), this, SLOT(addDataSource()));
+    connect(m_ui->editBtn, SIGNAL(clicked()), this, SLOT(editDataSource()));
+    connect(m_ui->btnRemove, SIGNAL(clicked()), this, SLOT(removeDataSource()));
+    connect(m_ui->datasourceUpButton, SIGNAL(clicked()),
+            this, SLOT(datasourceUpButton_clicked()));
+    connect(m_ui->datasourceDownButton, SIGNAL(clicked()),
+            this, SLOT(datasourceDownButton_clicked()));
+    connect(m_ui->productViewButton, SIGNAL(clicked()),
+            this, SLOT(productViewButton_clicked()));
+    connect(m_ui->textEditorButton, SIGNAL(clicked()),
+            this, SLOT(textEditorButton_clicked()));
+    connect(m_ui->terminalButton, SIGNAL(clicked()),
+            this, SLOT(terminalButton_clicked()));
 
-	m_editedDS = Settings::get()->DataSources;
-	setupDatasourceList();
+    m_editedDS = Settings::get()->DataSources;
+    setupDatasourceList();
 
-	m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
-	m_ui->previewWidthSpinBox->setValue(Settings::get()->GUIPreviewWidth);
-	m_ui->languageComboBox->setCurrentIndex(Settings::get()->langIndex(Settings::get()->getCurrentLanguageCode()));
-	m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
-	m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
-	m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
-	m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperDirWebViewToolBar);
-	m_ui->productViewEdit->setText(Settings::get()->ExtensionsProductViewPath);
-	m_ui->textEditorLineEdit->setText(Settings::get()->TextEditorPath);
-	m_ui->terminalLineEdit->setText(Settings::get()->TerminalPath);
+    m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
+    m_ui->previewWidthSpinBox->setValue(Settings::get()->GUIPreviewWidth);
+    m_ui->languageComboBox->setCurrentIndex(Settings::get()->langIndex(Settings::get()->getCurrentLanguageCode()));
+    m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
+    m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
+    m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
+    m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperDirWebViewToolBar);
+    m_ui->productViewEdit->setText(Settings::get()->ExtensionsProductViewPath);
+    m_ui->textEditorLineEdit->setText(Settings::get()->TextEditorPath);
+    m_ui->terminalLineEdit->setText(Settings::get()->TerminalPath);
 
-	connect(m_ui->proeButton, SIGNAL(clicked()),
-			this, SLOT(proeButton_clicked()));
+    connect(m_ui->proeButton, SIGNAL(clicked()),
+            this, SLOT(proeButton_clicked()));
 
-	zimaUtilSignalMapper = new QSignalMapper(this);
+    zimaUtilSignalMapper = new QSignalMapper(this);
 
-	connect(zimaUtilSignalMapper, SIGNAL(mappedInt(int)), this, SLOT(setZimaUtilPath(int)));
+    connect(zimaUtilSignalMapper, SIGNAL(mappedInt(int)), this, SLOT(setZimaUtilPath(int)));
 
-	QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
-	int i = 0;
-	while (it.hasNext())
-	{
-		it.next();
+    QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
+    int i = 0;
+    while (it.hasNext())
+    {
+        it.next();
 
-		QToolButton *t = new QToolButton(this);
-		t->setText("...");
+        QToolButton *t = new QToolButton(this);
+        t->setText("...");
 
-		connect(t, SIGNAL(clicked()), zimaUtilSignalMapper, SLOT(map()));
+        connect(t, SIGNAL(clicked()), zimaUtilSignalMapper, SLOT(map()));
 
-		zimaUtilLineEdits << new QLineEdit(it.value(), this);
+        zimaUtilLineEdits << new QLineEdit(it.value(), this);
 
-		m_ui->gridLayout->addWidget(new QLabel(it.key(), this), i, 0);
-		m_ui->gridLayout->addWidget(zimaUtilLineEdits.last(), i, 1);
-		m_ui->gridLayout->addWidget(t, i, 2);
+        m_ui->gridLayout->addWidget(new QLabel(it.key(), this), i, 0);
+        m_ui->gridLayout->addWidget(zimaUtilLineEdits.last(), i, 1);
+        m_ui->gridLayout->addWidget(t, i, 2);
 
-		zimaUtilSignalMapper->setMapping(t, i);
-		++i;
-	}
+        zimaUtilSignalMapper->setMapping(t, i);
+        ++i;
+    }
 
-	m_ui->proeEdit->setText(Settings::get()->ProeExecutable);
+    m_ui->proeEdit->setText(Settings::get()->ProeExecutable);
 
 }
 
 SettingsDialog::~SettingsDialog()
 {
-	delete m_ui;
+    delete m_ui;
 }
 
 void SettingsDialog::changeEvent(QEvent *e)
 {
-	switch (e->type()) {
-	case QEvent::LanguageChange:
-		m_ui->retranslateUi(this);
-		break;
-	default:
-		break;
-	}
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        m_ui->retranslateUi(this);
+        break;
+    default:
+        break;
+    }
 }
 
 void SettingsDialog::setSection(SettingsDialog::Section s)
 {
-	m_ui->tabWidget->setCurrentIndex(s);
+    m_ui->tabWidget->setCurrentIndex(s);
 }
 
 void SettingsDialog::accept()
 {
-	Settings::get()->GUIThumbWidth = m_ui->spinPicture->value();
-	Settings::get()->GUIPreviewWidth = m_ui->previewWidthSpinBox->value();
-	Settings::get()->GUISplashEnabled = m_ui->splashGroupBox->isChecked();
-	Settings::get()->GUISplashDuration = m_ui->splashDurationSpinBox->value();
-	Settings::get()->DeveloperEnabled = m_ui->developerModeGroupBox->isChecked();
-	Settings::get()->DeveloperDirWebViewToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
-	Settings::get()->ExtensionsProductViewPath = m_ui->productViewEdit->text();
-	Settings::get()->TextEditorPath = m_ui->textEditorLineEdit->text();
-	Settings::get()->TerminalPath = m_ui->terminalLineEdit->text();
+    Settings::get()->GUIThumbWidth = m_ui->spinPicture->value();
+    Settings::get()->GUIPreviewWidth = m_ui->previewWidthSpinBox->value();
+    Settings::get()->GUISplashEnabled = m_ui->splashGroupBox->isChecked();
+    Settings::get()->GUISplashDuration = m_ui->splashDurationSpinBox->value();
+    Settings::get()->DeveloperEnabled = m_ui->developerModeGroupBox->isChecked();
+    Settings::get()->DeveloperDirWebViewToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
+    Settings::get()->ExtensionsProductViewPath = m_ui->productViewEdit->text();
+    Settings::get()->TextEditorPath = m_ui->textEditorLineEdit->text();
+    Settings::get()->TerminalPath = m_ui->terminalLineEdit->text();
 
 
-	QString lang = Settings::get()->langIndexToName( m_ui->languageComboBox->currentIndex() );
-	if (lang != Settings::get()->getCurrentLanguageCode())
-	{
-		qApp->removeTranslator(*translator);
+    QString lang = Settings::get()->langIndexToName( m_ui->languageComboBox->currentIndex() );
+    if (lang != Settings::get()->getCurrentLanguageCode())
+    {
+        qApp->removeTranslator(*translator);
 
-		QTranslator *t = new QTranslator(parent());
-		QString filename = "zima-cad-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
-		QStringList paths;
+        QTranslator *t = new QTranslator(parent());
+        QString filename = "zima-cad-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
+        QStringList paths;
 
-		paths
-		        << filename
-		        << ("locale/" + filename)
-		        << (":/" + filename);
+        paths
+                << filename
+                << ("locale/" + filename)
+                << (":/" + filename);
 
 #ifdef Q_OS_MAC
-		paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
+        paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
 #endif
 
-		foreach(QString path, paths)
-		if( t->load(path) )
-		{
-			qApp->installTranslator(t);
-			*translator = t;
-			break;
-		}
-	}
+        foreach(QString path, paths)
+            if( t->load(path) )
+            {
+                qApp->installTranslator(t);
+                *translator = t;
+                break;
+            }
+    }
 
-	Settings::get()->setCurrentLanguageCode(lang);
+    Settings::get()->setCurrentLanguageCode(lang);
 
-	QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
-	int i = 0;
-	while (it.hasNext())
-	{
-		it.next();
-		Settings::get()->ExternalPrograms[it.key()] = zimaUtilLineEdits[i]->text();
-		++i;
-	}
+    QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
+    int i = 0;
+    while (it.hasNext())
+    {
+        it.next();
+        Settings::get()->ExternalPrograms[it.key()] = zimaUtilLineEdits[i]->text();
+        ++i;
+    }
 
-	Settings::get()->ProeExecutable = m_ui->proeEdit->text();
+    Settings::get()->ProeExecutable = m_ui->proeEdit->text();
 
-	if (m_editedDS != Settings::get()->DataSources)
-	{
-		// Note: do not delete datasources here. It will be handled in ServersWidget::settingsChanged()
-		Settings::get()->DataSources.clear();
-		Settings::get()->DataSources = m_editedDS;
-		Settings::get()->DataSourcesNeedsUpdate = true;
-	}
+    if (m_editedDS != Settings::get()->DataSources)
+    {
+        // Note: do not delete datasources here. It will be handled in ServersWidget::settingsChanged()
+        Settings::get()->DataSources.clear();
+        Settings::get()->DataSources = m_editedDS;
+        Settings::get()->DataSourcesNeedsUpdate = true;
+    }
 
-	QDialog::accept();
+    QDialog::accept();
 }
 
 void SettingsDialog::addDataSource()
 {
-	AddEditDataSource addEdit(m_editedDS, 0, AddEditDataSource::ADD);
+    AddEditDataSource addEdit(m_editedDS, 0, AddEditDataSource::ADD);
 
-	if (addEdit.exec() == QDialog::Accepted )
-	{
-		DataSource *ds = addEdit.dataSource();
-		QListWidgetItem *item =  new QListWidgetItem(ds->icon, ds->name);
-		item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
-		item->setData(UNUSED_ROLE, true);
-		m_ui->datasourceList->addItem(item);
-		m_ui->datasourceList->setCurrentItem(item);
-		m_editedDS.append(ds);
-	}
+    if (addEdit.exec() == QDialog::Accepted )
+    {
+        DataSource *ds = addEdit.dataSource();
+        QListWidgetItem *item =  new QListWidgetItem(ds->icon, ds->name);
+        item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
+        item->setData(UNUSED_ROLE, true);
+        m_ui->datasourceList->addItem(item);
+        m_ui->datasourceList->setCurrentItem(item);
+        m_editedDS.append(ds);
+    }
 }
 
 void SettingsDialog::editDataSource()
 {
-	if ( !m_ui->datasourceList->count() )
-		return;
+    if ( !m_ui->datasourceList->count() )
+        return;
 
-	QListWidgetItem *item = m_ui->datasourceList->currentItem();
-	if (!item)
-		return;
+    QListWidgetItem *item = m_ui->datasourceList->currentItem();
+    if (!item)
+        return;
 
-	DataSource *ds = PtrVariant<DataSource>::asPtr(item->data(DATASOURCE_ROLE));
-	AddEditDataSource addEdit(m_editedDS, ds, AddEditDataSource::EDIT);
+    DataSource *ds = PtrVariant<DataSource>::asPtr(item->data(DATASOURCE_ROLE));
+    AddEditDataSource addEdit(m_editedDS, ds, AddEditDataSource::EDIT);
 
-	if (addEdit.exec())
-	{
-		m_editedDS.removeAll(ds);
-		ds = addEdit.dataSource();
+    if (addEdit.exec())
+    {
+        m_editedDS.removeAll(ds);
+        ds = addEdit.dataSource();
 
-		item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
-		item->setIcon(ds->icon);
-		item->setText(ds->name);
-		m_editedDS.append(ds);
-		Settings::get()->DataSourcesNeedsUpdate = true;
-	}
+        item->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(ds));
+        item->setIcon(ds->icon);
+        item->setText(ds->name);
+        m_editedDS.append(ds);
+        Settings::get()->DataSourcesNeedsUpdate = true;
+    }
 }
 
 void SettingsDialog::removeDataSource()
 {
-	if ( !m_ui->datasourceList->count() )
-		return;
+    if ( !m_ui->datasourceList->count() )
+        return;
 
-	QListWidgetItem *it = m_ui->datasourceList->currentItem();
-	if (!it)
-		return;
+    QListWidgetItem *it = m_ui->datasourceList->currentItem();
+    if (!it)
+        return;
 
-	DataSource *ds = PtrVariant<DataSource>::asPtr(it->data(DATASOURCE_ROLE));
-	if (it->data(UNUSED_ROLE).toBool())
-	{
-		m_editedDS.removeAll(ds);
-		delete ds;
-	}
+    DataSource *ds = PtrVariant<DataSource>::asPtr(it->data(DATASOURCE_ROLE));
+    if (it->data(UNUSED_ROLE).toBool())
+    {
+        m_editedDS.removeAll(ds);
+        delete ds;
+    }
 
-	int row = m_ui->datasourceList->currentRow();
-	m_ui->datasourceList->takeItem(row);
-	delete m_editedDS.takeAt(row);
+    int row = m_ui->datasourceList->currentRow();
+    m_ui->datasourceList->takeItem(row);
+    delete m_editedDS.takeAt(row);
 
-	delete it;
+    delete it;
 }
 
 void SettingsDialog::datasourceUpButton_clicked()
 {
-	QListWidget *lw = m_ui->datasourceList;
-	QListWidgetItem *current = lw->currentItem();
-	int ix = lw->row(current);
-	if (ix > 0)
-	{
-		QListWidgetItem *temp = lw->takeItem(ix);
-		lw->insertItem(ix-1, temp);
-		lw->setCurrentRow(ix-1);
-		m_editedDS.swapItemsAt(ix, ix-1);
-	}
+    QListWidget *lw = m_ui->datasourceList;
+    QListWidgetItem *current = lw->currentItem();
+    int ix = lw->row(current);
+    if (ix > 0)
+    {
+        QListWidgetItem *temp = lw->takeItem(ix);
+        lw->insertItem(ix-1, temp);
+        lw->setCurrentRow(ix-1);
+        m_editedDS.swapItemsAt(ix, ix-1);
+    }
 }
 
 void SettingsDialog::datasourceDownButton_clicked()
 {
-	QListWidget *lw = m_ui->datasourceList;
-	QListWidgetItem *current = lw->currentItem();
-	int ix = lw->row(current);
-	if (ix < lw->count()-1)
-	{
-		QListWidgetItem *temp = lw->takeItem(ix);
-		lw->insertItem(ix+1, temp);
-		lw->setCurrentRow(ix+1);
-		m_editedDS.swapItemsAt(ix, ix+1);
-	}
+    QListWidget *lw = m_ui->datasourceList;
+    QListWidgetItem *current = lw->currentItem();
+    int ix = lw->row(current);
+    if (ix < lw->count()-1)
+    {
+        QListWidgetItem *temp = lw->takeItem(ix);
+        lw->insertItem(ix+1, temp);
+        lw->setCurrentRow(ix+1);
+        m_editedDS.swapItemsAt(ix, ix+1);
+    }
 }
 
 void SettingsDialog::setupDatasourceList()
 {
-	m_ui->datasourceList->clear();
-	if (!m_editedDS.count())
-		return;
+    m_ui->datasourceList->clear();
+    if (!m_editedDS.count())
+        return;
 
-	foreach(DataSource *s, m_editedDS)
-	{
-		QListWidgetItem *i = new QListWidgetItem(s->icon, s->name);
-		i->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(s));
-		i->setData(UNUSED_ROLE, false);
-		m_ui->datasourceList->addItem(i);
-	}
+    foreach(DataSource *s, m_editedDS)
+    {
+        QListWidgetItem *i = new QListWidgetItem(s->icon, s->name);
+        i->setData(DATASOURCE_ROLE, PtrVariant<DataSource>::asQVariant(s));
+        i->setData(UNUSED_ROLE, false);
+        m_ui->datasourceList->addItem(i);
+    }
 
-	m_ui->datasourceList->setCurrentRow(0);
-	m_ui->datasourceList->setFocus();
+    m_ui->datasourceList->setCurrentRow(0);
+    m_ui->datasourceList->setFocus();
 }
 
 void SettingsDialog::setZimaUtilPath(int util)
 {
-	QString path = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - set %1 path").arg(ZimaUtils::labelForUtility(util)), zimaUtilLineEdits[util]->text());
+    QString path = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - set %1 path").arg(ZimaUtils::labelForUtility(util)), zimaUtilLineEdits[util]->text());
 
-	if (!path.isEmpty())
-		zimaUtilLineEdits[util]->setText(path);
+    if (!path.isEmpty())
+        zimaUtilLineEdits[util]->setText(path);
 }
 
 void SettingsDialog::proeButton_clicked()
 {
-	QString exe = QFileDialog::getOpenFileName(this, tr("Locate ProE launcher"),
-	              QDir::currentPath(),
-	              tr("ProE executable (proe.exe);;All files (*)"));
-	if (exe.isNull())
-		return;
-	m_ui->proeEdit->setText(exe);
+    QString exe = QFileDialog::getOpenFileName(this, tr("Locate ProE launcher"),
+                  QDir::currentPath(),
+                  tr("ProE executable (proe.exe);;All files (*)"));
+    if (exe.isNull())
+        return;
+    m_ui->proeEdit->setText(exe);
 }
 
 void SettingsDialog::productViewButton_clicked()
 {
-	QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set ProductView path"),
-	              m_ui->productViewEdit->text());
-	if (!str.isEmpty())
-		m_ui->productViewEdit->setText(str);
+    QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set ProductView path"),
+                  m_ui->productViewEdit->text());
+    if (!str.isEmpty())
+        m_ui->productViewEdit->setText(str);
 }
 
 void SettingsDialog::textEditorButton_clicked()
 {
-	QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - select text editor"),
-				  QDir::currentPath());
-	if (!str.isEmpty())
-		m_ui->textEditorLineEdit->setText(str);
+    QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - select text editor"),
+                  QDir::currentPath());
+    if (!str.isEmpty())
+        m_ui->textEditorLineEdit->setText(str);
 }
 
 void SettingsDialog::terminalButton_clicked()
 {
-	QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - select terminal"),
-				  QDir::currentPath());
-	if (!str.isEmpty())
-		m_ui->terminalLineEdit->setText(str);
+    QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - select terminal"),
+                  QDir::currentPath());
+    if (!str.isEmpty())
+        m_ui->terminalLineEdit->setText(str);
 }

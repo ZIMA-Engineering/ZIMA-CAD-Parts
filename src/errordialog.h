@@ -13,15 +13,15 @@ typedef QHashIterator<QString,QString> ErrorsMapIterator;
 
 class ErrorDialog : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit ErrorDialog(QWidget *parent = 0);
-	~ErrorDialog();
-	void setErrors(const QString &label, const ErrorsMap &errors);
+    explicit ErrorDialog(QWidget *parent = 0);
+    ~ErrorDialog();
+    void setErrors(const QString &label, const ErrorsMap &errors);
 
 private:
-	Ui::ErrorDialog *ui;
+    Ui::ErrorDialog *ui;
 };
 
 #endif // ERRORDIALOG_H

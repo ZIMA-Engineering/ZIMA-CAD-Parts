@@ -52,43 +52,43 @@ See metadata.h for metadata handling description
 
 int main(int argc, char *argv[])
 {
-	Q_INIT_RESOURCE(zima_cad_parts);
+    Q_INIT_RESOURCE(zima_cad_parts);
 
-	QCoreApplication::setOrganizationName("ZIMA-Construction");
-	QCoreApplication::setOrganizationDomain("zima-contruction.cz");
-	QCoreApplication::setApplicationName("ZIMA-CAD-Parts");
+    QCoreApplication::setOrganizationName("ZIMA-Construction");
+    QCoreApplication::setOrganizationDomain("zima-contruction.cz");
+    QCoreApplication::setApplicationName("ZIMA-CAD-Parts");
 
-	QApplication a(argc, argv);
+    QApplication a(argc, argv);
 
-	QTranslator translator;
-	QString lang = Settings::get()->getCurrentLanguageCode();
+    QTranslator translator;
+    QString lang = Settings::get()->getCurrentLanguageCode();
 
-	QString filename = "zima-cad-parts_" + lang;
-	QStringList paths;
+    QString filename = "zima-cad-parts_" + lang;
+    QStringList paths;
 
-	paths
-	        << filename
-		<< QApplication::applicationDirPath() + "/" + filename
-	        << QApplication::applicationDirPath() + "/locale/" + filename
-	        << ("locale/" + filename)
-	        << (":/" + filename);
+    paths
+            << filename
+            << QApplication::applicationDirPath() + "/" + filename
+            << QApplication::applicationDirPath() + "/locale/" + filename
+            << ("locale/" + filename)
+            << (":/" + filename);
 
 #ifdef Q_OS_MAC
-	paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
+    paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
 #endif
 
-	foreach(QString path, paths)
-	if( translator.load(path) )
-	{
-		a.installTranslator(&translator);
-		break;
-	}
+    foreach(QString path, paths)
+        if( translator.load(path) )
+        {
+            a.installTranslator(&translator);
+            break;
+        }
 
-	MainWindow w(&translator);
-	w.show();
+    MainWindow w(&translator);
+    w.show();
 
-	int ret = a.exec();
+    int ret = a.exec();
 
-	Settings::get()->save();
-	return ret;
+    Settings::get()->save();
+    return ret;
 }

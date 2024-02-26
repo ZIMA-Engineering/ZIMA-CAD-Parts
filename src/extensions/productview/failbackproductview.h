@@ -14,18 +14,18 @@ class FailbackProductView;
  */
 class FailbackProductView : public AbstractProductView
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit FailbackProductView(QWidget *parent = 0);
-	~FailbackProductView();
+    explicit FailbackProductView(QWidget *parent = 0);
+    ~FailbackProductView();
 
-	QString title();
-	FileTypeList canHandle();
-	bool handle(FileMetadata *f);
+    QString title();
+    FileTypeList canHandle();
+    bool handle(FileMetadata *f);
 
 private:
-	Ui::FailbackProductView *ui;
+    Ui::FailbackProductView *ui;
 };
 
 #endif // FAILBACKPRODUCTVIEW_H

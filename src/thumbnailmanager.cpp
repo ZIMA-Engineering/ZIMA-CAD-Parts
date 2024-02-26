@@ -34,8 +34,8 @@ void ThumbnailWorker::cacheThumbnails(const QString &dirpath, ThumbnailMap* map)
             continue;
         pmPath = dirpath + "/" + i;
         map->insert(fi.baseName(), qMakePair(pmPath, QPixmap(pmPath).scaled(Settings::get()->GUIThumbWidth,
-                                                                            Settings::get()->GUIThumbWidth,
-                                                                            Qt::KeepAspectRatio)));
+                                             Settings::get()->GUIThumbWidth,
+                                             Qt::KeepAspectRatio)));
     };
 }
 
@@ -46,7 +46,7 @@ void ThumbnailWorker::getThumbs(Metadata *m, ThumbnailMap* map)
     // index
     cacheThumbnails(m->path() + "/" + THUMBNAILS_DIR, map);
     // now includes
-	foreach(Metadata *i, m->thumbnailIncludes())
+    foreach(Metadata *i, m->thumbnailIncludes())
     {
         getThumbs(i, map);
     }

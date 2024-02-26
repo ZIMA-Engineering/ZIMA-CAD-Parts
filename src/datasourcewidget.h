@@ -16,44 +16,44 @@ class DataSourceHistory;
  */
 class DataSourceWidget : public QWidget, public Ui::DataSourceWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit DataSourceWidget(const QString &dir, QWidget *parent = 0);
+    explicit DataSourceWidget(const QString &dir, QWidget *parent = 0);
 
-	QModelIndex currentIndex();
-	DataSourceHistory* history();
-	QString currentDir() const;
+    QModelIndex currentIndex();
+    DataSourceHistory* history();
+    QString currentDir() const;
 
 signals:
-	void showSettings(SettingsDialog::Section);
+    void showSettings(SettingsDialog::Section);
 
-	void itemLoaded(const QModelIndex&);
-	void clicked(const QModelIndex&);
-	void activated(const QModelIndex&);
+    void itemLoaded(const QModelIndex&);
+    void clicked(const QModelIndex&);
+    void activated(const QModelIndex&);
 
-	void techSpecAvailable(const QUrl&);
+    void techSpecAvailable(const QUrl&);
 
-	void workingDirChanged();
-	void directoryChanged(DataSourceWidget*, const QString&);
+    void workingDirChanged();
+    void directoryChanged(DataSourceWidget*, const QString&);
 
-	void openInANewTabRequested(const QString &path);
+    void openInANewTabRequested(const QString &path);
 
 public slots:
-	void expand(const QModelIndex & index);
-	void settingsChanged();
-	void setDirectory(const QString &path);
-	void goToWorkingDirectory();
+    void expand(const QModelIndex & index);
+    void settingsChanged();
+    void setDirectory(const QString &path);
+    void goToWorkingDirectory();
 
 private:
-	DataSourceHistory *m_history;
-	QStringList m_zimaUtils;
-	QString m_currentDir;
+    DataSourceHistory *m_history;
+    QStringList m_zimaUtils;
+    QString m_currentDir;
 
 private slots:
-	void setupDataSources(const QString &dir);
-	void splitterMoved(int, int);
-	void handleOpenPartDirectory(const QFileInfo &fi);
-	void announceDirectoryChange(const QString &dir);
+    void setupDataSources(const QString &dir);
+    void splitterMoved(int, int);
+    void handleOpenPartDirectory(const QFileInfo &fi);
+    void announceDirectoryChange(const QString &dir);
 };
 
 #endif // DATASOURCEWIDGET_H

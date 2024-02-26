@@ -4,260 +4,260 @@
 
 bool MetadataV2Migration::migrate()
 {
-	// First check if we're on the correct version, but the version
-	// tag is simply missing
-	if (hasGroup("Directory"))
-	{
-		m_settings->setValue("Directory/Version", 2);
-		return true;
-	}
+    // First check if we're on the correct version, but the version
+    // tag is simply missing
+    if (hasGroup("Directory"))
+    {
+        m_settings->setValue("Directory/Version", 2);
+        return true;
+    }
 
 
-	/*** Gather data from the old metadata ***/
-	QRegularExpression colRx("^\\d+$");
-	QStringList langs;
-	langs << "cs" << "en" << "de" << "ru";
-	QHash<QString, QString> dirLabels;
-	QHash<QString, QHash<int, QString>> columns;
-	QList<int> columnNumbers;
-	QStringList includeDataPaths;
-	QStringList includeThumbPaths;
-	QHash<QString, QHash<int, QVariant>> directPartData;
-	QHash<QString, QHash<QString, QHash<int, QVariant>>> localizedPartData;
+    /*** Gather data from the old metadata ***/
+    QRegularExpression colRx("^\\d+$");
+    QStringList langs;
+    langs << "cs" << "en" << "de" << "ru";
+    QHash<QString, QString> dirLabels;
+    QHash<QString, QHash<int, QString>> columns;
+    QList<int> columnNumbers;
+    QStringList includeDataPaths;
+    QStringList includeThumbPaths;
+    QHash<QString, QHash<int, QVariant>> directPartData;
+    QHash<QString, QHash<QString, QHash<int, QVariant>>> localizedPartData;
 
-	if (hasGroup("params"))
-	{
-		m_settings->beginGroup("params");
+    if (hasGroup("params"))
+    {
+        m_settings->beginGroup("params");
 
-		// Try to find directory labels
-		foreach (const QString &lang, langs)
-		{
-			QString label = m_settings->value(QString("%1/label").arg(lang)).toString();
+        // Try to find directory labels
+        foreach (const QString &lang, langs)
+        {
+            QString label = m_settings->value(QString("%1/label").arg(lang)).toString();
 
-			if (!label.isEmpty())
-				dirLabels.insert(lang, label);
-		}
+            if (!label.isEmpty())
+                dirLabels.insert(lang, label);
+        }
 
-		// Column labels
-		foreach (const QString &lang, langs)
-		{
-			m_settings->beginGroup(lang);
+        // Column labels
+        foreach (const QString &lang, langs)
+        {
+            m_settings->beginGroup(lang);
 
-			QHash<int, QString> colLabels;
+            QHash<int, QString> colLabels;
 
-			foreach (const QString &col, m_settings->childKeys())
-			{
-				if (!colRx.match(col).hasMatch())
-					continue;
+            foreach (const QString &col, m_settings->childKeys())
+            {
+                if (!colRx.match(col).hasMatch())
+                    continue;
 
-				int colNum = col.toInt();
+                int colNum = col.toInt();
 
-				if (!columnNumbers.contains(colNum))
-					columnNumbers << colNum;
+                if (!columnNumbers.contains(colNum))
+                    columnNumbers << colNum;
 
-				QString label = m_settings->value(col).toString();
+                QString label = m_settings->value(col).toString();
 
-				if (label.isEmpty())
-					continue;
+                if (label.isEmpty())
+                    continue;
 
-				colLabels.insert(colNum, label);
-			}
+                colLabels.insert(colNum, label);
+            }
 
-			if (!colLabels.isEmpty())
-				columns.insert(lang, colLabels);
+            if (!colLabels.isEmpty())
+                columns.insert(lang, colLabels);
 
-			m_settings->endGroup();
-		}
+            m_settings->endGroup();
+        }
 
-		m_settings->endGroup();
-	}
+        m_settings->endGroup();
+    }
 
-	// Includes
-	if (hasGroup("include"))
-	{
-		includeDataPaths = m_settings->value("include/data", QStringList()).toStringList();
-		includeThumbPaths = m_settings->value("include/thumbnails", QStringList()).toStringList();
-	}
+    // Includes
+    if (hasGroup("include"))
+    {
+        includeDataPaths = m_settings->value("include/data", QStringList()).toStringList();
+        includeThumbPaths = m_settings->value("include/thumbnails", QStringList()).toStringList();
+    }
 
-	// Part data
-	foreach (const QString &group, m_settings->childGroups())
-	{
-		if (group == "params" || group == "include")
-			continue;
+    // Part data
+    foreach (const QString &group, m_settings->childGroups())
+    {
+        if (group == "params" || group == "include")
+            continue;
 
-		m_settings->beginGroup(group);
+        m_settings->beginGroup(group);
 
-		// Direct data
-		QHash<int, QVariant> directColData;
+        // Direct data
+        QHash<int, QVariant> directColData;
 
-		foreach (const QString &col, m_settings->childKeys())
-		{
-			if (!colRx.match(col).hasMatch())
-				continue;
+        foreach (const QString &col, m_settings->childKeys())
+        {
+            if (!colRx.match(col).hasMatch())
+                continue;
 
-			QVariant v = m_settings->value(col);
+            QVariant v = m_settings->value(col);
 
-			if (v.isNull())
-				continue;
+            if (v.isNull())
+                continue;
 
-			directColData.insert(col.toInt(), v);
-		}
+            directColData.insert(col.toInt(), v);
+        }
 
-		if (!directColData.isEmpty())
-			directPartData.insert(group, directColData);
+        if (!directColData.isEmpty())
+            directPartData.insert(group, directColData);
 
-		// Localized data
-		QHash<QString, QHash<int, QVariant>> partData;
+        // Localized data
+        QHash<QString, QHash<int, QVariant>> partData;
 
-		foreach (const QString &lang, langs)
-		{
-			QHash<int, QVariant> data;
+        foreach (const QString &lang, langs)
+        {
+            QHash<int, QVariant> data;
 
-			foreach (int col, columnNumbers)
-			{
-				QVariant v = m_settings->value(QString("%1/%2").arg(lang).arg(col));
+            foreach (int col, columnNumbers)
+            {
+                QVariant v = m_settings->value(QString("%1/%2").arg(lang).arg(col));
 
-				if (v.isNull())
-					continue;
+                if (v.isNull())
+                    continue;
 
-				data.insert(col, v);
-			}
+                data.insert(col, v);
+            }
 
-			if (!data.isEmpty())
-				partData.insert(lang, data);
-		}
+            if (!data.isEmpty())
+                partData.insert(lang, data);
+        }
 
-		if (!partData.isEmpty())
-			localizedPartData.insert(group, partData);
+        if (!partData.isEmpty())
+            localizedPartData.insert(group, partData);
 
-		m_settings->endGroup();
-	}
+        m_settings->endGroup();
+    }
 
 
-	/*** Remove old metadata ***/
-	foreach (const QString &group, m_settings->childGroups())
-		m_settings->remove(group);
+    /*** Remove old metadata ***/
+    foreach (const QString &group, m_settings->childGroups())
+        m_settings->remove(group);
 
 
-	/*** Write new ***/
-	m_settings->setValue("Directory/Version", 2);
+    /*** Write new ***/
+    m_settings->setValue("Directory/Version", 2);
 
-	// Directory labels
-	QHashIterator<QString, QString> dirLabelsIterator(dirLabels);
+    // Directory labels
+    QHashIterator<QString, QString> dirLabelsIterator(dirLabels);
 
-	while (dirLabelsIterator.hasNext())
-	{
-		dirLabelsIterator.next();
+    while (dirLabelsIterator.hasNext())
+    {
+        dirLabelsIterator.next();
 
-		m_settings->setValue(
-			QString("Directory/Label/%1").arg(dirLabelsIterator.key()),
-			dirLabelsIterator.value()
-		);
-	}
+        m_settings->setValue(
+            QString("Directory/Label/%1").arg(dirLabelsIterator.key()),
+            dirLabelsIterator.value()
+        );
+    }
 
-	// Directory parameters
-	QStringList paramHandles;
+    // Directory parameters
+    QStringList paramHandles;
 
-	std::sort(columnNumbers.begin(), columnNumbers.end());
+    std::sort(columnNumbers.begin(), columnNumbers.end());
 
-	foreach (int col, columnNumbers)
-		paramHandles << paramHandle(col);
+    foreach (int col, columnNumbers)
+        paramHandles << paramHandle(col);
 
-	m_settings->setValue("Directory/Parameters", paramHandles);
+    m_settings->setValue("Directory/Parameters", paramHandles);
 
-	QHashIterator<QString, QHash<int, QString>> columnIterator(columns);
+    QHashIterator<QString, QHash<int, QString>> columnIterator(columns);
 
-	while (columnIterator.hasNext())
-	{
-		columnIterator.next();
+    while (columnIterator.hasNext())
+    {
+        columnIterator.next();
 
-		QString lang = columnIterator.key();
+        QString lang = columnIterator.key();
 
-		QHashIterator<int, QString> labelIterator(columnIterator.value());
+        QHashIterator<int, QString> labelIterator(columnIterator.value());
 
-		while (labelIterator.hasNext())
-		{
-			labelIterator.next();
+        while (labelIterator.hasNext())
+        {
+            labelIterator.next();
 
-			QString handle = paramHandle(labelIterator.key());
+            QString handle = paramHandle(labelIterator.key());
 
-			m_settings->setValue(
-				QString("Parameters/%1/Label/%2").arg(handle).arg(lang),
-				labelIterator.value()
-			);
-		}
-	}
+            m_settings->setValue(
+                QString("Parameters/%1/Label/%2").arg(handle).arg(lang),
+                labelIterator.value()
+            );
+        }
+    }
 
-	// Includes
-	if (!includeDataPaths.isEmpty())
-		m_settings->setValue("Directory/IncludeParameters", includeDataPaths);
+    // Includes
+    if (!includeDataPaths.isEmpty())
+        m_settings->setValue("Directory/IncludeParameters", includeDataPaths);
 
-	if (!includeThumbPaths.isEmpty())
-		m_settings->setValue("Directory/IncludeThumbnails", includeThumbPaths);
+    if (!includeThumbPaths.isEmpty())
+        m_settings->setValue("Directory/IncludeThumbnails", includeThumbPaths);
 
-	// Direct part data
-	QHashIterator<QString, QHash<int, QVariant>> directPartdataIterator(directPartData);
+    // Direct part data
+    QHashIterator<QString, QHash<int, QVariant>> directPartdataIterator(directPartData);
 
-	while (directPartdataIterator.hasNext())
-	{
-		directPartdataIterator.next();
+    while (directPartdataIterator.hasNext())
+    {
+        directPartdataIterator.next();
 
-		QString part = directPartdataIterator.key();
+        QString part = directPartdataIterator.key();
 
-		QHashIterator<int, QVariant> colDataIterator(directPartdataIterator.value());
+        QHashIterator<int, QVariant> colDataIterator(directPartdataIterator.value());
 
-		while (colDataIterator.hasNext())
-		{
-			colDataIterator.next();
+        while (colDataIterator.hasNext())
+        {
+            colDataIterator.next();
 
-			QString param = paramHandle(colDataIterator.key());
+            QString param = paramHandle(colDataIterator.key());
 
-			m_settings->setValue(
-				QString("Parts/%1/%2").arg(part).arg(param),
-				colDataIterator.value()
-			);
-		}
-	}
+            m_settings->setValue(
+                QString("Parts/%1/%2").arg(part).arg(param),
+                colDataIterator.value()
+            );
+        }
+    }
 
-	// Localized part data
-	QHashIterator<QString, QHash<QString, QHash<int, QVariant>>> localizedPartDataIterator(localizedPartData);
+    // Localized part data
+    QHashIterator<QString, QHash<QString, QHash<int, QVariant>>> localizedPartDataIterator(localizedPartData);
 
-	while (localizedPartDataIterator.hasNext())
-	{
-		localizedPartDataIterator.next();
+    while (localizedPartDataIterator.hasNext())
+    {
+        localizedPartDataIterator.next();
 
-		QString part = localizedPartDataIterator.key();
-		QHashIterator<QString, QHash<int, QVariant>> partDataIterator(localizedPartDataIterator.value());
+        QString part = localizedPartDataIterator.key();
+        QHashIterator<QString, QHash<int, QVariant>> partDataIterator(localizedPartDataIterator.value());
 
-		while (partDataIterator.hasNext())
-		{
-			partDataIterator.next();
+        while (partDataIterator.hasNext())
+        {
+            partDataIterator.next();
 
-			QString lang = partDataIterator.key();
+            QString lang = partDataIterator.key();
 
-			QHashIterator<int, QVariant> colDataIterator(partDataIterator.value());
+            QHashIterator<int, QVariant> colDataIterator(partDataIterator.value());
 
-			while (colDataIterator.hasNext())
-			{
-				colDataIterator.next();
+            while (colDataIterator.hasNext())
+            {
+                colDataIterator.next();
 
-				QString param = paramHandle(colDataIterator.key());
+                QString param = paramHandle(colDataIterator.key());
 
-				if (colDataIterator.value().toString().trimmed().isEmpty())
-					continue;
+                if (colDataIterator.value().toString().trimmed().isEmpty())
+                    continue;
 
-				m_settings->setValue(
-					QString("Parts/%1/%2/%3").arg(part).arg(param).arg(lang),
-					colDataIterator.value()
-				);
-			}
-		}
-	}
+                m_settings->setValue(
+                    QString("Parts/%1/%2/%3").arg(part).arg(param).arg(lang),
+                    colDataIterator.value()
+                );
+            }
+        }
+    }
 
-	return true;
+    return true;
 }
 
 QString MetadataV2Migration::paramHandle(int col)
 {
-	return QString("param%1").arg(col, 2, 10, QLatin1Char('0'));
+    return QString("param%1").arg(col, 2, 10, QLatin1Char('0'));
 }

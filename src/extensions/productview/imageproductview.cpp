@@ -39,7 +39,7 @@ bool ImageProductView::handle(FileMetadata *f)
         ui->label->setText(tr("Cannot load image: <a href=\"file://%1\">%2</a>")
                            .arg(f->fileInfo.absoluteFilePath())
                            .arg(f->fileInfo.fileName())
-                           );
+                          );
         return false;
     }
 }

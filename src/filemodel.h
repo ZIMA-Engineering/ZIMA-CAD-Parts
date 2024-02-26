@@ -37,63 +37,63 @@ class FileMover;
  */
 class FileModel : public QAbstractItemModel
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit FileModel(QObject *parent = 0);
-	~FileModel();
+    explicit FileModel(QObject *parent = 0);
+    ~FileModel();
 
-	QModelIndex index(int row, int column,
-	                  const QModelIndex &parent = QModelIndex()) const;
-	QModelIndex parent(const QModelIndex &child) const;
-	int columnCount(const QModelIndex & parent = QModelIndex()) const;
-	int rowCount(const QModelIndex & parent = QModelIndex()) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-	QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    QModelIndex index(int row, int column,
+                      const QModelIndex &parent = QModelIndex()) const;
+    QModelIndex parent(const QModelIndex &child) const;
+    int columnCount(const QModelIndex & parent = QModelIndex()) const;
+    int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	void settingsChanged();
-	void setDirectory(const QString &path);
+    void settingsChanged();
+    void setDirectory(const QString &path);
 
-	//! Reset columns, thumbnails and force view reset
-	void refreshModel();
+    //! Reset columns, thumbnails and force view reset
+    void refreshModel();
 
-	//! Reload parts from disk, then refreshModel() is called
-	void reloadParts();
+    //! Reload parts from disk, then refreshModel() is called
+    void reloadParts();
 
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-	QStringList mimeTypes() const;
-	QMimeData* mimeData(const QModelIndexList &indexes) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+    QStringList mimeTypes() const;
+    QMimeData* mimeData(const QModelIndexList &indexes) const;
 
-	void moveParts(FileMover *mv);
-	void deleteParts(DirectoryRemover *rm);
-	void copyToWorkingDir(FileCopier *cp);
+    void moveParts(FileMover *mv);
+    void deleteParts(DirectoryRemover *rm);
+    void copyToWorkingDir(FileCopier *cp);
 
-	QString path() const {
-		return m_path;
-	}
+    QString path() const {
+        return m_path;
+    }
 
-	QFileInfo fileInfo(const QModelIndex &ix);
-	QFileInfoList fileInfoList();
+    QFileInfo fileInfo(const QModelIndex &ix);
+    QFileInfoList fileInfoList();
 
 signals:
-	void directoryLoaded(const QString &path);
+    void directoryLoaded(const QString &path);
 
 private:
-	QString m_path;
-	QStringList m_columnLabels;
-	QStringList m_parameterHandles;
+    QString m_path;
+    QStringList m_columnLabels;
+    QStringList m_parameterHandles;
 
-	FileIconProvider *m_iconProvider;
+    FileIconProvider *m_iconProvider;
 
     ThumbnailManager *m_thumb;
-	PrtReader *m_prtReader;
+    PrtReader *m_prtReader;
 
-	void setupColumns(const QString &path);
+    void setupColumns(const QString &path);
 
 private slots:
-	void directoryCleared(const QString &dir);
-	void directoryRenamed(const QString &oldName, const QString &newName);
-	void directoryChanged(const QString &dir);
+    void directoryCleared(const QString &dir);
+    void directoryRenamed(const QString &oldName, const QString &newName);
+    void directoryChanged(const QString &dir);
     void updateThumbnails();
 };
 
@@ -103,11 +103,11 @@ private slots:
 class FileIconProvider : public QFileIconProvider
 {
 public:
-	FileIconProvider();
+    FileIconProvider();
 
-	virtual QIcon   icon ( IconType type ) const;
-	virtual QIcon   icon ( const QFileInfo & info ) const;
-	virtual QString type ( const QFileInfo & info ) const;
+    virtual QIcon   icon ( IconType type ) const;
+    virtual QIcon   icon ( const QFileInfo & info ) const;
+    virtual QString type ( const QFileInfo & info ) const;
 };
 
 #endif // FILEMODEL_H

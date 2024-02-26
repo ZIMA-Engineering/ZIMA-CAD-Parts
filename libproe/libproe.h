@@ -11,7 +11,7 @@
    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
   0. You just DO WHAT THE FUCK YOU WANT TO.
- 
+
 */
 
 #ifndef __LIBPROE_H__
@@ -26,18 +26,18 @@
 
 struct attr_t {
 public:
-	attr_t(size_t n_off, QString n, QString v) : 
-	       name_offset(n_off), name(n), value(v)
-	{
-		name_len = name.length();
-		value_len = value.length();
-	}
-	
+    attr_t(size_t n_off, QString n, QString v) :
+        name_offset(n_off), name(n), value(v)
+    {
+        name_len = name.length();
+        value_len = value.length();
+    }
+
 public:
-	size_t name_offset;
-	size_t name_len, value_len;
-	QString name;
-	QString value;
+    size_t name_offset;
+    size_t name_len, value_len;
+    QString name;
+    QString value;
 
 };
 

@@ -18,19 +18,19 @@ class DXFInterface;
  */
 class DxfProductView : public AbstractProductView
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit DxfProductView(QWidget *parent = 0);
-	~DxfProductView();
+    explicit DxfProductView(QWidget *parent = 0);
+    ~DxfProductView();
 
-	QString title();
-	FileTypeList canHandle();
-	bool handle(FileMetadata *f);
+    QString title();
+    FileTypeList canHandle();
+    bool handle(FileMetadata *f);
 
 private:
-	Ui::DxfProductView *ui;
-	DXFInterface *dxf;
+    Ui::DxfProductView *ui;
+    DXFInterface *dxf;
 };
 
 #endif // DXFPRODUCTVIEW_H

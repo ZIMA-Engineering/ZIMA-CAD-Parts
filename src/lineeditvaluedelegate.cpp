@@ -9,6 +9,6 @@ LineEditValueDelegate::LineEditValueDelegate(QWidget *parent) : QStyledItemDeleg
 
 void LineEditValueDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-	QLineEdit *edit = static_cast<QLineEdit*>(editor);
-	edit->setText(index.data().toString());
+    QLineEdit *edit = static_cast<QLineEdit*>(editor);
+    edit->setText(index.data().toString());
 }

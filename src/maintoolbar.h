@@ -12,27 +12,27 @@ class MainToolBar;
 
 class MainToolBar : public QToolBar
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit MainToolBar(QWidget *parent = 0);
-	~MainToolBar();
+    explicit MainToolBar(QWidget *parent = 0);
+    ~MainToolBar();
 
 public slots:
-	void settingsChanged();
-	void setupHistory(DataSourceHistory *history);
+    void settingsChanged();
+    void setupHistory(DataSourceHistory *history);
 
 signals:
-	void settingsRequested();
+    void settingsRequested();
 
 private:
-	Ui::MainToolBar *ui;
-	WorkingDirWidget *m_wdirWidget;
-	DataSourceHistory *m_dsHistory;
+    Ui::MainToolBar *ui;
+    WorkingDirWidget *m_wdirWidget;
+    DataSourceHistory *m_dsHistory;
 
 private slots:
-	void canGoBackChange(bool can);
-	void canGoForwardChange(bool can);
+    void canGoBackChange(bool can);
+    void canGoForwardChange(bool can);
 };
 
 #endif // MAINTOOLBAR_H

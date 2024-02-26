@@ -7,43 +7,43 @@
 
 class PtrReaderThread : public QThread
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	PtrReaderThread(QFileInfoList partList);
+    PtrReaderThread(QFileInfoList partList);
 
 signals:
-	void partParam(const QString &part, const QString &param, const QString &value);
+    void partParam(const QString &part, const QString &param, const QString &value);
 
 protected:
-	void run();
+    void run();
 
 private:
-	QFileInfoList m_partList;
+    QFileInfoList m_partList;
 
-	void parseFile(const QFileInfo &fi);
+    void parseFile(const QFileInfo &fi);
 };
 
 class PrtReader : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit PrtReader(QObject *parent = nullptr);
-	bool isRunning() const;
+    explicit PrtReader(QObject *parent = nullptr);
+    bool isRunning() const;
 
 signals:
-	void loaded(const QFileInfo &part);
+    void loaded(const QFileInfo &part);
 
 public slots:
-	void load(const QString &dir, const QFileInfoList &partList);
-	void stop();
+    void load(const QString &dir, const QFileInfoList &partList);
+    void stop();
 
 private:
-	PtrReaderThread *m_thread;
-	QString m_dir;
+    PtrReaderThread *m_thread;
+    QString m_dir;
 
 private slots:
-	void setPartParam(const QString &part, const QString &param, const QString &value);
+    void setPartParam(const QString &part, const QString &param, const QString &value);
 };
 
 #endif // PRTREADER_H

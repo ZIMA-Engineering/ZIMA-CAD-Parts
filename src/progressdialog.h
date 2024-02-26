@@ -14,16 +14,16 @@ class ProgressDialog;
  */
 class ProgressDialog : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit ProgressDialog(QWidget *parent = 0);
-	~ProgressDialog();
-	QLabel* label();
-	QProgressBar* progressBar();
+    explicit ProgressDialog(QWidget *parent = 0);
+    ~ProgressDialog();
+    QLabel* label();
+    QProgressBar* progressBar();
 
 private:
-	Ui::ProgressDialog *ui;
+    Ui::ProgressDialog *ui;
 };
 
 #endif // PROGRESSDIALOG_H

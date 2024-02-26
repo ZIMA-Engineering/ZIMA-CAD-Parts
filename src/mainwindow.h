@@ -50,42 +50,42 @@ class MainWindowClass;
 
 class MainWindow : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	MainWindow(QTranslator *translator, QWidget *parent = 0);
-	~MainWindow();
+    MainWindow(QTranslator *translator, QWidget *parent = 0);
+    ~MainWindow();
 
 public slots:
-	void showSettings(SettingsDialog::Section section = SettingsDialog::General);
+    void showSettings(SettingsDialog::Section section = SettingsDialog::General);
 
 protected:
-	void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 private:
-	Ui::MainWindowClass *ui;
+    Ui::MainWindowClass *ui;
 
-	QTranslator *translator;// app ui
-	WorkingDirWidget *m_wdirWidget;
-	WebDownloaderDialog *m_downloader;
+    QTranslator *translator;// app ui
+    WorkingDirWidget *m_wdirWidget;
+    WebDownloaderDialog *m_downloader;
 
-	QModelIndex lastFoundIndex;
+    QModelIndex lastFoundIndex;
 
-	void changeEvent(QEvent *event);
-	void closeEvent(QCloseEvent*);
+    void changeEvent(QEvent *event);
+    void closeEvent(QCloseEvent*);
 
 private slots:
-	void settingsChanged();
-	void downloadFile(QWebEngineDownloadRequest *download);
+    void settingsChanged();
+    void downloadFile(QWebEngineDownloadRequest *download);
 };
 
 class SleeperThread : public QThread
 {
 public:
-	static void msleep(unsigned long msecs)
-	{
-		QThread::msleep(msecs);
-	}
+    static void msleep(unsigned long msecs)
+    {
+        QThread::msleep(msecs);
+    }
 };
 
 #endif // MAINWINDOW_H

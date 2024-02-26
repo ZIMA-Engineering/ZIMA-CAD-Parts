@@ -11,49 +11,49 @@ class QFileInfo;
 
 class FileView : public QTreeView
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit FileView(QWidget *parent = 0);
+    explicit FileView(QWidget *parent = 0);
 
-	QFileInfo fileInfo(const QModelIndex &filteredIndex);
-	void createIndexHtmlFile(const QString &text, const QString &fileBase);
-	void moveParts();
-	void deleteParts();
-	void refreshRequested();
-	QString currentPath();
+    QFileInfo fileInfo(const QModelIndex &filteredIndex);
+    void createIndexHtmlFile(const QString &text, const QString &fileBase);
+    void moveParts();
+    void deleteParts();
+    void refreshRequested();
+    QString currentPath();
 
 signals:
-	void previewProductView(const QFileInfo &fi);
-	void hideProductView();
-	void openPartDirectory(const QFileInfo &fi);
+    void previewProductView(const QFileInfo &fi);
+    void hideProductView();
+    void openPartDirectory(const QFileInfo &fi);
 
 public slots:
-	void setDirectory(const QString &path);
-	void settingsChanged();
-	void copyToWorkingDir();
-	void directoryChanged();
+    void setDirectory(const QString &path);
+    void settingsChanged();
+    void copyToWorkingDir();
+    void directoryChanged();
 
 protected:
-	void scrollContentsBy(int dx, int dy);
+    void scrollContentsBy(int dx, int dy);
 
 private:
-	QString m_path;
-	FileModel *m_model;
-	FileFilterModel *m_proxy;
-	FileViewHeader *m_header;
+    QString m_path;
+    FileModel *m_model;
+    FileFilterModel *m_proxy;
+    FileViewHeader *m_header;
 
-	QModelIndex findNextPartIndex(const QModelIndex &from);
+    QModelIndex findNextPartIndex(const QModelIndex &from);
 
 private slots:
-	void resizeColumnToContents();
-	void refreshModel();
-	void reloadParts();
-	void handleActivated(const QModelIndex &index);
-	void openPart(const QModelIndex &index);
-	void showContextMenu(const QPoint &point);
-	void renameFile();
-	void editFile();
-	void directoryRenamed(const QString &oldName, const QString &newName);
+    void resizeColumnToContents();
+    void refreshModel();
+    void reloadParts();
+    void handleActivated(const QModelIndex &index);
+    void openPart(const QModelIndex &index);
+    void showContextMenu(const QPoint &point);
+    void renameFile();
+    void editFile();
+    void directoryRenamed(const QString &oldName, const QString &newName);
 };
 
 #endif // FILEVIEW_H

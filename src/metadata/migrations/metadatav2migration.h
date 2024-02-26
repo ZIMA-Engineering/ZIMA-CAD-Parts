@@ -6,10 +6,10 @@
 class MetadataV2Migration : public MetadataMigration
 {
 public:
-	bool migrate();
+    bool migrate();
 
 private:
-	QString paramHandle(int col);
+    QString paramHandle(int col);
 };
 
 #endif // METADATAV2MIGRATION_H

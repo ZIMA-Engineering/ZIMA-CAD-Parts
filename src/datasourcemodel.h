@@ -37,15 +37,15 @@ class DataSourceIconProvider;
  */
 class DataSourceModel : public QFileSystemModel
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit DataSourceModel(QObject *parent = 0);
+    explicit DataSourceModel(QObject *parent = 0);
 
-	int columnCount(const QModelIndex & parent = QModelIndex()) const;
-	QVariant data(const QModelIndex &index, int role) const;
+    int columnCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role) const;
 
 private:
-	DataSourceIconProvider *m_iconProvider;
+    DataSourceIconProvider *m_iconProvider;
 };
 
 /*! \brief An icon provider for ServersModel. It contains additional
@@ -55,18 +55,18 @@ private:
 class DataSourceIconProvider : public QFileIconProvider
 {
 public:
-	DataSourceIconProvider();
+    DataSourceIconProvider();
 
-	virtual QIcon   icon ( IconType type ) const;
-	virtual QIcon   icon ( const QFileInfo & info ) const;
-	virtual QString type ( const QFileInfo & info ) const;
+    virtual QIcon   icon ( IconType type ) const;
+    virtual QIcon   icon ( const QFileInfo & info ) const;
+    virtual QString type ( const QFileInfo & info ) const;
 
-	/*! \brief Handle custom logo files or standard file browser icons as QPixmaps.
-	 * The request is simple - to allow various sized pixmaps to be displayed.
-	 * Basically there is no image resizing allowed. Logo files are used as-is,
-	 * standard icons are resized to 32x32
-	 */
-	QPixmap pixmap(const QFileInfo &info) const;
+    /*! \brief Handle custom logo files or standard file browser icons as QPixmaps.
+     * The request is simple - to allow various sized pixmaps to be displayed.
+     * Basically there is no image resizing allowed. Logo files are used as-is,
+     * standard icons are resized to 32x32
+     */
+    QPixmap pixmap(const QFileInfo &info) const;
 };
 
 /*! A filter proxy for ServersModel. Its main task is to filter out
@@ -74,14 +74,14 @@ public:
  */
 class DataSourceProxyModel : public QSortFilterProxyModel
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	DataSourceProxyModel(QObject *parent = 0);
+    DataSourceProxyModel(QObject *parent = 0);
 
 protected:
-	bool filterAcceptsRow(int sourceRow,
-	                      const QModelIndex &sourceParent) const;
+    bool filterAcceptsRow(int sourceRow,
+                          const QModelIndex &sourceParent) const;
 };
 
 #endif // DATASOURCEMODEL_H

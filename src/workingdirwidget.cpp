@@ -9,15 +9,15 @@
 
 
 WorkingDirWidget::WorkingDirWidget(QWidget *parent) :
-	QWidget(parent),
-	ui(new Ui::WorkingDirWidget)
+    QWidget(parent),
+    ui(new Ui::WorkingDirWidget)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 }
 
 WorkingDirWidget::~WorkingDirWidget()
 {
-	delete ui;
+    delete ui;
 }
 
 void WorkingDirWidget::settingsChanged()

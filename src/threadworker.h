@@ -14,37 +14,37 @@
  */
 class ThreadWorker : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit ThreadWorker(QObject *parent = nullptr);
-	template <class T>
-	static T* create();
-	void setup();
+    explicit ThreadWorker(QObject *parent = nullptr);
+    template <class T>
+    static T* create();
+    void setup();
 
 signals:
-	void progress(int done, int total);
-	void errorOccured(const QString &error);
-	void finished();
+    void progress(int done, int total);
+    void errorOccured(const QString &error);
+    void finished();
 
 public slots:
-	void start();
-	virtual void run() = 0;
-	virtual void stop();
-	void quit();
+    void start();
+    virtual void run() = 0;
+    virtual void stop();
+    void quit();
 
 protected:
-	bool shouldStop() const;
+    bool shouldStop() const;
 };
 
 template<class T>
 T* ThreadWorker::create()
 {
-	T *worker = new T();
-	QThread *thread = new QThread();
-	worker->moveToThread(thread);
-	worker->setup();
+    T *worker = new T();
+    QThread *thread = new QThread();
+    worker->moveToThread(thread);
+    worker->setup();
 
-	return worker;
+    return worker;
 }
 
 #endif // THREADWORKER_H

@@ -41,157 +41,157 @@
 
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
-	: QMainWindow(parent),
-	  ui(new Ui::MainWindowClass),
-	  translator(translator),
-	  m_downloader(0)
+    : QMainWindow(parent),
+      ui(new Ui::MainWindowClass),
+      translator(translator),
+      m_downloader(0)
 {
-	qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
+    qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
 
-	QSplashScreen *splash = 0;
+    QSplashScreen *splash = 0;
 
-	if (Settings::get()->GUISplashEnabled)
-	{
-		QPixmap pixmap(":/gfx/splash.png");
+    if (Settings::get()->GUISplashEnabled)
+    {
+        QPixmap pixmap(":/gfx/splash.png");
 
-		splash = new QSplashScreen(pixmap);
-		splash->setMask(pixmap.mask());
-		splash->show();
-	}
+        splash = new QSplashScreen(pixmap);
+        splash->setMask(pixmap.mask());
+        splash->show();
+    }
 
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	connect(ui->action_Preferences, SIGNAL(triggered()),
-			this, SLOT(showSettings()));
-	connect(ui->actionAbout_Qt, SIGNAL(triggered()),
-			qApp, SLOT(aboutQt()));
+    connect(ui->action_Preferences, SIGNAL(triggered()),
+            this, SLOT(showSettings()));
+    connect(ui->actionAbout_Qt, SIGNAL(triggered()),
+            qApp, SLOT(aboutQt()));
 
 #if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
-	// do not display menu bar on Windows and Linux. It contains only one "File"
-	// item now. On th eother side it's mandatory to allow user to quit the app
-	// in some X11 window manager (and mac).
-	ui->menuBar->hide();
+    // do not display menu bar on Windows and Linux. It contains only one "File"
+    // item now. On th eother side it's mandatory to allow user to quit the app
+    // in some X11 window manager (and mac).
+    ui->menuBar->hide();
 #endif
 
-	connect(ui->toolBar, SIGNAL(settingsRequested()),
-			this, SLOT(showSettings()));
+    connect(ui->toolBar, SIGNAL(settingsRequested()),
+            this, SLOT(showSettings()));
 
-	connect(ui->tabWidget, SIGNAL(showSettings(SettingsDialog::Section)),
-			this, SLOT(showSettings(SettingsDialog::Section)));
+    connect(ui->tabWidget, SIGNAL(showSettings(SettingsDialog::Section)),
+            this, SLOT(showSettings(SettingsDialog::Section)));
 
-	connect(ui->tabWidget, SIGNAL(newHistory(DataSourceHistory*)),
-			ui->toolBar, SLOT(setupHistory(DataSourceHistory*)));
+    connect(ui->tabWidget, SIGNAL(newHistory(DataSourceHistory*)),
+            ui->toolBar, SLOT(setupHistory(DataSourceHistory*)));
 
-	ui->toolBar->setupHistory(ui->tabWidget->currentDataSource()->history());
+    ui->toolBar->setupHistory(ui->tabWidget->currentDataSource()->history());
 
-	restoreState(Settings::get()->MainWindowState);
-	restoreGeometry(Settings::get()->MainWindowGeometry);
+    restoreState(Settings::get()->MainWindowState);
+    restoreGeometry(Settings::get()->MainWindowGeometry);
 
-	QList<int> list;
-	list << (int)(width()*0.25) << (int)(width()*0.75);
-	ui->splitter->setSizes(list);
+    QList<int> list;
+    list << (int)(width()*0.25) << (int)(width()*0.75);
+    ui->splitter->setSizes(list);
 
-	connect(ui->tabWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
+    connect(ui->tabWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
-	auto defaultProfile = QWebEngineProfile::defaultProfile();
+    auto defaultProfile = QWebEngineProfile::defaultProfile();
 
-	defaultProfile->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
-	connect(defaultProfile, SIGNAL(downloadRequested(QWebEngineDownloadRequest*)),
-			this, SLOT(downloadFile(QWebEngineDownloadRequest*)));
+    defaultProfile->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
+    connect(defaultProfile, SIGNAL(downloadRequested(QWebEngineDownloadRequest*)),
+            this, SLOT(downloadFile(QWebEngineDownloadRequest*)));
 
-	settingsChanged();
+    settingsChanged();
 
-	if (Settings::get()->GUISplashEnabled)
-	{
-		SleeperThread::msleep(Settings::get()->GUISplashDuration);
-		splash->finish(this);
-	}
+    if (Settings::get()->GUISplashEnabled)
+    {
+        SleeperThread::msleep(Settings::get()->GUISplashDuration);
+        splash->finish(this);
+    }
 }
 
 MainWindow::~MainWindow()
 {
-	delete ui;
+    delete ui;
 }
 
 void MainWindow::showSettings(SettingsDialog::Section section)
 {
-	SettingsDialog sd(&translator, this);
-	sd.setSection(section);
+    SettingsDialog sd(&translator, this);
+    sd.setSection(section);
 
-	if (sd.exec())
-		settingsChanged();
+    if (sd.exec())
+        settingsChanged();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-	if (event->key() == Qt::Key_Alt)
-	{
-		ui->menuBar->setVisible(!ui->menuBar->isVisible());
-		return;
-	}
+    if (event->key() == Qt::Key_Alt)
+    {
+        ui->menuBar->setVisible(!ui->menuBar->isVisible());
+        return;
+    }
 
-	QMainWindow::keyPressEvent(event);
+    QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::changeEvent(QEvent *event)
 {
-	if (event->type() == QEvent::LanguageChange) {
-		ui->retranslateUi(this);
-	}
-	else
-		QMainWindow::changeEvent(event);
+    if (event->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+    }
+    else
+        QMainWindow::changeEvent(event);
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-	if (!e->spontaneous())
-	{
-		Settings::get()->MainWindowState = saveState();
-		Settings::get()->MainWindowGeometry = saveGeometry();
-	}
+    if (!e->spontaneous())
+    {
+        Settings::get()->MainWindowState = saveState();
+        Settings::get()->MainWindowGeometry = saveGeometry();
+    }
 
-	QMainWindow::closeEvent(e);
+    QMainWindow::closeEvent(e);
 }
 
 void MainWindow::settingsChanged()
 {
-	Settings::get()->recalculateFilters();
+    Settings::get()->recalculateFilters();
 
 #if 0
-	// it crashes sometimes...
-	const QMetaObject *mo;
-	foreach (QWidget *w, findChildren<QWidget*>())
-	{
-		mo = w->metaObject();
-		int settingsMethod = mo->indexOfMethod(QMetaObject::normalizedSignature("settingsChanged()"));
-		if (settingsMethod == -1)
-		{
-			qDebug() << "META> 'settingsChanged() method not found for" << w->objectName();
-			continue;
-		}
-		else
-		{
-			qDebug() << "META> 'settingsChanged() method YES found for" << w->objectName();
-			mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
-		}
-	}
+    // it crashes sometimes...
+    const QMetaObject *mo;
+    foreach (QWidget *w, findChildren<QWidget*>())
+    {
+        mo = w->metaObject();
+        int settingsMethod = mo->indexOfMethod(QMetaObject::normalizedSignature("settingsChanged()"));
+        if (settingsMethod == -1)
+        {
+            qDebug() << "META> 'settingsChanged() method not found for" << w->objectName();
+            continue;
+        }
+        else
+        {
+            qDebug() << "META> 'settingsChanged() method YES found for" << w->objectName();
+            mo->invokeMethod(w, "settingsChanged", Qt::DirectConnection);
+        }
+    }
 #endif
 
-	ui->toolBar->settingsChanged();
-	ui->tabWidget->settingsChanged();
+    ui->toolBar->settingsChanged();
+    ui->tabWidget->settingsChanged();
 }
 
 
 void MainWindow::downloadFile(QWebEngineDownloadRequest *download)
 {
-	download->setDownloadDirectory(Settings::get()->getWorkingDir());
-	download->accept();
+    download->setDownloadDirectory(Settings::get()->getWorkingDir());
+    download->accept();
 
-	qDebug() << "Downloading into" << download->downloadDirectory() << download->downloadFileName();
+    qDebug() << "Downloading into" << download->downloadDirectory() << download->downloadFileName();
 
-	if (!m_downloader)
-		m_downloader = new WebDownloaderDialog(this);
+    if (!m_downloader)
+        m_downloader = new WebDownloaderDialog(this);
 
-	m_downloader->enqueue(download);
-	m_downloader->show();
+    m_downloader->enqueue(download);
+    m_downloader->show();
 }

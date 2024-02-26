@@ -22,36 +22,36 @@ class FileModel;
  */
 class FileViewHeader : public QHeaderView
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	FileViewHeader(FileModel *model, QWidget *parent = 0);
+    FileViewHeader(FileModel *model, QWidget *parent = 0);
 
 public slots:
-	void newDirectory(const QString &path);
-	void fixComboPositions();
+    void newDirectory(const QString &path);
+    void fixComboPositions();
 
 signals:
-	void filterColumn(int column, const QString &text);
+    void filterColumn(int column, const QString &text);
 
 protected:
-	QSize sizeHint() const;
-	void showEvent(QShowEvent *e);
+    QSize sizeHint() const;
+    void showEvent(QShowEvent *e);
 
 private:
-	FileModel *m_model;
-	QMap<int, QLineEdit*> m_edits;
-	QSignalMapper *m_mapper;
+    FileModel *m_model;
+    QMap<int, QLineEdit*> m_edits;
+    QSignalMapper *m_mapper;
 
-	void clearFields();
-	void createFields();
-	void setEditGeometry(QWidget *w, int index);
-	void forceRedraw();
+    void clearFields();
+    void createFields();
+    void setEditGeometry(QWidget *w, int index);
+    void forceRedraw();
 
 private slots:
-	void handleSectionResized(int i);
-	void handleSectionMoved(int logical, int oldVisualIndex, int newVisualIndex);
-	void filter(int column);
-	void sortIndicatorChange(int logicalIndex, Qt::SortOrder order);
+    void handleSectionResized(int i);
+    void handleSectionMoved(int logical, int oldVisualIndex, int newVisualIndex);
+    void filter(int column);
+    void sortIndicatorChange(int logicalIndex, Qt::SortOrder order);
 };
 
 #endif // FILEVIEWHEADER_H

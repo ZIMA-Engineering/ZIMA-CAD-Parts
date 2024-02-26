@@ -21,62 +21,62 @@ class DirectoryWidget;
  */
 class DirectoryWidget : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit DirectoryWidget(QWidget *parent = 0);
-	~DirectoryWidget();
+    explicit DirectoryWidget(QWidget *parent = 0);
+    ~DirectoryWidget();
 
 public slots:
-	void setDirectory(const QString &rootPath);
-	void updateDirectory(const QString &rootPath);
+    void setDirectory(const QString &rootPath);
+    void updateDirectory(const QString &rootPath);
 
-	void settingsChanged();
+    void settingsChanged();
 
 signals:
-	void changeSettings();
-	void openPartDirectory(const QFileInfo &fi);
+    void changeSettings();
+    void openPartDirectory(const QFileInfo &fi);
 
 protected:
-	void changeEvent(QEvent *event);
+    void changeEvent(QEvent *event);
 
 private:
 
-	enum Tabs {
-		TECH_SPECS,
-		PARTS,
-		TABS_COUNT
-	};
+    enum Tabs {
+        TECH_SPECS,
+        PARTS,
+        TABS_COUNT
+    };
 
-	Ui::DirectoryWidget *ui;
+    Ui::DirectoryWidget *ui;
 
-	ProductView *m_productView;
+    ProductView *m_productView;
 
-	void loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound);
-	void editIndexFile(const QString &path);
+    void loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound);
+    void editIndexFile(const QString &path);
 
 private slots:
-	void dirWebViewUrlLineEdit_returnPressed();
-	void dirWebViewGoButton_clicked();
-	void dirWebViewPinButton_clicked();
-	void dirWebViewEditButton_clicked();
-	void partsIndexUrlLineEdit_returnPressed();
-	void partsIndexGoButton_clicked();
-	void partsIndexPinButton_clicked();
-	void partsIndexEditButton_clicked();
-	void refreshButton_clicked();
+    void dirWebViewUrlLineEdit_returnPressed();
+    void dirWebViewGoButton_clicked();
+    void dirWebViewPinButton_clicked();
+    void dirWebViewEditButton_clicked();
+    void partsIndexUrlLineEdit_returnPressed();
+    void partsIndexGoButton_clicked();
+    void partsIndexPinButton_clicked();
+    void partsIndexEditButton_clicked();
+    void refreshButton_clicked();
 
-	void dirWebView_urlChanged(const QUrl &url);
-	void partsWebView_urlChanged(const QUrl &url);
+    void dirWebView_urlChanged(const QUrl &url);
+    void partsWebView_urlChanged(const QUrl &url);
 
-	void previewInProductView(const QFileInfo &fi);
+    void previewInProductView(const QFileInfo &fi);
 
-	void moveSelectedParts();
-	void deleteSelectedParts();
+    void moveSelectedParts();
+    void deleteSelectedParts();
 
-	void adjustThumbColumnWidth(int width);
+    void adjustThumbColumnWidth(int width);
 
-	void setFiltersDialog();
+    void setFiltersDialog();
 };
 
 #endif // DIRECTORYWIDGET_H

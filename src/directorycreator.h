@@ -7,34 +7,34 @@
 
 class DirectoryCreator : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	DirectoryCreator(const QString &dir, const QString &name, QObject *parent = 0);
-	void setPrototype(const QString &prototype);
+    DirectoryCreator(const QString &dir, const QString &name, QObject *parent = 0);
+    void setPrototype(const QString &prototype);
 
 public slots:
-	void work();
+    void work();
 
 private:
-	QString m_dir;
-	QString m_name;
-	QString m_prototype;
+    QString m_dir;
+    QString m_name;
+    QString m_prototype;
 };
 
 class DirectoryCreatorThread : public ThreadWorker {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	void setInfo(const QString &dir, const QString &name, const QString &prototype = "");
-	void run();
+    void setInfo(const QString &dir, const QString &name, const QString &prototype = "");
+    void run();
 
 private:
-	QString m_dir;
-	QString m_name;
-	QString m_prototype;
+    QString m_dir;
+    QString m_name;
+    QString m_prototype;
 
-	void recursiveCopy(const QString &src, const QString &dst);
+    void recursiveCopy(const QString &src, const QString &dst);
 };
 
 #endif // DIRECTORYCREATOR_H

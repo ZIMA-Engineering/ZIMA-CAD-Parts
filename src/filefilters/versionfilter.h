@@ -8,11 +8,11 @@
 class VersionFilter : public FileFilter
 {
 public:
-	VersionFilter();
-	FileFilters filterType();
-	void load(QSettings *settings);
-	void save(QSettings *settings);
-	QTreeWidgetItem* widget();
+    VersionFilter();
+    FileFilters filterType();
+    void load(QSettings *settings);
+    void save(QSettings *settings);
+    QTreeWidgetItem* widget();
 };
 
 #endif // VERSIONFILTER_H

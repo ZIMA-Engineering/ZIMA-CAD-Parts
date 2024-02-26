@@ -27,26 +27,26 @@ class WebDownloaderDialog;
 
 class DirectoryWebView : public QWebEngineView
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit DirectoryWebView(QWidget *parent = 0);
-	void setRootPath(QString path);
+    explicit DirectoryWebView(QWidget *parent = 0);
+    void setRootPath(QString path);
 
 signals:
 
 public slots:
-	void loadAboutPage();
+    void loadAboutPage();
 
 protected:
-	DirectoryWebView *createWindow(QWebEnginePage::WebWindowType type);
+    DirectoryWebView *createWindow(QWebEnginePage::WebWindowType type);
 
 private slots:
-	void pageLoaded(bool ok);
-	void urlChange(const QUrl &url);
-	void authenticate(const QUrl &requestUrl, QAuthenticator *authenticator);
+    void pageLoaded(bool ok);
+    void urlChange(const QUrl &url);
+    void authenticate(const QUrl &requestUrl, QAuthenticator *authenticator);
 
 private:
-	QString m_rootPath;
+    QString m_rootPath;
 };
 
 #endif // DIRECTORYWEBVIEW_H

@@ -12,8 +12,8 @@
 class LineEditValueDelegate : public QStyledItemDelegate
 {
 public:
-	LineEditValueDelegate(QWidget *parent = 0);
-	void setEditorData(QWidget *editor, const QModelIndex &index) const override;
+    LineEditValueDelegate(QWidget *parent = 0);
+    void setEditorData(QWidget *editor, const QModelIndex &index) const override;
 
 };
 

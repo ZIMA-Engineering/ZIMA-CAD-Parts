@@ -16,17 +16,17 @@ class WebDownloaderDialog;
 
 class WebDownloaderDialog : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit WebDownloaderDialog(QWidget *parent = 0);
-	~WebDownloaderDialog();
+    explicit WebDownloaderDialog(QWidget *parent = 0);
+    ~WebDownloaderDialog();
 
-	void enqueue(QWebEngineDownloadRequest *download);
+    void enqueue(QWebEngineDownloadRequest *download);
 
 private:
-	Ui::WebDownloaderDialog *ui;
-	QVBoxLayout *m_layout;
+    Ui::WebDownloaderDialog *ui;
+    QVBoxLayout *m_layout;
 };
 
 #endif // WEBDOWLOADERDIALOG_H
