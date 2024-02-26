@@ -122,9 +122,9 @@ QString ThumbnailManager::tooltip(const QFileInfo &fi)
 
 QString ThumbnailManager::path(const QFileInfo &fi)
 {
-    if (!m_cache[fi.fileName()].first.isEmpty())
+    if (!m_cache[fi.baseName()].first.isEmpty())
     {
-        return m_cache[fi.fileName()].first;
+        return m_cache[fi.baseName()].first;
     }
     return QString();
 }
