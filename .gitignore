@@ -1,1 +1,9 @@
+.qmake.stash
+Makefile
 zima-cad-parts.pro.user
+ZIMA-CAD-Parts
+*.o
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
