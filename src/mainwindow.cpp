@@ -96,6 +96,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     auto defaultProfile = QWebEngineProfile::defaultProfile();
 
     defaultProfile->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
+    defaultProfile->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+
     connect(defaultProfile, SIGNAL(downloadRequested(QWebEngineDownloadRequest*)),
             this, SLOT(downloadFile(QWebEngineDownloadRequest*)));
 
