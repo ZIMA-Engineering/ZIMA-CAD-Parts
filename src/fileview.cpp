@@ -30,6 +30,11 @@ FileView::FileView(QWidget *parent) :
     m_proxy->setSourceModel(m_model);
     setModel(m_proxy);
 
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+    connect(selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(updateSelection(QItemSelection,QItemSelection)));
+
     setSortingEnabled(true);
     sortByColumn(100, Qt::AscendingOrder);
 
@@ -211,6 +216,20 @@ QModelIndex FileView::findNextPartIndex(const QModelIndex &from)
 
         return index;
     }
+}
+
+void FileView::updateSelection(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(selected);
+    Q_UNUSED(deselected);
+
+    QModelIndexList indexes;
+
+    foreach (const QModelIndex &index, selectionModel()->selectedRows(0)) {
+        indexes << m_proxy->mapToSource(index);
+    }
+
+    m_model->setSelectedIndexes(indexes);
 }
 
 void FileView::handleActivated(const QModelIndex &index)

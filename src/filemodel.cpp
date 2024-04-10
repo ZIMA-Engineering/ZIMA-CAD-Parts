@@ -257,6 +257,22 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
         );
 
         emit dataChanged(index, index);
+
+        // Toggle other items selected in the view
+        foreach (const QModelIndex &selectedIndex, m_selectedIndexes) {
+            if (selectedIndex.row() == index.row())
+                continue;
+
+            QFileInfo selectedPart = fileInfo(selectedIndex);
+
+            PartSelector::get()->toggle(
+                m_path,
+                selectedPart.absoluteFilePath()
+            );
+
+            emit dataChanged(selectedIndex, selectedIndex);
+        }
+
         return true;
 
     } else if (role == Qt::EditRole && index.column() > 1) {
@@ -279,6 +295,11 @@ QVariant FileModel::headerData (int section, Qt::Orientation orientation, int ro
         return QVariant();
 
     return m_columnLabels[section];
+}
+
+void FileModel::setSelectedIndexes(const QModelIndexList &list)
+{
+    m_selectedIndexes = list;
 }
 
 void FileModel::setDirectory(const QString &path)

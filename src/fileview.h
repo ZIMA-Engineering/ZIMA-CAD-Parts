@@ -45,6 +45,7 @@ private:
     QModelIndex findNextPartIndex(const QModelIndex &from);
 
 private slots:
+    void updateSelection(const QItemSelection &selected, const QItemSelection &deselected);
     void resizeColumnToContents();
     void refreshModel();
     void reloadParts();

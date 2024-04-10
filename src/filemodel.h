@@ -22,6 +22,7 @@
 #define FILEMODEL_H
 
 #include <QAbstractItemModel>
+#include <QItemSelectionModel>
 #include <QFileIconProvider>
 #include <QMimeData>
 #include "metadata.h"
@@ -50,6 +51,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+
+    void setSelectedIndexes(const QModelIndexList &list);
 
     void settingsChanged();
     void setDirectory(const QString &path);
@@ -82,6 +85,7 @@ private:
     QString m_path;
     QStringList m_columnLabels;
     QStringList m_parameterHandles;
+    QModelIndexList m_selectedIndexes;
 
     FileIconProvider *m_iconProvider;
 
