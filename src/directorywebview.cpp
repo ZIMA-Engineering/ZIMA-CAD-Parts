@@ -77,6 +77,7 @@ DirectoryWebView* DirectoryWebView::createWindow(QWebEnginePage::WebWindowType t
     popup->setLayout(layout);
     popup->setWindowTitle(tr("ZIMA-CAD-Parts Technical Specifications"));
     popup->setWindowFlags(popup->windowFlags() | Qt::WindowMinMaxButtonsHint);
+    popup->resize(size());
     popup->show();
     return webview;
 }
