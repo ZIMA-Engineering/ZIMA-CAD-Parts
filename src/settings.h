@@ -111,13 +111,6 @@ public:
     //! Flag: show developer tool bar
     bool DeveloperDirWebViewToolBar;
 
-    //! ProEProductView path for external java applet
-    QString ExtensionsProductViewPath;
-    //! ProductView dialog geometry
-    QByteArray ExtensionsProductViewGeometry;
-    //! ProductView dialog position
-    QPoint ExtensionsProductViewPosition;
-
     // Text editor executable
     QString TextEditorPath;
 

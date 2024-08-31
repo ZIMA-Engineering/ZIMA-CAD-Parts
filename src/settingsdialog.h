@@ -44,7 +44,6 @@ public:
         DataSources,
         ExternalPrograms,
         DeveloperMode,
-        ProductView,
         SectionCount
     };
 
@@ -65,7 +64,6 @@ private slots:
     void datasourceDownButton_clicked();
     void setZimaUtilPath(int util);
     void proeButton_clicked();
-    void productViewButton_clicked();
     void textEditorButton_clicked();
     void terminalButton_clicked();
 

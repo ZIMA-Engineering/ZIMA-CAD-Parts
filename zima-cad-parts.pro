@@ -33,7 +33,6 @@ SOURCES += src/zima-cad-parts.cpp \
     src/filemodel.cpp \
     src/addeditdatasource.cpp \
     src/settings.cpp \
-    src/extensions/productview/productview.cpp \
     src/filtersdialog.cpp \
     src/metadata.cpp \
     src/zimautils.cpp \
@@ -43,9 +42,6 @@ SOURCES += src/zima-cad-parts.cpp \
     src/filefilters/extensionfilter.cpp \
     src/filefilters/filtergroup.cpp \
     src/filefilters/versionfilter.cpp \
-    src/extensions/productview/abstractproductview.cpp \
-    src/extensions/productview/proeproductview.cpp \
-    src/extensions/productview/dxfproductview.cpp \
     libqdxf/libdxfrw/src/drw_base.h \
     libqdxf/libdxfrw/src/drw_entities.cpp \
     libqdxf/libdxfrw/src/drw_entities.h \
@@ -70,8 +66,6 @@ SOURCES += src/zima-cad-parts.cpp \
     libqdxf/src/mtexttohtml.cpp \
     libqdxf/src/spline.cpp \
     libproe/libproe.cpp \
-    src/extensions/productview/pdfproductview.cpp \
-    src/extensions/productview/failbackproductview.cpp \
     src/languageflagswidget.cpp \
     src/extensions/navbar/navbar.cpp \
     src/extensions/navbar/navbarheader.cpp \
@@ -84,7 +78,6 @@ SOURCES += src/zima-cad-parts.cpp \
     src/webdownloaderdialog.cpp \
     src/progressdialog.cpp \
     src/directoryremover.cpp \
-    src/extensions/productview/imageproductview.cpp \
     src/thumbnailmanager.cpp \
     src/webauthenticationdialog.cpp \
     src/fileeditdialog.cpp \
@@ -122,7 +115,6 @@ HEADERS += src/mainwindow.h \
     src/filemodel.h \
     src/addeditdatasource.h \
     src/settings.h \
-    src/extensions/productview/productview.h \
     src/filtersdialog.h \
     src/metadata.h \
     src/zima-cad-parts.h \
@@ -133,17 +125,12 @@ HEADERS += src/mainwindow.h \
     src/filefilters/extensionfilter.h \
     src/filefilters/filtergroup.h \
     src/filefilters/versionfilter.h \
-    src/extensions/productview/abstractproductview.h \
-    src/extensions/productview/proeproductview.h \
-    src/extensions/productview/dxfproductview.h \
     libqdxf/src/mtexttohtml.h \
     libqdxf/src/scene_items.h \
     libqdxf/src/dxfsceneview.h \
     libqdxf/src/dxfinterface.h \
     libqdxf/src/spline.h \
     libproe/libproe.h \
-    src/extensions/productview/pdfproductview.h \
-    src/extensions/productview/failbackproductview.h \
     src/languageflagswidget.h \
     src/extensions/navbar/navbar.h \
     src/extensions/navbar/navbarheader.h \
@@ -157,7 +144,6 @@ HEADERS += src/mainwindow.h \
     src/webdownloaderdialog.h \
     src/progressdialog.h \
     src/directoryremover.h \
-    src/extensions/productview/imageproductview.h \
     src/thumbnailmanager.h \
     src/webauthenticationdialog.h \
     src/fileeditdialog.h \
@@ -193,16 +179,11 @@ FORMS += mainwindow.ui \
     addeditdatasource.ui \
     src/filtersdialog.ui \
     src/errordialog.ui \
-    src/extensions/productview/proeproductview.ui \
-    src/extensions/productview/dxfproductview.ui \
-    src/extensions/productview/pdfproductview.ui \
-    src/extensions/productview/failbackproductview.ui \
     src/extensions/navbar/navbaroptionsdialog.ui \
     src/workingdirwidget.ui \
     src/webdownloaderwidget.ui \
     src/webdownloaderdialog.ui \
     src/progressdialog.ui \
-    src/extensions/productview/imageproductview.ui \
     src/webauthenticationdialog.ui \
     src/fileeditdialog.ui \
     src/createdirectorydialog.ui \
@@ -223,7 +204,6 @@ OTHER_FILES += \
     AUTHORS \
     data/zima-cad-parts.html \
     data/zima-cad-parts_cs_CZ.html \
-    data/extensions/productview/proeproductview.html \
     Doxyfile \
     src/extensions/navbar/styles/downarrowblue.png \
     src/extensions/navbar/styles/sizegrip2003blue.png \
