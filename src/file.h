@@ -59,6 +59,8 @@ typedef enum {
     IDW,
     // VariCAD
     DWB,
+    // FreeCAD
+    FCSTD,
     // CAD NEUTRAL
     STEP,
     IGES,

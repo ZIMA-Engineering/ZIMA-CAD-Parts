@@ -220,6 +220,10 @@ void Settings::setupFilterGroups()
     FilterGroups.last()
             << new ExtensionFilter(FileType::DWB);
 
+    FilterGroups << FilterGroup("FreeCAD", "FreeCAD");
+    FilterGroups.last()
+            << new ExtensionFilter(FileType::FCSTD);
+
     FilterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
     FilterGroups.last()
             << new ExtensionFilter(FileType::STEP)
