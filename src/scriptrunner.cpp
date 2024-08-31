@@ -48,7 +48,7 @@ void ScriptRunner::run(const QFileInfo &script, const QFileInfo &dir)
     }
     );
 
-    proc->start();
+    proc->startDetached();
 }
 
 void ScriptRunner::onScriptStarted(const QFileInfo &script, QProcess *process)
