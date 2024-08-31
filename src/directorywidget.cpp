@@ -109,6 +109,12 @@ void DirectoryWidget::updateDirectory(const QString &rootPath)
         ui->partsTreeView->directoryChanged();
 }
 
+void DirectoryWidget::openAboutPage()
+{
+    ui->tabWidget->setCurrentIndex(0); // Switch to web view
+    ui->dirWebView->loadAboutPage();
+}
+
 void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound)
 {
     QStringList filters;

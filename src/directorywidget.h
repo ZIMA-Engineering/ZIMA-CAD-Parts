@@ -29,6 +29,7 @@ public:
 public slots:
     void setDirectory(const QString &rootPath);
     void updateDirectory(const QString &rootPath);
+    void openAboutPage();
 
     void settingsChanged();
 

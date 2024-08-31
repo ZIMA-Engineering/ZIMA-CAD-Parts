@@ -76,6 +76,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     connect(ui->toolBar, SIGNAL(settingsRequested()),
             this, SLOT(showSettings()));
 
+    connect(ui->toolBar, SIGNAL(aboutRequested()),
+            ui->tabWidget, SLOT(openAboutPage()));
+
     connect(ui->tabWidget, SIGNAL(showSettings(SettingsDialog::Section)),
             this, SLOT(showSettings(SettingsDialog::Section)));
 

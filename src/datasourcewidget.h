@@ -43,6 +43,7 @@ public slots:
     void settingsChanged();
     void setDirectory(const QString &path);
     void goToWorkingDirectory();
+    void openAboutPage();
 
 private:
     DataSourceHistory *m_history;

@@ -62,6 +62,11 @@ void MainTabWidget::openInANewTab(const QString &dir)
     addDataSourceWidget(dir);
 }
 
+void MainTabWidget::openAboutPage()
+{
+    currentDataSource()->openAboutPage();
+}
+
 void MainTabWidget::tabInserted(int index)
 {
     Q_UNUSED(index)

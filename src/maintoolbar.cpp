@@ -6,6 +6,7 @@
 #include "datasourcehistory.h"
 
 #include <QStyle>
+#include <QMenu>
 
 MainToolBar::MainToolBar(QWidget *parent) :
     QToolBar(parent),
@@ -35,6 +36,11 @@ MainToolBar::MainToolBar(QWidget *parent) :
     addAction(ui->actionSettings);
     connect(ui->actionSettings, SIGNAL(triggered()),
             this, SIGNAL(settingsRequested()));
+
+    auto settingsMenu = new QMenu(this);
+    settingsMenu->addAction(tr("About..."), this, SIGNAL(aboutRequested()));
+
+    ui->actionSettings->setMenu(settingsMenu);
 }
 
 MainToolBar::~MainToolBar()

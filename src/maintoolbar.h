@@ -24,6 +24,7 @@ public slots:
 
 signals:
     void settingsRequested();
+    void aboutRequested();
 
 private:
     Ui::MainToolBar *ui;

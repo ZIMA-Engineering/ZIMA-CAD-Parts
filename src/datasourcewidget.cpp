@@ -104,6 +104,11 @@ void DataSourceWidget::goToWorkingDirectory()
     m_history->track(wdir);
 }
 
+void DataSourceWidget::openAboutPage()
+{
+    dirWidget->openAboutPage();
+}
+
 void DataSourceWidget::setupDataSources(const QString &dir)
 {
     foreach(DataSource *ds, Settings::get()->DataSources)
