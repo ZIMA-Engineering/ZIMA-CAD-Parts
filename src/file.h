@@ -57,6 +57,8 @@ typedef enum {
     IPT,
     IAM,
     IDW,
+    // VariCAD
+    DWB,
     // CAD NEUTRAL
     STEP,
     IGES,

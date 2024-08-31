@@ -73,6 +73,8 @@ QString File::getInternalNameForFileType(FileType::FileType type)
         return "iam";
     case FileType::IDW:
         return "idw";
+    case FileType::DWB:
+        return "dwb";
     case FileType::DWG:
         return "dwg";
     case FileType::STEP:
@@ -160,6 +162,8 @@ QString File::getLabelForFileType(FileType::FileType type)
         return "*.iam";
     case FileType::IDW:
         return "*.idw";
+    case FileType::DWB:
+        return "*.dwb";
     case FileType::DWG:
         return "*.dwg";
     case FileType::STEP:
@@ -253,6 +257,8 @@ QString File::getRxForFileType(FileType::FileType type)
         return "(^.+\\.step|.+\\.stp$)";
     case FileType::IGES:
         return "(^.+\\.iges|.+\\.igs$)";
+    case FileType::DWB:
+        return "(^.+\\.dwb$)";
     case FileType::DXF:
         return "(^.+\\.dxf$)";
     case FileType::STL:

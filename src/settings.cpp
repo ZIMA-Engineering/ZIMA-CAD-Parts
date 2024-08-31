@@ -216,6 +216,10 @@ void Settings::setupFilterGroups()
             << new ExtensionFilter(FileType::IAM)
             << new ExtensionFilter(FileType::IDW);
 
+    FilterGroups << FilterGroup("VariCAD", "VariCAD");
+    FilterGroups.last()
+            << new ExtensionFilter(FileType::DWB);
+
     FilterGroups << FilterGroup("CADNeutral", "CAD NEUTRAL");
     FilterGroups.last()
             << new ExtensionFilter(FileType::STEP)
