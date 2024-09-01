@@ -55,6 +55,10 @@ QString File::getInternalNameForFileType(FileType::FileType type)
         return "catdrawing";
     case FileType::NX_PRT:
         return "prt_nx";
+    case FileType::NX_ASM:
+        return "asm_nx";
+    case FileType::NX_DRW:
+        return "drw_nx";
     case FileType::SLDPRT:
         return "sldprt";
     case FileType::SLDASM:
@@ -146,6 +150,10 @@ QString File::getLabelForFileType(FileType::FileType type)
         return "*.catdrawing";
     case FileType::NX_PRT:
         return "*.prt";
+    case FileType::NX_ASM:
+        return "*.asm_.asm";
+    case FileType::NX_DRW:
+        return "*._drw.prt";
     case FileType::SLDPRT:
         return "*.sldprt";
     case FileType::SLDASM:
@@ -237,6 +245,10 @@ QString File::getRxForFileType(FileType::FileType type)
         return "(^.+\\.catdrawing$)";
     case FileType::NX_PRT:
         return "(^.+\\.prt$)";
+    case FileType::NX_ASM:
+        return "(^.+\\.asm_\\.asm$)";
+    case FileType::NX_DRW:
+        return "(^.+\\._drw\\.prt$)";
     case FileType::SLDPRT:
         return "(^.+\\.sldprt$)";
     case FileType::SLDASM:

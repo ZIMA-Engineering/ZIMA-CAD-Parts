@@ -44,6 +44,8 @@ typedef enum {
     CATDRAWING,
     // NX
     NX_PRT,
+    NX_ASM,
+    NX_DRW,
     // SolidWorks
     SLDPRT,
     SLDASM,

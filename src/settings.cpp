@@ -189,7 +189,9 @@ void Settings::setupFilterGroups()
 
     FilterGroups << FilterGroup("NX", "NX (UGS)");
     FilterGroups.last()
-            << new ExtensionFilter(FileType::NX_PRT);
+            << new ExtensionFilter(FileType::NX_PRT)
+            << new ExtensionFilter(FileType::NX_ASM)
+            << new ExtensionFilter(FileType::NX_DRW);
 
     FilterGroups << FilterGroup("SolidWorks", "SolidWorks");
     FilterGroups.last().filters
