@@ -11,6 +11,7 @@
 #include "filefiltermodel.h"
 #include "settings.h"
 #include "filtersdialog.h"
+#include "partsdeletedialog.h"
 
 
 DirectoryWidget::DirectoryWidget(QWidget *parent) :
@@ -280,12 +281,9 @@ void DirectoryWidget::partsWebView_urlChanged(const QUrl &url)
 
 void DirectoryWidget::deleteSelectedParts()
 {
-    if( QMessageBox::question(this,
-                              tr("Do you really want to delete selected parts?"),
-                              tr("Do you really want to delete selected parts? This action is irreversible."),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
-            ==  QMessageBox::Yes)
-    {
+    PartsDeleteDialog dlg(this);
+
+    if (dlg.exec() == QDialog::Accepted) {
         ui->partsTreeView->deleteParts();
     }
 }

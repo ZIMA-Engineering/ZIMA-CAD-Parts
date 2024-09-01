@@ -27,6 +27,7 @@ INCLUDEPATH += libqdxf/libdxfrw/src
 
 SOURCES += src/zima-cad-parts.cpp \
     src/mainwindow.cpp \
+    src/partsdeletedialog.cpp \
     src/scriptrunner.cpp \
     src/settingsdialog.cpp \
     src/file.cpp \
@@ -109,6 +110,7 @@ SOURCES += src/zima-cad-parts.cpp \
     src/lineeditvaluedelegate.cpp
 
 HEADERS += src/mainwindow.h \
+    src/partsdeletedialog.h \
     src/scriptrunner.h \
     src/settingsdialog.h \
     src/file.h \
@@ -180,6 +182,7 @@ FORMS += mainwindow.ui \
     src/filtersdialog.ui \
     src/errordialog.ui \
     src/extensions/navbar/navbaroptionsdialog.ui \
+    src/partsdeletedialog.ui \
     src/workingdirwidget.ui \
     src/webdownloaderwidget.ui \
     src/webdownloaderdialog.ui \
