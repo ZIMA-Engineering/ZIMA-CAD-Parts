@@ -26,26 +26,26 @@
 
 FileTypeList File::versionedTypes()
 {
-    return FileTypeList() << FileType::PRT_PROE
-           << FileType::ASM
-           << FileType::DRW
+    return FileTypeList() << FileType::PROE_PRT
+           << FileType::PROE_ASM
+           << FileType::PROE_DRW
            << FileType::FRM
-           << FileType::NEU_PROE;
+           << FileType::PROE_NEU;
 }
 
 QString File::getInternalNameForFileType(FileType::FileType type)
 {
     switch(type)
     {
-    case FileType::PRT_PROE:
+    case FileType::PROE_PRT:
         return "prt_proe";
-    case FileType::ASM:
+    case FileType::PROE_ASM:
         return "asm";
-    case FileType::DRW:
+    case FileType::PROE_DRW:
         return "drw";
     case FileType::FRM:
         return "frm";
-    case FileType::NEU_PROE:
+    case FileType::PROE_NEU:
         return "neu_proe";
     case FileType::CATPART:
         return "catpart";
@@ -53,7 +53,7 @@ QString File::getInternalNameForFileType(FileType::FileType type)
         return "catproduct";
     case FileType::CATDRAWING:
         return "catdrawing";
-    case FileType::PRT_NX:
+    case FileType::NX_PRT:
         return "prt_nx";
     case FileType::SLDPRT:
         return "sldprt";
@@ -128,15 +128,15 @@ QString File::getLabelForFileType(FileType::FileType type)
 {
     switch(type)
     {
-    case FileType::PRT_PROE:
+    case FileType::PROE_PRT:
         return "*.prt";
-    case FileType::ASM:
+    case FileType::PROE_ASM:
         return "*.asm";
-    case FileType::DRW:
+    case FileType::PROE_DRW:
         return "*.drw";
     case FileType::FRM:
         return "*.frm";
-    case FileType::NEU_PROE:
+    case FileType::PROE_NEU:
         return "*.neu";
     case FileType::CATPART:
         return "*.catpart";
@@ -144,7 +144,7 @@ QString File::getLabelForFileType(FileType::FileType type)
         return "*.catproduct";
     case FileType::CATDRAWING:
         return "*.catdrawing";
-    case FileType::PRT_NX:
+    case FileType::NX_PRT:
         return "*.prt";
     case FileType::SLDPRT:
         return "*.sldprt";
@@ -219,15 +219,15 @@ QString File::getRxForFileType(FileType::FileType type)
 {
     switch(type)
     {
-    case FileType::PRT_PROE:
+    case FileType::PROE_PRT:
         return "((^.+\\.prt)\\.(\\d+)$)";
-    case FileType::ASM:
+    case FileType::PROE_ASM:
         return "((^.+\\.asm)\\.(\\d+)$)";
-    case FileType::DRW:
+    case FileType::PROE_DRW:
         return "((^.+\\.drw)\\.(\\d+)$)";
     case FileType::FRM:
         return "((^.+\\.frm)\\.(\\d+)$)";
-    case FileType::NEU_PROE:
+    case FileType::PROE_NEU:
         return "((^.+\\.neu)\\.(\\d+)$)";
     case FileType::CATPART:
         return "(^.+\\.catpart$)";
@@ -235,7 +235,7 @@ QString File::getRxForFileType(FileType::FileType type)
         return "(^.+\\.catproduct$)";
     case FileType::CATDRAWING:
         return "(^.+\\.catdrawing$)";
-    case FileType::PRT_NX:
+    case FileType::NX_PRT:
         return "(^.+\\.prt$)";
     case FileType::SLDPRT:
         return "(^.+\\.sldprt$)";

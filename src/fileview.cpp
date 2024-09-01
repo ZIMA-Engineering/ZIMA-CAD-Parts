@@ -241,11 +241,11 @@ void FileView::openPart(const QModelIndex &index)
 
     switch (f.type)
     {
-    case FileType::PRT_PROE:
-    case FileType::ASM:
-    case FileType::DRW:
+    case FileType::PROE_PRT:
+    case FileType::PROE_ASM:
+    case FileType::PROE_DRW:
     case FileType::FRM:
-    case FileType::NEU_PROE:
+    case FileType::PROE_NEU:
     {
         QString exe = Settings::get()->ProeExecutable;
         qDebug() << "Starting ProE:" << exe << f.fileInfo.absoluteFilePath() << "; working dir" << m_path;

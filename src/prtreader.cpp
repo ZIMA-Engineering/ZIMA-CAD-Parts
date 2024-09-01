@@ -14,9 +14,9 @@ PtrReaderThread::PtrReaderThread(QFileInfoList partList) :
 void PtrReaderThread::run()
 {
     QList<int> fileTypes;
-    fileTypes << FileType::ASM
-              << FileType::DRW
-              << FileType::PRT_PROE;
+    fileTypes << FileType::PROE_ASM
+              << FileType::PROE_DRW
+              << FileType::PROE_PRT;
 
     foreach (const QFileInfo &fi, m_partList)
     {

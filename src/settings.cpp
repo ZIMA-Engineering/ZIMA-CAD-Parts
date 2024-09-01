@@ -174,11 +174,11 @@ void Settings::setupFilterGroups()
 {
     FilterGroups << FilterGroup("ProE", "Pro/Engineer");
     FilterGroups.last()
-            << new ExtensionFilter(FileType::PRT_PROE)
-            << new ExtensionFilter(FileType::ASM)
-            << new ExtensionFilter(FileType::DRW)
+            << new ExtensionFilter(FileType::PROE_PRT)
+            << new ExtensionFilter(FileType::PROE_ASM)
+            << new ExtensionFilter(FileType::PROE_DRW)
             << new ExtensionFilter(FileType::FRM)
-            << new ExtensionFilter(FileType::NEU_PROE)
+            << new ExtensionFilter(FileType::PROE_NEU)
             << new VersionFilter();
 
     FilterGroups << FilterGroup("CATIA", "CATIA");
@@ -189,7 +189,7 @@ void Settings::setupFilterGroups()
 
     FilterGroups << FilterGroup("NX", "NX (UGS)");
     FilterGroups.last()
-            << new ExtensionFilter(FileType::PRT_NX);
+            << new ExtensionFilter(FileType::NX_PRT);
 
     FilterGroups << FilterGroup("SolidWorks", "SolidWorks");
     FilterGroups.last().filters
@@ -201,7 +201,7 @@ void Settings::setupFilterGroups()
     FilterGroups.last()
             << new ExtensionFilter(FileType::PAR)
             << new ExtensionFilter(FileType::PSM)
-            << new ExtensionFilter(FileType::ASM)
+            << new ExtensionFilter(FileType::PROE_ASM)
             << new ExtensionFilter(FileType::DFT);
 
     FilterGroups << FilterGroup("Invertor", "INVERTOR");

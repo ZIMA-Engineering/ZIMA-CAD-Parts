@@ -33,17 +33,17 @@ namespace FileType {
 
 typedef enum {
     // Pro/e
-    PRT_PROE=0,
-    ASM,
-    DRW,
+    PROE_PRT=0,
+    PROE_ASM,
+    PROE_DRW,
     FRM,
-    NEU_PROE,
+    PROE_NEU,
     // CATIA
     CATPART,
     CATPRODUCT,
     CATDRAWING,
     // NX
-    PRT_NX,
+    NX_PRT,
     // SolidWorks
     SLDPRT,
     SLDASM,
