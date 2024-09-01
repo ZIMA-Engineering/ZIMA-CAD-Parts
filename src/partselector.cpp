@@ -12,6 +12,9 @@ PartSelector *PartSelector::get()
 
 void PartSelector::select(const QString &dir, const QString &partPath)
 {
+    if (isSelected(dir, partPath))
+        return;
+
     if (m_selected.contains(dir))
         m_selected[dir] << partPath;
     else
@@ -41,12 +44,15 @@ void PartSelector::clear(const QString &dir, const QString &partPath)
     m_selected[dir].removeOne(partPath);
 }
 
-void PartSelector::toggle(const QString &dir, const QString &partPath)
+bool PartSelector::toggle(const QString &dir, const QString &partPath)
 {
-    if (isSelected(dir, partPath))
+    if (isSelected(dir, partPath)) {
         clear(dir, partPath);
-    else
+        return false;
+    } else {
         select(dir, partPath);
+        return true;
+    }
 }
 
 QStringList PartSelector::allSelected() const

@@ -15,7 +15,7 @@ public:
     void clear();
     void clear(const QString &dir);
     void clear(const QString &dir, const QString &partPath);
-    void toggle(const QString &dir, const QString &partPath);
+    bool toggle(const QString &dir, const QString &partPath);
     QStringList allSelected() const;
     QHashIterator<QString, QStringList> allSelectedIterator() const;
 

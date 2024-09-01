@@ -251,7 +251,7 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
     if (role == Qt::CheckStateRole)
     {
-        PartSelector::get()->toggle(
+        bool selected = PartSelector::get()->toggle(
             m_path,
             part.absoluteFilePath()
         );
@@ -265,10 +265,17 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
             QFileInfo selectedPart = fileInfo(selectedIndex);
 
-            PartSelector::get()->toggle(
-                m_path,
-                selectedPart.absoluteFilePath()
-            );
+            if (selected) {
+                PartSelector::get()->select(
+                    m_path,
+                    selectedPart.absoluteFilePath()
+                );
+            } else {
+                PartSelector::get()->clear(
+                    m_path,
+                    selectedPart.absoluteFilePath()
+                );
+            }
 
             emit dataChanged(selectedIndex, selectedIndex);
         }
