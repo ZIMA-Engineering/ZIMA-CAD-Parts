@@ -58,5 +58,6 @@
         <file>gfx/edit-rename.png</file>
         <file>gfx/arrow-right.png</file>
         <file>gfx/icons/audio-x-generic.png</file>
+        <file>gfx/zima-engineering-logo.svg</file>
     </qresource>
 </RCC>
