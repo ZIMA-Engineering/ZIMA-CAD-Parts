@@ -67,7 +67,6 @@ void Settings::load()
     GUISplashDuration = s.value("GUISplashDuration", 1500).toInt();
     DeveloperEnabled = s.value("DeveloperEnabled", false).toBool();
     DeveloperDirWebViewToolBar = s.value("DeveloperTechSpecToolBar", true).toBool();
-    ExtensionsProductViewPath = s.value("ExtensionsProductViewPath", PRODUCT_VIEW_DEFAULT_PATH).toString();
     ExtensionsProductViewGeometry = s.value("Extensions/ProductView/geometry").toByteArray();
     ExtensionsProductViewPosition = s.value("Extensions/ProductView/position").toPoint();
     ProeExecutable = s.value("ExternalPrograms/ProE/Executable", "proe.exe").toString();
@@ -118,7 +117,6 @@ void Settings::save()
     s.setValue("GUISplashDuration", GUISplashDuration);
     s.setValue("DeveloperEnabled", DeveloperEnabled);
     s.setValue("DeveloperTechSpecToolBar", DeveloperDirWebViewToolBar);
-    s.setValue("ExtensionsProductViewPath", ExtensionsProductViewPath);
     s.setValue("ExternalPrograms/ProE/Executable", ProeExecutable);
     s.setValue("ExternalPrograms/TextEditorPath", TextEditorPath);
     s.setValue("ExternalPrograms/TerminalPath", TerminalPath);

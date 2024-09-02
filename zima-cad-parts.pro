@@ -45,7 +45,6 @@ SOURCES += src/zima-cad-parts.cpp \
     src/filefilters/filtergroup.cpp \
     src/filefilters/versionfilter.cpp \
     src/extensions/productview/abstractproductview.cpp \
-    src/extensions/productview/proeproductview.cpp \
     src/extensions/productview/dxfproductview.cpp \
     libqdxf/libdxfrw/src/drw_base.h \
     libqdxf/libdxfrw/src/drw_entities.cpp \
@@ -136,7 +135,6 @@ HEADERS += src/mainwindow.h \
     src/filefilters/filtergroup.h \
     src/filefilters/versionfilter.h \
     src/extensions/productview/abstractproductview.h \
-    src/extensions/productview/proeproductview.h \
     src/extensions/productview/dxfproductview.h \
     libqdxf/src/mtexttohtml.h \
     libqdxf/src/scene_items.h \
@@ -195,7 +193,6 @@ FORMS += mainwindow.ui \
     addeditdatasource.ui \
     src/filtersdialog.ui \
     src/errordialog.ui \
-    src/extensions/productview/proeproductview.ui \
     src/extensions/productview/dxfproductview.ui \
     src/extensions/productview/pdfproductview.ui \
     src/extensions/productview/failbackproductview.ui \
@@ -226,7 +223,6 @@ OTHER_FILES += \
     AUTHORS \
     data/zima-cad-parts.html \
     data/zima-cad-parts_cs_CZ.html \
-    data/extensions/productview/proeproductview.html \
     Doxyfile \
     src/extensions/navbar/styles/downarrowblue.png \
     src/extensions/navbar/styles/sizegrip2003blue.png \
