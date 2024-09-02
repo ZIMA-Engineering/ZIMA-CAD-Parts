@@ -7,6 +7,7 @@
 
 class FileModel;
 class FileFilterModel;
+class ProductView;
 class QWebEngineView;
 
 namespace Ui {
@@ -50,6 +51,8 @@ private:
 
     Ui::DirectoryWidget *ui;
 
+    ProductView *m_productView;
+
     void loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound);
     void editIndexFile(const QString &path);
 
@@ -66,6 +69,8 @@ private slots:
 
     void dirWebView_urlChanged(const QUrl &url);
     void partsWebView_urlChanged(const QUrl &url);
+
+    void previewInProductView(const QFileInfo &fi);
 
     void moveSelectedParts();
     void deleteSelectedParts();

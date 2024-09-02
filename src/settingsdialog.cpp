@@ -68,6 +68,8 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
             this, SLOT(datasourceUpButton_clicked()));
     connect(m_ui->datasourceDownButton, SIGNAL(clicked()),
             this, SLOT(datasourceDownButton_clicked()));
+    connect(m_ui->productViewButton, SIGNAL(clicked()),
+            this, SLOT(productViewButton_clicked()));
     connect(m_ui->textEditorButton, SIGNAL(clicked()),
             this, SLOT(textEditorButton_clicked()));
     connect(m_ui->terminalButton, SIGNAL(clicked()),
@@ -83,6 +85,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
     m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
     m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
     m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperDirWebViewToolBar);
+    m_ui->productViewEdit->setText(Settings::get()->ExtensionsProductViewPath);
     m_ui->textEditorLineEdit->setText(Settings::get()->TextEditorPath);
     m_ui->terminalLineEdit->setText(Settings::get()->TerminalPath);
 
@@ -147,6 +150,7 @@ void SettingsDialog::accept()
     Settings::get()->GUISplashDuration = m_ui->splashDurationSpinBox->value();
     Settings::get()->DeveloperEnabled = m_ui->developerModeGroupBox->isChecked();
     Settings::get()->DeveloperDirWebViewToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
+    Settings::get()->ExtensionsProductViewPath = m_ui->productViewEdit->text();
     Settings::get()->TextEditorPath = m_ui->textEditorLineEdit->text();
     Settings::get()->TerminalPath = m_ui->terminalLineEdit->text();
 
@@ -328,6 +332,14 @@ void SettingsDialog::proeButton_clicked()
     if (exe.isNull())
         return;
     m_ui->proeEdit->setText(exe);
+}
+
+void SettingsDialog::productViewButton_clicked()
+{
+    QString str = QFileDialog::getExistingDirectory(this, tr("ZIMA-CAD-Parts - set ProductView path"),
+                  m_ui->productViewEdit->text());
+    if (!str.isEmpty())
+        m_ui->productViewEdit->setText(str);
 }
 
 void SettingsDialog::textEditorButton_clicked()

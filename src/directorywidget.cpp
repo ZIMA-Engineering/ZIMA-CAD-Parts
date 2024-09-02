@@ -12,6 +12,7 @@
 #include "settings.h"
 #include "filtersdialog.h"
 #include "partsdeletedialog.h"
+#include "extensions/productview/productview.h"
 
 
 DirectoryWidget::DirectoryWidget(QWidget *parent) :
@@ -19,6 +20,8 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui(new Ui::DirectoryWidget)
 {
     ui->setupUi(this);
+
+    m_productView = new ProductView(this);
 
     connect(ui->refreshButton, SIGNAL(clicked()),
             this, SLOT(refreshButton_clicked()));
@@ -76,6 +79,10 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     connect(ui->thumbnailSizeSlider, SIGNAL(valueChanged(int)),
             this, SLOT(adjustThumbColumnWidth(int)));
 
+    connect(ui->partsTreeView, SIGNAL(previewProductView(QFileInfo)),
+            this, SLOT(previewInProductView(QFileInfo)));
+    connect(ui->partsTreeView, SIGNAL(hideProductView()),
+            m_productView, SLOT(hide()));
     connect(ui->partsTreeView, SIGNAL(openPartDirectory(QFileInfo)),
             this, SIGNAL(openPartDirectory(QFileInfo)));
 
@@ -293,6 +300,14 @@ void DirectoryWidget::adjustThumbColumnWidth(int width)
     ui->partsTreeView->setColumnWidth(1, width);
     Settings::get()->GUIThumbWidth = width;
     ui->partsTreeView->settingsChanged();
+}
+
+void DirectoryWidget::previewInProductView(const QFileInfo &fi)
+{
+    FileMetadata f(fi);
+    m_productView->setFile(&f);
+    // keep focus on the main window - keyboard handling
+    activateWindow();
 }
 
 void DirectoryWidget::moveSelectedParts()

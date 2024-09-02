@@ -54,6 +54,10 @@ FileView::FileView(QWidget *parent) :
     connect(PartCache::get(), SIGNAL(directoryRenamed(QString,QString)),
             this, SLOT(directoryRenamed(QString,QString)));
 
+    connect(this, SIGNAL(activated(QModelIndex)),
+            this, SLOT(handleActivated(QModelIndex)));
+    connect(this, SIGNAL(clicked(QModelIndex)),
+            this, SLOT(handleActivated(QModelIndex)));
     connect(this, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(openPart(QModelIndex)));
     connect(this, SIGNAL(customContextMenuRequested(QPoint)),
@@ -226,6 +230,15 @@ void FileView::updateSelection(const QItemSelection &selected, const QItemSelect
     }
 
     m_model->setSelectedIndexes(indexes);
+}
+
+void FileView::handleActivated(const QModelIndex &index)
+{
+    // open productview only when user clicks on the thumbnail
+    if (index.column() == 1)
+        emit previewProductView(fileInfo(index));
+    else
+        emit hideProductView();
 }
 
 void FileView::openPart(const QModelIndex &index)

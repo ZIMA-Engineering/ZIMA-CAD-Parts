@@ -23,6 +23,8 @@ public:
     QString currentPath();
 
 signals:
+    void previewProductView(const QFileInfo &fi);
+    void hideProductView();
     void openPartDirectory(const QFileInfo &fi);
 
 public slots:
@@ -47,6 +49,7 @@ private slots:
     void resizeColumnToContents();
     void refreshModel();
     void reloadParts();
+    void handleActivated(const QModelIndex &index);
     void openPart(const QModelIndex &index);
     void showContextMenu(const QPoint &point);
     void renameFile();
