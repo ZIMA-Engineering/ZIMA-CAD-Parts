@@ -326,7 +326,7 @@ void FileView::editFile()
         // Highlight the edited item
         setCurrentIndex(index);
 
-        FileEditDialog dlg(m_path, fileInfo(index).baseName(), this);
+        FileEditDialog dlg(fileInfo(index), m_model, this);
 
         if (dlg.exec() != QDialog::Accepted)
             return;

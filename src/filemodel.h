@@ -63,6 +63,8 @@ public:
     //! Reload parts from disk, then refreshModel() is called
     void reloadParts();
 
+    void reloadThumbnails();
+
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QStringList mimeTypes() const;
     QMimeData* mimeData(const QModelIndexList &indexes) const;
@@ -77,6 +79,8 @@ public:
 
     QFileInfo fileInfo(const QModelIndex &ix);
     QFileInfoList fileInfoList();
+
+    QString findThumbnailPath(const QFileInfo &fi);
 
 signals:
     void directoryLoaded(const QString &path);

@@ -165,6 +165,11 @@ QFileInfoList FileModel::fileInfoList()
     return PartCache::get()->parts(m_path);
 }
 
+QString FileModel::findThumbnailPath(const QFileInfo &fi)
+{
+    return m_thumb->path(fi);
+}
+
 void FileModel::setupColumns(const QString &path)
 {
     m_columnLabels.clear();
@@ -354,6 +359,11 @@ void FileModel::reloadParts()
     m_prtReader->load(m_path, fileInfoList());
 
     QApplication::restoreOverrideCursor();
+}
+
+void FileModel::reloadThumbnails()
+{
+    m_thumb->clear();
 }
 
 void FileModel::settingsChanged()
