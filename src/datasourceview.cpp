@@ -6,8 +6,10 @@
 #include "createdirectorydialog.h"
 #include "directorycreator.h"
 #include "directoryeditordialog.h"
+#include "directorycopyasdialog.h"
 #include "directoryremover.h"
 #include "scriptrunner.h"
+#include "filecopier.h"
 
 #include <QHeaderView>
 #include <QDesktopServices>
@@ -124,6 +126,7 @@ void DataSourceView::showContextMenu(const QPoint &point)
     menu->addSeparator();
 
     menu->addAction(QIcon(":/gfx/document-edit.png"), tr("Edit"), this, SLOT(editDirectory()));
+    menu->addAction(QIcon(":/gfx/edit-copy.png"), tr("Copy as..."), this, SLOT(copyDirectoryAs()));
     menu->addAction(QIcon(":/gfx/list-remove.png"), tr("Delete"), this, SLOT(deleteDirectory()));
 
     menu->addSeparator();
@@ -219,6 +222,38 @@ void DataSourceView::editDirectory()
         dlg.apply();
         emit directoryChanged(dlg.directoryPath());
     }
+}
+
+void DataSourceView::copyDirectoryAs()
+{
+    QFileInfo fi = currentFileInfo();
+    QString dstDir;
+
+    do {
+        DirectoryCopyAsDialog dlg(fi, this);
+
+        if (dlg.exec() != QDialog::Accepted)
+            return;
+
+        dstDir = dlg.directoryPath();
+
+        if (!QFile::exists(dstDir))
+            break;
+
+        QMessageBox::warning(this, tr("Directory exists"), tr("Directory '%1' already exists.").arg(dstDir));
+        dstDir.clear();
+    } while (dstDir.isEmpty());
+
+    qDebug() << "Copy" << fi.absoluteFilePath() << "as" << dstDir;
+
+    FileCopier *cp = new FileCopier(this);
+    cp->setMessage(tr("Please wait while the directory is being copied..."));
+    cp->setDestination(dstDir);
+    cp->setStopOnError(false);
+    cp->addSourceDirectoryContents(fi);
+    cp->work();
+
+    emit directoryChanged(dstDir);
 }
 
 void DataSourceView::deleteDirectory()

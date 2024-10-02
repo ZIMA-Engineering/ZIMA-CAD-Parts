@@ -50,6 +50,11 @@ void FileCopier::addSourceFiles(QFileInfoList sourceFiles, const QString &dstSub
         addSourceFile(fi, dstSubdir);
 }
 
+void FileCopier::addSourceDirectoryContents(const QFileInfo &fi)
+{
+    m_sourceFiles << FileCopyIntent(fi, QString(), true);
+}
+
 void FileCopier::setDestination(const QString &dst)
 {
     m_dst = dst;
@@ -171,7 +176,7 @@ void FileCopierWorker::setStopOnError(bool stop)
 void FileCopierWorker::run()
 {
     foreach (const FileCopyIntent &intent, m_sourceFiles)
-        recurse(intent.sourceFile, m_dst, intent.dstSubdir);
+        recurse(intent.sourceFile, m_dst, intent.dstSubdir, intent.contents);
 
     continueWork();
 }
@@ -271,12 +276,20 @@ void FileCopierWorker::continueWork(FileCopierWorker::Overwrite overwrite)
     emit finished();
 }
 
-void FileCopierWorker::recurse(const QFileInfo &src, const QString &dst, const QString &subdir)
+void FileCopierWorker::recurse(const QFileInfo &src, const QString &dst, const QString &subdir, bool contents)
 {
-    m_files << QPair<QFileInfo, QString>(
-                src,
-                dst + "/" + subdir + "/" + src.fileName()
-            );
+    if (contents)
+    {
+        m_files << QPair<QFileInfo, QString>(
+                    src,
+                    dst + "/" + subdir
+                );
+    } else {
+        m_files << QPair<QFileInfo, QString>(
+                    src,
+                    dst + "/" + subdir + "/" + src.fileName()
+                );
+    }
 
     if (!src.isDir())
         return;
@@ -294,14 +307,21 @@ void FileCopierWorker::recurse(const QFileInfo &src, const QString &dst, const Q
         if (shouldStop())
             return;
 
+        QString dstPath;
+
+        if (contents) {
+            dstPath = dst + "/" + subdir;
+        } else {
+            dstPath = dst + "/" + subdir + "/" + src.fileName();
+        }
+
         if (f.isDir())
         {
-            recurse(f, dst + "/" + subdir + "/" + src.fileName(), QString());
-
+            recurse(f, dstPath, QString(), false);
         } else {
             m_files << QPair<QFileInfo, QString>(
                         f,
-                        dst + "/" + subdir + "/" + src.fileName() + "/" + f.fileName()
+                        dstPath + "/" + f.fileName()
                     );
         }
     }

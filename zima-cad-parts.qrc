@@ -59,5 +59,6 @@
         <file>gfx/arrow-right.png</file>
         <file>gfx/icons/audio-x-generic.png</file>
         <file>gfx/zima-engineering-logo.svg</file>
+        <file>gfx/edit-copy.png</file>
     </qresource>
 </RCC>

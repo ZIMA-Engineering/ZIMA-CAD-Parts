@@ -14,9 +14,21 @@ struct FileCopyIntent
 {
     QFileInfo sourceFile;
     QString dstSubdir;
+    bool contents;
 
-    FileCopyIntent(const QFileInfo &sourceFile) : sourceFile(sourceFile) {}
-    FileCopyIntent(const QFileInfo &sourceFile, const QString &dstSubdir) : sourceFile(sourceFile), dstSubdir(dstSubdir) {}
+    FileCopyIntent(const QFileInfo &sourceFile)
+        : sourceFile(sourceFile),
+          contents(false) {}
+
+    FileCopyIntent(const QFileInfo &sourceFile, const QString &dstSubdir)
+        : sourceFile(sourceFile),
+          dstSubdir(dstSubdir),
+          contents(false) {}
+
+    FileCopyIntent(const QFileInfo &sourceFile, const QString &dstSubdir, bool contents)
+        : sourceFile(sourceFile),
+          dstSubdir(dstSubdir),
+          contents(contents) {}
 };
 
 /*! Wraps the actual working thread that is deleting files and reporting
@@ -33,6 +45,7 @@ public:
     void addSourceFile(const QFileInfo &fi, const QString &dstSubdir);
     void addSourceFiles(QFileInfoList sourceFiles);
     void addSourceFiles(QFileInfoList sourceFiles, const QString &dstSubdir);
+    void addSourceDirectoryContents(const QFileInfo &fi);
     void setDestination(const QString &dst);
     void setMessage(const QString &msg);
     void setStopOnError(bool stop);
@@ -83,7 +96,7 @@ private:
     QList<QPair<QFileInfo, QString>> m_files;
     bool m_stopOnError;
 
-    void recurse(const QFileInfo &src, const QString &dst, const QString &subdir);
+    void recurse(const QFileInfo &src, const QString &dst, const QString &subdir, bool contents);
 };
 
 #endif // FILECOPIER_H

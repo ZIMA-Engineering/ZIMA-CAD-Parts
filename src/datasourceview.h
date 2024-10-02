@@ -52,6 +52,7 @@ private slots:
     void setWorkingDirectory();
     void createDirectory();
     void editDirectory();
+    void copyDirectoryAs();
     void deleteDirectory();
     void runScriptOnDir(const QFileInfo &dir, const QFileInfo &script);
 };
