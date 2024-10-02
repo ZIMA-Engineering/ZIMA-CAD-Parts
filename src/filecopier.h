@@ -10,6 +10,15 @@
 class ProgressDialog;
 class FileCopierWorker;
 
+struct FileCopyIntent
+{
+    QFileInfo sourceFile;
+    QString dstSubdir;
+
+    FileCopyIntent(const QFileInfo &sourceFile) : sourceFile(sourceFile) {}
+    FileCopyIntent(const QFileInfo &sourceFile, const QString &dstSubdir) : sourceFile(sourceFile), dstSubdir(dstSubdir) {}
+};
+
 /*! Wraps the actual working thread that is deleting files and reporting
  * progress.
  */
@@ -33,7 +42,7 @@ public slots:
 
 private:
     QString m_msg;
-    QList<QPair<QFileInfo,QString>> m_sourceFiles;
+    QList<FileCopyIntent> m_sourceFiles;
     QString m_dst;
     ProgressDialog *m_progress;
     FileCopierWorker *m_cp;
@@ -58,7 +67,7 @@ public:
     };
 
     explicit FileCopierWorker(QObject *parent = 0);
-    void setSourceFiles(const QList<QPair<QFileInfo,QString>> &sourceFiles, const QString &dst);
+    void setSourceFiles(const QList<FileCopyIntent> &sourceFiles, const QString &dst);
     void setStopOnError(bool stop);
 
 public slots:
@@ -69,7 +78,7 @@ signals:
     void fileExists(const QFileInfo &src, const QString &dst);
 
 private:
-    QList<QPair<QFileInfo,QString>> m_sourceFiles;
+    QList<FileCopyIntent> m_sourceFiles;
     QString m_dst;
     QList<QPair<QFileInfo, QString>> m_files;
     bool m_stopOnError;

@@ -25,17 +25,17 @@ FileCopier::FileCopier(QFileInfoList sourceFiles, const QString &dst, QWidget *p
       m_stopOnError(true)
 {
     foreach (const QFileInfo &fi, sourceFiles)
-        m_sourceFiles << QPair<QFileInfo, QString>(fi, QString());
+        m_sourceFiles << FileCopyIntent(fi);
 }
 
 void FileCopier::addSourceFile(const QFileInfo &fi)
 {
-    m_sourceFiles << QPair<QFileInfo, QString>(fi, QString());
+    m_sourceFiles << FileCopyIntent(fi);
 }
 
 void FileCopier::addSourceFile(const QFileInfo &fi, const QString &dstSubdir)
 {
-    m_sourceFiles << QPair<QFileInfo, QString>(fi, dstSubdir);
+    m_sourceFiles << FileCopyIntent(fi, dstSubdir);
 }
 
 void FileCopier::addSourceFiles(QFileInfoList sourceFiles)
@@ -157,7 +157,7 @@ FileCopierWorker::FileCopierWorker(QObject *parent)
 
 }
 
-void FileCopierWorker::setSourceFiles(const QList<QPair<QFileInfo,QString>> &sourceFiles, const QString &dst)
+void FileCopierWorker::setSourceFiles(const QList<FileCopyIntent> &sourceFiles, const QString &dst)
 {
     m_sourceFiles = sourceFiles;
     m_dst = dst;
@@ -170,10 +170,8 @@ void FileCopierWorker::setStopOnError(bool stop)
 
 void FileCopierWorker::run()
 {
-    QPair<QFileInfo, QString> pair;
-
-    foreach (pair, m_sourceFiles)
-        recurse(pair.first, m_dst, pair.second);
+    foreach (const FileCopyIntent &intent, m_sourceFiles)
+        recurse(intent.sourceFile, m_dst, intent.dstSubdir);
 
     continueWork();
 }
