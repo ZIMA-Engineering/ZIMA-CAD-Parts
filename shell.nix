@@ -1,16 +1,16 @@
 { pkgs ? (import <nixpkgs> {}) }:
 let
   f =
-    { stdenv, qt5, qtcreator, pkgconfig, qmake, xlibsWrapper, openssl, gdb, gcc }:
+    { stdenv, qt6, qtcreator, pkg-config, qmake, openssl, gdb, gcc }:
     let
-      zcpQt = qt5.env "qt-zcp-${qt5.qtbase.version}" (with qt5; [
-        qtbase qtdeclarative qtdoc qtimageformats qtlocation qtquickcontrols qtquickcontrols2
-        qtsvg qttools qttranslations qtwebengine qtwebchannel qtx11extras
+      zcpQt = qt6.env "qt-zcp-${qt6.qtbase.version}" (with qt6; [
+        qtbase qtdeclarative qtimageformats qtlocation qtsvg qttools
+        qttranslations qtwebengine qtwebchannel qtpositioning
       ]);
     in stdenv.mkDerivation {
       name = "ZIMA-CAD-Parts";
       src = ./.;
-      nativeBuildInputs = [ zcpQt qtcreator pkgconfig qmake xlibsWrapper gdb ];
+      nativeBuildInputs = [ zcpQt qtcreator pkg-config qmake gdb ];
       buildInputs = [ openssl ];
       shellHook = ''
         mkdir -p nix-build
@@ -19,4 +19,4 @@ let
         ln -sfn ${gcc} nix-build/gcc
       '';
     };
-in pkgs.libsForQt5.callPackage f {}
+in pkgs.qt6Packages.callPackage f {}
