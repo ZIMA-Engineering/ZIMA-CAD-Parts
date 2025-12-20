@@ -24,10 +24,8 @@
 
 #include <QDialog>
 #include <QVBoxLayout>
-#include <QRegExp>
 #include <QDebug>
 #include <QMessageBox>
-#include <QTextCodec>
 #include <QWebEngineProfile>
 
 #include "settings.h"

@@ -20,7 +20,6 @@
 
 #include <QApplication>
 #include <QTranslator>
-#include <QTextCodec>
 #include <QLocale>
 #include "mainwindow.h"
 #include "settings.h"

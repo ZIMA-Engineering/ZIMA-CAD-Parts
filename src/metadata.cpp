@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QDir>
 #include <QProgressDialog>
 #include <QHash>
@@ -537,9 +537,8 @@ void Metadata::setPartParam(const QString &partName, const QString &param, const
 
 bool Metadata::partVersionType(FileType::FileType t, const QFileInfo &fi)
 {
-    QRegExp re(File::getRxForFileType(t));
-    re.setCaseSensitivity(Qt::CaseInsensitive);
-    if (re.exactMatch(fi.fileName()))
+    QRegularExpression re(File::getRxForFileType(t), QRegularExpression::CaseInsensitiveOption);
+    if (re.match(fi.fileName()).hasMatch())
     {
         m_versionsCache[fi.completeBaseName()] = fi.fileName();
         return true;

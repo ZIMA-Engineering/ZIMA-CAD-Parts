@@ -24,7 +24,6 @@
 #include <QSplashScreen>
 #include <QPixmap>
 #include <QBitmap>
-#include <QRegExp>
 #include <QFile>
 #include <QDebug>
 #include <QWebEngineSettings>
