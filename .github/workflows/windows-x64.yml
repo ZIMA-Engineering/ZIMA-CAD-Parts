@@ -1,0 +1,53 @@
+name: Windows x64 build
+
+on:
+  push:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Install Qt (MSVC 2022, x64)
+        uses: jurplel/install-qt-action@v4
+        with:
+          target: "desktop"
+          arch: "win64_msvc2022_64"
+          modules: qtwebengine qtwebchannel qtpositioning
+          cache: true
+
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64
+
+      - name: Create localization
+        run: lrelease zima-cad-parts.pro
+
+      - name: Configure build
+        run: qmake zima-cad-parts.pro
+
+      - name: Build project
+        run: nmake release
+
+      - name: Deploy (windeployqt)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          mkdir package
+          Copy-Item release\ZIMA-CAD-Parts.exe .\package\
+          mkdir package\locale
+          Copy-Item locale\*.qm package\locale\
+          windeployqt --release --compiler-runtime .\package\ZIMA-CAD-Parts.exe
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZIMA-CAD-Parts-windows-x64
+          path: package/**
+
