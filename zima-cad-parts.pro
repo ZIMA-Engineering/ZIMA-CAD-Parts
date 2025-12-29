@@ -254,6 +254,8 @@ OTHER_FILES += \
 
 TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts
 
+win32:QMAKE_CXXFLAGS += /MP
+
 greaterThan(QT_MAJOR_VERSION, 4) {
     win32:RC_ICONS = gfx/icon.ico
 }
