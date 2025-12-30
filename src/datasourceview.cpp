@@ -86,8 +86,13 @@ void DataSourceView::addScriptsToContextMenu(QMenu *menu)
     if (!dsDir.exists() && !localDir.exists())
         return;
 
-    auto globalScripts = dsDir.entryInfoList(QDir::Files | QDir::Executable);
-    auto localScripts = localDir.entryInfoList(QDir::Files | QDir::Executable);
+    QDir::Filters scriptFilters = QDir::Files;
+#ifndef Q_OS_WIN
+    scriptFilters |= QDir::Executable;
+#endif
+
+    auto globalScripts = dsDir.entryInfoList(scriptFilters);
+    auto localScripts = localDir.entryInfoList(scriptFilters);
 
     if (globalScripts.empty() && localScripts.empty())
         return;

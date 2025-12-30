@@ -3,6 +3,7 @@
 
 #include <QMessageBox>
 #include <QDebug>
+#include <QDir>
 
 ScriptRunner::ScriptRunner(const QString &dsPath, QObject *parent) :
     QObject(parent),
@@ -17,9 +18,7 @@ void ScriptRunner::run(const QFileInfo &script, const QFileInfo &dir)
     proc->setWorkingDirectory(dir.absoluteFilePath());
     proc->setProgram(Settings::get()->TerminalPath);
 
-    QStringList args;
-    args << "-e" << script.absoluteFilePath();
-    proc->setArguments(args);
+    proc->setArguments(buildArguments(script, dir));
 
     auto env = QProcessEnvironment::systemEnvironment();
     env.insert("ZCP_WORKDIR", Settings::get()->getWorkingDir());
@@ -93,3 +92,55 @@ void ScriptRunner::onScriptFinished(const QFileInfo &script, QProcess *process,
 
     process->deleteLater();
 }
+
+QStringList ScriptRunner::buildArguments(const QFileInfo &script, const QFileInfo &dir) const
+{
+#ifdef Q_OS_WIN
+    const QString cygwinScript = quoteForBash(toCygwinPath(script.absoluteFilePath()));
+    const QString cygwinDir = quoteForBash(toCygwinPath(dir.absoluteFilePath()));
+    const QString command = QStringLiteral("cd %1 && %2").arg(cygwinDir, cygwinScript);
+
+    QFileInfo terminalInfo(Settings::get()->TerminalPath);
+    const QString terminalExecutable = terminalInfo.fileName();
+
+    if (terminalExecutable.compare(QStringLiteral("mintty.exe"), Qt::CaseInsensitive) == 0) {
+        return QStringList() << "-e" << "/bin/bash" << "-lc" << command;
+    }
+
+    if (terminalExecutable.contains(QStringLiteral("bash"), Qt::CaseInsensitive)) {
+        return QStringList() << "-lc" << command;
+    }
+
+    // Fallback to the old behaviour if a custom terminal is configured.
+    return QStringList() << "-e" << script.absoluteFilePath();
+#else
+    Q_UNUSED(dir);
+    return QStringList() << "-e" << script.absoluteFilePath();
+#endif
+}
+
+#ifdef Q_OS_WIN
+QString ScriptRunner::toCygwinPath(const QString &path) const
+{
+    QString normalized = QDir::fromNativeSeparators(path);
+
+    // Drive letter path: C:/foo -> /cygdrive/c/foo
+    if (normalized.size() > 1 && normalized[1] == QLatin1Char(':')) {
+        const QString driveLetter = normalized.left(1).toLower();
+        QString rest = normalized.mid(2);
+        if (rest.startsWith(QLatin1Char('/')))
+            rest.remove(0, 1);
+
+        return QStringLiteral("/cygdrive/%1/%2").arg(driveLetter, rest);
+    }
+
+    return normalized;
+}
+
+QString ScriptRunner::quoteForBash(const QString &text) const
+{
+    QString escaped = text;
+    escaped.replace("'", "'\"'\"'");
+    return QStringLiteral("'%1'").arg(escaped);
+}
+#endif

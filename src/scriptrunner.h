@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QProcess>
 #include <QFileInfo>
+#include <QStringList>
 
 class ScriptRunner : public QObject
 {
@@ -14,6 +15,11 @@ public:
 
 private:
     QString m_dsPath;
+    QStringList buildArguments(const QFileInfo &script, const QFileInfo &dir) const;
+#ifdef Q_OS_WIN
+    QString toCygwinPath(const QString &path) const;
+    QString quoteForBash(const QString &text) const;
+#endif
 
 private slots:
     void onScriptStarted(const QFileInfo &script, QProcess *process);
