@@ -9,6 +9,7 @@
 ## Build, Test, and Development Commands
 - Prereqs: Qt 6.4+ with `core`, `gui`, `widgets`, `network`, `webenginewidgets` plus `qmake`, `g++`.
 - Standard build: `qmake && make -j$(nproc)` from the repo root; run the app with `./ZIMA-CAD-Parts`.
+- Always verify changes with a full build before submission, using the standard command above.
 - Clean artifacts: `make clean`. Use `shell.nix` or `nix-build` for a pinned toolchain if you have Nix.
 
 ## Coding Style & Naming Conventions
