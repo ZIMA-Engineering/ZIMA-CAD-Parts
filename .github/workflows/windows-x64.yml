@@ -13,6 +13,13 @@ jobs:
         with:
           submodules: true
 
+      - name: Get short git sha
+        id: vars
+        shell: pwsh
+        run: |
+          $short = "${{ github.sha }}".Substring(0,9)
+          "short_sha=$short" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
       - name: Install Qt (MSVC 2022, x64)
         uses: jurplel/install-qt-action@v4
         with:
@@ -48,6 +55,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ZIMA-CAD-Parts-windows-x64
+          name: ZIMA-CAD-Parts-git.${{ steps.vars.outputs.short_sha }}-windows-x64
           path: package/**
 
