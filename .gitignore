@@ -1,7 +1,9 @@
 .qmake.stash
 Makefile
+nix-build
 zima-cad-parts.pro.user
 ZIMA-CAD-Parts
+locale/*.qm
 *.o
 moc_*.cpp
 moc_*.h
