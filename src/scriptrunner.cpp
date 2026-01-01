@@ -96,12 +96,17 @@ void ScriptRunner::onScriptFinished(const QFileInfo &script, QProcess *process,
 QStringList ScriptRunner::buildArguments(const QFileInfo &script, const QFileInfo &dir) const
 {
 #ifdef Q_OS_WIN
+    QFileInfo terminalInfo(Settings::get()->TerminalPath);
+    const QString terminalExecutable = terminalInfo.fileName();
+
+    if (terminalExecutable.compare(QStringLiteral("cmd.exe"), Qt::CaseInsensitive) == 0) {
+        // Keep the window open after the script finishes.
+        return QStringList() << "/K" << quoteForCmd(script.absoluteFilePath());
+    }
+
     const QString cygwinScript = quoteForBash(toCygwinPath(script.absoluteFilePath()));
     const QString cygwinDir = quoteForBash(toCygwinPath(dir.absoluteFilePath()));
     const QString command = QStringLiteral("cd %1 && %2").arg(cygwinDir, cygwinScript);
-
-    QFileInfo terminalInfo(Settings::get()->TerminalPath);
-    const QString terminalExecutable = terminalInfo.fileName();
 
     if (terminalExecutable.compare(QStringLiteral("mintty.exe"), Qt::CaseInsensitive) == 0) {
         return QStringList() << "-e" << "/bin/bash" << "-lc" << command;
@@ -142,5 +147,12 @@ QString ScriptRunner::quoteForBash(const QString &text) const
     QString escaped = text;
     escaped.replace("'", "'\"'\"'");
     return QStringLiteral("'%1'").arg(escaped);
+}
+
+QString ScriptRunner::quoteForCmd(const QString &text) const
+{
+    QString escaped = text;
+    escaped.replace("\"", "\"\"");
+    return QStringLiteral("\"%1\"").arg(escaped);
 }
 #endif

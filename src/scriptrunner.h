@@ -19,6 +19,7 @@ private:
 #ifdef Q_OS_WIN
     QString toCygwinPath(const QString &path) const;
     QString quoteForBash(const QString &text) const;
+    QString quoteForCmd(const QString &text) const;
 #endif
 
 private slots:
