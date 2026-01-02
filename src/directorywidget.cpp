@@ -170,7 +170,7 @@ void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
 
 void DirectoryWidget::editIndexFile(const QString &path)
 {
-    QUrl url(path);
+    QUrl url = QUrl::fromUserInput(path);
     QString editor = Settings::get()->TextEditorPath;
 
     if (editor.isEmpty()) {
@@ -179,7 +179,8 @@ void DirectoryWidget::editIndexFile(const QString &path)
     }
 
     QStringList args;
-    args << url.path();
+    QString localPath = url.isLocalFile() ? url.toLocalFile() : url.toString();
+    args << localPath;
     QProcess::startDetached(editor, args);
 }
 
