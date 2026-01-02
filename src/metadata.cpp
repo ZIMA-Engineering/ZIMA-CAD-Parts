@@ -538,12 +538,22 @@ void Metadata::setPartParam(const QString &partName, const QString &param, const
 bool Metadata::partVersionType(FileType::FileType t, const QFileInfo &fi)
 {
     QRegularExpression re(File::getRxForFileType(t), QRegularExpression::CaseInsensitiveOption);
-    if (re.match(fi.fileName()).hasMatch())
-    {
-        m_versionsCache[fi.completeBaseName()] = fi.fileName();
-        return true;
+    QRegularExpressionMatch match = re.match(fi.fileName());
+
+    if (!match.hasMatch())
+        return false;
+
+    const QString baseName = match.captured(2);
+    const int version = match.captured(3).toInt();
+
+    const int storedVersion = m_versionNumbersCache.value(baseName, -1);
+
+    if (version > storedVersion) {
+        m_versionsCache[baseName] = fi.fileName();
+        m_versionNumbersCache[baseName] = version;
     }
-    return false;
+
+    return true;
 }
 
 void Metadata::rename(const QString &oldName, const QString &newName)
@@ -641,6 +651,7 @@ MetadataVersionsMap Metadata::partVersions()
 void Metadata::clearPartVersions()
 {
     m_versionsCache.clear();
+    m_versionNumbersCache.clear();
 }
 
 QList<Metadata *> Metadata::dataIncludes()

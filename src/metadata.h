@@ -119,6 +119,7 @@ private:
     QString label;
 
     MetadataVersionsMap m_versionsCache;
+    QHash<QString, int> m_versionNumbersCache;
 
     void setup();
     int version();
