@@ -5,6 +5,8 @@
 #include "file.h"
 #include "settings.h"
 
+#include <optional>
+
 
 FileFilterModel::FileFilterModel(QObject *parent) :
     QSortFilterProxyModel(parent),
@@ -89,6 +91,60 @@ bool FileFilterModel::filterAcceptsColumn(int source_column, const QModelIndex &
 //    if (source_column >=1 && source_column < 4)
 //        return false;
     return true;
+}
+
+struct VersionedNameInfo
+{
+    QString baseName;
+    int version;
+    FileType::FileType type;
+};
+
+static std::optional<VersionedNameInfo> parseVersionedName(const QString &fileName)
+{
+    foreach (FileType::FileType t, File::versionedTypes())
+    {
+        QRegularExpression re(File::getRxForFileType(t), QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch match = re.match(fileName);
+
+        if (match.hasMatch())
+        {
+            VersionedNameInfo info;
+            info.type = t;
+            info.baseName = match.captured(2);
+            info.version = match.captured(3).toInt();
+            return info;
+        }
+    }
+
+    return std::nullopt;
+}
+
+bool FileFilterModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    if (left.column() == 0 && right.column() == 0)
+    {
+        FileModel *fm = qobject_cast<FileModel*>(sourceModel());
+
+        if (fm)
+        {
+            QFileInfo lfi = fm->fileInfo(left);
+            QFileInfo rfi = fm->fileInfo(right);
+
+            auto lInfo = parseVersionedName(lfi.fileName());
+            auto rInfo = parseVersionedName(rfi.fileName());
+
+            if (lInfo.has_value() && rInfo.has_value()
+                    && lInfo->baseName == rInfo->baseName
+                    && lInfo->type == rInfo->type)
+            {
+                if (lInfo->version != rInfo->version)
+                    return lInfo->version < rInfo->version;
+            }
+        }
+    }
+
+    return QSortFilterProxyModel::lessThan(left, right);
 }
 
 bool FileFilterModel::isFiltered(const QString &path, const QString &name) const
