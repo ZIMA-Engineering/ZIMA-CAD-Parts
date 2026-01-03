@@ -32,6 +32,7 @@ signals:
     void showSettings(SettingsDialog::Section);
     void workingDirChanged();
     void newHistory(DataSourceHistory *history);
+    void refreshRequested();
 
 protected:
     void tabInserted(int index);

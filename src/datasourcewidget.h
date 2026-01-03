@@ -34,6 +34,7 @@ signals:
     void techSpecAvailable(const QUrl&);
 
     void workingDirChanged();
+    void refreshRequested();
     void directoryChanged(DataSourceWidget*, const QString&);
 
     void openInANewTabRequested(const QString &path);

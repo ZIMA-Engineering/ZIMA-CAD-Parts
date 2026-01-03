@@ -84,6 +84,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
     connect(ui->tabWidget, SIGNAL(showSettings(SettingsDialog::Section)),
             this, SLOT(showSettings(SettingsDialog::Section)));
+    connect(ui->tabWidget, SIGNAL(refreshRequested()),
+            this, SLOT(handleRefresh()));
 
     connect(ui->tabWidget, SIGNAL(newHistory(DataSourceHistory*)),
             ui->toolBar, SLOT(setupHistory(DataSourceHistory*)));

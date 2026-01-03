@@ -120,6 +120,8 @@ void MainTabWidget::addDataSourceWidget(const QString &dir)
             this, SIGNAL(workingDirChanged()));
     connect(dsw, SIGNAL(openInANewTabRequested(QString)),
             this, SLOT(openInANewTab(QString)));
+    connect(dsw, SIGNAL(refreshRequested()),
+            this, SIGNAL(refreshRequested()));
 
     int i = insertTab(qMax(count() - 1, 0), dsw, "<you should not see this>");
     updateTabTitle(dsw, dir);

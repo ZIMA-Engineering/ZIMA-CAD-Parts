@@ -261,7 +261,7 @@ void DirectoryWidget::dirWebViewEditButton_clicked()
 
 void DirectoryWidget::refreshButton_clicked()
 {
-    ui->partsTreeView->refreshRequested();
+    emit refreshRequested();
 }
 
 void DirectoryWidget::dirWebView_urlChanged(const QUrl &url)

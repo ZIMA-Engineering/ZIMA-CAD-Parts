@@ -17,6 +17,7 @@ DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
 
     connect(splitter, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)));
     connect(dirWidget, SIGNAL(changeSettings()), this, SLOT(settingsChanged()));
+    connect(dirWidget, SIGNAL(refreshRequested()), this, SIGNAL(refreshRequested()));
 
     m_history = new DataSourceHistory(this);
 
