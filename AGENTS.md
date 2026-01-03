@@ -17,6 +17,7 @@
 - Class and method names are PascalCase/camelCase (`MainWindow`, `showSettings`); member pointers typically prefixed with `m_`.
 - Prefer Qt types (`QString`, `QVector`) and Qt logging (`qDebug`) over STL/stdio in UI code.
 - Keep UI text in translation-aware strings; when touching `*.ui`, ensure identifiers stay descriptive.
+- Keep the Czech translation (`locale/zima-cad-parts_cs_CZ.ts`) in sync with code/UI text changes; run `lupdate` and translate new entries when strings change.
 
 ## Testing Guidelines
 - No automated test suite is present; run the built binary and exercise core flows (load a datasource, browse parts, open tech specs, download files).
