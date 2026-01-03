@@ -95,100 +95,134 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="93"/>
+        <location filename="../src/datasourceview.cpp" line="100"/>
         <source>Scripts...</source>
         <translation>Skripty...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="115"/>
+        <location filename="../src/datasourceview.cpp" line="126"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="116"/>
+        <location filename="../src/datasourceview.cpp" line="127"/>
         <source>Open in a new tab</source>
         <translation>Otevřít v novém tabu</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="117"/>
+        <location filename="../src/datasourceview.cpp" line="128"/>
         <source>Set as working directory</source>
         <translation>Nastavit jako pracovní adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="118"/>
+        <location filename="../src/datasourceview.cpp" line="129"/>
         <source>Create directory</source>
         <translation>Vytvořit adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="122"/>
+        <location filename="../src/datasourceview.cpp" line="133"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="123"/>
+        <location filename="../src/datasourceview.cpp" line="134"/>
+        <source>Copy as...</source>
+        <translation>Kopírovat jako...</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourceview.cpp" line="135"/>
         <source>Delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="129"/>
+        <location filename="../src/datasourceview.cpp" line="141"/>
         <source>Clean with ZIMA-PTC-Cleaner</source>
         <translation>Vyčistit pomocí ZIMA-PTC-Cleaner</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="131"/>
+        <location filename="../src/datasourceview.cpp" line="143"/>
         <source>Sync with ZIMA-CAD-Sync</source>
         <translation>Synchronizovat pomocí ZIMA-CAD-Sync</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="133"/>
+        <location filename="../src/datasourceview.cpp" line="145"/>
         <source>Convert postscript to PDF with ZIMA-PS2PDF</source>
         <translation>Převést postscript do PDF pomocí ZIMA-PS2PDF</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="135"/>
+        <location filename="../src/datasourceview.cpp" line="147"/>
         <source>Edit step files with ZIMA-STEP-Edit</source>
         <translation>Editovat step soubory pomocí ZIMA-STEP-Edit</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="158"/>
-        <location filename="../src/datasourceview.cpp" line="165"/>
+        <location filename="../src/datasourceview.cpp" line="170"/>
+        <location filename="../src/datasourceview.cpp" line="177"/>
         <source>Configure %1</source>
         <translation>Nastavit %1</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="158"/>
+        <location filename="../src/datasourceview.cpp" line="170"/>
         <source>Please first configure path to %1 executable.</source>
         <translation>Nejdříve zadejte cestu k %1 programu.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="165"/>
+        <location filename="../src/datasourceview.cpp" line="177"/>
         <source>Path &apos;%1&apos; to %2 executable does not exists!</source>
         <translation>Cesta %1 k programu %2 neexistuje!</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="193"/>
+        <location filename="../src/datasourceview.cpp" line="205"/>
+        <location filename="../src/datasourceview.cpp" line="248"/>
         <source>Directory exists</source>
         <translation>Tento adresář už existuje</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="194"/>
+        <location filename="../src/datasourceview.cpp" line="206"/>
         <source>Directory %1 already exists.</source>
         <translation>Adresář %1 už existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="225"/>
+        <location filename="../src/datasourceview.cpp" line="248"/>
+        <source>Directory &apos;%1&apos; already exists.</source>
+        <translation>Adresář &apos;%1&apos; již existuje.</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourceview.cpp" line="255"/>
+        <source>Please wait while the directory is being copied...</source>
+        <translation>Prosím čekejte, adresář se kopíruje...</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourceview.cpp" line="269"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Opravdu chcete smazat vybraný adresář?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="226"/>
+        <location filename="../src/datasourceview.cpp" line="270"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Opravdu chcete smazat adresář &quot;%1&quot;? Tuto akci nelze vzít zpět.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="231"/>
+        <location filename="../src/datasourceview.cpp" line="275"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Prosím čekejte, adresář se maže...</translation>
+    </message>
+</context>
+<context>
+    <name>DirectoryCopyAsDialog</name>
+    <message>
+        <location filename="../src/directorycopyasdialog.ui" line="14"/>
+        <source>Copy as... - ZIMA-CAD-Parts</source>
+        <translation>Kopírovat jako... - ZIMA-CAD-Parts</translation>
+    </message>
+    <message>
+        <location filename="../src/directorycopyasdialog.ui" line="22"/>
+        <source>Path</source>
+        <translation>Cesta</translation>
+    </message>
+    <message>
+        <location filename="../src/directorycopyasdialog.ui" line="29"/>
+        <source>Name</source>
+        <translation>Název</translation>
     </message>
 </context>
 <context>
@@ -202,17 +236,17 @@
 <context>
     <name>DirectoryEditParametersModel</name>
     <message>
-        <location filename="../src/directoryeditparametersmodel.cpp" line="85"/>
+        <location filename="../src/directoryeditparametersmodel.cpp" line="86"/>
         <source>Label</source>
         <translation>Popisek</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditparametersmodel.cpp" line="87"/>
+        <location filename="../src/directoryeditparametersmodel.cpp" line="88"/>
         <source>Handle</source>
         <translation>Parametr</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditparametersmodel.cpp" line="131"/>
+        <location filename="../src/directoryeditparametersmodel.cpp" line="132"/>
         <source>New column</source>
         <translation>Nový sloupec</translation>
     </message>
@@ -285,14 +319,22 @@
         <translation>Přeloženo</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="71"/>
         <source>Unable to rename directory</source>
-        <translation>Adresář nelze přejmenovat</translation>
+        <translation type="vanished">Adresář nelze přejmenovat</translation>
+    </message>
+    <message>
+        <source>Unable to rename directory &apos;%1&apos;</source>
+        <translation type="vanished">Adresář &apos;%1&apos; nelze přejmenovat</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="71"/>
+        <source>Failed to rename directory</source>
+        <translation>Nepodařilo se přejmenovat adresář</translation>
     </message>
     <message>
         <location filename="../src/directoryeditordialog.cpp" line="72"/>
-        <source>Unable to rename directory &apos;%1&apos;</source>
-        <translation>Adresář &apos;%1&apos; nelze přejmenovat</translation>
+        <source>Failed to rename directory &apos;%1&apos;</source>
+        <translation>Nepodařilo se přejmenovat adresář &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/directoryeditordialog.cpp" line="206"/>
@@ -324,13 +366,23 @@
         <source>Select icon</source>
         <translation>Vyberte ikonu</translation>
     </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="379"/>
+        <source>Unable to rename file</source>
+        <translation>Soubor nelze přejmenovat</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="380"/>
+        <source>Unable to rename file &apos;%1&apos; to &apos;%2&apos;: %3</source>
+        <translation>Soubor &apos;%1&apos; nelze přejmenovat na &apos;%2&apos;: %3</translation>
+    </message>
 </context>
 <context>
     <name>DirectoryLocaleEditWidget</name>
     <message>
         <location filename="../src/directorylocaleeditwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="../src/directorylocaleeditwidget.ui" line="22"/>
@@ -367,7 +419,7 @@
 <context>
     <name>DirectoryWebView</name>
     <message>
-        <location filename="../src/directorywebview.cpp" line="80"/>
+        <location filename="../src/directorywebview.cpp" line="76"/>
         <source>ZIMA-CAD-Parts Technical Specifications</source>
         <translation>ZIMA-CAD-Parts Technická Specifikace</translation>
     </message>
@@ -441,18 +493,16 @@
         <translation>Kopírovat</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="285"/>
         <source>Do you really want to delete selected parts?</source>
-        <translation>Opravdu chcete smazat vybrané díly?</translation>
+        <translation type="vanished">Opravdu chcete smazat vybrané díly?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="286"/>
         <source>Do you really want to delete selected parts? This action is irreversible.</source>
-        <translation>Opravdu chcete smazat vybrané díly? Tato operace je nevratná.</translation>
+        <translation type="vanished">Opravdu chcete smazat vybrané díly? Tato operace je nevratná.</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="312"/>
-        <location filename="../src/directorywidget.cpp" line="313"/>
+        <location filename="../src/directorywidget.cpp" line="317"/>
+        <location filename="../src/directorywidget.cpp" line="318"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>
@@ -509,22 +559,22 @@
 <context>
     <name>FileCopier</name>
     <message>
-        <location filename="../src/filecopier.cpp" line="76"/>
+        <location filename="../src/filecopier.cpp" line="81"/>
         <source>Please wait while the files are being copied...</source>
         <translation>Prosím čekejte, soubory se kopírují...</translation>
     </message>
     <message>
-        <location filename="../src/filecopier.cpp" line="111"/>
+        <location filename="../src/filecopier.cpp" line="116"/>
         <source>Directory deletion failed</source>
         <translation>Mazání adresáře selhalo</translation>
     </message>
     <message>
-        <location filename="../src/filecopier.cpp" line="122"/>
+        <location filename="../src/filecopier.cpp" line="127"/>
         <source>Overwrite file?</source>
         <translation>Přepsat soubor?</translation>
     </message>
     <message>
-        <location filename="../src/filecopier.cpp" line="123"/>
+        <location filename="../src/filecopier.cpp" line="128"/>
         <source>File %1 already exists. Overwrite?</source>
         <translation>Soubor %1 již existuje. Přepsat?</translation>
     </message>
@@ -532,7 +582,7 @@
 <context>
     <name>FileCopierWorker</name>
     <message>
-        <location filename="../src/filecopier.cpp" line="250"/>
+        <location filename="../src/filecopier.cpp" line="253"/>
         <source>Unable to copy &apos;%1&apos;: %2</source>
         <translation>Kopírování &apos;%1&apos; selhalo: %2</translation>
     </message>
@@ -545,29 +595,69 @@
         <translation>Upravit díl</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.ui" line="26"/>
+        <location filename="../src/fileeditdialog.ui" line="44"/>
+        <source>Thumbnail</source>
+        <translation>Náhled</translation>
+    </message>
+    <message>
+        <location filename="../src/fileeditdialog.ui" line="51"/>
         <source>Part</source>
         <translation>Díl</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.ui" line="70"/>
+        <location filename="../src/fileeditdialog.ui" line="58"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/fileeditdialog.ui" line="102"/>
         <source>Cancel</source>
         <translation>Zrušit</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.ui" line="77"/>
+        <location filename="../src/fileeditdialog.ui" line="109"/>
         <source>Save</source>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.ui" line="84"/>
+        <location filename="../src/fileeditdialog.ui" line="116"/>
         <source>Save and edit next</source>
         <translation>Uložit a upravit další</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="16"/>
+        <location filename="../src/fileeditdialog.cpp" line="23"/>
         <source>Edit %1</source>
         <translation>Upravit %1</translation>
+    </message>
+    <message>
+        <location filename="../src/fileeditdialog.cpp" line="90"/>
+        <source>No thumbnail</source>
+        <translation>Žádný náhled</translation>
+    </message>
+    <message>
+        <location filename="../src/fileeditdialog.cpp" line="114"/>
+        <source>Unable to copy icon</source>
+        <translation>Ikonu nelze zkopírovat</translation>
+    </message>
+    <message>
+        <location filename="../src/fileeditdialog.cpp" line="115"/>
+        <source>Unable to copy &apos;%1&apos; to &apos;%2&apos;</source>
+        <translation>Nelze zkopírovat &apos;%1&apos; do &apos;%2&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/fileeditdialog.cpp" line="128"/>
+        <source>Unable to remove thumbnail</source>
+        <translation>Náhled nelze odstranit</translation>
+    </message>
+    <message>
+        <location filename="../src/fileeditdialog.cpp" line="129"/>
+        <source>Unable to remove thumbnail &apos;%1&apos;</source>
+        <translation>Náhled &apos;%1&apos; nelze odstranit</translation>
+    </message>
+    <message>
+        <location filename="../src/fileeditdialog.cpp" line="151"/>
+        <source>Select thumbnail</source>
+        <translation>Vyberte náhled</translation>
     </message>
 </context>
 <context>
@@ -597,7 +687,7 @@
         <translation type="vanished">Chyby kopírování souborů:</translation>
     </message>
     <message>
-        <location filename="../src/filemodel.cpp" line="171"/>
+        <location filename="../src/filemodel.cpp" line="176"/>
         <source>Part name</source>
         <translation>Název dílu</translation>
     </message>
@@ -605,32 +695,32 @@
 <context>
     <name>FileMover</name>
     <message>
-        <location filename="../src/filemover.cpp" line="37"/>
+        <location filename="../src/filemover.cpp" line="49"/>
         <source>Please wait while the files are being moved...</source>
         <translation>Prosím čekejte, soubory se přesouvají...</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="74"/>
+        <location filename="../src/filemover.cpp" line="86"/>
         <source>File move failed</source>
         <translation>Přesun souboru selhal</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="85"/>
+        <location filename="../src/filemover.cpp" line="97"/>
         <source>Overwrite file?</source>
         <translation>Přepsat soubor?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="86"/>
+        <location filename="../src/filemover.cpp" line="98"/>
         <source>File %1 already exists. Overwrite?</source>
         <translation>Soubor %1 již existuje. Přepsat?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="122"/>
+        <location filename="../src/filemover.cpp" line="134"/>
         <source>Replace directory?</source>
         <translation>Nahradit adresář?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="123"/>
+        <location filename="../src/filemover.cpp" line="135"/>
         <source>Directory %1 already exists. Replace it?</source>
         <translation>Adresář %1 už existuje. Chcete jej nahradit?</translation>
     </message>
@@ -638,14 +728,14 @@
 <context>
     <name>FileMoverWorker</name>
     <message>
-        <location filename="../src/filemover.cpp" line="249"/>
+        <location filename="../src/filemover.cpp" line="261"/>
         <source>Unable to move &apos;%1&apos;: %2</source>
         <translation>Nelze přesunout &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="286"/>
-        <location filename="../src/filemover.cpp" line="297"/>
-        <location filename="../src/filemover.cpp" line="312"/>
+        <location filename="../src/filemover.cpp" line="298"/>
+        <location filename="../src/filemover.cpp" line="309"/>
+        <location filename="../src/filemover.cpp" line="324"/>
         <source>Unable to remove &apos;%1&apos;</source>
         <translation>Nelze smazat &apos;%1&apos;</translation>
     </message>
@@ -655,7 +745,7 @@
     <message>
         <location filename="../src/filerenamedialog.ui" line="17"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Přejmenovat soubor</translation>
     </message>
     <message>
         <location filename="../src/filerenamedialog.ui" line="29"/>
@@ -679,8 +769,8 @@
     </message>
     <message>
         <location filename="../src/filerenamedialog.ui" line="93"/>
-        <location filename="../src/filerenamedialog.cpp" line="55"/>
-        <location filename="../src/filerenamedialog.cpp" line="80"/>
+        <location filename="../src/filerenamedialog.cpp" line="60"/>
+        <location filename="../src/filerenamedialog.cpp" line="85"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>
@@ -690,24 +780,29 @@
         <translation>Přejmenovat %1</translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="45"/>
+        <location filename="../src/filerenamedialog.cpp" line="17"/>
+        <source>Directory name</source>
+        <translation>Název adresáře</translation>
+    </message>
+    <message>
+        <location filename="../src/filerenamedialog.cpp" line="50"/>
         <source>Renaming files...</source>
         <translation>Soubory se přejmenovávají...</translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="53"/>
+        <location filename="../src/filerenamedialog.cpp" line="58"/>
         <source>Renamed %1 files and failed.</source>
         <translation>Přejmenováno %1 souborů a poté došlo k chybě.</translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="62"/>
+        <location filename="../src/filerenamedialog.cpp" line="67"/>
         <source>Renamed &quot;%1&quot; to &quot;%2&quot;
 </source>
         <translation>Přejmenováno &quot;%1&quot; na &quot;%2&quot;
 </translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="73"/>
+        <location filename="../src/filerenamedialog.cpp" line="78"/>
         <source>Unable to rename &quot;%1&quot; to &quot;%2&quot;: %3
 </source>
         <translation>Nelze přejmenovat &quot;%1&quot; na &quot;%2&quot;: %3
@@ -717,42 +812,42 @@
 <context>
     <name>FileView</name>
     <message>
-        <location filename="../src/fileview.cpp" line="132"/>
+        <location filename="../src/fileview.cpp" line="137"/>
         <source>HTML index file already exists</source>
         <translation>HTML index soubor již existuje</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="133"/>
+        <location filename="../src/fileview.cpp" line="138"/>
         <source>HTML index for already exists, would you like to overwrite it?</source>
         <translation>HTML index soubor již existuje. Přepsat jej?</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="162"/>
+        <location filename="../src/fileview.cpp" line="167"/>
         <source>Please wait while the parts are being removed...</source>
         <translation>Prosím čekejte, díly se odstraňují...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="179"/>
+        <location filename="../src/fileview.cpp" line="184"/>
         <source>Please wait while the parts are being copied...</source>
         <translation>Prosím čekejte, díly se kopírují...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="256"/>
+        <location filename="../src/fileview.cpp" line="275"/>
         <source>ProE Startup Error</source>
         <translation>Chyba startu ProE</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="257"/>
+        <location filename="../src/fileview.cpp" line="276"/>
         <source>An error occured while ProE has been requested to start</source>
         <translation>Při spouštění ProE nastala chyba</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="280"/>
+        <location filename="../src/fileview.cpp" line="296"/>
         <source>Rename</source>
         <translation>Přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="284"/>
+        <location filename="../src/fileview.cpp" line="299"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
@@ -775,22 +870,22 @@
     <message>
         <location filename="../src/extensions/productview/imageproductview.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="../src/extensions/productview/imageproductview.ui" line="35"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Textový popisek</translation>
     </message>
     <message>
         <location filename="../src/extensions/productview/imageproductview.cpp" line="21"/>
         <source>Image File</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázek</translation>
     </message>
     <message>
         <location filename="../src/extensions/productview/imageproductview.cpp" line="39"/>
         <source>Cannot load image: &lt;a href=&quot;file://%1&quot;&gt;%2&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze načíst obrázek: &lt;a href=&quot;file://%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
 </context>
 <context>
@@ -798,7 +893,7 @@
     <message>
         <location filename="../src/maintabwidget.ui" line="14"/>
         <source>TabWidget</source>
-        <translation type="unfinished"></translation>
+        <translation>Panel karet</translation>
     </message>
     <message>
         <location filename="../src/maintabwidget.cpp" line="18"/>
@@ -838,6 +933,11 @@
         <source>Settings</source>
         <translation>Nastavení</translation>
     </message>
+    <message>
+        <location filename="../src/maintoolbar.cpp" line="40"/>
+        <source>About...</source>
+        <translation>O aplikaci...</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -846,14 +946,12 @@
         <translation type="vanished">Připraven</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="192"/>
         <source>File Exists</source>
-        <translation>Soubor existuje</translation>
+        <translation type="vanished">Soubor existuje</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="193"/>
         <source>File %1 already exists. Overwrite?</source>
-        <translation>Soubor %1 již existuje. Přepsat?</translation>
+        <translation type="vanished">Soubor %1 již existuje. Přepsat?</translation>
     </message>
 </context>
 <context>
@@ -893,7 +991,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="81"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Nástrojová lišta</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="101"/>
@@ -944,27 +1042,27 @@
     <message>
         <location filename="../src/extensions/navbar/navbaroptionsdialog.ui" line="14"/>
         <source>Navigation pane options</source>
-        <translation type="unfinished"></translation>
+        <translation>Možnosti navigačního panelu</translation>
     </message>
     <message>
         <location filename="../src/extensions/navbar/navbaroptionsdialog.ui" line="20"/>
         <source>Display buttons in this order</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazovat tlačítka v tomto pořadí</translation>
     </message>
     <message>
         <location filename="../src/extensions/navbar/navbaroptionsdialog.ui" line="34"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunout nahoru</translation>
     </message>
     <message>
         <location filename="../src/extensions/navbar/navbaroptionsdialog.ui" line="41"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunout dolů</translation>
     </message>
     <message>
         <location filename="../src/extensions/navbar/navbaroptionsdialog.ui" line="51"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Obnovit</translation>
     </message>
 </context>
 <context>
@@ -987,16 +1085,32 @@
     </message>
 </context>
 <context>
-    <name>ProEProductView</name>
+    <name>PartsDeleteDialog</name>
     <message>
-        <location filename="../src/extensions/productview/proeproductview.ui" line="27"/>
-        <source>about:blank</source>
-        <translation>about:blank</translation>
+        <location filename="../src/partsdeletedialog.ui" line="14"/>
+        <source>Delete parts - ZIMA-CAD-Parts</source>
+        <translation>Smazat díly - ZIMA-CAD-Parts</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/proeproductview.cpp" line="29"/>
+        <location filename="../src/partsdeletedialog.ui" line="23"/>
+        <source>Do you really want to delete the selected parts? This action is irreversible.</source>
+        <translation>Opravdu chcete smazat vybrané díly? Tuto akci nelze vrátit.</translation>
+    </message>
+    <message>
+        <location filename="../src/partsdeletedialog.ui" line="36"/>
+        <source>No parts selected.</source>
+        <translation>Nejsou vybrány žádné díly.</translation>
+    </message>
+</context>
+<context>
+    <name>ProEProductView</name>
+    <message>
+        <source>about:blank</source>
+        <translation type="vanished">about:blank</translation>
+    </message>
+    <message>
         <source>PRO/E part</source>
-        <translation>PRO/E part</translation>
+        <translation type="vanished">PRO/E part</translation>
     </message>
 </context>
 <context>
@@ -1004,7 +1118,7 @@
     <message>
         <location filename="../src/progressdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Průběh</translation>
     </message>
     <message>
         <location filename="../src/progressdialog.ui" line="49"/>
@@ -1015,39 +1129,44 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/file.cpp" line="175"/>
+        <location filename="../src/file.cpp" line="194"/>
         <source>Office document</source>
         <translation>Office dokument</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="177"/>
+        <location filename="../src/file.cpp" line="196"/>
         <source>Office spreadsheet</source>
         <translation>Office tabulka</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="179"/>
+        <location filename="../src/file.cpp" line="198"/>
         <source>Office presentation</source>
         <translation>Office prezentace</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="181"/>
+        <location filename="../src/file.cpp" line="200"/>
         <source>Office drawing</source>
         <translation>Office schema</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="183"/>
+        <location filename="../src/file.cpp" line="202"/>
         <source>Office project</source>
         <translation>Office projekt</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="185"/>
+        <location filename="../src/file.cpp" line="204"/>
         <source>Office database</source>
         <translation>Office databáze</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="199"/>
+        <location filename="../src/file.cpp" line="218"/>
         <source>Image/Picture</source>
         <translation>Obrázek</translation>
+    </message>
+    <message>
+        <location filename="../src/file.cpp" line="220"/>
+        <source>Audio/Music</source>
+        <translation>Zvuk/Hudba</translation>
     </message>
     <message>
         <location filename="../src/filefilters/versionfilter.cpp" line="27"/>
@@ -1058,24 +1177,36 @@
 <context>
     <name>ScriptRunner</name>
     <message>
-        <location filename="../src/scriptrunner.cpp" line="68"/>
+        <location filename="../src/scriptrunner.cpp" line="31"/>
+        <location filename="../src/scriptrunner.cpp" line="43"/>
+        <location filename="../src/scriptrunner.cpp" line="102"/>
         <source>Script failed to run</source>
         <translation>Skript selhal</translation>
     </message>
     <message>
-        <location filename="../src/scriptrunner.cpp" line="69"/>
+        <location filename="../src/scriptrunner.cpp" line="32"/>
+        <source>Unable to locate cmd.exe. Please ensure Command Prompt is available on PATH.</source>
+        <translation>Nelze najít cmd.exe. Ověřte, že je Příkazový řádek v proměnné PATH.</translation>
+    </message>
+    <message>
+        <location filename="../src/scriptrunner.cpp" line="44"/>
+        <source>Unable to run script &apos;%1&apos;: Cygwin terminal is not configured.</source>
+        <translation>Skript &apos;%1&apos; nelze spustit: Cygwin terminál není nastaven.</translation>
+    </message>
+    <message>
+        <location filename="../src/scriptrunner.cpp" line="103"/>
         <source>Unable to run script &apos;%1&apos; within terminal &apos;%2&apos;: failed to start</source>
         <translation>Skript &apos;%1&apos; nelze spustit v terminálu &apos;%2&apos;: spuštění selhalo</translation>
     </message>
     <message>
-        <location filename="../src/scriptrunner.cpp" line="86"/>
+        <location filename="../src/scriptrunner.cpp" line="120"/>
         <source>Script failed</source>
         <translation>Skript selhal</translation>
     </message>
     <message>
-        <location filename="../src/scriptrunner.cpp" line="87"/>
+        <location filename="../src/scriptrunner.cpp" line="121"/>
         <source>Script &apos;%1&apos; failed with exit status %2 with error output:&lt;br&gt;&lt;br&gt;&lt;pre&gt;%3&lt;/pre&gt;</source>
-        <translation type="unfinished">Skript &apos;%1&apos; selhal s návratovým kódem %2 a chybovým výstupem: &lt;br&gt;&lt;br&gt;&lt;pre&gt;%3&lt;/pre&gt;</translation>
+        <translation>Skript &apos;%1&apos; selhal s návratovým kódem %2 a chybovým výstupem: &lt;br&gt;&lt;br&gt;&lt;pre&gt;%3&lt;/pre&gt;</translation>
     </message>
 </context>
 <context>
@@ -1276,76 +1407,73 @@
         <translation>Externí programy</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="275"/>
+        <location filename="../src/settingsdialog.ui" line="298"/>
         <source>ZIMA utilities</source>
         <translation>ZIMA programy</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="323"/>
+        <location filename="../src/settingsdialog.ui" line="291"/>
         <source>ProE executable:</source>
         <translation>ProE program:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="293"/>
-        <location filename="../src/settingsdialog.ui" line="300"/>
-        <location filename="../src/settingsdialog.ui" line="330"/>
-        <location filename="../src/settingsdialog.ui" line="357"/>
+        <location filename="../src/settingsdialog.ui" line="278"/>
+        <location filename="../src/settingsdialog.ui" line="313"/>
+        <location filename="../src/settingsdialog.ui" line="333"/>
         <source>Find...</source>
         <translation>Hledat...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="283"/>
         <source>ProductView path:</source>
-        <translation>Cesta k ProductView:</translation>
+        <translation type="vanished">Cesta k ProductView:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="337"/>
+        <location filename="../src/settingsdialog.ui" line="306"/>
         <source>Text editor:</source>
         <translation>Textový editor:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="347"/>
+        <location filename="../src/settingsdialog.ui" line="340"/>
         <source>Terminal:</source>
         <translation>Terminál:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="365"/>
-        <location filename="../src/settingsdialog.ui" line="374"/>
+        <location filename="../src/settingsdialog.ui" line="348"/>
+        <location filename="../src/settingsdialog.ui" line="357"/>
         <source>Developer mode</source>
         <translation>Vývojový mód</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="386"/>
+        <location filename="../src/settingsdialog.ui" line="369"/>
         <source>Toolbar for technical specifications</source>
         <translation>Nástrojová lišta pro technickou specifikaci</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="321"/>
+        <location filename="../src/settingsdialog.cpp" line="317"/>
         <source>ZIMA-CAD-Parts - set %1 path</source>
         <translation>ZIMA-CAD-Parts - nastavit %1 cestu</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="329"/>
+        <location filename="../src/settingsdialog.cpp" line="325"/>
         <source>Locate ProE launcher</source>
         <translation>Zadejte cestu k ProE programu</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="331"/>
+        <location filename="../src/settingsdialog.cpp" line="327"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>ProE program (proe.exe);;Všechny soubory (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="339"/>
         <source>ZIMA-CAD-Parts - set ProductView path</source>
-        <translation>ZIMA-CAD-Parts - nastavit cestu k ProductView</translation>
+        <translation type="vanished">ZIMA-CAD-Parts - nastavit cestu k ProductView</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="347"/>
+        <location filename="../src/settingsdialog.cpp" line="335"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts - vyberte textový editor</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="355"/>
+        <location filename="../src/settingsdialog.cpp" line="343"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts - vyberte terminál</translation>
     </message>
@@ -1366,11 +1494,46 @@
     </message>
 </context>
 <context>
+    <name>ThumbnailCleaner</name>
+    <message>
+        <location filename="../src/thumbnailcleaner.cpp" line="45"/>
+        <source>Please wait while the unused thumbnails are being removed...</source>
+        <translation>Prosím čekejte, nepoužívané náhledy se odstraňují...</translation>
+    </message>
+</context>
+<context>
     <name>ThumbnailManager</name>
     <message>
         <location filename="../src/thumbnailmanager.cpp" line="120"/>
         <source>No thumbnail</source>
         <translation>Žádný náhled</translation>
+    </message>
+</context>
+<context>
+    <name>UnusedThumbnailsDialog</name>
+    <message>
+        <location filename="../src/unusedthumbnailsdialog.ui" line="14"/>
+        <source>Delete unused thumbnails</source>
+        <translation>Smazat nepoužívané náhledy</translation>
+    </message>
+    <message>
+        <location filename="../src/unusedthumbnailsdialog.ui" line="32"/>
+        <source>Directory:</source>
+        <translation>Adresář:</translation>
+    </message>
+    <message>
+        <location filename="../src/unusedthumbnailsdialog.ui" line="60"/>
+        <source>No unused thumbnails found.</source>
+        <translation>Nebyly nalezeny žádné nepoužívané náhledy.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/unusedthumbnailsdialog.cpp" line="13"/>
+        <source>The following %n unused thumbnails were found. Delete them?</source>
+        <translation>
+            <numerusform>Nalezen %n nepoužívaný náhled. Smazat jej?</numerusform>
+            <numerusform>Nalezeny %n nepoužívané náhledy. Smazat je?</numerusform>
+            <numerusform>Nalezeno %n nepoužívaných náhledů. Smazat je?</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -1425,12 +1588,12 @@
         <translation type="vanished">Nelze zapsat soubor</translation>
     </message>
     <message>
-        <location filename="../src/webdownloaderwidget.cpp" line="41"/>
+        <location filename="../src/webdownloaderwidget.cpp" line="43"/>
         <source>Download finished</source>
         <translation>Stahování dokončeno</translation>
     </message>
     <message>
-        <location filename="../src/webdownloaderwidget.cpp" line="46"/>
+        <location filename="../src/webdownloaderwidget.cpp" line="48"/>
         <source>Error, download interrupted</source>
         <translation>Nastala chyba, stahování přerušeno</translation>
     </message>
