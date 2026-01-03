@@ -4,6 +4,9 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QDir>
+#ifdef Q_OS_WIN
+#include <QStandardPaths>
+#endif
 
 ScriptRunner::ScriptRunner(const QString &dsPath, QObject *parent) :
     QObject(parent),
@@ -16,9 +19,41 @@ void ScriptRunner::run(const QFileInfo &script, const QFileInfo &dir)
 {
     auto proc = new QProcess(this);
     proc->setWorkingDirectory(dir.absoluteFilePath());
-    proc->setProgram(Settings::get()->TerminalPath);
 
+#ifdef Q_OS_WIN
+    const bool runWithCmd = shouldRunWithCmd(script);
+
+    if (runWithCmd) {
+        const QString cmdPath = detectCmdPath();
+        if (cmdPath.isEmpty()) {
+            QMessageBox::warning(
+                0,
+                tr("Script failed to run"),
+                tr("Unable to locate cmd.exe. Please ensure Command Prompt is available on PATH.")
+            );
+            proc->deleteLater();
+            return;
+        }
+        proc->setProgram(cmdPath);
+        proc->setArguments(buildCmdArguments(script));
+    } else {
+        if (Settings::get()->TerminalPath.isEmpty()) {
+            QMessageBox::warning(
+                0,
+                tr("Script failed to run"),
+                tr("Unable to run script '%1': Cygwin terminal is not configured.")
+                .arg(script.absoluteFilePath())
+            );
+            proc->deleteLater();
+            return;
+        }
+        proc->setProgram(Settings::get()->TerminalPath);
+        proc->setArguments(buildArguments(script, dir));
+    }
+#else
+    proc->setProgram(Settings::get()->TerminalPath);
     proc->setArguments(buildArguments(script, dir));
+#endif
 
     auto env = QProcessEnvironment::systemEnvironment();
     env.insert("ZCP_WORKDIR", Settings::get()->getWorkingDir());
@@ -96,15 +131,56 @@ void ScriptRunner::onScriptFinished(const QFileInfo &script, QProcess *process,
 QStringList ScriptRunner::buildArguments(const QFileInfo &script, const QFileInfo &dir) const
 {
 #ifdef Q_OS_WIN
+    return buildCygwinArguments(script, dir);
+#else
+    Q_UNUSED(dir);
+    return QStringList() << "-e" << script.absoluteFilePath();
+#endif
+}
+
+#ifdef Q_OS_WIN
+bool ScriptRunner::shouldRunWithCmd(const QFileInfo &script) const
+{
+    const QString suffix = script.suffix().toLower();
+    return suffix == QStringLiteral("exe") ||
+           suffix == QStringLiteral("bat") ||
+           suffix == QStringLiteral("cmd");
+}
+
+QString ScriptRunner::detectCmdPath() const
+{
+    const QString comSpec = QProcessEnvironment::systemEnvironment().value(QStringLiteral("ComSpec"));
+    if (!comSpec.isEmpty() && QFileInfo::exists(comSpec))
+        return QDir::toNativeSeparators(comSpec);
+
+    const QString fromPath = QStandardPaths::findExecutable(QStringLiteral("cmd.exe"));
+    if (!fromPath.isEmpty())
+        return QDir::toNativeSeparators(fromPath);
+
+    static const QStringList fallbacks = {
+        QStringLiteral("C:\\Windows\\System32\\cmd.exe"),
+        QStringLiteral("C:\\Windows\\Sysnative\\cmd.exe")
+    };
+
+    for (const QString &candidate : fallbacks) {
+        if (QFileInfo::exists(candidate))
+            return QDir::toNativeSeparators(candidate);
+    }
+
+    return QString();
+}
+
+QStringList ScriptRunner::buildCmdArguments(const QFileInfo &script) const
+{
+    const QString scriptPath = QDir::toNativeSeparators(script.absoluteFilePath());
+    // Keep the window open after the script finishes.
+    return QStringList() << "/K" << scriptPath;
+}
+
+QStringList ScriptRunner::buildCygwinArguments(const QFileInfo &script, const QFileInfo &dir) const
+{
     QFileInfo terminalInfo(Settings::get()->TerminalPath);
     const QString terminalExecutable = terminalInfo.fileName();
-
-    if (terminalExecutable.compare(QStringLiteral("cmd.exe"), Qt::CaseInsensitive) == 0) {
-        // Keep the window open after the script finishes.
-        const QString scriptPath = QDir::toNativeSeparators(script.absoluteFilePath());
-        // Pass the raw path and let QProcess handle quoting to avoid double quoting.
-        return QStringList() << "/K" << scriptPath;
-    }
 
     const QString cygwinScript = quoteForBash(toCygwinPath(script.absoluteFilePath()));
     const QString cygwinDir = quoteForBash(toCygwinPath(dir.absoluteFilePath()));
@@ -120,13 +196,8 @@ QStringList ScriptRunner::buildArguments(const QFileInfo &script, const QFileInf
 
     // Fallback to the old behaviour if a custom terminal is configured.
     return QStringList() << "-e" << script.absoluteFilePath();
-#else
-    Q_UNUSED(dir);
-    return QStringList() << "-e" << script.absoluteFilePath();
-#endif
 }
 
-#ifdef Q_OS_WIN
 QString ScriptRunner::toCygwinPath(const QString &path) const
 {
     QString normalized = QDir::fromNativeSeparators(path);

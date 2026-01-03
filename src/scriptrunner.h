@@ -17,6 +17,10 @@ private:
     QString m_dsPath;
     QStringList buildArguments(const QFileInfo &script, const QFileInfo &dir) const;
 #ifdef Q_OS_WIN
+    bool shouldRunWithCmd(const QFileInfo &script) const;
+    QString detectCmdPath() const;
+    QStringList buildCmdArguments(const QFileInfo &script) const;
+    QStringList buildCygwinArguments(const QFileInfo &script, const QFileInfo &dir) const;
     QString toCygwinPath(const QString &path) const;
     QString quoteForBash(const QString &text) const;
 #endif
