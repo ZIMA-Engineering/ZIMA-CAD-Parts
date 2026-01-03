@@ -77,6 +77,7 @@ private:
 private slots:
     void settingsChanged();
     void downloadFile(QWebEngineDownloadRequest *download);
+    void handleRefresh();
 };
 
 class SleeperThread : public QThread

@@ -2,7 +2,6 @@
 #include "ui_maintoolbar.h"
 #include "languageflagswidget.h"
 #include "workingdirwidget.h"
-#include "metadata.h"
 #include "datasourcehistory.h"
 
 #include <QStyle>
@@ -19,7 +18,7 @@ MainToolBar::MainToolBar(QWidget *parent) :
     ui->actionRefresh->setShortcutContext(Qt::ApplicationShortcut);
     ui->actionRefresh->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
     connect(ui->actionRefresh, SIGNAL(triggered()),
-            MetadataCache::get(), SLOT(clear()));
+            this, SIGNAL(refreshRequested()));
 
     ui->actionHistoryBack->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
     ui->actionHistoryForward->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));

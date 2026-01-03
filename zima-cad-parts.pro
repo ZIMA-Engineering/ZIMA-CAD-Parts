@@ -88,6 +88,8 @@ SOURCES += src/zima-cad-parts.cpp \
     src/directoryremover.cpp \
     src/extensions/productview/imageproductview.cpp \
     src/thumbnailmanager.cpp \
+    src/thumbnailcleaner.cpp \
+    src/unusedthumbnailsdialog.cpp \
     src/webauthenticationdialog.cpp \
     src/fileeditdialog.cpp \
     src/fileviewheader.cpp \
@@ -162,6 +164,8 @@ HEADERS += src/mainwindow.h \
     src/directoryremover.h \
     src/extensions/productview/imageproductview.h \
     src/thumbnailmanager.h \
+    src/thumbnailcleaner.h \
+    src/unusedthumbnailsdialog.h \
     src/webauthenticationdialog.h \
     src/fileeditdialog.h \
     src/fileviewheader.h \
@@ -202,6 +206,7 @@ FORMS += mainwindow.ui \
     src/extensions/productview/failbackproductview.ui \
     src/extensions/navbar/navbaroptionsdialog.ui \
     src/partsdeletedialog.ui \
+    src/unusedthumbnailsdialog.ui \
     src/workingdirwidget.ui \
     src/webdownloaderwidget.ui \
     src/webdownloaderdialog.ui \

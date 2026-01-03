@@ -37,6 +37,8 @@
 #include "zimautils.h"
 #include "settings.h"
 #include "datasourcewidget.h"
+#include "thumbnailcleaner.h"
+#include "metadata.h"
 
 
 MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
@@ -74,6 +76,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
     connect(ui->toolBar, SIGNAL(settingsRequested()),
             this, SLOT(showSettings()));
+    connect(ui->toolBar, SIGNAL(refreshRequested()),
+            this, SLOT(handleRefresh()));
 
     connect(ui->toolBar, SIGNAL(aboutRequested()),
             ui->tabWidget, SLOT(openAboutPage()));
@@ -198,4 +202,21 @@ void MainWindow::downloadFile(QWebEngineDownloadRequest *download)
 
     m_downloader->enqueue(download);
     m_downloader->show();
+}
+
+void MainWindow::handleRefresh()
+{
+    QString currentDir;
+
+    auto dataSource = ui->tabWidget->currentDataSource();
+
+    if (dataSource != nullptr)
+        currentDir = dataSource->currentDir();
+
+    qDebug() << "MainWindow: refresh triggered for directory" << currentDir;
+
+    ThumbnailCleaner cleaner(this);
+    cleaner.cleanupUnusedThumbnails(currentDir);
+
+    MetadataCache::get()->clear();
 }
