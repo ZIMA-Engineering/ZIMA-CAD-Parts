@@ -101,7 +101,9 @@ QStringList ScriptRunner::buildArguments(const QFileInfo &script, const QFileInf
 
     if (terminalExecutable.compare(QStringLiteral("cmd.exe"), Qt::CaseInsensitive) == 0) {
         // Keep the window open after the script finishes.
-        return QStringList() << "/K" << quoteForCmd(script.absoluteFilePath());
+        const QString scriptPath = QDir::toNativeSeparators(script.absoluteFilePath());
+        // Pass the raw path and let QProcess handle quoting to avoid double quoting.
+        return QStringList() << "/K" << scriptPath;
     }
 
     const QString cygwinScript = quoteForBash(toCygwinPath(script.absoluteFilePath()));
@@ -147,12 +149,5 @@ QString ScriptRunner::quoteForBash(const QString &text) const
     QString escaped = text;
     escaped.replace("'", "'\"'\"'");
     return QStringLiteral("'%1'").arg(escaped);
-}
-
-QString ScriptRunner::quoteForCmd(const QString &text) const
-{
-    QString escaped = text;
-    escaped.replace("\"", "\"\"");
-    return QStringLiteral("\"%1\"").arg(escaped);
 }
 #endif
