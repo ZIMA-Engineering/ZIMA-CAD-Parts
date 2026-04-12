@@ -166,6 +166,82 @@
            <height>40</height>
           </size>
          </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+     <widget class="QWidget" name="browserTab">
+      <attribute name="title">
+       <string>&amp;Browser</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="QGroupBox" name="browserGroupBox">
+         <property name="title">
+          <string>Browser</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QCheckBox" name="browserSavePasswordsCheckBox">
+            <property name="text">
+             <string>Save passwords for web forms</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="browserAutofillCheckBox">
+            <property name="text">
+             <string>Automatically fill saved passwords</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="browserRememberHttpAuthCheckBox">
+            <property name="text">
+             <string>Remember HTTP authentication credentials</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="browserInfoLabel">
+            <property name="text">
+             <string>Passwords are stored in the system credential store.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="savedPasswordsButton">
+            <property name="text">
+             <string>Saved passwords...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_browser">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
         </spacer>
        </item>
       </layout>

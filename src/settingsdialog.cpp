@@ -22,14 +22,15 @@
 #include "settings.h"
 #include "ui_settingsdialog.h"
 
+#include <QApplication>
 #include <QFileDialog>
 #include <QDir>
 #include <QDebug>
-#include <QApplication>
 #include <QLocale>
 #include <QToolButton>
 
 #include "addeditdatasource.h"
+#include "savedpasswordsdialog.h"
 #include "zimautils.h"
 
 //! A helpter template class to convert any pointer to QVariant and vice versa
@@ -72,6 +73,8 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
             this, SLOT(textEditorButton_clicked()));
     connect(m_ui->terminalButton, SIGNAL(clicked()),
             this, SLOT(terminalButton_clicked()));
+    connect(m_ui->savedPasswordsButton, SIGNAL(clicked()),
+            this, SLOT(openSavedPasswordsDialog()));
 
     m_editedDS = Settings::get()->DataSources;
     setupDatasourceList();
@@ -83,6 +86,9 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
     m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
     m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
     m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperDirWebViewToolBar);
+    m_ui->browserSavePasswordsCheckBox->setChecked(Settings::get()->BrowserSaveFormPasswords);
+    m_ui->browserAutofillCheckBox->setChecked(Settings::get()->BrowserAutoFillPasswords);
+    m_ui->browserRememberHttpAuthCheckBox->setChecked(Settings::get()->BrowserRememberHttpAuth);
     m_ui->textEditorLineEdit->setText(Settings::get()->TextEditorPath);
     m_ui->terminalLineEdit->setText(Settings::get()->TerminalPath);
 
@@ -147,6 +153,9 @@ void SettingsDialog::accept()
     Settings::get()->GUISplashDuration = m_ui->splashDurationSpinBox->value();
     Settings::get()->DeveloperEnabled = m_ui->developerModeGroupBox->isChecked();
     Settings::get()->DeveloperDirWebViewToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
+    Settings::get()->BrowserSaveFormPasswords = m_ui->browserSavePasswordsCheckBox->isChecked();
+    Settings::get()->BrowserAutoFillPasswords = m_ui->browserAutofillCheckBox->isChecked();
+    Settings::get()->BrowserRememberHttpAuth = m_ui->browserRememberHttpAuthCheckBox->isChecked();
     Settings::get()->TextEditorPath = m_ui->textEditorLineEdit->text();
     Settings::get()->TerminalPath = m_ui->terminalLineEdit->text();
 
@@ -292,6 +301,12 @@ void SettingsDialog::datasourceDownButton_clicked()
         lw->setCurrentRow(ix+1);
         m_editedDS.swapItemsAt(ix, ix+1);
     }
+}
+
+void SettingsDialog::openSavedPasswordsDialog()
+{
+    SavedPasswordsDialog dialog(this);
+    dialog.exec();
 }
 
 void SettingsDialog::setupDatasourceList()

@@ -41,10 +41,10 @@ class SettingsDialog : public QDialog {
 public:
     enum Section {
         General=0,
+        Browser,
         DataSources,
         ExternalPrograms,
         DeveloperMode,
-        ProductView,
         SectionCount
     };
 
@@ -63,6 +63,7 @@ private slots:
     void removeDataSource();
     void datasourceUpButton_clicked();
     void datasourceDownButton_clicked();
+    void openSavedPasswordsDialog();
     void setZimaUtilPath(int util);
     void proeButton_clicked();
     void textEditorButton_clicked();

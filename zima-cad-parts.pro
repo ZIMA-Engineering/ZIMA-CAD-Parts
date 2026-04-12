@@ -46,6 +46,7 @@ SOURCES += src/zima-cad-parts.cpp \
     src/partsdeletedialog.cpp \
     src/passwordmanager.cpp \
     src/passwordmanagerbridge.cpp \
+    src/savedpasswordsdialog.cpp \
     src/scriptrunner.cpp \
     src/settingsdialog.cpp \
     src/qtkeychainsecretstore.cpp \
@@ -146,6 +147,7 @@ HEADERS += src/mainwindow.h \
     src/directorycopyasdialog.h \
     src/partsdeletedialog.h \
     src/scriptrunner.h \
+    src/savedpasswordsdialog.h \
     src/settingsdialog.h \
     src/qtkeychainsecretstore.h \
     src/file.h \
@@ -233,6 +235,7 @@ FORMS += mainwindow.ui \
     src/extensions/productview/failbackproductview.ui \
     src/extensions/navbar/navbaroptionsdialog.ui \
     src/partsdeletedialog.ui \
+    src/savedpasswordsdialog.ui \
     src/unusedthumbnailsdialog.ui \
     src/workingdirwidget.ui \
     src/webdownloaderwidget.ui \
