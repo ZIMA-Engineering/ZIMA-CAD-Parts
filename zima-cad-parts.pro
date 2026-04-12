@@ -5,6 +5,7 @@ QT += core gui network opengl widgets webenginewidgets
 
 TARGET = ZIMA-CAD-Parts
 TEMPLATE = app
+macx: QMAKE_MACOSX_DEPLOYMENT_TARGET = 26.0
 
 win32:INCLUDEPATH += ../
 VPATH += ./src
