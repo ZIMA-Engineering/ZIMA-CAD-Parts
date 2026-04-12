@@ -65,6 +65,14 @@
     </message>
 </context>
 <context>
+    <name>BrowserPage</name>
+    <message>
+        <location filename="../src/browserpage.cpp" line="52"/>
+        <source>Browser popup</source>
+        <translation>Vyskakovací okno prohlížeče</translation>
+    </message>
+</context>
+<context>
     <name>CreateDirectoryDialog</name>
     <message>
         <location filename="../src/createdirectorydialog.ui" line="14"/>
@@ -419,9 +427,8 @@
 <context>
     <name>DirectoryWebView</name>
     <message>
-        <location filename="../src/directorywebview.cpp" line="76"/>
         <source>ZIMA-CAD-Parts Technical Specifications</source>
-        <translation>ZIMA-CAD-Parts Technická Specifikace</translation>
+        <translation type="vanished">ZIMA-CAD-Parts Technická Specifikace</translation>
     </message>
 </context>
 <context>
@@ -501,8 +508,8 @@
         <translation type="vanished">Opravdu chcete smazat vybrané díly? Tato operace je nevratná.</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="317"/>
-        <location filename="../src/directorywidget.cpp" line="318"/>
+        <location filename="../src/directorywidget.cpp" line="324"/>
+        <location filename="../src/directorywidget.cpp" line="325"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>
@@ -1210,6 +1217,202 @@
         <source>Show versions</source>
         <translation>Ukázat verze</translation>
     </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="133"/>
+        <source>Update saved password</source>
+        <translation>Aktualizovat uložené heslo</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="134"/>
+        <source>Save password</source>
+        <translation>Uložit heslo</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="136"/>
+        <source>Update saved password for %1?</source>
+        <translation>Aktualizovat uložené heslo pro %1?</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="137"/>
+        <source>Save password for %1?</source>
+        <translation>Uložit heslo pro %1?</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="138"/>
+        <source>Username: %1</source>
+        <translation>Uživatelské jméno: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="141"/>
+        <source>Update</source>
+        <translation>Aktualizovat</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="142"/>
+        <source>Save</source>
+        <translation>Uložit</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="144"/>
+        <source>Not now</source>
+        <translation>Teď ne</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="49"/>
+        <source>HTTP authentication</source>
+        <translation>HTTP autentizace</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="50"/>
+        <source>Website</source>
+        <translation>Webová stránka</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="72"/>
+        <source> (%1/%2)</source>
+        <translation> (%1/%2)</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="80"/>
+        <source>Never</source>
+        <translation>Nikdy</translation>
+    </message>
+</context>
+<context>
+    <name>SavedPasswordsDialog</name>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="14"/>
+        <source>Saved passwords</source>
+        <translation>Uložená hesla</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="20"/>
+        <source>Search saved passwords</source>
+        <translation>Hledat uložená hesla</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="37"/>
+        <location filename="../src/savedpasswordsdialog.ui" line="71"/>
+        <source>Site</source>
+        <translation>Stránka</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="42"/>
+        <location filename="../src/savedpasswordsdialog.ui" line="85"/>
+        <source>Username</source>
+        <translation>Uživatelské jméno</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="47"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="52"/>
+        <source>Detail</source>
+        <translation>Detail</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="57"/>
+        <source>Last used</source>
+        <translation>Naposledy použito</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="65"/>
+        <source>Selected entry</source>
+        <translation>Vybraná položka</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="99"/>
+        <source>Password</source>
+        <translation>Heslo</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="121"/>
+        <location filename="../src/savedpasswordsdialog.cpp" line="309"/>
+        <location filename="../src/savedpasswordsdialog.cpp" line="321"/>
+        <source>Reveal</source>
+        <translation>Zobrazit</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="128"/>
+        <source>Copy username</source>
+        <translation>Kopírovat uživatelské jméno</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="135"/>
+        <source>Copy password</source>
+        <translation>Kopírovat heslo</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="142"/>
+        <source>Delete</source>
+        <translation>Smazat</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="149"/>
+        <source>Delete all</source>
+        <translation>Smazat vše</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.ui" line="169"/>
+        <source>Close</source>
+        <translation>Zavřít</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="219"/>
+        <source>The password for this entry is no longer available in the system credential store.</source>
+        <translation>Heslo pro tuto položku už není k dispozici v systémovém úložišti přihlašovacích údajů.</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="340"/>
+        <source>Unable to reveal password</source>
+        <translation>Nelze zobrazit heslo</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="349"/>
+        <source>Hide</source>
+        <translation>Skrýt</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="374"/>
+        <source>Unable to copy password</source>
+        <translation>Nelze zkopírovat heslo</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="393"/>
+        <source>Unable to delete password</source>
+        <translation>Nelze smazat heslo</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="394"/>
+        <source>The selected entry could not be removed from the system credential store.
+
+%1</source>
+        <translation>Vybranou položku se nepodařilo odstranit ze systémového úložiště přihlašovacích údajů.
+
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="413"/>
+        <source>Delete all saved passwords</source>
+        <translation>Smazat všechna uložená hesla</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="414"/>
+        <source>Delete all saved passwords?</source>
+        <translation>Smazat všechna uložená hesla?</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="429"/>
+        <source>Unable to delete all passwords</source>
+        <translation>Nelze smazat všechna hesla</translation>
+    </message>
+    <message>
+        <location filename="../src/savedpasswordsdialog.cpp" line="430"/>
+        <source>%1 saved password entries could not be removed from the system credential store.</source>
+        <translation>%1 uložených hesel se nepodařilo odstranit ze systémového úložiště přihlašovacích údajů.</translation>
+    </message>
 </context>
 <context>
     <name>ScriptRunner</name>
@@ -1410,53 +1613,88 @@
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="175"/>
+        <source>&amp;Browser</source>
+        <translation>&amp;Prohlížeč</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="181"/>
+        <source>Browser</source>
+        <translation>Prohlížeč</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="187"/>
+        <source>Save passwords for web forms</source>
+        <translation>Ukládat hesla pro webové formuláře</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="197"/>
+        <source>Automatically fill saved passwords</source>
+        <translation>Automaticky vyplňovat uložená hesla</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="207"/>
+        <source>Remember HTTP authentication credentials</source>
+        <translation>Pamatovat si přihlašovací údaje HTTP autentizace</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="217"/>
+        <source>Passwords are stored in the system credential store.</source>
+        <translation>Hesla jsou uložena v systémovém úložišti přihlašovacích údajů.</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="227"/>
+        <source>Saved passwords...</source>
+        <translation>Uložená hesla...</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="251"/>
         <source>&amp;Data sources</source>
         <translation>&amp;Zdroje dat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="205"/>
+        <location filename="../src/settingsdialog.ui" line="281"/>
         <source>&amp;Add</source>
         <translation>&amp;Přidat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="212"/>
+        <location filename="../src/settingsdialog.ui" line="288"/>
         <source>&amp;Edit</source>
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="219"/>
+        <location filename="../src/settingsdialog.ui" line="295"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="239"/>
+        <location filename="../src/settingsdialog.ui" line="315"/>
         <source>Move &amp;Up</source>
         <translation>&amp;Nahoru</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="246"/>
+        <location filename="../src/settingsdialog.ui" line="322"/>
         <source>Move &amp;Down</source>
         <translation>&amp;Dolů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="269"/>
+        <location filename="../src/settingsdialog.ui" line="345"/>
         <source>External programs</source>
         <translation>Externí programy</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="298"/>
+        <location filename="../src/settingsdialog.ui" line="374"/>
         <source>ZIMA utilities</source>
         <translation>ZIMA programy</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="291"/>
+        <location filename="../src/settingsdialog.ui" line="367"/>
         <source>ProE executable:</source>
         <translation>ProE program:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="278"/>
-        <location filename="../src/settingsdialog.ui" line="313"/>
-        <location filename="../src/settingsdialog.ui" line="333"/>
+        <location filename="../src/settingsdialog.ui" line="354"/>
+        <location filename="../src/settingsdialog.ui" line="389"/>
+        <location filename="../src/settingsdialog.ui" line="409"/>
         <source>Find...</source>
         <translation>Hledat...</translation>
     </message>
@@ -1465,38 +1703,38 @@
         <translation type="vanished">Cesta k ProductView:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="306"/>
+        <location filename="../src/settingsdialog.ui" line="382"/>
         <source>Text editor:</source>
         <translation>Textový editor:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="340"/>
+        <location filename="../src/settingsdialog.ui" line="416"/>
         <source>Terminal:</source>
         <translation>Terminál:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="348"/>
-        <location filename="../src/settingsdialog.ui" line="357"/>
+        <location filename="../src/settingsdialog.ui" line="424"/>
+        <location filename="../src/settingsdialog.ui" line="433"/>
         <source>Developer mode</source>
         <translation>Vývojový mód</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="369"/>
+        <location filename="../src/settingsdialog.ui" line="445"/>
         <source>Toolbar for technical specifications</source>
         <translation>Nástrojová lišta pro technickou specifikaci</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="317"/>
+        <location filename="../src/settingsdialog.cpp" line="332"/>
         <source>ZIMA-CAD-Parts - set %1 path</source>
         <translation>ZIMA-CAD-Parts - nastavit %1 cestu</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="325"/>
+        <location filename="../src/settingsdialog.cpp" line="340"/>
         <source>Locate ProE launcher</source>
         <translation>Zadejte cestu k ProE programu</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="327"/>
+        <location filename="../src/settingsdialog.cpp" line="342"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>ProE program (proe.exe);;Všechny soubory (*)</translation>
     </message>
@@ -1505,12 +1743,12 @@
         <translation type="vanished">ZIMA-CAD-Parts - nastavit cestu k ProductView</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="335"/>
+        <location filename="../src/settingsdialog.cpp" line="350"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts - vyberte textový editor</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="343"/>
+        <location filename="../src/settingsdialog.cpp" line="358"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts - vyberte terminál</translation>
     </message>
@@ -1582,18 +1820,28 @@
     </message>
     <message>
         <location filename="../src/webauthenticationdialog.ui" line="29"/>
+        <source>Site</source>
+        <translation>Stránka</translation>
+    </message>
+    <message>
+        <location filename="../src/webauthenticationdialog.ui" line="46"/>
         <source>Realm</source>
         <translation>Realm</translation>
     </message>
     <message>
-        <location filename="../src/webauthenticationdialog.ui" line="46"/>
+        <location filename="../src/webauthenticationdialog.ui" line="63"/>
         <source>Username</source>
         <translation>Jméno</translation>
     </message>
     <message>
-        <location filename="../src/webauthenticationdialog.ui" line="53"/>
+        <location filename="../src/webauthenticationdialog.ui" line="70"/>
         <source>Password</source>
         <translation>Heslo</translation>
+    </message>
+    <message>
+        <location filename="../src/webauthenticationdialog.ui" line="86"/>
+        <source>Remember these credentials</source>
+        <translation>Zapamatovat si tyto přihlašovací údaje</translation>
     </message>
 </context>
 <context>

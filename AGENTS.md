@@ -7,7 +7,8 @@
 - Additional docs for datasource rules sit in `doc/`; build metadata is defined by `zima-cad-parts.pro` and the generated `Makefile`.
 
 ## Build, Test, and Development Commands
-- Prereqs: Qt 6.4+ with `core`, `gui`, `widgets`, `network`, `webenginewidgets` plus `qmake`, `g++`.
+- Prereqs: Qt 6.8+ with `core`, `gui`, `widgets`, `network`, `webenginewidgets`, `webchannel` plus `qmake`, `g++`.
+- Debian/Ubuntu builds also need `qt6-webchannel-dev` and `libsecret-1-dev` alongside the usual Qt WebEngine toolchain packages.
 - Standard build: `qmake && make -j$(nproc)` from the repo root; run the app with `./ZIMA-CAD-Parts`.
 - Always verify changes with a full build before submission, using the standard command above.
 - Clean artifacts: `make clean`. Use `shell.nix` or `nix-build` for a pinned toolchain if you have Nix.
@@ -21,6 +22,7 @@
 
 ## Testing Guidelines
 - No automated test suite is present; run the built binary and exercise core flows (load a datasource, browse parts, open tech specs, download files).
+- For password-manager changes, start `python3 tools/manual-tests/password_manager_fixture.py --port 18080` and follow `doc/password-manager.md`.
 - For datasource-related changes, validate against the sample structure described in `doc/datasource.md` and ensure metadata/thumbnails render.
 - File critical regressions as issues before merging when manual gaps exist.
 

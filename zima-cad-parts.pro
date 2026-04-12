@@ -262,6 +262,7 @@ OTHER_FILES += \
     AUTHORS \
     data/zima-cad-parts.html \
     data/zima-cad-parts_cs_CZ.html \
+    tools/manual-tests/password_manager_fixture.py \
     Doxyfile \
     src/extensions/navbar/styles/downarrowblue.png \
     src/extensions/navbar/styles/sizegrip2003blue.png \
@@ -304,4 +305,5 @@ DISTFILES += \
     README.md \
     doc/datasource.md \
     doc/metadata.md \
+    doc/password-manager.md \
     doc/users.md
