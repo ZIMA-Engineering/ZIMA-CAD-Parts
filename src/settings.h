@@ -110,6 +110,10 @@ public:
     bool DeveloperEnabled;
     //! Flag: show developer tool bar
     bool DeveloperDirWebViewToolBar;
+    //! Flag: save HTML form passwords
+    bool BrowserSaveFormPasswords;
+    //! Flag: automatically fill saved HTML form passwords
+    bool BrowserAutoFillPasswords;
     //! Flag: remember HTTP authentication credentials
     bool BrowserRememberHttpAuth;
 

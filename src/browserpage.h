@@ -23,6 +23,9 @@
 
 #include <QWebEnginePage>
 
+class PasswordManagerBridge;
+class QWebChannel;
+
 class BrowserPage : public QWebEnginePage
 {
     Q_OBJECT
@@ -35,6 +38,10 @@ protected:
 
 private slots:
     void handleAuthenticationRequired(const QUrl &requestUrl, QAuthenticator *authenticator);
+
+private:
+    QWebChannel *m_channel;
+    PasswordManagerBridge *m_bridge;
 };
 
 #endif // BROWSERPAGE_H

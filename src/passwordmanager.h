@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QVariantMap>
 
 class PasswordMetadataStore;
 class QAuthenticator;
@@ -22,7 +23,11 @@ public:
 
     PasswordMetadataStore *metadataStore() const;
     SecretStore *secretStore() const;
+    QWebEngineProfile *profile() const;
+
     void handleHttpAuthentication(QWidget *parent, const QUrl &requestUrl, QAuthenticator *authenticator);
+    QVariantMap buildAutofillResponse(const QVariantMap &request, QWidget *parent);
+    void handleFormSubmitted(QWidget *parent, const QVariantMap &submission);
 
 private:
     struct HttpAuthLookupResult {
@@ -41,6 +46,7 @@ private:
                                 const QString &username,
                                 const QString &password,
                                 QWidget *parent);
+    void installFormScript();
     void warnSecretStoreFailure(QWidget *parent, const QString &details);
 
     QWebEngineProfile *m_profile;

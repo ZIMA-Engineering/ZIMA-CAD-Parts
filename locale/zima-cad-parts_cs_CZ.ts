@@ -1103,6 +1103,43 @@
     </message>
 </context>
 <context>
+    <name>PasswordManager</name>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="342"/>
+        <source>Saved accounts (%1)</source>
+        <translation>Uložené účty (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="344"/>
+        <source>Use saved account</source>
+        <translation>Použít uložený účet</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="346"/>
+        <source>Choose account</source>
+        <translation>Vyberte účet</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="596"/>
+        <source>Saved credentials could not be accessed in the system credential store.</source>
+        <translation>K uloženým přihlašovacím údajům se nepodařilo přistoupit v systémovém úložišti přihlašovacích údajů.</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="597"/>
+        <source>Saved credentials could not be accessed in the system credential store.
+
+%1</source>
+        <translation>K uloženým přihlašovacím údajům se nepodařilo přistoupit v systémovém úložišti přihlašovacích údajů.
+
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/passwordmanager.cpp" line="600"/>
+        <source>Credential storage unavailable</source>
+        <translation>Úložiště přihlašovacích údajů není dostupné</translation>
+    </message>
+</context>
+<context>
     <name>ProEProductView</name>
     <message>
         <source>about:blank</source>

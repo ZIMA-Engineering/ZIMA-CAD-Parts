@@ -22,14 +22,22 @@
 
 #include <QDialog>
 #include <QVBoxLayout>
+#include <QWebChannel>
+#include <QWebEngineScript>
 #include <QWebEngineView>
 
 #include "browserprofilemanager.h"
 #include "passwordmanager.h"
+#include "passwordmanagerbridge.h"
 
 BrowserPage::BrowserPage(QObject *parent)
-    : QWebEnginePage(BrowserProfileManager::instance()->profile(), parent)
+    : QWebEnginePage(BrowserProfileManager::instance()->profile(), parent),
+      m_channel(new QWebChannel(this)),
+      m_bridge(new PasswordManagerBridge(this, BrowserProfileManager::instance()->passwordManager(), this))
 {
+    m_channel->registerObject(QStringLiteral("zcpPasswordManager"), m_bridge);
+    setWebChannel(m_channel, QWebEngineScript::ApplicationWorld);
+
     connect(this, SIGNAL(authenticationRequired(QUrl,QAuthenticator*)),
             this, SLOT(handleAuthenticationRequired(QUrl,QAuthenticator*)));
 }

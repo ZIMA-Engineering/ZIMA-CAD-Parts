@@ -67,6 +67,8 @@ void Settings::load()
     GUISplashDuration = s.value("GUISplashDuration", 1500).toInt();
     DeveloperEnabled = s.value("DeveloperEnabled", false).toBool();
     DeveloperDirWebViewToolBar = s.value("DeveloperTechSpecToolBar", true).toBool();
+    BrowserSaveFormPasswords = s.value("Browser/SaveFormPasswords", true).toBool();
+    BrowserAutoFillPasswords = s.value("Browser/AutoFillPasswords", true).toBool();
     BrowserRememberHttpAuth = s.value("Browser/RememberHttpAuth", true).toBool();
     ExtensionsProductViewGeometry = s.value("Extensions/ProductView/geometry").toByteArray();
     ExtensionsProductViewPosition = s.value("Extensions/ProductView/position").toPoint();
@@ -118,6 +120,8 @@ void Settings::save()
     s.setValue("GUISplashDuration", GUISplashDuration);
     s.setValue("DeveloperEnabled", DeveloperEnabled);
     s.setValue("DeveloperTechSpecToolBar", DeveloperDirWebViewToolBar);
+    s.setValue("Browser/SaveFormPasswords", BrowserSaveFormPasswords);
+    s.setValue("Browser/AutoFillPasswords", BrowserAutoFillPasswords);
     s.setValue("Browser/RememberHttpAuth", BrowserRememberHttpAuth);
     s.setValue("ExternalPrograms/ProE/Executable", ProeExecutable);
     s.setValue("ExternalPrograms/TextEditorPath", TextEditorPath);

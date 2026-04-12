@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-05-18T21:26:48
 # -------------------------------------------------
-QT += core gui network opengl widgets webenginewidgets
+QT += core gui network opengl widgets webchannel webenginewidgets
 
 !versionAtLeast(QT_VERSION, 6.8.0) {
     error(ZIMA-CAD-Parts requires Qt 6.8 or newer.)
@@ -45,6 +45,7 @@ SOURCES += src/zima-cad-parts.cpp \
     src/mainwindow.cpp \
     src/partsdeletedialog.cpp \
     src/passwordmanager.cpp \
+    src/passwordmanagerbridge.cpp \
     src/scriptrunner.cpp \
     src/settingsdialog.cpp \
     src/qtkeychainsecretstore.cpp \
@@ -141,6 +142,7 @@ HEADERS += src/mainwindow.h \
     src/browserpage.h \
     src/browserprofilemanager.h \
     src/passwordmanager.h \
+    src/passwordmanagerbridge.h \
     src/directorycopyasdialog.h \
     src/partsdeletedialog.h \
     src/scriptrunner.h \
