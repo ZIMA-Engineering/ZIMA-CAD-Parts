@@ -4,9 +4,12 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QProcess>
+#include <QWebEnginePage>
 
 #include "directorywidget.h"
 #include "ui_directorywidget.h"
+#include "browserprofilemanager.h"
+#include "directorywebview.h"
 #include "filemodel.h"
 #include "filefiltermodel.h"
 #include "settings.h"
@@ -20,6 +23,7 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui(new Ui::DirectoryWidget)
 {
     ui->setupUi(this);
+    ui->partsWebView->setPage(new QWebEnginePage(BrowserProfileManager::instance()->profile(), ui->partsWebView));
 
     m_productView = new ProductView(this);
 
@@ -165,6 +169,10 @@ void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
     }
 
     webView->show();
+
+    if (DirectoryWebView *dirView = qobject_cast<DirectoryWebView *>(webView))
+        dirView->setRootPath(rootPath);
+
     webView->load(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
 }
 

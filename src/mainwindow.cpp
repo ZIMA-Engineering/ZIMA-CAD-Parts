@@ -26,12 +26,11 @@
 #include <QBitmap>
 #include <QFile>
 #include <QDebug>
-#include <QWebEngineSettings>
-#include <QWebEngineProfile>
 #include <QShortcut>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "browserprofilemanager.h"
 #include "datasourcemodel.h"
 #include "filtersdialog.h"
 #include "zimautils.h"
@@ -101,12 +100,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
     connect(ui->tabWidget, SIGNAL(workingDirChanged()), this, SLOT(settingsChanged()));
 
-    auto defaultProfile = QWebEngineProfile::defaultProfile();
-
-    defaultProfile->settings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
-    defaultProfile->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
-
-    connect(defaultProfile, SIGNAL(downloadRequested(QWebEngineDownloadRequest*)),
+    connect(BrowserProfileManager::instance(), SIGNAL(downloadRequested(QWebEngineDownloadRequest*)),
             this, SLOT(downloadFile(QWebEngineDownloadRequest*)));
 
     settingsChanged();

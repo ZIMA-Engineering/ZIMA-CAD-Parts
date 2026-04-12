@@ -32,6 +32,7 @@ INCLUDEPATH += libqdxf/libdxfrw/src
 #    }
 
 SOURCES += src/zima-cad-parts.cpp \
+    src/browserprofilemanager.cpp \
     src/directorycopyasdialog.cpp \
     src/mainwindow.cpp \
     src/partsdeletedialog.cpp \
@@ -125,6 +126,7 @@ SOURCES += src/zima-cad-parts.cpp \
     src/lineeditvaluedelegate.cpp
 
 HEADERS += src/mainwindow.h \
+    src/browserprofilemanager.h \
     src/directorycopyasdialog.h \
     src/partsdeletedialog.h \
     src/scriptrunner.h \

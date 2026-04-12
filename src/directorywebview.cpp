@@ -19,6 +19,7 @@
 */
 
 #include "directorywebview.h"
+#include "browserprofilemanager.h"
 #include "webdownloaderdialog.h"
 #include "webauthenticationdialog.h"
 
@@ -26,6 +27,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QMessageBox>
+#include <QWebEnginePage>
 #include <QWebEngineProfile>
 
 #include "settings.h"
@@ -35,6 +37,8 @@
 DirectoryWebView::DirectoryWebView(QWidget *parent) :
     QWebEngineView(parent)
 {
+    setPage(new QWebEnginePage(BrowserProfileManager::instance()->profile(), this));
+
     connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
 
