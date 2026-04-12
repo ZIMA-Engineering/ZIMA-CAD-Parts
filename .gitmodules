@@ -1,3 +1,6 @@
 [submodule "libqdxf"]
 	path = libqdxf
 	url = https://github.com/ZIMA-Engineering/ZIMA-libqdxf.git
+[submodule "3rdparty/qtkeychain"]
+	path = 3rdparty/qtkeychain
+	url = https://github.com/frankosterfeld/qtkeychain.git

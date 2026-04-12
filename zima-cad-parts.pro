@@ -19,6 +19,13 @@ INCLUDEPATH += src/filefilters
 INCLUDEPATH += libqdxf/src
 INCLUDEPATH += libqdxf/libdxfrw/src
 
+include(3rdparty/qtkeychain/qtkeychain.pri)
+
+# QtKeychain 0.15.0 enables Windows Credential Store support through qmake,
+# but its qmake file does not add crypt32 even though keychain_win.cpp still
+# calls CryptProtectData/CryptUnprotectData from that library.
+win32:contains(DEFINES, USE_CREDENTIAL_STORE):LIBS += -lcrypt32
+
 # disabled 20140206 by Vlad's request:
 # only "supported" files should be displayed. For rest of files this dialog should be closed
 #    win32 {
@@ -39,10 +46,13 @@ SOURCES += src/zima-cad-parts.cpp \
     src/partsdeletedialog.cpp \
     src/scriptrunner.cpp \
     src/settingsdialog.cpp \
+    src/qtkeychainsecretstore.cpp \
     src/file.cpp \
     src/filemodel.cpp \
     src/addeditdatasource.cpp \
     src/settings.cpp \
+    src/passwordmetadatastore.cpp \
+    src/memorysecretstore.cpp \
     src/extensions/productview/productview.cpp \
     src/filtersdialog.cpp \
     src/metadata.cpp \
@@ -133,10 +143,14 @@ HEADERS += src/mainwindow.h \
     src/partsdeletedialog.h \
     src/scriptrunner.h \
     src/settingsdialog.h \
+    src/qtkeychainsecretstore.h \
     src/file.h \
     src/filemodel.h \
     src/addeditdatasource.h \
     src/settings.h \
+    src/passwordmetadatastore.h \
+    src/memorysecretstore.h \
+    src/secretstore.h \
     src/extensions/productview/productview.h \
     src/filtersdialog.h \
     src/metadata.h \
