@@ -19,16 +19,9 @@
 */
 
 #include "directorywebview.h"
-#include "browserprofilemanager.h"
-#include "webdownloaderdialog.h"
-#include "webauthenticationdialog.h"
+#include "browserpage.h"
 
-#include <QDialog>
-#include <QVBoxLayout>
 #include <QDebug>
-#include <QMessageBox>
-#include <QWebEnginePage>
-#include <QWebEngineProfile>
 
 #include "settings.h"
 #include "zima-cad-parts.h"
@@ -37,13 +30,10 @@
 DirectoryWebView::DirectoryWebView(QWidget *parent) :
     QWebEngineView(parent)
 {
-    setPage(new QWebEnginePage(BrowserProfileManager::instance()->profile(), this));
+    setPage(new BrowserPage(this));
 
     connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
-
-    connect(page(), SIGNAL(authenticationRequired(QUrl,QAuthenticator*)),
-            this, SLOT(authenticate(QUrl,QAuthenticator*)));
 
     loadAboutPage();
 }
@@ -66,30 +56,10 @@ void DirectoryWebView::loadAboutPage()
     setHtml( stream.readAll().replace("%VERSION%", VERSION) );
 }
 
-DirectoryWebView* DirectoryWebView::createWindow(QWebEnginePage::WebWindowType type)
-{
-    Q_UNUSED(type)
-
-    QDialog *popup = new QDialog(this);
-    QVBoxLayout *layout = new QVBoxLayout;
-
-    DirectoryWebView *webview = new DirectoryWebView(this);
-    layout->addWidget(webview);
-
-    popup->setLayout(layout);
-    popup->setWindowTitle(tr("ZIMA-CAD-Parts Technical Specifications"));
-    popup->setWindowFlags(popup->windowFlags() | Qt::WindowMinMaxButtonsHint);
-    popup->resize(size());
-    popup->show();
-    return webview;
-}
-
 void DirectoryWebView::urlChange(const QUrl &url)
 {
-    if(this->url() == url)
-        return;
-
-    if(url.scheme() == "about" || url.scheme() == "ZIMA-CAD-Parts")
+    if ((url.scheme() == "about" && url != QUrl("about:blank"))
+            || url.scheme() == "ZIMA-CAD-Parts")
         loadAboutPage();
 }
 
@@ -122,17 +92,4 @@ void DirectoryWebView::pageLoaded(bool ok)
 		}
 		})()
 	)");
-}
-
-
-void DirectoryWebView::authenticate(const QUrl &requestUrl, QAuthenticator *authenticator)
-{
-    Q_UNUSED(requestUrl)
-
-    WebAuthenticationDialog dlg(authenticator);
-
-    if (dlg.exec() != QDialog::Accepted)
-        return;
-
-    dlg.authenticate();
 }

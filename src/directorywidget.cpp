@@ -4,11 +4,10 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QProcess>
-#include <QWebEnginePage>
 
 #include "directorywidget.h"
 #include "ui_directorywidget.h"
-#include "browserprofilemanager.h"
+#include "browserpage.h"
 #include "directorywebview.h"
 #include "filemodel.h"
 #include "filefiltermodel.h"
@@ -23,7 +22,7 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui(new Ui::DirectoryWidget)
 {
     ui->setupUi(this);
-    ui->partsWebView->setPage(new QWebEnginePage(BrowserProfileManager::instance()->profile(), ui->partsWebView));
+    ui->partsWebView->setPage(new BrowserPage(ui->partsWebView));
 
     m_productView = new ProductView(this);
 

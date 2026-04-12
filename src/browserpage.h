@@ -18,31 +18,23 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DIRECTORYWEBVIEW_H
-#define DIRECTORYWEBVIEW_H
+#ifndef BROWSERPAGE_H
+#define BROWSERPAGE_H
 
-#include <QWebEngineView>
+#include <QWebEnginePage>
 
-class WebDownloaderDialog;
-
-class DirectoryWebView : public QWebEngineView
+class BrowserPage : public QWebEnginePage
 {
     Q_OBJECT
+
 public:
-    explicit DirectoryWebView(QWidget *parent = 0);
-    void setRootPath(QString path);
-
-signals:
-
-public slots:
-    void loadAboutPage();
+    explicit BrowserPage(QObject *parent = 0);
 
 protected:
-    void pageLoaded(bool ok);
-    void urlChange(const QUrl &url);
+    QWebEnginePage *createWindow(WebWindowType type);
 
-private:
-    QString m_rootPath;
+private slots:
+    void handleAuthenticationRequired(const QUrl &requestUrl, QAuthenticator *authenticator);
 };
 
-#endif // DIRECTORYWEBVIEW_H
+#endif // BROWSERPAGE_H
