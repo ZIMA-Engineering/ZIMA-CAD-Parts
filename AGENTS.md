@@ -25,7 +25,13 @@
 - File critical regressions as issues before merging when manual gaps exist.
 
 ## Commit & Pull Request Guidelines
-- Commit messages follow short, imperative summaries (e.g., “Add Copy as... to directory context menu”).
-- Scope commits narrowly; include rationale in the body if behavior changes or migrations are involved.
+- Commit messages must use an imperative summary line plus a body.
+- Commit messages must describe what is being changed, why it is
+  needed, what problem is being solved, and how the change addresses it.
+- Wrap every commit-message line at 80 characters or less.
+- Create commit messages in a temporary file and commit with
+  `git commit -F <tempfile>` instead of passing the message inline.
+- Scope commits narrowly; keep each commit focused on one logical
+  change.
 - PRs should describe the change, steps to verify, and risks; attach screenshots/GIFs for UI adjustments and note impacted dialogs/widgets.
 - Link related issues or TODOs; mention platform nuances (Linux/Windows) when relevant.
