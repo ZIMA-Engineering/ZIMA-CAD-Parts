@@ -3,6 +3,10 @@
 # -------------------------------------------------
 QT += core gui network opengl widgets webenginewidgets
 
+!versionAtLeast(QT_VERSION, 6.8.0) {
+    error(ZIMA-CAD-Parts requires Qt 6.8 or newer.)
+}
+
 TARGET = ZIMA-CAD-Parts
 TEMPLATE = app
 macx: QMAKE_MACOSX_DEPLOYMENT_TARGET = 26.0
