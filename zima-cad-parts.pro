@@ -44,6 +44,7 @@ SOURCES += src/zima-cad-parts.cpp \
     src/directorycopyasdialog.cpp \
     src/mainwindow.cpp \
     src/partsdeletedialog.cpp \
+    src/passwordmanager.cpp \
     src/scriptrunner.cpp \
     src/settingsdialog.cpp \
     src/qtkeychainsecretstore.cpp \
@@ -139,6 +140,7 @@ SOURCES += src/zima-cad-parts.cpp \
 HEADERS += src/mainwindow.h \
     src/browserpage.h \
     src/browserprofilemanager.h \
+    src/passwordmanager.h \
     src/directorycopyasdialog.h \
     src/partsdeletedialog.h \
     src/scriptrunner.h \

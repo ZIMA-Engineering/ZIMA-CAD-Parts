@@ -110,6 +110,8 @@ public:
     bool DeveloperEnabled;
     //! Flag: show developer tool bar
     bool DeveloperDirWebViewToolBar;
+    //! Flag: remember HTTP authentication credentials
+    bool BrowserRememberHttpAuth;
 
     //! ProductView dialog geometry
     QByteArray ExtensionsProductViewGeometry;

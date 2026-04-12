@@ -25,7 +25,7 @@
 #include <QWebEngineView>
 
 #include "browserprofilemanager.h"
-#include "webauthenticationdialog.h"
+#include "passwordmanager.h"
 
 BrowserPage::BrowserPage(QObject *parent)
     : QWebEnginePage(BrowserProfileManager::instance()->profile(), parent)
@@ -67,12 +67,8 @@ QWebEnginePage *BrowserPage::createWindow(QWebEnginePage::WebWindowType type)
 
 void BrowserPage::handleAuthenticationRequired(const QUrl &requestUrl, QAuthenticator *authenticator)
 {
-    Q_UNUSED(requestUrl)
-
     QWebEngineView *ownerView = qobject_cast<QWebEngineView *>(parent());
-    WebAuthenticationDialog dialog(authenticator, ownerView ? ownerView->window() : 0);
-    if (dialog.exec() != QDialog::Accepted)
-        return;
-
-    dialog.authenticate();
+    BrowserProfileManager::instance()->passwordManager()->handleHttpAuthentication(ownerView ? ownerView->window() : 0,
+                                                                                  requestUrl,
+                                                                                  authenticator);
 }

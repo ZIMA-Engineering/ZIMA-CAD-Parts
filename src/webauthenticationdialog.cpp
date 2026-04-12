@@ -1,14 +1,27 @@
 #include "webauthenticationdialog.h"
 #include "ui_webauthenticationdialog.h"
 
-WebAuthenticationDialog::WebAuthenticationDialog(QAuthenticator *authenticator, QWidget *parent) :
+WebAuthenticationDialog::WebAuthenticationDialog(const QString &site,
+                                                 const QString &realm,
+                                                 const QString &initialUsername,
+                                                 const QString &initialPassword,
+                                                 bool initialRememberCredentials,
+                                                 QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::WebAuthenticationDialog),
-    m_authenticator(authenticator)
+    ui(new Ui::WebAuthenticationDialog)
 {
     ui->setupUi(this);
 
-    ui->realmLabel->setText(authenticator->realm());
+    ui->siteLabel->setText(site);
+    ui->realmLabel->setText(realm);
+    ui->usernameLineEdit->setText(initialUsername);
+    ui->passwordLineEdit->setText(initialPassword);
+    ui->rememberCredentialsCheckBox->setChecked(initialRememberCredentials);
+
+    if (initialUsername.isEmpty())
+        ui->usernameLineEdit->setFocus();
+    else
+        ui->passwordLineEdit->setFocus();
 }
 
 WebAuthenticationDialog::~WebAuthenticationDialog()
@@ -16,8 +29,17 @@ WebAuthenticationDialog::~WebAuthenticationDialog()
     delete ui;
 }
 
-void WebAuthenticationDialog::authenticate()
+QString WebAuthenticationDialog::username() const
 {
-    m_authenticator->setUser(ui->usernameLineEdit->text());
-    m_authenticator->setPassword(ui->passwordLineEdit->text());
+    return ui->usernameLineEdit->text();
+}
+
+QString WebAuthenticationDialog::password() const
+{
+    return ui->passwordLineEdit->text();
+}
+
+bool WebAuthenticationDialog::rememberCredentials() const
+{
+    return ui->rememberCredentialsCheckBox->isChecked();
 }

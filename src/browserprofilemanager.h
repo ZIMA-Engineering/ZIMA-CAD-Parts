@@ -25,6 +25,7 @@
 
 class QWebEngineDownloadRequest;
 class QWebEngineProfile;
+class PasswordManager;
 
 class BrowserProfileManager : public QObject
 {
@@ -34,6 +35,7 @@ public:
     static BrowserProfileManager *instance();
 
     QWebEngineProfile *profile() const;
+    PasswordManager *passwordManager() const;
 
 signals:
     void downloadRequested(QWebEngineDownloadRequest *download);
@@ -42,6 +44,7 @@ private:
     explicit BrowserProfileManager(QObject *parent = 0);
 
     QWebEngineProfile *m_profile;
+    PasswordManager *m_passwordManager;
 };
 
 #endif // BROWSERPROFILEMANAGER_H

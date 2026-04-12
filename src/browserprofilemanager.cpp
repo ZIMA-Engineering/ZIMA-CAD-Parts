@@ -26,6 +26,8 @@
 #include <QWebEngineProfile>
 #include <QWebEngineSettings>
 
+#include "passwordmanager.h"
+
 BrowserProfileManager *BrowserProfileManager::instance()
 {
     static BrowserProfileManager instance(QCoreApplication::instance());
@@ -34,7 +36,8 @@ BrowserProfileManager *BrowserProfileManager::instance()
 
 BrowserProfileManager::BrowserProfileManager(QObject *parent)
     : QObject(parent),
-      m_profile(0)
+      m_profile(0),
+      m_passwordManager(0)
 {
     const QString basePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
             + "/browser-profile";
@@ -55,9 +58,16 @@ BrowserProfileManager::BrowserProfileManager(QObject *parent)
 
     connect(m_profile, SIGNAL(downloadRequested(QWebEngineDownloadRequest*)),
             this, SIGNAL(downloadRequested(QWebEngineDownloadRequest*)));
+
+    m_passwordManager = new PasswordManager(m_profile, this);
 }
 
 QWebEngineProfile *BrowserProfileManager::profile() const
 {
     return m_profile;
+}
+
+PasswordManager *BrowserProfileManager::passwordManager() const
+{
+    return m_passwordManager;
 }
