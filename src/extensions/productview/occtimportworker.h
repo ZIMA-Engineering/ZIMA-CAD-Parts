@@ -1,5 +1,5 @@
-#ifndef STEPIMPORTWORKER_H
-#define STEPIMPORTWORKER_H
+#ifndef OCCTIMPORTWORKER_H
+#define OCCTIMPORTWORKER_H
 
 #include "threadworker.h"
 
@@ -11,27 +11,27 @@
 #include <TDF_LabelSequence.hxx>
 #include <TDocStd_Document.hxx>
 
-struct StepImportResult
+struct OcctImportResult
 {
     Handle(TDocStd_Document) document;
     TDF_LabelSequence rootLabels;
     Bnd_Box bbox;
 };
 
-using StepImportResultPtr = QSharedPointer<StepImportResult>;
-Q_DECLARE_METATYPE(StepImportResultPtr)
+using OcctImportResultPtr = QSharedPointer<OcctImportResult>;
+Q_DECLARE_METATYPE(OcctImportResultPtr)
 
-class StepImportWorker : public ThreadWorker
+class OcctImportWorker : public ThreadWorker
 {
     Q_OBJECT
 
 public:
-    explicit StepImportWorker(const QString &absolutePath,
+    explicit OcctImportWorker(const QString &absolutePath,
                               quint64 jobId,
                               QObject *parent = nullptr);
 
 signals:
-    void imported(quint64 jobId, const StepImportResultPtr &result);
+    void imported(quint64 jobId, const OcctImportResultPtr &result);
     void failed(quint64 jobId, const QString &message);
 
 public slots:
@@ -42,4 +42,4 @@ private:
     quint64 m_jobId;
 };
 
-#endif // STEPIMPORTWORKER_H
+#endif // OCCTIMPORTWORKER_H

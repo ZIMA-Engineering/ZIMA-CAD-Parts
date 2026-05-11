@@ -25,7 +25,7 @@
 #include "pdfproductview.h"
 #include "imageproductview.h"
 #ifdef HAVE_OCCT
-#include "stepproductview.h"
+#include "occtproductview.h"
 #endif
 
 #include "filemodel.h"
@@ -38,7 +38,7 @@ ProductView::ProductView(QWidget *parent) :
     addProviders<DxfProductView>();
     addProviders<ImageProductView>();
 #ifdef HAVE_OCCT
-    addProviders<StepProductView>();
+    addProviders<OcctProductView>();
 #endif
 #ifdef HAVE_POPPLER
     addProviders<PDFProductView>();

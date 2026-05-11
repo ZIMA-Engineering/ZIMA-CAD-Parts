@@ -95,7 +95,7 @@ void OcctViewWidget::clearScene()
     updateView();
 }
 
-void OcctViewWidget::setImportedDocument(const StepImportResultPtr &result)
+void OcctViewWidget::setImportedDocument(const OcctImportResultPtr &result)
 {
     m_pendingResult = result;
     if (!m_viewInitialized)

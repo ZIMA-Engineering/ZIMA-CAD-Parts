@@ -1,24 +1,24 @@
-#ifndef STEPPRODUCTVIEW_H
-#define STEPPRODUCTVIEW_H
+#ifndef OCCTPRODUCTVIEW_H
+#define OCCTPRODUCTVIEW_H
 
 #include "abstractproductview.h"
-#include "stepimportworker.h"
+#include "occtimportworker.h"
 
 #include <QPointer>
 
 class QThread;
 
 namespace Ui {
-class StepProductView;
+class OcctProductView;
 }
 
-class StepProductView : public AbstractProductView
+class OcctProductView : public AbstractProductView
 {
     Q_OBJECT
 
 public:
-    explicit StepProductView(QWidget *parent = nullptr);
-    ~StepProductView();
+    explicit OcctProductView(QWidget *parent = nullptr);
+    ~OcctProductView();
 
     QString title() override;
     FileTypeList canHandle() override;
@@ -28,7 +28,7 @@ protected:
     void hideEvent(QHideEvent *event) override;
 
 private slots:
-    void onImported(quint64 jobId, const StepImportResultPtr &result);
+    void onImported(quint64 jobId, const OcctImportResultPtr &result);
     void onFailed(quint64 jobId, const QString &message);
 
 private:
@@ -36,11 +36,11 @@ private:
     void setControlsEnabled(bool enabled);
     void startWorker(const QString &absolutePath);
 
-    Ui::StepProductView *ui;
+    Ui::OcctProductView *ui;
     quint64 m_jobId;
     QPointer<QThread> m_workerThread;
-    QPointer<StepImportWorker> m_worker;
-    StepImportResultPtr m_lastResult;
+    QPointer<OcctImportWorker> m_worker;
+    OcctImportResultPtr m_lastResult;
 };
 
-#endif // STEPPRODUCTVIEW_H
+#endif // OCCTPRODUCTVIEW_H

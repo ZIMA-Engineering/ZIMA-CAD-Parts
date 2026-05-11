@@ -143,8 +143,8 @@ SOURCES += src/zima-cad-parts.cpp \
 
 equals(OCCT_AVAILABLE, 1) {
     SOURCES += \
-        src/extensions/productview/stepproductview.cpp \
-        src/extensions/productview/stepimportworker.cpp \
+        src/extensions/productview/occtproductview.cpp \
+        src/extensions/productview/occtimportworker.cpp \
         src/extensions/productview/occtviewwidget.cpp \
         src/extensions/productview/occtqttools.cpp \
         src/extensions/productview/occtgltools.cpp
@@ -237,8 +237,8 @@ HEADERS += src/mainwindow.h \
 
 equals(OCCT_AVAILABLE, 1) {
     HEADERS += \
-        src/extensions/productview/stepproductview.h \
-        src/extensions/productview/stepimportworker.h \
+        src/extensions/productview/occtproductview.h \
+        src/extensions/productview/occtimportworker.h \
         src/extensions/productview/occtviewwidget.h \
         src/extensions/productview/occtqttools.h \
         src/extensions/productview/occtgltools.h
@@ -274,7 +274,7 @@ FORMS += mainwindow.ui \
     src/filerenamedialog.ui
 
 equals(OCCT_AVAILABLE, 1) {
-    FORMS += src/extensions/productview/stepproductview.ui
+    FORMS += src/extensions/productview/occtproductview.ui
 }
 
 RESOURCES += zima-cad-parts.qrc \

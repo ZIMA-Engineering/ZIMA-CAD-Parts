@@ -1,7 +1,7 @@
 #ifndef OCCTVIEWWIDGET_H
 #define OCCTVIEWWIDGET_H
 
-#include "stepimportworker.h"
+#include "occtimportworker.h"
 
 #include <vector>
 
@@ -26,7 +26,7 @@ public:
     QSize sizeHint() const override;
 
     void clearScene();
-    void setImportedDocument(const StepImportResultPtr &result);
+    void setImportedDocument(const OcctImportResultPtr &result);
     void fitAll();
     void setIsometricView();
     void setFrontView();
@@ -58,7 +58,7 @@ private:
     Handle(V3d_View) m_view;
     Handle(AIS_InteractiveContext) m_context;
     std::vector<Handle(AIS_InteractiveObject)> m_objects;
-    StepImportResultPtr m_pendingResult;
+    OcctImportResultPtr m_pendingResult;
     int m_displayMode;
     bool m_viewInitialized;
     bool m_loadedModel;

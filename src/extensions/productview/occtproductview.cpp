@@ -1,5 +1,5 @@
-#include "stepproductview.h"
-#include "ui_stepproductview.h"
+#include "occtproductview.h"
+#include "ui_occtproductview.h"
 
 #include <QApplication>
 #include <QComboBox>
@@ -7,9 +7,9 @@
 #include <QPushButton>
 #include <QThread>
 
-StepProductView::StepProductView(QWidget *parent)
+OcctProductView::OcctProductView(QWidget *parent)
     : AbstractProductView(parent),
-      ui(new Ui::StepProductView),
+      ui(new Ui::OcctProductView),
       m_jobId(0)
 {
     ui->setupUi(this);
@@ -40,23 +40,23 @@ StepProductView::StepProductView(QWidget *parent)
     ui->stackedWidget->setCurrentWidget(ui->loadingPage);
 }
 
-StepProductView::~StepProductView()
+OcctProductView::~OcctProductView()
 {
     cancelActiveWorker();
     delete ui;
 }
 
-QString StepProductView::title()
+QString OcctProductView::title()
 {
     return tr("STEP part");
 }
 
-FileTypeList StepProductView::canHandle()
+FileTypeList OcctProductView::canHandle()
 {
     return FileTypeList() << FileType::STEP;
 }
 
-bool StepProductView::handle(FileMetadata *f)
+bool OcctProductView::handle(FileMetadata *f)
 {
     const QString absolutePath = f->fileInfo.absoluteFilePath();
 
@@ -74,14 +74,14 @@ bool StepProductView::handle(FileMetadata *f)
     return true;
 }
 
-void StepProductView::hideEvent(QHideEvent *event)
+void OcctProductView::hideEvent(QHideEvent *event)
 {
     ++m_jobId;
     cancelActiveWorker();
     AbstractProductView::hideEvent(event);
 }
 
-void StepProductView::onImported(quint64 jobId, const StepImportResultPtr &result)
+void OcctProductView::onImported(quint64 jobId, const OcctImportResultPtr &result)
 {
     if (jobId != m_jobId)
         return;
@@ -92,7 +92,7 @@ void StepProductView::onImported(quint64 jobId, const StepImportResultPtr &resul
     setControlsEnabled(true);
 }
 
-void StepProductView::onFailed(quint64 jobId, const QString &message)
+void OcctProductView::onFailed(quint64 jobId, const QString &message)
 {
     if (jobId != m_jobId)
         return;
@@ -104,7 +104,7 @@ void StepProductView::onFailed(quint64 jobId, const QString &message)
     setControlsEnabled(false);
 }
 
-void StepProductView::cancelActiveWorker()
+void OcctProductView::cancelActiveWorker()
 {
     if (m_worker)
     {
@@ -116,7 +116,7 @@ void StepProductView::cancelActiveWorker()
     m_workerThread.clear();
 }
 
-void StepProductView::setControlsEnabled(bool enabled)
+void OcctProductView::setControlsEnabled(bool enabled)
 {
     ui->fitButton->setEnabled(enabled);
     ui->isometricButton->setEnabled(enabled);
@@ -126,20 +126,20 @@ void StepProductView::setControlsEnabled(bool enabled)
     ui->modeComboBox->setEnabled(enabled);
 }
 
-void StepProductView::startWorker(const QString &absolutePath)
+void OcctProductView::startWorker(const QString &absolutePath)
 {
     QThread *thread = new QThread(qApp);
-    StepImportWorker *worker = new StepImportWorker(absolutePath, m_jobId);
+    OcctImportWorker *worker = new OcctImportWorker(absolutePath, m_jobId);
     worker->moveToThread(thread);
     worker->setup();
 
     connect(thread, &QThread::finished, worker, &QObject::deleteLater);
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-    connect(worker, &StepImportWorker::imported,
-            this, &StepProductView::onImported,
+    connect(worker, &OcctImportWorker::imported,
+            this, &OcctProductView::onImported,
             Qt::QueuedConnection);
-    connect(worker, &StepImportWorker::failed,
-            this, &StepProductView::onFailed,
+    connect(worker, &OcctImportWorker::failed,
+            this, &OcctProductView::onFailed,
             Qt::QueuedConnection);
 
     m_workerThread = thread;

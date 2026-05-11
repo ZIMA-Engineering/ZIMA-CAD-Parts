@@ -1,4 +1,4 @@
-#include "stepimportworker.h"
+#include "occtimportworker.h"
 
 #include <algorithm>
 #include <cmath>
@@ -15,17 +15,17 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
-StepImportWorker::StepImportWorker(const QString &absolutePath,
+OcctImportWorker::OcctImportWorker(const QString &absolutePath,
                                    quint64 jobId,
                                    QObject *parent)
     : ThreadWorker(parent),
       m_path(absolutePath),
       m_jobId(jobId)
 {
-    qRegisterMetaType<StepImportResultPtr>("StepImportResultPtr");
+    qRegisterMetaType<OcctImportResultPtr>("OcctImportResultPtr");
 }
 
-void StepImportWorker::run()
+void OcctImportWorker::run()
 {
     try
     {
@@ -84,7 +84,7 @@ void StepImportWorker::run()
             return;
         }
 
-        StepImportResultPtr result(new StepImportResult());
+        OcctImportResultPtr result(new OcctImportResult());
         result->document = document;
         result->rootLabels = roots;
 
