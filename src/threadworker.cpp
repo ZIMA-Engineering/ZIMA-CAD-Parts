@@ -25,7 +25,8 @@ void ThreadWorker::start()
 
 void ThreadWorker::stop()
 {
-    QThread::currentThread()->requestInterruption();
+    if (thread())
+        thread()->requestInterruption();
 }
 
 void ThreadWorker::quit()
