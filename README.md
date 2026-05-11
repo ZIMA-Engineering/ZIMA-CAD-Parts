@@ -4,7 +4,11 @@ ZIMA-CAD-Parts
 Requirements
 ------------
 Qt 6.8 LTS or newer - modules `core`, `gui`, `network`, `widgets`,
-`webenginewidgets`, `webchannel`, plus `qmake`.
+`openglwidgets`, `webenginewidgets`, `webchannel`, plus `qmake`.
+
+STEP preview is enabled when Open CASCADE Technology (OCCT) is available.
+The supported dependency path is vcpkg with `OCCT_ROOT` passed to qmake.
+When OCCT is not found, the application still builds without STEP preview.
 
 Debian 13 dependencies
 ----------------------
@@ -29,6 +33,36 @@ Build
 ```
 qmake && make -j $(nproc)
 lrelease-qt6 locale/zima-cad-parts_cs_CZ.ts
+```
+
+Build with STEP preview on Linux through vcpkg:
+
+```
+/path/to/vcpkg/vcpkg install opencascade:x64-linux
+qmake "OCCT_ROOT=/path/to/vcpkg/installed/x64-linux" zima-cad-parts.pro
+make -j$(nproc)
+```
+
+Build with STEP preview on macOS through vcpkg:
+
+```
+# Intel
+/path/to/vcpkg/vcpkg install opencascade:x64-osx
+qmake "OCCT_ROOT=/path/to/vcpkg/installed/x64-osx" zima-cad-parts.pro
+make -j$(sysctl -n hw.ncpu)
+
+# Apple Silicon
+/path/to/vcpkg/vcpkg install opencascade:arm64-osx
+qmake "OCCT_ROOT=/path/to/vcpkg/installed/arm64-osx" zima-cad-parts.pro
+make -j$(sysctl -n hw.ncpu)
+```
+
+Homebrew can also be used as a local macOS convenience path:
+
+```
+brew install opencascade
+qmake "OCCT_ROOT=$(brew --prefix opencascade)" zima-cad-parts.pro
+make
 ```
 
 Manual password-manager fixture

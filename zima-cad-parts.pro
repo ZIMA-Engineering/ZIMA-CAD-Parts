@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-05-18T21:26:48
 # -------------------------------------------------
-QT += core gui network opengl widgets webchannel webenginewidgets
+QT += core gui network opengl openglwidgets widgets webchannel webenginewidgets
 
 !versionAtLeast(QT_VERSION, 6.8.0) {
     error(ZIMA-CAD-Parts requires Qt 6.8 or newer.)
@@ -16,10 +16,12 @@ VPATH += ./src
 
 INCLUDEPATH += src
 INCLUDEPATH += src/filefilters
+INCLUDEPATH += src/extensions/productview
 INCLUDEPATH += libqdxf/src
 INCLUDEPATH += libqdxf/libdxfrw/src
 
 include(3rdparty/qtkeychain/qtkeychain.pri)
+include(src/extensions/productview/occt.pri)
 
 # QtKeychain 0.15.0 enables Windows Credential Store support through qmake,
 # but its qmake file does not add crypt32 even though keychain_win.cpp still
@@ -139,6 +141,15 @@ SOURCES += src/zima-cad-parts.cpp \
     src/filemover.cpp \
     src/lineeditvaluedelegate.cpp
 
+equals(OCCT_AVAILABLE, 1) {
+    SOURCES += \
+        src/extensions/productview/stepproductview.cpp \
+        src/extensions/productview/stepimportworker.cpp \
+        src/extensions/productview/occtviewwidget.cpp \
+        src/extensions/productview/occtqttools.cpp \
+        src/extensions/productview/occtgltools.cpp
+}
+
 HEADERS += src/mainwindow.h \
     src/browserpage.h \
     src/browserprofilemanager.h \
@@ -224,6 +235,15 @@ HEADERS += src/mainwindow.h \
     src/filemover.h \
     src/lineeditvaluedelegate.h
 
+equals(OCCT_AVAILABLE, 1) {
+    HEADERS += \
+        src/extensions/productview/stepproductview.h \
+        src/extensions/productview/stepimportworker.h \
+        src/extensions/productview/occtviewwidget.h \
+        src/extensions/productview/occtqttools.h \
+        src/extensions/productview/occtgltools.h
+}
+
 FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui \
@@ -253,6 +273,10 @@ FORMS += mainwindow.ui \
     src/maintoolbar.ui \
     src/filerenamedialog.ui
 
+equals(OCCT_AVAILABLE, 1) {
+    FORMS += src/extensions/productview/stepproductview.ui
+}
+
 RESOURCES += zima-cad-parts.qrc \
     src/extensions/navbar/navbar.qrc
 
@@ -263,6 +287,8 @@ OTHER_FILES += \
     data/zima-cad-parts.html \
     data/zima-cad-parts_cs_CZ.html \
     tools/manual-tests/password_manager_fixture.py \
+    licenses/OCCT-NOTICE.txt \
+    licenses/occt-samples-qt-MIT.txt \
     Doxyfile \
     src/extensions/navbar/styles/downarrowblue.png \
     src/extensions/navbar/styles/sizegrip2003blue.png \

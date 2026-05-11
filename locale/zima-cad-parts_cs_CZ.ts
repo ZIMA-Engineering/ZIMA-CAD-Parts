@@ -896,6 +896,79 @@
     </message>
 </context>
 <context>
+    <name>StepImportWorker</name>
+    <message>
+        <location filename="../src/extensions/productview/stepimportworker.cpp" line="47"/>
+        <source>Failed to read STEP file.</source>
+        <translation>Nepodařilo se přečíst STEP soubor.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepimportworker.cpp" line="62"/>
+        <source>Failed to transfer STEP file into OCCT document.</source>
+        <translation>Nepodařilo se převést STEP soubor do dokumentu OCCT.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepimportworker.cpp" line="82"/>
+        <source>The STEP file does not contain any displayable shapes.</source>
+        <translation>STEP soubor neobsahuje žádné zobrazitelné tvary.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepimportworker.cpp" line="151"/>
+        <location filename="../src/extensions/productview/stepimportworker.cpp" line="160"/>
+        <source>Unknown STEP import error.</source>
+        <translation>Neznámá chyba importu STEP.</translation>
+    </message>
+</context>
+<context>
+    <name>StepProductView</name>
+    <message>
+        <location filename="../src/extensions/productview/stepproductview.cpp" line="18"/>
+        <source>Shaded</source>
+        <translation>Stínované</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepproductview.cpp" line="19"/>
+        <source>Wireframe</source>
+        <translation>Drátový model</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepproductview.cpp" line="48"/>
+        <source>STEP part</source>
+        <translation>STEP díl</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepproductview.cpp" line="67"/>
+        <location filename="../src/extensions/productview/stepproductview.ui" line="142"/>
+        <source>Loading STEP preview...</source>
+        <translation>Načítá se náhled STEP...</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepproductview.ui" line="51"/>
+        <source>Fit</source>
+        <translation>Přizpůsobit</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepproductview.ui" line="60"/>
+        <source>Isometric</source>
+        <translation>Izometrie</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepproductview.ui" line="69"/>
+        <source>Front</source>
+        <translation>Zepředu</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepproductview.ui" line="78"/>
+        <source>Top</source>
+        <translation>Shora</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/stepproductview.ui" line="87"/>
+        <source>Right</source>
+        <translation>Zprava</translation>
+    </message>
+</context>
+<context>
     <name>MainTabWidget</name>
     <message>
         <location filename="../src/maintabwidget.ui" line="14"/>

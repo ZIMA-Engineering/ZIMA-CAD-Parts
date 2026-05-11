@@ -21,6 +21,9 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QLocale>
+#ifdef HAVE_OCCT
+#include <QSurfaceFormat>
+#endif
 #include "mainwindow.h"
 #include "settings.h"
 
@@ -56,6 +59,21 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("ZIMA-Construction");
     QCoreApplication::setOrganizationDomain("zima-contruction.cz");
     QCoreApplication::setApplicationName("ZIMA-CAD-Parts");
+
+#ifdef HAVE_OCCT
+    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+#ifdef Q_OS_WIN
+    QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+#endif
+    QSurfaceFormat fmt;
+    fmt.setDepthBufferSize(24);
+    fmt.setStencilBufferSize(8);
+#ifdef Q_OS_MAC
+    fmt.setProfile(QSurfaceFormat::CoreProfile);
+    fmt.setVersion(3, 2);
+#endif
+    QSurfaceFormat::setDefaultFormat(fmt);
+#endif
 
     QApplication a(argc, argv);
 
