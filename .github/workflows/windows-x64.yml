@@ -33,11 +33,22 @@ jobs:
         with:
           arch: x64
 
+      - name: Bootstrap vcpkg + install OCCT
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git $env:RUNNER_TEMP\vcpkg
+          & "$env:RUNNER_TEMP\vcpkg\bootstrap-vcpkg.bat" -disableMetrics
+          Push-Location $env:GITHUB_WORKSPACE
+          & "$env:RUNNER_TEMP\vcpkg\vcpkg.exe" install opencascade:x64-windows
+          Pop-Location
+          "OCCT_ROOT=$env:RUNNER_TEMP\vcpkg\installed\x64-windows" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - name: Create localization
         run: lrelease zima-cad-parts.pro
 
       - name: Configure build
-        run: qmake zima-cad-parts.pro
+        shell: pwsh
+        run: qmake "OCCT_ROOT=$env:OCCT_ROOT" zima-cad-parts.pro
 
       - name: Build project
         run: nmake release
@@ -48,8 +59,11 @@ jobs:
           $ErrorActionPreference = "Stop"
           New-Item -ItemType Directory -Force package | Out-Null
           Copy-Item release\ZIMA-CAD-Parts.exe .\package\
+          Copy-Item "$env:OCCT_ROOT\bin\*.dll" .\package\ -Force
           New-Item -ItemType Directory -Force package\locale | Out-Null
           Copy-Item locale\*.qm package\locale\
+          New-Item -ItemType Directory -Force package\licenses | Out-Null
+          Copy-Item licenses\* package\licenses\ -Force
           windeployqt --release --compiler-runtime .\package\ZIMA-CAD-Parts.exe
 
       - name: Compute artifact name + zip name
@@ -84,4 +98,3 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ steps.names.outputs.zip_name }}
-
