@@ -26,6 +26,19 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFPrs_AISObject.hxx>
 
+namespace {
+
+Aspect_Drawable toAspectDrawable(WId windowId)
+{
+#ifdef _WIN32
+    return reinterpret_cast<Aspect_Drawable>(windowId);
+#else
+    return static_cast<Aspect_Drawable>(windowId);
+#endif
+}
+
+}
+
 OcctViewWidget::OcctViewWidget(QWidget *parent)
     : QOpenGLWidget(parent),
       m_displayMode(AIS_Shaded),
@@ -175,7 +188,7 @@ void OcctViewWidget::initializeGL()
             Handle(OpenGl_GraphicDriver)::DownCast(m_viewer->Driver());
     OcctQtTools::qtGlCapsFromSurfaceFormat(driver->ChangeOptions(), format());
 
-    const Aspect_Drawable nativeWin = static_cast<Aspect_Drawable>(effectiveWinId());
+    const Aspect_Drawable nativeWin = toAspectDrawable(effectiveWinId());
     const Graphic3d_Vec2i viewSize(width(), height());
     const bool firstInit = m_view->Window().IsNull();
 
@@ -196,7 +209,7 @@ void OcctViewWidget::paintGL()
 
     const double oldPixelRatio = m_view->Window()->DevicePixelRatio();
     if (m_view->Window()->NativeHandle()
-            != OcctGlTools::GetGlNativeWindow(static_cast<Aspect_Drawable>(effectiveWinId()))
+            != OcctGlTools::GetGlNativeWindow(toAspectDrawable(effectiveWinId()))
             || devicePixelRatioF() != oldPixelRatio)
     {
         initializeGL();
