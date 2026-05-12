@@ -896,74 +896,102 @@
     </message>
 </context>
 <context>
-    <name>StepImportWorker</name>
+    <name>OcctImportWorker</name>
     <message>
-        <location filename="../src/extensions/productview/stepimportworker.cpp" line="47"/>
-        <source>Failed to read STEP file.</source>
-        <translation>Nepodařilo se přečíst STEP soubor.</translation>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="48"/>
+        <source>Unsupported OCCT preview format.</source>
+        <translation>Nepodporovaný formát náhledu OCCT.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepimportworker.cpp" line="62"/>
-        <source>Failed to transfer STEP file into OCCT document.</source>
-        <translation>Nepodařilo se převést STEP soubor do dokumentu OCCT.</translation>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="57"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="65"/>
+        <source>Unknown %1 import error.</source>
+        <translation>Neznámá chyba importu %1.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepimportworker.cpp" line="82"/>
-        <source>The STEP file does not contain any displayable shapes.</source>
-        <translation>STEP soubor neobsahuje žádné zobrazitelné tvary.</translation>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="76"/>
+        <source>STEP</source>
+        <translation>STEP</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepimportworker.cpp" line="151"/>
-        <location filename="../src/extensions/productview/stepimportworker.cpp" line="160"/>
-        <source>Unknown STEP import error.</source>
-        <translation>Neznámá chyba importu STEP.</translation>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="78"/>
+        <source>IGES</source>
+        <translation>IGES</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="80"/>
+        <source>STL</source>
+        <translation>STL</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="82"/>
+        <source>CAD</source>
+        <translation>CAD</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="104"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="148"/>
+        <source>Failed to read %1 file.</source>
+        <translation>Nepodařilo se přečíst soubor %1.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="114"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="158"/>
+        <source>Failed to transfer %1 file into OCCT document.</source>
+        <translation>Nepodařilo se převést soubor %1 do dokumentu OCCT.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="184"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="211"/>
+        <source>The %1 file does not contain any displayable shapes.</source>
+        <translation>Soubor %1 neobsahuje žádné zobrazitelné tvary.</translation>
     </message>
 </context>
 <context>
-    <name>StepProductView</name>
+    <name>OcctProductView</name>
     <message>
-        <location filename="../src/extensions/productview/stepproductview.cpp" line="18"/>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="17"/>
         <source>Shaded</source>
         <translation>Stínované</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepproductview.cpp" line="19"/>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="18"/>
         <source>Wireframe</source>
         <translation>Drátový model</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepproductview.cpp" line="48"/>
-        <source>STEP part</source>
-        <translation>STEP díl</translation>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="51"/>
+        <source>CAD part</source>
+        <translation>CAD díl</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepproductview.cpp" line="67"/>
-        <location filename="../src/extensions/productview/stepproductview.ui" line="142"/>
-        <source>Loading STEP preview...</source>
-        <translation>Načítá se náhled STEP...</translation>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="68"/>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="121"/>
+        <source>Loading CAD preview...</source>
+        <translation>Načítá se náhled CAD...</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepproductview.ui" line="51"/>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="47"/>
         <source>Fit</source>
         <translation>Přizpůsobit</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepproductview.ui" line="60"/>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="54"/>
         <source>Isometric</source>
         <translation>Izometrie</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepproductview.ui" line="69"/>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="61"/>
         <source>Front</source>
         <translation>Zepředu</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepproductview.ui" line="78"/>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="68"/>
         <source>Top</source>
         <translation>Shora</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/stepproductview.ui" line="87"/>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="75"/>
         <source>Right</source>
         <translation>Zprava</translation>
     </message>

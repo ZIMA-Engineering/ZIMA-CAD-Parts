@@ -1,8 +1,8 @@
 Open CASCADE Technology (OCCT)
 ================================
 
-ZIMA-CAD-Parts can optionally load and render STEP previews using dynamically
-linked Open CASCADE Technology libraries.
+ZIMA-CAD-Parts can optionally load and render STEP, IGES, and STL previews
+using dynamically linked Open CASCADE Technology libraries.
 
 Open CASCADE Technology version 6.7.0 and later is licensed under the GNU
 Lesser General Public License version 2.1 with the Open CASCADE Technology
@@ -13,5 +13,5 @@ License: https://dev.opencascade.org/resources/download/occt-public-license
 Source: https://github.com/Open-Cascade-SAS/OCCT
 
 This repository does not vendor OCCT source code or binaries. Windows release
-artifacts may include OCCT runtime DLLs installed through vcpkg so STEP preview
+artifacts may include OCCT runtime DLLs installed through vcpkg so OCCT preview
 works on machines without a separate OCCT installation.

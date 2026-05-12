@@ -6,9 +6,10 @@ Requirements
 Qt 6.8 LTS or newer - modules `core`, `gui`, `network`, `widgets`,
 `openglwidgets`, `webenginewidgets`, `webchannel`, plus `qmake`.
 
-STEP preview is enabled when Open CASCADE Technology (OCCT) is available.
-The supported dependency path is vcpkg with `OCCT_ROOT` passed to qmake.
-When OCCT is not found, the application still builds without STEP preview.
+CAD preview for STEP, IGES, and STL files is enabled when Open CASCADE
+Technology (OCCT) is available. The supported dependency path is vcpkg with
+`OCCT_ROOT` passed to qmake. When OCCT is not found, the application still
+builds without the OCCT preview.
 
 Debian 13 dependencies
 ----------------------
@@ -35,7 +36,7 @@ qmake && make -j $(nproc)
 lrelease-qt6 locale/zima-cad-parts_cs_CZ.ts
 ```
 
-Build with STEP preview on Linux through vcpkg:
+Build with OCCT preview on Linux through vcpkg:
 
 ```
 /path/to/vcpkg/vcpkg install opencascade:x64-linux
@@ -43,7 +44,7 @@ qmake "OCCT_ROOT=/path/to/vcpkg/installed/x64-linux" zima-cad-parts.pro
 make -j$(nproc)
 ```
 
-Build with STEP preview on macOS through vcpkg:
+Build with OCCT preview on macOS through vcpkg:
 
 ```
 # Intel

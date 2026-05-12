@@ -33,7 +33,7 @@ isEmpty(OCCT_ROOT): OCCT_ROOT = $$(OCCT_ROOT)
             -lTKBRep -lTKTopAlgo -lTKPrim -lTKShHealing -lTKMesh \
             -lTKService -lTKV3d -lTKOpenGl \
             -lTKCDF -lTKLCAF -lTKCAF -lTKBinL -lTKXmlL -lTKBin -lTKXml \
-            -lTKStdL -lTKStd -lTKVCAF -lTKXCAF
+            -lTKStdL -lTKStd -lTKVCAF -lTKXCAF -lTKXSBase
 
         OCCT_HAS_TKDESTEP = 0
         exists($$OCCT_LIBDIR/libTKDESTEP.dylib): OCCT_HAS_TKDESTEP = 1
@@ -44,13 +44,44 @@ isEmpty(OCCT_ROOT): OCCT_ROOT = $$(OCCT_ROOT)
             OCCT_STEP_LIBS = -lTKDESTEP
         } else {
             OCCT_STEP_LIBS = \
-                -lTKXSBase -lTKSTEPBase -lTKSTEPAttr -lTKSTEP209 \
+                -lTKSTEPBase -lTKSTEPAttr -lTKSTEP209 \
                 -lTKSTEP -lTKXDESTEP
         }
 
-        LIBS += $$OCCT_COMMON_LIBS $$OCCT_STEP_LIBS
-        message("OCCT found in $$OCCT_ROOT; STEP preview enabled")
+        OCCT_HAS_TKDEIGES = 0
+        exists($$OCCT_LIBDIR/libTKDEIGES.dylib): OCCT_HAS_TKDEIGES = 1
+        exists($$OCCT_LIBDIR/libTKDEIGES.so): OCCT_HAS_TKDEIGES = 1
+        exists($$OCCT_LIBDIR/TKDEIGES.lib): OCCT_HAS_TKDEIGES = 1
+
+        equals(OCCT_HAS_TKDEIGES, 1) {
+            OCCT_IGES_LIBS = -lTKDEIGES
+        } else {
+            OCCT_IGES_LIBS = -lTKIGES -lTKXDEIGES
+        }
+
+        OCCT_HAS_TKDESTL = 0
+        exists($$OCCT_LIBDIR/libTKDESTL.dylib): OCCT_HAS_TKDESTL = 1
+        exists($$OCCT_LIBDIR/libTKDESTL.so): OCCT_HAS_TKDESTL = 1
+        exists($$OCCT_LIBDIR/TKDESTL.lib): OCCT_HAS_TKDESTL = 1
+
+        OCCT_HAS_TKRWMESH = 0
+        exists($$OCCT_LIBDIR/libTKRWMesh.dylib): OCCT_HAS_TKRWMESH = 1
+        exists($$OCCT_LIBDIR/libTKRWMesh.so): OCCT_HAS_TKRWMESH = 1
+        exists($$OCCT_LIBDIR/TKRWMesh.lib): OCCT_HAS_TKRWMESH = 1
+
+        equals(OCCT_HAS_TKDESTL, 1):equals(OCCT_HAS_TKRWMESH, 1) {
+            OCCT_STL_LIBS = -lTKDESTL -lTKRWMesh
+        } else {
+            OCCT_STL_LIBS = -lTKSTL
+        }
+
+        LIBS += \
+            $$OCCT_COMMON_LIBS \
+            $$OCCT_STEP_LIBS \
+            $$OCCT_IGES_LIBS \
+            $$OCCT_STL_LIBS
+        message("OCCT found in $$OCCT_ROOT; STEP/IGES/STL preview enabled")
     } else {
-        warning("OCCT not found; STEP preview disabled")
+        warning("OCCT not found; STEP/IGES/STL preview disabled")
     }
 }

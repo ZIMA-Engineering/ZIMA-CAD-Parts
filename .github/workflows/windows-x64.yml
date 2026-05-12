@@ -59,6 +59,7 @@ jobs:
           $ErrorActionPreference = "Stop"
           New-Item -ItemType Directory -Force package | Out-Null
           Copy-Item release\ZIMA-CAD-Parts.exe .\package\
+          # Keep all OCCT exchange/runtime DLLs for STEP, IGES, and STL previews.
           Copy-Item "$env:OCCT_ROOT\bin\*.dll" .\package\ -Force
           New-Item -ItemType Directory -Force package\locale | Out-Null
           Copy-Item locale\*.qm package\locale\
