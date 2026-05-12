@@ -1,7 +1,6 @@
 #include "occtproductview.h"
 #include "ui_occtproductview.h"
 
-#include <QApplication>
 #include <QComboBox>
 #include <QHideEvent>
 #include <QPushButton>
@@ -106,13 +105,22 @@ void OcctProductView::onFailed(quint64 jobId, const QString &message)
 
 void OcctProductView::cancelActiveWorker()
 {
-    if (m_worker)
+    QThread *thread = m_workerThread.data();
+    OcctImportWorker *worker = m_worker.data();
+
+    if (worker)
     {
-        disconnect(m_worker, nullptr, this, nullptr);
-        m_worker->stop();
-        m_worker.clear();
+        disconnect(worker, nullptr, this, nullptr);
+        worker->stop();
     }
 
+    if (thread && thread->isRunning())
+    {
+        thread->quit();
+        thread->wait();
+    }
+
+    m_worker.clear();
     m_workerThread.clear();
 }
 
@@ -128,13 +136,22 @@ void OcctProductView::setControlsEnabled(bool enabled)
 
 void OcctProductView::startWorker(const QString &absolutePath, FileType::FileType fileType)
 {
-    QThread *thread = new QThread(qApp);
+    QThread *thread = new QThread();
     OcctImportWorker *worker = new OcctImportWorker(absolutePath, fileType, m_jobId);
     worker->moveToThread(thread);
-    worker->setup();
 
+    connect(thread, &QThread::started,
+            worker, &OcctImportWorker::run);
+    connect(worker, &ThreadWorker::finished,
+            thread, &QThread::quit);
     connect(thread, &QThread::finished, worker, &QObject::deleteLater);
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    connect(thread, &QThread::finished, this, [this, thread, worker]() {
+        if (m_worker == worker)
+            m_worker.clear();
+        if (m_workerThread == thread)
+            m_workerThread.clear();
+    });
     connect(worker, &OcctImportWorker::imported,
             this, &OcctProductView::onImported,
             Qt::QueuedConnection);
