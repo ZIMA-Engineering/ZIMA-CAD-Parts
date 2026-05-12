@@ -316,6 +316,7 @@ OTHER_FILES += \
 
 TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts
 
+win32-msvc:DEFINES += _USE_MATH_DEFINES
 win32:QMAKE_CXXFLAGS += /MP
 
 greaterThan(QT_MAJOR_VERSION, 4) {

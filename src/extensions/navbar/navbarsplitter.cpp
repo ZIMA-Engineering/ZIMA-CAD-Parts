@@ -59,7 +59,7 @@ void NavBarSplitterHandle::mouseMoveEvent(QMouseEvent *e)
         return;
 
     int sh         = splitter()->height();
-    int pos        = parentWidget()->mapFromGlobal(e->globalPos()).y() - mouseOffset;
+    int pos        = parentWidget()->mapFromGlobal(e->globalPosition().toPoint()).y() - mouseOffset;
     int reversePos = sh - pos;
     int newPos     = sh - (reversePos - (reversePos % increment)) - height();
 

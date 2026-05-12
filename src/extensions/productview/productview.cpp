@@ -18,6 +18,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef _MSC_VER
+#include <cmath>
+#endif
+
 #include "productview.h"
 #include "settings.h"
 

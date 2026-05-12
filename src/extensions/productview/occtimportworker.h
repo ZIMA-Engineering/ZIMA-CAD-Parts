@@ -1,19 +1,23 @@
 #ifndef OCCTIMPORTWORKER_H
 #define OCCTIMPORTWORKER_H
 
-#include "file.h"
-#include "threadworker.h"
+#ifdef _MSC_VER
+#include <cmath>
+#endif
 
 #include <vector>
-
-#include <QSharedPointer>
-#include <QString>
-#include <QMetaType>
 
 #include <Bnd_Box.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDocStd_Document.hxx>
+
+#include <QMetaType>
+#include <QSharedPointer>
+#include <QString>
+
+#include "file.h"
+#include "threadworker.h"
 
 struct OcctImportResult
 {

@@ -1,18 +1,23 @@
 #ifndef OCCTVIEWWIDGET_H
 #define OCCTVIEWWIDGET_H
 
-#include "occtimportworker.h"
+#ifdef _MSC_VER
+#include <cmath>
+#endif
 
 #include <vector>
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ViewController.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+
 #include <Standard_WarningsDisable.hxx>
 #include <QOpenGLWidget>
 #include <Standard_WarningsRestore.hxx>
-#include <V3d_View.hxx>
-#include <V3d_Viewer.hxx>
+
+#include "occtimportworker.h"
 
 class OcctViewWidget : public QOpenGLWidget, public AIS_ViewController
 {

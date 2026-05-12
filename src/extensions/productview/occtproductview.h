@@ -1,8 +1,12 @@
 #ifndef OCCTPRODUCTVIEW_H
 #define OCCTPRODUCTVIEW_H
 
-#include "abstractproductview.h"
+#ifdef _MSC_VER
+#include <cmath>
+#endif
+
 #include "occtimportworker.h"
+#include "abstractproductview.h"
 
 #include <QPointer>
 

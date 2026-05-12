@@ -37,7 +37,7 @@ private slots:
     void onDirectoryChange(const QString &path);
 };
 
-inline uint qHash(const QFileInfo &key, uint seed)
+inline size_t qHash(const QFileInfo &key, size_t seed)
 {
     return qHash(key.absoluteFilePath(), seed);
 }

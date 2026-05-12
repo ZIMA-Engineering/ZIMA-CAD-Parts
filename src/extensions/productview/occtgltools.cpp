@@ -69,6 +69,7 @@ bool OcctGlTools::BindShaderManagerToContext(const Handle(V3d_View) &view)
 Aspect_Drawable OcctGlTools::GetGlNativeWindow(Aspect_Drawable nativeWin)
 {
 #ifdef _WIN32
+    (void)nativeWin;
     HDC wglDeviceContext = wglGetCurrentDC();
     HWND wglWindow = WindowFromDC(wglDeviceContext);
     return reinterpret_cast<Aspect_Drawable>(wglWindow);
