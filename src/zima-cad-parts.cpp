@@ -24,6 +24,7 @@
 #ifdef HAVE_OCCT
 #include <QSurfaceFormat>
 #endif
+#include "browserprofilemanager.h"
 #include "mainwindow.h"
 #include "settings.h"
 
@@ -101,11 +102,16 @@ int main(int argc, char *argv[])
             break;
         }
 
-    MainWindow w(&translator);
-    w.show();
+    int ret = 0;
 
-    int ret = a.exec();
+    {
+        MainWindow w(&translator);
+        w.show();
 
+        ret = a.exec();
+    }
+
+    BrowserProfileManager::shutdown();
     Settings::get()->save();
     return ret;
 }

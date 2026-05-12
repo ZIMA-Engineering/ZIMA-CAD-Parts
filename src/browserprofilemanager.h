@@ -33,6 +33,7 @@ class BrowserProfileManager : public QObject
 
 public:
     static BrowserProfileManager *instance();
+    static void shutdown();
 
     QWebEngineProfile *profile() const;
     PasswordManager *passwordManager() const;
@@ -42,6 +43,9 @@ signals:
 
 private:
     explicit BrowserProfileManager(QObject *parent = 0);
+    ~BrowserProfileManager();
+
+    static BrowserProfileManager *s_instance;
 
     QWebEngineProfile *m_profile;
     PasswordManager *m_passwordManager;

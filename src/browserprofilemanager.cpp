@@ -20,7 +20,6 @@
 
 #include "browserprofilemanager.h"
 
-#include <QCoreApplication>
 #include <QDir>
 #include <QStandardPaths>
 #include <QWebEngineProfile>
@@ -28,10 +27,20 @@
 
 #include "passwordmanager.h"
 
+BrowserProfileManager *BrowserProfileManager::s_instance = 0;
+
 BrowserProfileManager *BrowserProfileManager::instance()
 {
-    static BrowserProfileManager instance(QCoreApplication::instance());
-    return &instance;
+    if (!s_instance)
+        s_instance = new BrowserProfileManager();
+
+    return s_instance;
+}
+
+void BrowserProfileManager::shutdown()
+{
+    delete s_instance;
+    s_instance = 0;
 }
 
 BrowserProfileManager::BrowserProfileManager(QObject *parent)
@@ -60,6 +69,15 @@ BrowserProfileManager::BrowserProfileManager(QObject *parent)
             this, SIGNAL(downloadRequested(QWebEngineDownloadRequest*)));
 
     m_passwordManager = new PasswordManager(m_profile, this);
+}
+
+BrowserProfileManager::~BrowserProfileManager()
+{
+    delete m_passwordManager;
+    m_passwordManager = 0;
+
+    delete m_profile;
+    m_profile = 0;
 }
 
 QWebEngineProfile *BrowserProfileManager::profile() const
