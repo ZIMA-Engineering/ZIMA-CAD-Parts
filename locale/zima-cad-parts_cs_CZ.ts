@@ -521,6 +521,11 @@
         <source>DXF part</source>
         <translation>DXF part</translation>
     </message>
+    <message>
+        <location filename="../src/extensions/productview/dxfproductview.ui" line="45"/>
+        <source>Fit</source>
+        <translation>Přizpůsobit</translation>
+    </message>
 </context>
 <context>
     <name>ErrorDialog</name>

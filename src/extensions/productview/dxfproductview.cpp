@@ -4,6 +4,7 @@
 #include <dxfinterface.h>
 #include <libdxfrw.h>
 #include <dxfsceneview.h>
+#include <QPushButton>
 
 DxfProductView::DxfProductView(QWidget *parent) :
     AbstractProductView(parent),
@@ -11,6 +12,9 @@ DxfProductView::DxfProductView(QWidget *parent) :
     dxf(0)
 {
     ui->setupUi(this);
+
+    connect(ui->fitButton, &QPushButton::clicked,
+            ui->view, &DXFSceneView::fitAll);
 }
 
 DxfProductView::~DxfProductView()
@@ -39,7 +43,7 @@ bool DxfProductView::handle(FileMetadata *f)
     dxf = new DXFInterface(f->fileInfo.absoluteFilePath());
 
     ui->view->setScene(dxf->scene());
-    ui->view->fitInView(dxf->scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
+    ui->view->fitAll();
 
     return true;
 }
