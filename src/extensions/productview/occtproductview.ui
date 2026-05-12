@@ -118,7 +118,7 @@
           <set>Qt::AlignCenter</set>
          </property>
          <property name="text">
-          <string>Loading STEP preview...</string>
+          <string>Loading CAD preview...</string>
          </property>
         </widget>
        </item>

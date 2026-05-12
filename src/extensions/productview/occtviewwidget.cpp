@@ -8,6 +8,7 @@
 #include "occtqttools.h"
 
 #include <AIS_DisplayMode.hxx>
+#include <AIS_Triangulation.hxx>
 #include <Aspect_DisplayConnection.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Message.hxx>
@@ -95,13 +96,13 @@ void OcctViewWidget::clearScene()
     updateView();
 }
 
-void OcctViewWidget::setImportedDocument(const OcctImportResultPtr &result)
+void OcctViewWidget::setImportedModel(const OcctImportResultPtr &result)
 {
     m_pendingResult = result;
     if (!m_viewInitialized)
         return;
 
-    displayImportedDocument();
+    displayImportedModel();
 }
 
 void OcctViewWidget::fitAll()
@@ -185,7 +186,7 @@ void OcctViewWidget::initializeGL()
     m_viewInitialized = true;
 
     if (firstInit && !m_pendingResult.isNull())
-        displayImportedDocument();
+        displayImportedModel();
 }
 
 void OcctViewWidget::paintGL()
@@ -297,10 +298,9 @@ void OcctViewWidget::createOcctViewer()
 #endif
 }
 
-void OcctViewWidget::displayImportedDocument()
+void OcctViewWidget::displayImportedModel()
 {
     if (m_pendingResult.isNull()
-            || m_pendingResult->document.IsNull()
             || m_context.IsNull())
         return;
 
@@ -308,12 +308,25 @@ void OcctViewWidget::displayImportedDocument()
     m_objects.clear();
     m_loadedModel = false;
 
-    for (Standard_Integer i = 1; i <= m_pendingResult->rootLabels.Length(); ++i)
+    if (!m_pendingResult->document.IsNull())
     {
-        Handle(XCAFPrs_AISObject) object =
-                new XCAFPrs_AISObject(m_pendingResult->rootLabels.Value(i));
-        m_context->Display(object, false);
-        m_context->SetDisplayMode(object, m_displayMode, false);
+        for (Standard_Integer i = 1; i <= m_pendingResult->rootLabels.Length(); ++i)
+        {
+            Handle(XCAFPrs_AISObject) object =
+                    new XCAFPrs_AISObject(m_pendingResult->rootLabels.Value(i));
+            m_context->Display(object, false);
+            m_context->SetDisplayMode(object, m_displayMode, false);
+            m_objects.push_back(object);
+        }
+    }
+
+    for (const Handle(Poly_Triangulation) &triangulation : m_pendingResult->triangulations)
+    {
+        if (triangulation.IsNull() || !triangulation->HasGeometry())
+            continue;
+
+        Handle(AIS_Triangulation) object = new AIS_Triangulation(triangulation);
+        m_context->Display(object, 0, -1, false);
         m_objects.push_back(object);
     }
 
@@ -336,7 +349,7 @@ void OcctViewWidget::applyDisplayMode(int mode)
 
     for (const Handle(AIS_InteractiveObject) &object : m_objects)
     {
-        if (!object.IsNull())
+        if (!object.IsNull() && Handle(AIS_Triangulation)::DownCast(object).IsNull())
             m_context->SetDisplayMode(object, m_displayMode, false);
     }
 

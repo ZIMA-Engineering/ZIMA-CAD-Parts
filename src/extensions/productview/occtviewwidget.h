@@ -26,7 +26,7 @@ public:
     QSize sizeHint() const override;
 
     void clearScene();
-    void setImportedDocument(const OcctImportResultPtr &result);
+    void setImportedModel(const OcctImportResultPtr &result);
     void fitAll();
     void setIsometricView();
     void setFrontView();
@@ -48,7 +48,7 @@ protected:
 
 private:
     void createOcctViewer();
-    void displayImportedDocument();
+    void displayImportedModel();
     void applyDisplayMode(int mode);
     void updateView();
     void handleViewRedraw(const Handle(AIS_InteractiveContext) &context,

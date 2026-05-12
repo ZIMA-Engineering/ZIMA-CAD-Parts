@@ -34,7 +34,7 @@ private slots:
 private:
     void cancelActiveWorker();
     void setControlsEnabled(bool enabled);
-    void startWorker(const QString &absolutePath);
+    void startWorker(const QString &absolutePath, FileType::FileType fileType);
 
     Ui::OcctProductView *ui;
     quint64 m_jobId;

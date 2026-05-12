@@ -48,12 +48,12 @@ OcctProductView::~OcctProductView()
 
 QString OcctProductView::title()
 {
-    return tr("STEP part");
+    return tr("CAD part");
 }
 
 FileTypeList OcctProductView::canHandle()
 {
-    return FileTypeList() << FileType::STEP;
+    return FileTypeList() << FileType::STEP << FileType::IGES << FileType::STL;
 }
 
 bool OcctProductView::handle(FileMetadata *f)
@@ -65,12 +65,12 @@ bool OcctProductView::handle(FileMetadata *f)
     m_lastResult.clear();
     ui->viewer->clearScene();
     ui->errorLabel->clear();
-    ui->loadingLabel->setText(tr("Loading STEP preview..."));
+    ui->loadingLabel->setText(tr("Loading CAD preview..."));
     ui->modeComboBox->setCurrentIndex(0);
     ui->stackedWidget->setCurrentWidget(ui->loadingPage);
     setControlsEnabled(false);
 
-    startWorker(absolutePath);
+    startWorker(absolutePath, f->type);
     return true;
 }
 
@@ -87,7 +87,7 @@ void OcctProductView::onImported(quint64 jobId, const OcctImportResultPtr &resul
         return;
 
     m_lastResult = result;
-    ui->viewer->setImportedDocument(result);
+    ui->viewer->setImportedModel(result);
     ui->stackedWidget->setCurrentWidget(ui->viewerPage);
     setControlsEnabled(true);
 }
@@ -126,10 +126,10 @@ void OcctProductView::setControlsEnabled(bool enabled)
     ui->modeComboBox->setEnabled(enabled);
 }
 
-void OcctProductView::startWorker(const QString &absolutePath)
+void OcctProductView::startWorker(const QString &absolutePath, FileType::FileType fileType)
 {
     QThread *thread = new QThread(qApp);
-    OcctImportWorker *worker = new OcctImportWorker(absolutePath, m_jobId);
+    OcctImportWorker *worker = new OcctImportWorker(absolutePath, fileType, m_jobId);
     worker->moveToThread(thread);
     worker->setup();
 
