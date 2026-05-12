@@ -66,6 +66,10 @@ qmake "OCCT_ROOT=$(brew --prefix opencascade)" zima-cad-parts.pro
 make
 ```
 
+The Windows GitHub Actions build uses vcpkg binary caching for OCCT. The first
+OCCT-enabled run may build `opencascade:x64-windows` from source; later runs
+restore the cached binary package.
+
 Manual password-manager fixture
 -------------------------------
 Run the local browser/password test fixture with:

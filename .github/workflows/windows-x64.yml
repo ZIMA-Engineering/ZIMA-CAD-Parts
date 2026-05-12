@@ -13,6 +13,10 @@ permissions:
 jobs:
   build-windows:
     runs-on: windows-latest
+    env:
+      VCPKG_COMMIT: 05925b52317eb9a900a8583782e630aafd7a8929
+      VCPKG_TRIPLET: x64-windows
+      VCPKG_BINARY_CACHE: ${{ github.workspace }}\.vcpkg-binary-cache
 
     steps:
       - name: Checkout
@@ -33,15 +37,30 @@ jobs:
         with:
           arch: x64
 
+      - name: Cache vcpkg binary packages
+        uses: actions/cache@v4
+        with:
+          path: .vcpkg-binary-cache
+          key: ${{ runner.os }}-vcpkg-${{ env.VCPKG_TRIPLET }}-${{ env.VCPKG_COMMIT }}-msvc2022-occt
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-${{ env.VCPKG_TRIPLET }}-${{ env.VCPKG_COMMIT }}-msvc2022-
+
       - name: Bootstrap vcpkg + install OCCT
         shell: pwsh
         run: |
-          git clone --depth 1 https://github.com/microsoft/vcpkg.git $env:RUNNER_TEMP\vcpkg
-          & "$env:RUNNER_TEMP\vcpkg\bootstrap-vcpkg.bat" -disableMetrics
+          $ErrorActionPreference = "Stop"
+          $vcpkgRoot = "$env:RUNNER_TEMP\vcpkg"
+          New-Item -ItemType Directory -Force $env:VCPKG_BINARY_CACHE | Out-Null
+          git init $vcpkgRoot
+          git -C $vcpkgRoot remote add origin https://github.com/microsoft/vcpkg.git
+          git -C $vcpkgRoot fetch --depth 1 origin $env:VCPKG_COMMIT
+          git -C $vcpkgRoot checkout --detach FETCH_HEAD
+          & "$vcpkgRoot\bootstrap-vcpkg.bat" -disableMetrics
+          $env:VCPKG_BINARY_SOURCES = "clear;files,$env:VCPKG_BINARY_CACHE,readwrite"
           Push-Location $env:GITHUB_WORKSPACE
-          & "$env:RUNNER_TEMP\vcpkg\vcpkg.exe" install opencascade:x64-windows
+          & "$vcpkgRoot\vcpkg.exe" install "opencascade:$env:VCPKG_TRIPLET" --clean-after-build
           Pop-Location
-          "OCCT_ROOT=$env:RUNNER_TEMP\vcpkg\installed\x64-windows" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "OCCT_ROOT=$vcpkgRoot\installed\$env:VCPKG_TRIPLET" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
       - name: Create localization
         run: lrelease zima-cad-parts.pro
