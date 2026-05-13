@@ -38,7 +38,7 @@ jobs:
           arch: x64
 
       - name: Cache vcpkg binary packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .vcpkg-binary-cache
           key: ${{ runner.os }}-vcpkg-${{ env.VCPKG_TRIPLET }}-${{ env.VCPKG_COMMIT }}-msvc2022-occt
@@ -101,7 +101,7 @@ jobs:
 
       # Always upload the Actions artifact (folder upload = GitHub makes the zip)
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ steps.names.outputs.artifact_name }}
           path: package/**
