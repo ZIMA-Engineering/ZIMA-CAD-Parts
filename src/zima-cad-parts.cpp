@@ -19,8 +19,10 @@
 */
 
 #include <QApplication>
-#include <QTranslator>
+#include <QGuiApplication>
 #include <QLocale>
+#include <QStandardPaths>
+#include <QTranslator>
 #ifdef HAVE_OCCT
 #include <QSurfaceFormat>
 #endif
@@ -77,12 +79,16 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication a(argc, argv);
+    QGuiApplication::setDesktopFileName("cz.zima_engineering.ZimaCadParts");
 
     QTranslator translator;
     QString lang = Settings::get()->getCurrentLanguageCode();
 
     QString filename = "zima-cad-parts_" + lang;
     QStringList paths;
+    QString installedTranslation = QStandardPaths::locate(
+                QStandardPaths::GenericDataLocation,
+                "ZIMA-CAD-Parts/locale/" + filename + ".qm");
 
     paths
             << filename
@@ -90,6 +96,9 @@ int main(int argc, char *argv[])
             << QApplication::applicationDirPath() + "/locale/" + filename
             << ("locale/" + filename)
             << (":/" + filename);
+
+    if (!installedTranslation.isEmpty())
+        paths << installedTranslation;
 
 #ifdef Q_OS_MAC
     paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;

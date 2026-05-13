@@ -8,6 +8,7 @@ QT += core gui network opengl openglwidgets widgets webchannel webenginewidgets
 }
 
 TARGET = ZIMA-CAD-Parts
+APP_ID = cz.zima_engineering.ZimaCadParts
 TEMPLATE = app
 macx: QMAKE_MACOSX_DEPLOYMENT_TARGET = 26.0
 
@@ -328,9 +329,62 @@ else {
 
 ICON = gfx/icon.icns
 
+APP_ICON_FILES = \
+    dist/icons/hicolor/16x16/apps/$${APP_ID}.png \
+    dist/icons/hicolor/22x22/apps/$${APP_ID}.png \
+    dist/icons/hicolor/24x24/apps/$${APP_ID}.png \
+    dist/icons/hicolor/32x32/apps/$${APP_ID}.png \
+    dist/icons/hicolor/48x48/apps/$${APP_ID}.png \
+    dist/icons/hicolor/64x64/apps/$${APP_ID}.png \
+    dist/icons/hicolor/128x128/apps/$${APP_ID}.png \
+    dist/icons/hicolor/256x256/apps/$${APP_ID}.png
+
+unix:!macx {
+    # Keep PREFIX as a make-time shell variable so both of these work:
+    #   make install
+    #   make install PREFIX=/usr/local INSTALL_ROOT=/tmp/stage
+    install_prefix = /$${LITERAL_DOLLAR}$${LITERAL_DOLLAR}{PREFIX:-/usr/local}
+
+    target.path = $${install_prefix}/bin
+
+    desktop.files = dist/linux/$${APP_ID}.desktop
+    desktop.path = $${install_prefix}/share/applications
+
+    translations.files = locale/zima-cad-parts_cs_CZ.qm
+    translations.path = $${install_prefix}/share/ZIMA-CAD-Parts/locale
+
+    icon16.files = dist/icons/hicolor/16x16/apps/$${APP_ID}.png
+    icon16.path = $${install_prefix}/share/icons/hicolor/16x16/apps
+
+    icon22.files = dist/icons/hicolor/22x22/apps/$${APP_ID}.png
+    icon22.path = $${install_prefix}/share/icons/hicolor/22x22/apps
+
+    icon24.files = dist/icons/hicolor/24x24/apps/$${APP_ID}.png
+    icon24.path = $${install_prefix}/share/icons/hicolor/24x24/apps
+
+    icon32.files = dist/icons/hicolor/32x32/apps/$${APP_ID}.png
+    icon32.path = $${install_prefix}/share/icons/hicolor/32x32/apps
+
+    icon48.files = dist/icons/hicolor/48x48/apps/$${APP_ID}.png
+    icon48.path = $${install_prefix}/share/icons/hicolor/48x48/apps
+
+    icon64.files = dist/icons/hicolor/64x64/apps/$${APP_ID}.png
+    icon64.path = $${install_prefix}/share/icons/hicolor/64x64/apps
+
+    icon128.files = dist/icons/hicolor/128x128/apps/$${APP_ID}.png
+    icon128.path = $${install_prefix}/share/icons/hicolor/128x128/apps
+
+    icon256.files = dist/icons/hicolor/256x256/apps/$${APP_ID}.png
+    icon256.path = $${install_prefix}/share/icons/hicolor/256x256/apps
+
+    INSTALLS += target desktop translations icon16 icon22 icon24 icon32 icon48 icon64 icon128 icon256
+}
+
 DISTFILES += \
     README.md \
+    dist/linux/$${APP_ID}.desktop \
     doc/datasource.md \
     doc/metadata.md \
     doc/password-manager.md \
-    doc/users.md
+    doc/users.md \
+    $${APP_ICON_FILES}

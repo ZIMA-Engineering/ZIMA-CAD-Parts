@@ -84,7 +84,29 @@ qmake "OCCT_ROOT=/path/to/vcpkg/installed/x64-linux" zima-cad-parts.pro
 make -j$(nproc)
 ```
 
-Build with OCCT preview on macOS through vcpkg:
+Install on Linux
+----------------
+After building, install the application binary, translation files, desktop
+entry, and hicolor app icons:
+
+```
+sudo make install PREFIX=/usr/local
+```
+
+Use another `PREFIX` if desired, for example `PREFIX=/opt/zima`.
+For staged packaging installs, combine it with `INSTALL_ROOT`:
+
+```
+make install PREFIX=/usr/local INSTALL_ROOT=/tmp/zima-cad-parts-root
+```
+
+Desktop environments can cache application metadata. If the launcher or
+taskbar still shows a generic icon after install, log out and back in, or
+refresh the application/icon cache for your desktop environment.
+
+macOS OCCT builds
+-----------------
+Build with OCCT preview through vcpkg:
 
 ```
 # Intel
@@ -106,6 +128,8 @@ qmake "OCCT_ROOT=$(brew --prefix opencascade)" zima-cad-parts.pro
 make
 ```
 
+Windows CI OCCT builds
+----------------------
 The Windows GitHub Actions build uses vcpkg binary caching for OCCT. The first
 OCCT-enabled run may build `opencascade:x64-windows` from source; later runs
 restore the cached binary package.
