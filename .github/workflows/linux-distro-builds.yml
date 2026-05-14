@@ -134,4 +134,10 @@ jobs:
               "$QMAKE" "OCCT_REQUIRED=1" zima-cad-parts.pro 2>&1 | tee qmake.log
               grep -F "STEP/IGES/STL preview enabled" qmake.log
               make -j"$(nproc)"
+              install_root="$(mktemp -d)"
+              make install PREFIX=/usr/local INSTALL_ROOT="$install_root"
+              test -x "$install_root/usr/local/bin/ZIMA-CAD-Parts"
+              test -f "$install_root/usr/local/share/applications/cz.zima_engineering.ZimaCadParts.desktop"
+              test -f "$install_root/usr/local/share/ZIMA-CAD-Parts/locale/zima-cad-parts_cs_CZ.qm"
+              test -f "$install_root/usr/local/share/icons/hicolor/256x256/apps/cz.zima_engineering.ZimaCadParts.png"
             '
