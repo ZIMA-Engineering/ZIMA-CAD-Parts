@@ -11,6 +11,7 @@ defineTest(occtHasLibrary) {
 }
 
 isEmpty(OCCT_ROOT): OCCT_ROOT = $$(OCCT_ROOT)
+isEmpty(OCCT_REQUIRED): OCCT_REQUIRED = $$(OCCT_REQUIRED)
 
 OCCT_PREFIXES =
 OCCT_MULTIARCH =
@@ -151,7 +152,13 @@ for(OCCT_PREFIX, OCCT_PREFIXES) {
 }
 
 equals(OCCT_AVAILABLE, 0) {
-    !isEmpty(OCCT_ROOT) {
+    equals(OCCT_REQUIRED, 1) {
+        !isEmpty(OCCT_ROOT) {
+            error("OCCT is required but was not found in $$OCCT_ROOT; STEP/IGES/STL preview cannot be enabled.")
+        } else {
+            error("OCCT is required but was not found; STEP/IGES/STL preview cannot be enabled.")
+        }
+    } else:!isEmpty(OCCT_ROOT) {
         warning("OCCT not found in $$OCCT_ROOT; STEP/IGES/STL preview disabled")
     } else {
         warning("OCCT not found; STEP/IGES/STL preview disabled")

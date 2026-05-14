@@ -79,7 +79,7 @@ jobs:
       - name: Configure build
         run: |
           set -euxo pipefail
-          "$QMAKE" zima-cad-parts.pro 2>&1 | tee qmake.log
+          "$QMAKE" "OCCT_REQUIRED=1" zima-cad-parts.pro 2>&1 | tee qmake.log
           grep -F "STEP/IGES/STL preview enabled" qmake.log
 
       - name: Build project
