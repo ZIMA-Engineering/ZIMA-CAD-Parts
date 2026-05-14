@@ -7,16 +7,52 @@ Qt 6.8 LTS or newer - modules `core`, `gui`, `network`, `widgets`,
 `openglwidgets`, `webenginewidgets`, `webchannel`, plus `qmake`.
 
 CAD preview for STEP, IGES, and STL files is enabled when Open CASCADE
-Technology (OCCT) is available. The supported dependency path is vcpkg with
-`OCCT_ROOT` passed to qmake. When OCCT is not found, the application still
-builds without the OCCT preview.
+Technology (OCCT) is available. On Linux, the build detects OCCT development
+packages installed by the distribution package manager. Custom OCCT builds,
+including vcpkg installs, can still be selected by passing `OCCT_ROOT` to
+qmake. When OCCT is not found, the application still builds without the OCCT
+preview.
 
-Debian 13 dependencies
-----------------------
-Install the Qt 6 development stack and toolchain via APT before building:
+Linux dependencies
+------------------
+Install the Qt 6 development stack, toolchain, libsecret, and OCCT development
+packages before building.
+
+Debian 13 / Ubuntu:
 
 ```
-sudo apt install build-essential git libsecret-1-dev qt6-base-dev qt6-webchannel-dev qt6-webengine-dev qt6-tools-dev qt6-tools-dev-tools
+sudo apt install build-essential git libsecret-1-dev \
+    qt6-base-dev qt6-base-dev-tools qmake6 \
+    qt6-declarative-dev qt6-positioning-dev \
+    qt6-webchannel-dev qt6-webengine-dev \
+    qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools \
+    libocct-foundation-dev libocct-modeling-data-dev \
+    libocct-modeling-algorithms-dev libocct-visualization-dev \
+    libocct-ocaf-dev libocct-data-exchange-dev
+```
+
+Fedora:
+
+```
+sudo dnf install gcc-c++ git make pkgconf-pkg-config libsecret-devel \
+    qt6-qtbase-devel qt6-qtdeclarative-devel qt6-qtpositioning-devel \
+    qt6-qtwebchannel-devel qt6-qtwebengine-devel \
+    qt6-qttools-devel qt6-linguist opencascade-devel
+```
+
+openSUSE:
+
+```
+sudo zypper install gcc-c++ git make pkgconf-pkg-config libsecret-devel \
+    qt6-base-devel qt6-webchannel-devel qt6-webenginewidgets-devel \
+    qt6-tools-devel occt-devel
+```
+
+Arch:
+
+```
+sudo pacman -S --needed base-devel git libsecret qt6-base qt6-webchannel \
+    qt6-webengine qt6-tools opencascade
 ```
 
 Get the sources
@@ -32,11 +68,15 @@ git submodule update --init --recursive
 Build
 -----
 ```
-qmake && make -j $(nproc)
+qmake zima-cad-parts.pro
+make -j$(nproc)
 lrelease-qt6 locale/zima-cad-parts_cs_CZ.ts
 ```
 
-Build with OCCT preview on Linux through vcpkg:
+On some distributions, the Qt 6 qmake and lrelease binaries are named `qmake6`
+and `lrelease6`.
+
+Build with a custom OCCT install, such as vcpkg, by passing `OCCT_ROOT`:
 
 ```
 /path/to/vcpkg/vcpkg install opencascade:x64-linux
