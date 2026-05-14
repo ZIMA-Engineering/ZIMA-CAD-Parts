@@ -1,0 +1,112 @@
+name: Linux distro builds
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-linux:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Ubuntu 26.04
+            distro: ubuntu
+            image: ubuntu:26.04
+          - name: Debian 13
+            distro: debian
+            image: debian:trixie
+          - name: Fedora 44
+            distro: fedora
+            image: fedora:44
+
+    steps:
+      - name: Install build dependencies
+        run: |
+          set -euxo pipefail
+
+          case "${{ matrix.distro }}" in
+            ubuntu|debian)
+              export DEBIAN_FRONTEND=noninteractive
+              apt-get update
+              apt-get install -y --no-install-recommends \
+                build-essential ca-certificates git libsecret-1-dev \
+                pkg-config qmake6 qt6-base-dev qt6-base-dev-tools \
+                qt6-declarative-dev qt6-l10n-tools qt6-positioning-dev \
+                qt6-tools-dev qt6-tools-dev-tools qt6-webchannel-dev \
+                qt6-webengine-dev \
+                libocct-foundation-dev libocct-modeling-data-dev \
+                libocct-modeling-algorithms-dev libocct-visualization-dev \
+                libocct-ocaf-dev libocct-data-exchange-dev
+              ;;
+            fedora)
+              dnf install -y --setopt=install_weak_deps=False \
+                ca-certificates gcc-c++ git make libsecret-devel \
+                pkgconf-pkg-config qt6-qtbase-devel \
+                qt6-qtdeclarative-devel qt6-qtpositioning-devel \
+                qt6-qttools-devel qt6-linguist qt6-qtwebchannel-devel \
+                qt6-qtwebengine-devel opencascade-devel
+              ;;
+          esac
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Resolve Qt tools
+        run: |
+          set -euxo pipefail
+
+          find_tool() {
+            variable="$1"
+            shift
+
+            for candidate in "$@"; do
+              if command -v "$candidate" >/dev/null 2>&1; then
+                echo "$variable=$(command -v "$candidate")" >> "$GITHUB_ENV"
+                return
+              fi
+
+              if [ -x "$candidate" ]; then
+                echo "$variable=$candidate" >> "$GITHUB_ENV"
+                return
+              fi
+            done
+
+            echo "Unable to find any candidate for $variable: $*" >&2
+            exit 1
+          }
+
+          find_tool QMAKE qmake6 qmake /usr/lib/qt6/bin/qmake6 \
+            /usr/lib/qt6/bin/qmake /usr/lib64/qt6/bin/qmake6 \
+            /usr/lib64/qt6/bin/qmake
+          find_tool LRELEASE lrelease-qt6 lrelease6 lrelease \
+            /usr/lib/qt6/bin/lrelease /usr/lib64/qt6/bin/lrelease
+
+      - name: Create localization
+        run: |
+          set -euxo pipefail
+          "$LRELEASE" locale/zima-cad-parts_cs_CZ.ts
+
+      - name: Configure build
+        run: |
+          set -euxo pipefail
+          "$QMAKE" zima-cad-parts.pro 2>&1 | tee qmake.log
+          grep -F "STEP/IGES/STL preview enabled" qmake.log
+
+      - name: Build project
+        run: |
+          set -euxo pipefail
+          make -j"$(nproc)"
