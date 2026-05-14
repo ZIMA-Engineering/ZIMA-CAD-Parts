@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: read
-  packages: read
+  packages: write
 
 defaults:
   run:
@@ -18,21 +18,22 @@ jobs:
   build-linux:
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
-    container:
-      image: ${{ matrix.image }}
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
 
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: Ubuntu 26.04
+            base-image: ubuntu:26.04
+            distro: ubuntu
             image: ghcr.io/zima-engineering/zcp-linux-build:ubuntu-26.04
           - name: Debian 13
+            base-image: debian:trixie
+            distro: debian
             image: ghcr.io/zima-engineering/zcp-linux-build:debian-trixie
           - name: Fedora 44
+            base-image: fedora:44
+            distro: fedora
             image: ghcr.io/zima-engineering/zcp-linux-build:fedora-44
 
     steps:
@@ -41,48 +42,96 @@ jobs:
         with:
           submodules: true
 
-      - name: Resolve Qt tools
+      - name: Log in to GitHub Container Registry
+        if: github.event_name == 'push'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull prebuilt image
+        id: prebuilt
+        env:
+          IMAGE: ${{ matrix.image }}
         run: |
           set -euxo pipefail
 
-          find_tool() {
-            variable="$1"
-            shift
+          if docker pull "$IMAGE"; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
 
-            for candidate in "$@"; do
-              if command -v "$candidate" >/dev/null 2>&1; then
-                echo "$variable=$(command -v "$candidate")" >> "$GITHUB_ENV"
-                return
-              fi
-
-              if [ -x "$candidate" ]; then
-                echo "$variable=$candidate" >> "$GITHUB_ENV"
-                return
-              fi
-            done
-
-            echo "Unable to find any candidate for $variable: $*" >&2
-            exit 1
-          }
-
-          find_tool QMAKE qmake6 qmake /usr/lib/qt6/bin/qmake6 \
-            /usr/lib/qt6/bin/qmake /usr/lib64/qt6/bin/qmake6 \
-            /usr/lib64/qt6/bin/qmake
-          find_tool LRELEASE lrelease-qt6 lrelease6 lrelease \
-            /usr/lib/qt6/bin/lrelease /usr/lib64/qt6/bin/lrelease
-
-      - name: Create localization
+      - name: Build image
+        if: steps.prebuilt.outputs.found != 'true'
+        env:
+          BASE_IMAGE: ${{ matrix.base-image }}
+          DISTRO: ${{ matrix.distro }}
+          IMAGE: ${{ matrix.image }}
         run: |
           set -euxo pipefail
-          "$LRELEASE" locale/zima-cad-parts_cs_CZ.ts
 
-      - name: Configure build
+          docker build \
+            --pull \
+            --build-arg "BASE_IMAGE=$BASE_IMAGE" \
+            --build-arg "DISTRO=$DISTRO" \
+            --file .github/ci/linux-build.Dockerfile \
+            --tag "$IMAGE" \
+            .
+
+      - name: Push image
+        if: github.event_name == 'push' && steps.prebuilt.outputs.found != 'true'
+        env:
+          IMAGE: ${{ matrix.image }}
         run: |
           set -euxo pipefail
-          "$QMAKE" "OCCT_REQUIRED=1" zima-cad-parts.pro 2>&1 | tee qmake.log
-          grep -F "STEP/IGES/STL preview enabled" qmake.log
+          docker push "$IMAGE"
 
-      - name: Build project
+      - name: Build project in image
+        env:
+          IMAGE: ${{ matrix.image }}
         run: |
           set -euxo pipefail
-          make -j"$(nproc)"
+
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            --volume "$PWD:/workspace" \
+            --workdir /workspace \
+            --env HOME=/tmp \
+            "$IMAGE" \
+            bash -lc '
+              set -euxo pipefail
+
+              find_tool() {
+                variable="$1"
+                shift
+
+                for candidate in "$@"; do
+                  if command -v "$candidate" >/dev/null 2>&1; then
+                    export "$variable=$(command -v "$candidate")"
+                    return
+                  fi
+
+                  if [ -x "$candidate" ]; then
+                    export "$variable=$candidate"
+                    return
+                  fi
+                done
+
+                echo "Unable to find any candidate for $variable: $*" >&2
+                exit 1
+              }
+
+              git config --global --add safe.directory /workspace
+              find_tool QMAKE qmake6 qmake /usr/lib/qt6/bin/qmake6 \
+                /usr/lib/qt6/bin/qmake /usr/lib64/qt6/bin/qmake6 \
+                /usr/lib64/qt6/bin/qmake
+              find_tool LRELEASE lrelease-qt6 lrelease6 lrelease \
+                /usr/lib/qt6/bin/lrelease /usr/lib64/qt6/bin/lrelease
+
+              "$LRELEASE" locale/zima-cad-parts_cs_CZ.ts
+              "$QMAKE" "OCCT_REQUIRED=1" zima-cad-parts.pro 2>&1 | tee qmake.log
+              grep -F "STEP/IGES/STL preview enabled" qmake.log
+              make -j"$(nproc)"
+            '
