@@ -66,6 +66,7 @@ private:
     QList<QPair<QFileInfo, QString>> m_files;
     bool m_stopOnError;
 
+    bool moveEntry(const QFileInfo &src, const QString &dst, QString *error) const;
     bool removeAll(const QString &path);
     bool removeRecursively(const QFileInfo &fi);
 };

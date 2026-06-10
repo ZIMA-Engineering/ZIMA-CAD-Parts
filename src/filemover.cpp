@@ -163,7 +163,8 @@ void FileMover::confirmReplaceDirectory(const QFileInfo &src, const QString &dst
 }
 
 FileMoverWorker::FileMoverWorker(QObject *parent)
-    : ThreadWorker(parent)
+    : ThreadWorker(parent),
+      m_stopOnError(true)
 {
 
 }
@@ -204,8 +205,7 @@ void FileMoverWorker::continueWork(FileMoverWorker::Overwrite overwrite)
         QFileInfo src = pair.first;
         QString dst = pair.second;
         QFileInfo fi(dst);
-        QDir d;
-        QFile file;
+        QString moveError;
         bool ret;
 
         if (shouldStop())
@@ -249,18 +249,17 @@ void FileMoverWorker::continueWork(FileMoverWorker::Overwrite overwrite)
 
         qDebug() << "Move" << src.absoluteFilePath() << "into" << dst;
 
-        file.setFileName(src.absoluteFilePath());
-        ret = file.rename(dst);
+        ret = moveEntry(src, dst, &moveError);
 
         if (!ret)
-            qDebug() << file.error() << file.errorString();
+            qDebug() << moveError;
 
         if (!ret)
         {
             emit errorOccured(
                 tr("Unable to move '%1': %2")
                 .arg(src.absoluteFilePath())
-                .arg(file.errorString())
+                .arg(moveError)
             );
 
             if (m_stopOnError)
@@ -282,6 +281,32 @@ void FileMoverWorker::continueWork(FileMoverWorker::Overwrite overwrite)
     }
 
     emit finished();
+}
+
+bool FileMoverWorker::moveEntry(const QFileInfo &src, const QString &dst, QString *error) const
+{
+    if (src.isDir() && !src.isSymLink())
+    {
+        QDir dir;
+
+        if (dir.rename(src.absoluteFilePath(), dst))
+            return true;
+
+        if (error)
+            *error = tr("directory rename failed");
+
+        return false;
+    }
+
+    QFile file(src.absoluteFilePath());
+
+    if (file.rename(dst))
+        return true;
+
+    if (error)
+        *error = file.errorString();
+
+    return false;
 }
 
 bool FileMoverWorker::removeAll(const QString &path)
