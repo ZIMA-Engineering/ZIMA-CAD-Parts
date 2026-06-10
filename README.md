@@ -131,8 +131,10 @@ make
 Windows CI OCCT builds
 ----------------------
 The Windows GitHub Actions build uses vcpkg binary caching for OCCT. The first
-OCCT-enabled run may build `opencascade:x64-windows` from source; later runs
-restore the cached binary package.
+OCCT-enabled run for a given Windows runner/toolchain combination may build
+`opencascade:x64-windows` from source; later matching runs restore the cached
+binary package. When the MSVC toolchain or Windows SDK changes, the workflow
+seeds a new cache key so rebuilt vcpkg packages can be saved.
 
 Manual password-manager fixture
 -------------------------------
