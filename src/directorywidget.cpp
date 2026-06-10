@@ -299,6 +299,7 @@ void DirectoryWidget::deleteSelectedParts()
     PartsDeleteDialog dlg(this);
 
     if (dlg.exec() == QDialog::Accepted) {
+        emit prepareFileOperation();
         ui->partsTreeView->deleteParts();
     }
 }
@@ -326,6 +327,7 @@ void DirectoryWidget::moveSelectedParts()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
             ==  QMessageBox::Yes)
     {
+        emit prepareFileOperation();
         ui->partsTreeView->moveParts();
     }
 }

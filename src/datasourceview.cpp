@@ -14,6 +14,7 @@
 #include "filecopier.h"
 
 #include <QHeaderView>
+#include <QApplication>
 #include <QDesktopServices>
 #include <QSignalMapper>
 #include <QMenu>
@@ -30,13 +31,7 @@ DataSourceView::DataSourceView(const QString &rootPath, QWidget *parent) :
     // boss requirement - icons shoudl have be at least 32px sized
     setStyleSheet("icon-size: 32px;");
 
-    m_proxy = new DataSourceProxyModel(this);
-
-    m_model = new DataSourceModel(this);
-    m_proxy->setSourceModel(m_model);
-
-    setModel(m_proxy);
-    refreshModel();
+    setupModel();
 
     header()->close();
 
@@ -55,8 +50,33 @@ DataSourceView::DataSourceView(const QString &rootPath, QWidget *parent) :
             this, SLOT(refreshModel()));
 }
 
+void DataSourceView::setupModel()
+{
+    m_proxy = new DataSourceProxyModel(this);
+    m_model = new DataSourceModel(this);
+    m_proxy->setSourceModel(m_model);
+
+    setModel(m_proxy);
+    refreshModel();
+}
+
+void DataSourceView::releaseFileSystemModel()
+{
+    setModel(nullptr);
+
+    delete m_proxy;
+    delete m_model;
+    m_proxy = nullptr;
+    m_model = nullptr;
+
+    setupModel();
+}
+
 void DataSourceView::refreshModel()
 {
+    if (!m_model || !m_proxy)
+        return;
+
     // it has to be reset here because calling QFileSystemModel's reset
     // or begin/end alternatives results in "/" as a root path
     setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
@@ -275,6 +295,8 @@ void DataSourceView::deleteDirectory()
     {
         MetadataCache::get()->clearBelow(fi.absoluteFilePath());
         PartCache::get()->clearBelow(fi.absoluteFilePath());
+        releaseFileSystemModel();
+        qApp->processEvents();
 
         DirectoryRemover *rm = new DirectoryRemover(fi, this);
         rm->setMessage(tr("Please wait while the directory is being removed..."));

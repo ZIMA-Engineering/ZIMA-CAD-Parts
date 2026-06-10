@@ -3,6 +3,7 @@
 #include "settings.h"
 #include "datasourcehistory.h"
 
+#include <QApplication>
 #include <QtDebug>
 
 
@@ -17,6 +18,7 @@ DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
 
     connect(splitter, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)));
     connect(dirWidget, SIGNAL(changeSettings()), this, SLOT(settingsChanged()));
+    connect(dirWidget, SIGNAL(prepareFileOperation()), this, SLOT(releaseFileSystemModels()));
     connect(dirWidget, SIGNAL(refreshRequested()), this, SIGNAL(refreshRequested()));
 
     m_history = new DataSourceHistory(this);
@@ -67,6 +69,18 @@ void DataSourceWidget::settingsChanged()
 void DataSourceWidget::expand(const QModelIndex & index)
 {
     qobject_cast<QTreeView*>(dsList->currentWidget())->expand(index);
+}
+
+void DataSourceWidget::releaseFileSystemModels()
+{
+    for (int i = 0; i < dsList->count(); ++i)
+    {
+        DataSourceView *view = qobject_cast<DataSourceView*>(dsList->widget(i));
+        if (view)
+            view->releaseFileSystemModel();
+    }
+
+    qApp->processEvents();
 }
 
 QModelIndex DataSourceWidget::currentIndex()

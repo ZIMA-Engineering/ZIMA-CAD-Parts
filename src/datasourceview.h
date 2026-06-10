@@ -25,6 +25,9 @@ public:
      */
     bool navigateToDirectory(const QString &path);
 
+public slots:
+    void releaseFileSystemModel();
+
 signals:
     void showSettings(SettingsDialog::Section);
     void workingDirChanged();
@@ -41,6 +44,7 @@ private:
 
     QFileInfo currentFileInfo();
     void addScriptsToContextMenu(QMenu *menu);
+    void setupModel();
 
 private slots:
     void refreshModel();
