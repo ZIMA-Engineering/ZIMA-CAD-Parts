@@ -89,12 +89,14 @@ void DirectoryCreatorThread::recursiveCopy(const QString &src, const QString &ds
 
         if (f.isDir())
         {
-            qDebug() << "Mkdir" << (d_dst.absolutePath() + "/" + f.baseName());
-            d_dst.mkdir(f.baseName());
-            recursiveCopy(f.absoluteFilePath(), dst + "/" + f.baseName());
+            qDebug() << "Mkdir" << (d_dst.absolutePath() + "/" + f.fileName());
+            d_dst.mkdir(f.fileName());
+            recursiveCopy(f.absoluteFilePath(), dst + "/" + f.fileName());
         }
-
-        qDebug() << "Copy" << f.absoluteFilePath() << "to" << (dst + "/" + f.fileName());
-        QFile::copy(f.absoluteFilePath(), dst + "/" + f.fileName());
+        else
+        {
+            qDebug() << "Copy" << f.absoluteFilePath() << "to" << (dst + "/" + f.fileName());
+            QFile::copy(f.absoluteFilePath(), dst + "/" + f.fileName());
+        }
     }
 }
