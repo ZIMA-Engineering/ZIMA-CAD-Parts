@@ -8,6 +8,8 @@
 #include "directoryeditordialog.h"
 #include "directorycopyasdialog.h"
 #include "directoryremover.h"
+#include "metadata.h"
+#include "partcache.h"
 #include "scriptrunner.h"
 #include "filecopier.h"
 
@@ -271,6 +273,9 @@ void DataSourceView::deleteDirectory()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
             ==  QMessageBox::Yes)
     {
+        MetadataCache::get()->clearBelow(fi.absoluteFilePath());
+        PartCache::get()->clearBelow(fi.absoluteFilePath());
+
         DirectoryRemover *rm = new DirectoryRemover(fi, this);
         rm->setMessage(tr("Please wait while the directory is being removed..."));
         rm->work();

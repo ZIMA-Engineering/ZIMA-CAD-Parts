@@ -60,6 +60,32 @@ void PartCache::clear(const QString &dir)
     emit cleared(dir);
 }
 
+void PartCache::clearBelow(const QString &path)
+{
+    const QString cleanPath = QDir::cleanPath(path);
+    const QString cleanPathWithSlash = cleanPath + QLatin1Char('/');
+    QStringList dirs;
+#ifdef Q_OS_WIN
+    const Qt::CaseSensitivity sensitivity = Qt::CaseInsensitive;
+#else
+    const Qt::CaseSensitivity sensitivity = Qt::CaseSensitive;
+#endif
+
+    QHashIterator<QString, QFileInfoList> it(m_parts);
+    while (it.hasNext())
+    {
+        it.next();
+
+        const QString dir = QDir::cleanPath(it.key());
+        if (dir.compare(cleanPath, sensitivity) == 0
+                || dir.startsWith(cleanPathWithSlash, sensitivity))
+            dirs << it.key();
+    }
+
+    foreach (const QString &dir, dirs)
+        clear(dir);
+}
+
 void PartCache::renameDirectory(const QString &oldDir, const QString &newDir)
 {
     if (!m_parts.contains(oldDir))

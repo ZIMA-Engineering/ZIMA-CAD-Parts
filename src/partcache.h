@@ -15,6 +15,7 @@ public:
     QFileInfo partAt(const QString &dir, int index);
     void refresh(const QString &dir);
     void clear(const QString &dir);
+    void clearBelow(const QString &path);
     void renameDirectory(const QString &oldDir, const QString &newDir);
 
 signals:

@@ -409,7 +409,10 @@ void FileModel::moveParts(FileMover *mv)
                 mv->addSourceFile(QFileInfo(thumbPath), THUMBNAILS_DIR);
 
             if (fi.isDir())
+            {
                 metaCache->clear(fname);
+                pc->clearBelow(fname);
+            }
 
             metaCache->movePart(dir, fi.baseName(), dstDir);
         }
@@ -467,7 +470,10 @@ void FileModel::deleteParts(DirectoryRemover *rm)
             }
 
             if (fi.isDir())
+            {
                 MetadataCache::get()->clear(fname);
+                pc->clearBelow(fname);
+            }
 
             MetadataCache::get()->deletePart(dir, fi.baseName());
         }
