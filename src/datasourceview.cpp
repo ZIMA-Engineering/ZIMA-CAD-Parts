@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QScrollBar>
+#include <QItemSelectionModel>
 #include <QUrl>
 #include <QDebug>
 
@@ -72,7 +73,10 @@ void DataSourceView::releaseFileSystemModel()
 {
     saveFileSystemModelState();
 
+    QItemSelectionModel *oldSelectionModel = selectionModel();
     setModel(nullptr);
+    if (oldSelectionModel && oldSelectionModel != selectionModel())
+        delete oldSelectionModel;
 
     delete m_proxy;
     delete m_model;
