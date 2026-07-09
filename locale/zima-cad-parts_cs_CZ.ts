@@ -67,7 +67,7 @@
 <context>
     <name>BrowserPage</name>
     <message>
-        <location filename="../src/browserpage.cpp" line="52"/>
+        <location filename="../src/browserpage.cpp" line="71"/>
         <source>Browser popup</source>
         <translation>Vyskakovací okno prohlížeče</translation>
     </message>
@@ -103,114 +103,114 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="100"/>
+        <location filename="../src/datasourceview.cpp" line="122"/>
         <source>Scripts...</source>
         <translation>Skripty...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="126"/>
+        <location filename="../src/datasourceview.cpp" line="148"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="127"/>
+        <location filename="../src/datasourceview.cpp" line="149"/>
         <source>Open in a new tab</source>
         <translation>Otevřít v novém tabu</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="128"/>
+        <location filename="../src/datasourceview.cpp" line="150"/>
         <source>Set as working directory</source>
         <translation>Nastavit jako pracovní adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="129"/>
+        <location filename="../src/datasourceview.cpp" line="151"/>
         <source>Create directory</source>
         <translation>Vytvořit adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="133"/>
+        <location filename="../src/datasourceview.cpp" line="155"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="134"/>
+        <location filename="../src/datasourceview.cpp" line="156"/>
         <source>Copy as...</source>
         <translation>Kopírovat jako...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="135"/>
+        <location filename="../src/datasourceview.cpp" line="157"/>
         <source>Delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="141"/>
+        <location filename="../src/datasourceview.cpp" line="163"/>
         <source>Clean with ZIMA-PTC-Cleaner</source>
         <translation>Vyčistit pomocí ZIMA-PTC-Cleaner</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="143"/>
+        <location filename="../src/datasourceview.cpp" line="165"/>
         <source>Sync with ZIMA-CAD-Sync</source>
         <translation>Synchronizovat pomocí ZIMA-CAD-Sync</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="145"/>
+        <location filename="../src/datasourceview.cpp" line="167"/>
         <source>Convert postscript to PDF with ZIMA-PS2PDF</source>
         <translation>Převést postscript do PDF pomocí ZIMA-PS2PDF</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="147"/>
+        <location filename="../src/datasourceview.cpp" line="169"/>
         <source>Edit step files with ZIMA-STEP-Edit</source>
         <translation>Editovat step soubory pomocí ZIMA-STEP-Edit</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="170"/>
-        <location filename="../src/datasourceview.cpp" line="177"/>
+        <location filename="../src/datasourceview.cpp" line="192"/>
+        <location filename="../src/datasourceview.cpp" line="199"/>
         <source>Configure %1</source>
         <translation>Nastavit %1</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="170"/>
+        <location filename="../src/datasourceview.cpp" line="192"/>
         <source>Please first configure path to %1 executable.</source>
         <translation>Nejdříve zadejte cestu k %1 programu.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="177"/>
+        <location filename="../src/datasourceview.cpp" line="199"/>
         <source>Path &apos;%1&apos; to %2 executable does not exists!</source>
         <translation>Cesta %1 k programu %2 neexistuje!</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="205"/>
-        <location filename="../src/datasourceview.cpp" line="248"/>
+        <location filename="../src/datasourceview.cpp" line="227"/>
+        <location filename="../src/datasourceview.cpp" line="270"/>
         <source>Directory exists</source>
         <translation>Tento adresář už existuje</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="206"/>
+        <location filename="../src/datasourceview.cpp" line="228"/>
         <source>Directory %1 already exists.</source>
         <translation>Adresář %1 už existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="248"/>
+        <location filename="../src/datasourceview.cpp" line="270"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Adresář &apos;%1&apos; již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="255"/>
+        <location filename="../src/datasourceview.cpp" line="277"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Prosím čekejte, adresář se kopíruje...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="269"/>
+        <location filename="../src/datasourceview.cpp" line="291"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Opravdu chcete smazat vybraný adresář?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="270"/>
+        <location filename="../src/datasourceview.cpp" line="292"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Opravdu chcete smazat adresář &quot;%1&quot;? Tuto akci nelze vzít zpět.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="275"/>
+        <location filename="../src/datasourceview.cpp" line="302"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Prosím čekejte, adresář se maže...</translation>
     </message>
@@ -287,12 +287,12 @@
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="98"/>
+        <location filename="../src/directoryeditordialog.ui" line="112"/>
         <source>Add icon</source>
         <translation>Přidat ikonu</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="101"/>
+        <location filename="../src/directoryeditordialog.ui" line="115"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -307,22 +307,27 @@
         <translation>Podadresáře jako díly</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="108"/>
+        <location filename="../src/directoryeditordialog.ui" line="95"/>
+        <source>Auto-generated index</source>
+        <translation>Automaticky generovaný index</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="122"/>
         <source>Sort order</source>
         <translation>Způsob řazení</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="116"/>
+        <location filename="../src/directoryeditordialog.ui" line="130"/>
         <source>Ascending</source>
         <translation>Vzestupně</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="121"/>
+        <location filename="../src/directoryeditordialog.ui" line="135"/>
         <source>Descending</source>
         <translation>Sestupně</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="132"/>
+        <location filename="../src/directoryeditordialog.ui" line="146"/>
         <source>Localized</source>
         <translation>Přeloženo</translation>
     </message>
@@ -335,52 +340,52 @@
         <translation type="vanished">Adresář &apos;%1&apos; nelze přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="71"/>
+        <location filename="../src/directoryeditordialog.cpp" line="72"/>
         <source>Failed to rename directory</source>
         <translation>Nepodařilo se přejmenovat adresář</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="72"/>
+        <location filename="../src/directoryeditordialog.cpp" line="73"/>
         <source>Failed to rename directory &apos;%1&apos;</source>
         <translation>Nepodařilo se přejmenovat adresář &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="206"/>
+        <location filename="../src/directoryeditordialog.cpp" line="212"/>
         <source>No icon</source>
         <translation>Žádná ikona</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="241"/>
+        <location filename="../src/directoryeditordialog.cpp" line="247"/>
         <source>Unable to copy icon</source>
         <translation>Ikonu nelze zkopírovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="242"/>
+        <location filename="../src/directoryeditordialog.cpp" line="248"/>
         <source>Unable to copy &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Nelze zkopírovat &apos;%1&apos; do &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="253"/>
+        <location filename="../src/directoryeditordialog.cpp" line="259"/>
         <source>Unable to remove icon</source>
         <translation>Ikonu nelze odstranit</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="254"/>
+        <location filename="../src/directoryeditordialog.cpp" line="260"/>
         <source>Unable to remove icon &apos;%1&apos;</source>
         <translation>Nelze odstranit ikonu &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="313"/>
+        <location filename="../src/directoryeditordialog.cpp" line="319"/>
         <source>Select icon</source>
         <translation>Vyberte ikonu</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="379"/>
+        <location filename="../src/directoryeditordialog.cpp" line="385"/>
         <source>Unable to rename file</source>
         <translation>Soubor nelze přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="380"/>
+        <location filename="../src/directoryeditordialog.cpp" line="386"/>
         <source>Unable to rename file &apos;%1&apos; to &apos;%2&apos;: %3</source>
         <translation>Soubor &apos;%1&apos; nelze přejmenovat na &apos;%2&apos;: %3</translation>
     </message>
@@ -429,6 +434,21 @@
     <message>
         <source>ZIMA-CAD-Parts Technical Specifications</source>
         <translation type="vanished">ZIMA-CAD-Parts Technická Specifikace</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywebview.cpp" line="196"/>
+        <source>No subdirectories</source>
+        <translation>Žádné podadresáře</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywebview.cpp" line="200"/>
+        <source>Auto-generated directory index</source>
+        <translation>Automaticky generovaný index adresáře</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywebview.cpp" line="325"/>
+        <source>Open directory</source>
+        <translation>Otevřít adresář</translation>
     </message>
 </context>
 <context>
@@ -508,8 +528,8 @@
         <translation type="vanished">Opravdu chcete smazat vybrané díly? Tato operace je nevratná.</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="324"/>
-        <location filename="../src/directorywidget.cpp" line="325"/>
+        <location filename="../src/directorywidget.cpp" line="392"/>
+        <location filename="../src/directorywidget.cpp" line="393"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>
@@ -517,12 +537,12 @@
 <context>
     <name>DxfProductView</name>
     <message>
-        <location filename="../src/extensions/productview/dxfproductview.cpp" line="23"/>
+        <location filename="../src/extensions/productview/dxfproductview.cpp" line="27"/>
         <source>DXF part</source>
         <translation>DXF part</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/dxfproductview.ui" line="45"/>
+        <location filename="../src/extensions/productview/dxfproductview.ui" line="47"/>
         <source>Fit</source>
         <translation>Přizpůsobit</translation>
     </message>
@@ -740,14 +760,19 @@
 <context>
     <name>FileMoverWorker</name>
     <message>
-        <location filename="../src/filemover.cpp" line="261"/>
+        <location filename="../src/filemover.cpp" line="260"/>
         <source>Unable to move &apos;%1&apos;: %2</source>
         <translation>Nelze přesunout &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="298"/>
-        <location filename="../src/filemover.cpp" line="309"/>
-        <location filename="../src/filemover.cpp" line="324"/>
+        <location filename="../src/filemover.cpp" line="296"/>
+        <source>directory rename failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filemover.cpp" line="323"/>
+        <location filename="../src/filemover.cpp" line="334"/>
+        <location filename="../src/filemover.cpp" line="349"/>
         <source>Unable to remove &apos;%1&apos;</source>
         <translation>Nelze smazat &apos;%1&apos;</translation>
     </message>
@@ -898,107 +923,6 @@
         <location filename="../src/extensions/productview/imageproductview.cpp" line="39"/>
         <source>Cannot load image: &lt;a href=&quot;file://%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Nelze načíst obrázek: &lt;a href=&quot;file://%1&quot;&gt;%2&lt;/a&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>OcctImportWorker</name>
-    <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="48"/>
-        <source>Unsupported OCCT preview format.</source>
-        <translation>Nepodporovaný formát náhledu OCCT.</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="57"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="65"/>
-        <source>Unknown %1 import error.</source>
-        <translation>Neznámá chyba importu %1.</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="76"/>
-        <source>STEP</source>
-        <translation>STEP</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="78"/>
-        <source>IGES</source>
-        <translation>IGES</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="80"/>
-        <source>STL</source>
-        <translation>STL</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="82"/>
-        <source>CAD</source>
-        <translation>CAD</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="104"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="148"/>
-        <source>Failed to read %1 file.</source>
-        <translation>Nepodařilo se přečíst soubor %1.</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="114"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="158"/>
-        <source>Failed to transfer %1 file into OCCT document.</source>
-        <translation>Nepodařilo se převést soubor %1 do dokumentu OCCT.</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="184"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="211"/>
-        <source>The %1 file does not contain any displayable shapes.</source>
-        <translation>Soubor %1 neobsahuje žádné zobrazitelné tvary.</translation>
-    </message>
-</context>
-<context>
-    <name>OcctProductView</name>
-    <message>
-        <location filename="../src/extensions/productview/occtproductview.cpp" line="17"/>
-        <source>Shaded</source>
-        <translation>Stínované</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtproductview.cpp" line="18"/>
-        <source>Wireframe</source>
-        <translation>Drátový model</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtproductview.cpp" line="51"/>
-        <source>CAD part</source>
-        <translation>CAD díl</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtproductview.cpp" line="68"/>
-        <location filename="../src/extensions/productview/occtproductview.ui" line="121"/>
-        <source>Loading CAD preview...</source>
-        <translation>Načítá se náhled CAD...</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtproductview.ui" line="47"/>
-        <source>Fit</source>
-        <translation>Přizpůsobit</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtproductview.ui" line="54"/>
-        <source>Isometric</source>
-        <translation>Izometrie</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtproductview.ui" line="61"/>
-        <source>Front</source>
-        <translation>Zepředu</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtproductview.ui" line="68"/>
-        <source>Top</source>
-        <translation>Shora</translation>
-    </message>
-    <message>
-        <location filename="../src/extensions/productview/occtproductview.ui" line="75"/>
-        <source>Right</source>
-        <translation>Zprava</translation>
     </message>
 </context>
 <context>
@@ -1179,6 +1103,107 @@
     </message>
 </context>
 <context>
+    <name>OcctImportWorker</name>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="48"/>
+        <source>Unsupported OCCT preview format.</source>
+        <translation>Nepodporovaný formát náhledu OCCT.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="57"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="65"/>
+        <source>Unknown %1 import error.</source>
+        <translation>Neznámá chyba importu %1.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="76"/>
+        <source>STEP</source>
+        <translation>STEP</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="78"/>
+        <source>IGES</source>
+        <translation>IGES</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="80"/>
+        <source>STL</source>
+        <translation>STL</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="82"/>
+        <source>CAD</source>
+        <translation>CAD</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="104"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="148"/>
+        <source>Failed to read %1 file.</source>
+        <translation>Nepodařilo se přečíst soubor %1.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="114"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="158"/>
+        <source>Failed to transfer %1 file into OCCT document.</source>
+        <translation>Nepodařilo se převést soubor %1 do dokumentu OCCT.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="184"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="211"/>
+        <source>The %1 file does not contain any displayable shapes.</source>
+        <translation>Soubor %1 neobsahuje žádné zobrazitelné tvary.</translation>
+    </message>
+</context>
+<context>
+    <name>OcctProductView</name>
+    <message>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="16"/>
+        <source>Shaded</source>
+        <translation>Stínované</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="17"/>
+        <source>Wireframe</source>
+        <translation>Drátový model</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="50"/>
+        <source>CAD part</source>
+        <translation>CAD díl</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="121"/>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="67"/>
+        <source>Loading CAD preview...</source>
+        <translation>Načítá se náhled CAD...</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="47"/>
+        <source>Fit</source>
+        <translation>Přizpůsobit</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="54"/>
+        <source>Isometric</source>
+        <translation>Izometrie</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="61"/>
+        <source>Front</source>
+        <translation>Zepředu</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="68"/>
+        <source>Top</source>
+        <translation>Shora</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtproductview.ui" line="75"/>
+        <source>Right</source>
+        <translation>Zprava</translation>
+    </message>
+</context>
+<context>
     <name>PDFProductView</name>
     <message>
         <location filename="../src/extensions/productview/pdfproductview.cpp" line="25"/>
@@ -1324,42 +1349,42 @@
         <translation>Ukázat verze</translation>
     </message>
     <message>
-        <location filename="../src/passwordmanager.cpp" line="133"/>
+        <location filename="../src/passwordmanager.cpp" line="208"/>
         <source>Update saved password</source>
         <translation>Aktualizovat uložené heslo</translation>
     </message>
     <message>
-        <location filename="../src/passwordmanager.cpp" line="134"/>
+        <location filename="../src/passwordmanager.cpp" line="209"/>
         <source>Save password</source>
         <translation>Uložit heslo</translation>
     </message>
     <message>
-        <location filename="../src/passwordmanager.cpp" line="136"/>
+        <location filename="../src/passwordmanager.cpp" line="211"/>
         <source>Update saved password for %1?</source>
         <translation>Aktualizovat uložené heslo pro %1?</translation>
     </message>
     <message>
-        <location filename="../src/passwordmanager.cpp" line="137"/>
+        <location filename="../src/passwordmanager.cpp" line="212"/>
         <source>Save password for %1?</source>
         <translation>Uložit heslo pro %1?</translation>
     </message>
     <message>
-        <location filename="../src/passwordmanager.cpp" line="138"/>
+        <location filename="../src/passwordmanager.cpp" line="213"/>
         <source>Username: %1</source>
         <translation>Uživatelské jméno: %1</translation>
     </message>
     <message>
-        <location filename="../src/passwordmanager.cpp" line="141"/>
+        <location filename="../src/passwordmanager.cpp" line="216"/>
         <source>Update</source>
         <translation>Aktualizovat</translation>
     </message>
     <message>
-        <location filename="../src/passwordmanager.cpp" line="142"/>
+        <location filename="../src/passwordmanager.cpp" line="217"/>
         <source>Save</source>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../src/passwordmanager.cpp" line="144"/>
+        <location filename="../src/passwordmanager.cpp" line="219"/>
         <source>Not now</source>
         <translation>Teď ne</translation>
     </message>

@@ -154,6 +154,11 @@ bool MetadataCache::showDirectoriesAsParts(const QString &path)
     return get(path)->showDirectoriesAsParts();
 }
 
+bool MetadataCache::autoIndexEnabled(const QString &path)
+{
+    return get(path)->autoIndexEnabled();
+}
+
 QStringList MetadataCache::parameterHandles(const QString &path)
 {
     return get(path)->parameterHandles();
@@ -323,6 +328,16 @@ bool Metadata::showDirectoriesAsParts() const
 void Metadata::setShowDirectoriesAsParts(bool enabled)
 {
     m_settings->setValue("Directory/SubdirectoriesAsParts", enabled);
+}
+
+bool Metadata::autoIndexEnabled() const
+{
+    return m_settings->value("Directory/AutoIndex", true).toBool();
+}
+
+void Metadata::setAutoIndexEnabled(bool enabled)
+{
+    m_settings->setValue("Directory/AutoIndex", enabled);
 }
 
 QStringList Metadata::parameterHandles()

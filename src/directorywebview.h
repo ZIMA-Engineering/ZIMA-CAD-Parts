@@ -23,6 +23,7 @@
 
 #include <QWebEngineView>
 
+class QFileInfo;
 class WebDownloaderDialog;
 
 class DirectoryWebView : public QWebEngineView
@@ -31,11 +32,14 @@ class DirectoryWebView : public QWebEngineView
 public:
     explicit DirectoryWebView(QWidget *parent = 0);
     void setRootPath(QString path);
+    bool isAutoIndexPage() const;
 
 signals:
+    void openDirectoryRequested(const QString &path);
 
 public slots:
     void loadAboutPage();
+    void loadAutoIndexPage(const QString &path);
 
 protected:
     void pageLoaded(bool ok);
@@ -43,6 +47,13 @@ protected:
 
 private:
     QString m_rootPath;
+    QString m_autoIndexPath;
+
+    QString autoIndexHtml(const QString &path) const;
+    QString autoIndexTitle(const QString &path) const;
+    QString autoIndexTileHtml(const QString &rootPath, const QFileInfo &dir) const;
+    QString directoryNavigationUrl(const QString &path) const;
+    QString thumbnailPath(const QString &rootPath, const QFileInfo &dir) const;
 };
 
 #endif // DIRECTORYWEBVIEW_H

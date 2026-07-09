@@ -4,6 +4,7 @@
 #include "datasourcehistory.h"
 
 #include <QApplication>
+#include <QFileInfo>
 #include <QtDebug>
 
 
@@ -21,6 +22,8 @@ DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
     connect(dirWidget, SIGNAL(prepareFileOperation()), this, SLOT(releaseFileSystemModels()));
     connect(dirWidget, SIGNAL(fileOperationFinished()), this, SLOT(restoreFileSystemModels()));
     connect(dirWidget, SIGNAL(refreshRequested()), this, SIGNAL(refreshRequested()));
+    connect(dirWidget, SIGNAL(openDirectoryRequested(QString)),
+            this, SLOT(openDirectoryFromWebView(QString)));
 
     m_history = new DataSourceHistory(this);
 
@@ -38,6 +41,16 @@ void DataSourceWidget::splitterMoved(int, int)
 void DataSourceWidget::handleOpenPartDirectory(const QFileInfo &fi)
 {
     setDirectory(fi.absoluteFilePath());
+}
+
+void DataSourceWidget::openDirectoryFromWebView(const QString &path)
+{
+    if (!QFileInfo(path).isDir())
+        return;
+
+    setDirectory(path);
+    m_history->track(path);
+    announceDirectoryChange(path);
 }
 
 void DataSourceWidget::announceDirectoryChange(const QString &dir)

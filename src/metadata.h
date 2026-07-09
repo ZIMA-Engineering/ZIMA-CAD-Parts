@@ -71,6 +71,9 @@ public:
     bool showDirectoriesAsParts() const;
     void setShowDirectoriesAsParts(bool enabled);
 
+    bool autoIndexEnabled() const;
+    void setAutoIndexEnabled(bool enabled);
+
     QStringList parameterHandles();
     void setParameterHandles(const QStringList &handles);
 
@@ -150,6 +153,7 @@ public:
     QString label(const QString &path);
     Qt::SortOrder sortOrder(const QString &path);
     bool showDirectoriesAsParts(const QString &path);
+    bool autoIndexEnabled(const QString &path);
     QStringList parameterHandles(const QString &path);
     QStringList parameterLabels(const QString &path);
     QString partParam(const QString &path, const QString &fname, const QString &param);

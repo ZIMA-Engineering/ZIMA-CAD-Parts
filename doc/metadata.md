@@ -26,6 +26,10 @@ example.
     ; Determines whether to show direct subdirectories in the parts list
     SubdirectoriesAsParts = true\false
 
+    ; Determines whether to show an auto-generated directory index when no
+    ; user-provided index file is present. Enabled by default when unset.
+    AutoIndex = true\false
+
     ; List of directory parameters
     Parameters = length, diameter
 

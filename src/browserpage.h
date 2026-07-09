@@ -33,7 +33,11 @@ class BrowserPage : public QWebEnginePage
 public:
     explicit BrowserPage(QObject *parent = 0);
 
+signals:
+    void openDirectoryRequested(const QString &path);
+
 protected:
+    bool acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame);
     QWebEnginePage *createWindow(WebWindowType type);
 
 private slots:

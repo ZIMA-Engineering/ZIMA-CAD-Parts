@@ -3,6 +3,7 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QFileInfo>
 #include <QProcess>
 
 #include "directorywidget.h"
@@ -14,6 +15,7 @@
 #include "settings.h"
 #include "filtersdialog.h"
 #include "partsdeletedialog.h"
+#include "partcache.h"
 #include "extensions/productview/productview.h"
 
 
@@ -39,7 +41,7 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     connect(ui->dirWebViewForwardButton, SIGNAL(clicked()),
             ui->dirWebView, SLOT(forward()));
     connect(ui->dirWebViewReloadButton, SIGNAL(clicked()),
-            ui->dirWebView, SLOT(reload()));
+            this, SLOT(dirWebViewReloadButton_clicked()));
     connect(ui->dirWebViewUrlLineEdit, SIGNAL(returnPressed()),
             this, SLOT(dirWebViewUrlLineEdit_returnPressed()));
     connect(ui->dirWebViewGoButton, SIGNAL(clicked()),
@@ -50,6 +52,12 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
             this, SLOT(dirWebViewEditButton_clicked()));
     connect(ui->dirWebView, SIGNAL(urlChanged(QUrl)),
             this, SLOT(dirWebView_urlChanged(QUrl)));
+    connect(ui->dirWebView, SIGNAL(openDirectoryRequested(QString)),
+            this, SIGNAL(openDirectoryRequested(QString)));
+    connect(&m_autoIndexWatcher, SIGNAL(directoryChanged(QString)),
+            this, SLOT(watchedAutoIndexDirectoryChanged(QString)));
+    connect(PartCache::get(), SIGNAL(directoryChanged(QString)),
+            this, SLOT(cachedDirectoryChanged(QString)));
 
     ui->partsIndexBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
     ui->partsIndexForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
@@ -103,19 +111,24 @@ DirectoryWidget::~DirectoryWidget()
 void DirectoryWidget::setDirectory(const QString &rootPath)
 {
     setEnabled(false);
+    m_currentRootPath = rootPath;
+    watchAutoIndexDirectory(rootPath);
 
     // set the directory to the file model
     ui->partsTreeView->setDirectory(rootPath);
     // handle the ui->partsWebView, custom index-parts*.html page in "parts" tab
-    loadIndexHtml(rootPath, ui->partsWebView, "index-parts", true);
+    loadIndexHtml(rootPath, ui->partsWebView, "index-parts", true, false);
     // handle the ui->partsWebView, custom index*.html page in "parts" tab
-    loadIndexHtml(rootPath, ui->dirWebView, "index", false);
+    loadIndexHtml(rootPath, ui->dirWebView, "index", false, true);
 
     setEnabled(true);
 }
 
 void DirectoryWidget::updateDirectory(const QString &rootPath)
 {
+    if (m_currentRootPath.compare(rootPath) == 0)
+        reloadDirectoryIndex();
+
     if (ui->partsTreeView->currentPath().compare(rootPath) == 0)
         ui->partsTreeView->directoryChanged();
 }
@@ -126,7 +139,7 @@ void DirectoryWidget::openAboutPage()
     ui->dirWebView->loadAboutPage();
 }
 
-void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound)
+void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound, bool allowAutoIndex)
 {
     QStringList filters;
     filters << filterBase + "_??.html"
@@ -139,6 +152,18 @@ void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
 
     if (indexes.isEmpty())
     {
+        if (allowAutoIndex && filterBase == "index")
+        {
+            DirectoryWebView *dirView = qobject_cast<DirectoryWebView *>(webView);
+
+            if (dirView && MetadataCache::get()->autoIndexEnabled(rootPath))
+            {
+                webView->show();
+                dirView->loadAutoIndexPage(rootPath);
+                return;
+            }
+        }
+
         webView->setHtml("");
         if (hideIfNotFound) webView->hide();
         // load aboutPage only when there is no custom index.html and there is no WD specified
@@ -150,7 +175,7 @@ void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
         QDir d(rootPath);
         if (!d.cdUp())
             return;
-        loadIndexHtml(d.absolutePath(), webView, filterBase, hideIfNotFound);
+        loadIndexHtml(d.absolutePath(), webView, filterBase, hideIfNotFound, false);
         return;
     }
 
@@ -173,6 +198,32 @@ void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
         dirView->setRootPath(rootPath);
 
     webView->load(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
+}
+
+void DirectoryWidget::watchAutoIndexDirectory(const QString &rootPath)
+{
+    QStringList watched = m_autoIndexWatcher.directories();
+
+    if (!watched.isEmpty())
+        m_autoIndexWatcher.removePaths(watched);
+
+    if (!QFileInfo(rootPath).isDir())
+        return;
+
+    m_autoIndexWatcher.addPath(rootPath);
+
+    QString metadataPath = rootPath + "/" + METADATA_DIR;
+
+    if (QFileInfo(metadataPath).isDir())
+        m_autoIndexWatcher.addPath(metadataPath);
+}
+
+void DirectoryWidget::reloadDirectoryIndex()
+{
+    if (m_currentRootPath.isEmpty())
+        return;
+
+    loadIndexHtml(m_currentRootPath, ui->dirWebView, "index", false, true);
 }
 
 void DirectoryWidget::editIndexFile(const QString &path)
@@ -231,6 +282,17 @@ void DirectoryWidget::dirWebViewGoButton_clicked()
         ui->dirWebView->setUrl(QUrl(str));
 }
 
+void DirectoryWidget::dirWebViewReloadButton_clicked()
+{
+    if (ui->dirWebView->isAutoIndexPage())
+    {
+        reloadDirectoryIndex();
+        return;
+    }
+
+    ui->dirWebView->reload();
+}
+
 void DirectoryWidget::partsIndexUrlLineEdit_returnPressed()
 {
     partsIndexGoButton_clicked();
@@ -275,7 +337,9 @@ void DirectoryWidget::dirWebView_urlChanged(const QUrl &url)
 {
     ui->dirWebViewBackButton->setEnabled(ui->dirWebView->history()->canGoBack());
     ui->dirWebViewForwardButton->setEnabled(ui->dirWebView->history()->canGoForward());
-    ui->dirWebViewEditButton->setEnabled(url.scheme() == "file");
+    ui->dirWebViewEditButton->setEnabled(url.scheme() == "file"
+                                         && !ui->dirWebView->isAutoIndexPage());
+    ui->dirWebViewPinButton->setEnabled(!ui->dirWebView->isAutoIndexPage());
 
     QString str = url.toString();
 
@@ -292,6 +356,22 @@ void DirectoryWidget::partsWebView_urlChanged(const QUrl &url)
     ui->partsIndexEditButton->setEnabled(url.scheme() == "file");
     QString str = url.toString();
     ui->partsIndexUrlLineEdit->setText(str);
+}
+
+void DirectoryWidget::watchedAutoIndexDirectoryChanged(const QString &path)
+{
+    watchAutoIndexDirectory(m_currentRootPath);
+
+    if (path == m_currentRootPath && !ui->dirWebView->isAutoIndexPage())
+        return;
+
+    reloadDirectoryIndex();
+}
+
+void DirectoryWidget::cachedDirectoryChanged(const QString &path)
+{
+    if (path == m_currentRootPath && ui->dirWebView->isAutoIndexPage())
+        reloadDirectoryIndex();
 }
 
 void DirectoryWidget::deleteSelectedParts()

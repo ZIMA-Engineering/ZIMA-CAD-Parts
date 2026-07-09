@@ -64,6 +64,13 @@ stored alongside it. ZCP looks for the following index files, in order:
 Where `<language>` is a language and country code, such as `en_US` or `cs_CZ`.
 So localized file is tried first, generic one later.
 
+When no index file is present in the selected directory, ZCP can render an
+auto-generated directory index. The generated index lists direct subdirectories,
+uses directory labels and thumbnails where available, and opens directories
+inside ZCP. This is controlled per directory by `Directory.AutoIndex` in
+`metadata.ini` and is enabled by default. User-provided index files always have
+preference over the generated index.
+
 ## Parts index
 Parts index is shown above the part list, the same rules as for technical
 specification apply here, except for different file names:

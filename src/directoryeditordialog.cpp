@@ -39,6 +39,7 @@ DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *paren
 
     ui->sortOrderComboBox->setCurrentIndex(sortOrderToIndex(m_meta->sortOrder()));
     ui->subdirPartsCheckBox->setChecked(m_meta->showDirectoriesAsParts());
+    ui->autoIndexCheckBox->setChecked(m_meta->autoIndexEnabled());
 }
 
 DirectoryEditorDialog::~DirectoryEditorDialog()
@@ -99,6 +100,11 @@ void DirectoryEditorDialog::apply()
     // Subdirectory parts
     metadata->setShowDirectoriesAsParts(
         ui->subdirPartsCheckBox->isChecked()
+    );
+
+    // Auto-generated index
+    metadata->setAutoIndexEnabled(
+        ui->autoIndexCheckBox->isChecked()
     );
 
     // Parameter handles

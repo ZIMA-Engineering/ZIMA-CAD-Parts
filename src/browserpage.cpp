@@ -25,6 +25,7 @@
 #include <QWebChannel>
 #include <QWebEngineScript>
 #include <QWebEngineView>
+#include <QUrlQuery>
 
 #include "browserprofilemanager.h"
 #include "passwordmanager.h"
@@ -40,6 +41,24 @@ BrowserPage::BrowserPage(QObject *parent)
 
     connect(this, SIGNAL(authenticationRequired(QUrl,QAuthenticator*)),
             this, SLOT(handleAuthenticationRequired(QUrl,QAuthenticator*)));
+}
+
+bool BrowserPage::acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame)
+{
+    if (isMainFrame && url.scheme() == "zcp-directory")
+    {
+        Q_UNUSED(type)
+
+        QUrlQuery query(url);
+        QString path = query.queryItemValue("path");
+
+        if (!path.isEmpty())
+            emit openDirectoryRequested(path);
+
+        return false;
+    }
+
+    return QWebEnginePage::acceptNavigationRequest(url, type, isMainFrame);
 }
 
 QWebEnginePage *BrowserPage::createWindow(QWebEnginePage::WebWindowType type)

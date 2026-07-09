@@ -1,6 +1,7 @@
 #ifndef DIRECTORYWIDGET_H
 #define DIRECTORYWIDGET_H
 
+#include <QFileSystemWatcher>
 #include <QWidget>
 
 #include "datasourcemodel.h"
@@ -40,6 +41,7 @@ signals:
     void prepareFileOperation();
     void fileOperationFinished();
     void refreshRequested();
+    void openDirectoryRequested(const QString &path);
 
 protected:
     void changeEvent(QEvent *event);
@@ -55,13 +57,18 @@ private:
     Ui::DirectoryWidget *ui;
 
     ProductView *m_productView;
+    QString m_currentRootPath;
+    QFileSystemWatcher m_autoIndexWatcher;
 
-    void loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound);
+    void loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound, bool allowAutoIndex);
     void editIndexFile(const QString &path);
+    void watchAutoIndexDirectory(const QString &rootPath);
+    void reloadDirectoryIndex();
 
 private slots:
     void dirWebViewUrlLineEdit_returnPressed();
     void dirWebViewGoButton_clicked();
+    void dirWebViewReloadButton_clicked();
     void dirWebViewPinButton_clicked();
     void dirWebViewEditButton_clicked();
     void partsIndexUrlLineEdit_returnPressed();
@@ -72,6 +79,8 @@ private slots:
 
     void dirWebView_urlChanged(const QUrl &url);
     void partsWebView_urlChanged(const QUrl &url);
+    void watchedAutoIndexDirectoryChanged(const QString &path);
+    void cachedDirectoryChanged(const QString &path);
 
     void previewInProductView(const QFileInfo &fi);
 

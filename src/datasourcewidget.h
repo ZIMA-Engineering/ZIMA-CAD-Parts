@@ -57,6 +57,7 @@ private slots:
     void setupDataSources(const QString &dir);
     void splitterMoved(int, int);
     void handleOpenPartDirectory(const QFileInfo &fi);
+    void openDirectoryFromWebView(const QString &path);
     void announceDirectoryChange(const QString &dir);
 };
 
