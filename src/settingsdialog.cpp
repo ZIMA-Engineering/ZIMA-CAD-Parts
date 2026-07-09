@@ -205,6 +205,7 @@ void SettingsDialog::accept()
                 << (":/" + filename);
 
 #ifdef Q_OS_MAC
+        paths << QCoreApplication::applicationDirPath() + "/../../../locale/" + filename;
         paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
 #endif
 
