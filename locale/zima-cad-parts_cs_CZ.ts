@@ -216,6 +216,14 @@
     </message>
 </context>
 <context>
+    <name>DataSourceWidget</name>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="152"/>
+        <source>Edit data source...</source>
+        <translation>Upravit zdroj dat...</translation>
+    </message>
+</context>
+<context>
     <name>DirectoryCopyAsDialog</name>
     <message>
         <location filename="../src/directorycopyasdialog.ui" line="14"/>
@@ -767,7 +775,7 @@
     <message>
         <location filename="../src/filemover.cpp" line="296"/>
         <source>directory rename failed</source>
-        <translation type="unfinished"></translation>
+        <translation>přejmenování adresáře selhalo</translation>
     </message>
     <message>
         <location filename="../src/filemover.cpp" line="323"/>
@@ -1855,17 +1863,17 @@
         <translation>Nástrojová lišta pro technickou specifikaci</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="332"/>
+        <location filename="../src/settingsdialog.cpp" line="356"/>
         <source>ZIMA-CAD-Parts - set %1 path</source>
         <translation>ZIMA-CAD-Parts - nastavit %1 cestu</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="340"/>
+        <location filename="../src/settingsdialog.cpp" line="364"/>
         <source>Locate ProE launcher</source>
         <translation>Zadejte cestu k ProE programu</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="342"/>
+        <location filename="../src/settingsdialog.cpp" line="366"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>ProE program (proe.exe);;Všechny soubory (*)</translation>
     </message>
@@ -1874,12 +1882,12 @@
         <translation type="vanished">ZIMA-CAD-Parts - nastavit cestu k ProductView</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="350"/>
+        <location filename="../src/settingsdialog.cpp" line="374"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts - vyberte textový editor</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="358"/>
+        <location filename="../src/settingsdialog.cpp" line="382"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts - vyberte terminál</translation>
     </message>

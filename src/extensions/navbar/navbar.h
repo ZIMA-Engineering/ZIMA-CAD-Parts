@@ -7,6 +7,7 @@
 #include <QActionGroup>
 #include <QMenu>
 #include <QByteArray>
+#include <QPoint>
 #include "navbarpage.h"
 #include "navbarheader.h"
 #include "navbarsplitter.h"
@@ -94,6 +95,7 @@ signals:
     void currentChanged(int index);
     void visibleRowsChanged(int rows);
     void stateChanged(bool collapsed);
+    void pageContextMenuRequested(int index, const QPoint &globalPos);
 
 public slots:
     void setCurrentIndex(int index);
@@ -116,6 +118,7 @@ private slots:
     void onButtonVisibilityChanged(int visCount);
     void changePageVisibility(QAction *action);
     void showContentsPopup();
+    void showPageContextMenu(const QPoint &point);
 
 private:
     void resizeContent(const QSize &size, int rowheight);

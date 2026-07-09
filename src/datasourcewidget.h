@@ -1,12 +1,16 @@
 #ifndef DATASOURCEWIDGET_H
 #define DATASOURCEWIDGET_H
 
+#include <QHash>
+#include <QPoint>
+
 #include "ui_datasourcewidget.h"
 #include "settingsdialog.h"
 #include "directorywidget.h"
 
 class QSignalMapper;
 class DataSourceHistory;
+class DataSourceView;
 
 
 /*!
@@ -38,6 +42,7 @@ signals:
     void directoryChanged(DataSourceWidget*, const QString&);
 
     void openInANewTabRequested(const QString &path);
+    void editDataSourceRequested(DataSource *dataSource);
 
 public slots:
     void expand(const QModelIndex & index);
@@ -52,6 +57,9 @@ private:
     DataSourceHistory *m_history;
     QStringList m_zimaUtils;
     QString m_currentDir;
+    QHash<DataSourceView*, DataSource*> m_dataSources;
+
+    DataSource *dataSourceForPage(int index) const;
 
 private slots:
     void setupDataSources(const QString &dir);
@@ -59,6 +67,7 @@ private slots:
     void handleOpenPartDirectory(const QFileInfo &fi);
     void openDirectoryFromWebView(const QString &path);
     void announceDirectoryChange(const QString &dir);
+    void showDataSourceContextMenu(int index, const QPoint &globalPos);
 };
 
 #endif // DATASOURCEWIDGET_H

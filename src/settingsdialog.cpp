@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QLocale>
+#include <QTimer>
 #include <QToolButton>
 
 #include "addeditdatasource.h"
@@ -143,6 +144,35 @@ void SettingsDialog::changeEvent(QEvent *e)
 void SettingsDialog::setSection(SettingsDialog::Section s)
 {
     m_ui->tabWidget->setCurrentIndex(s);
+}
+
+void SettingsDialog::setCurrentDataSource(DataSource *dataSource)
+{
+    if (!dataSource)
+        return;
+
+    setSection(SettingsDialog::DataSources);
+
+    for (int row = 0; row < m_ui->datasourceList->count(); ++row)
+    {
+        QListWidgetItem *item = m_ui->datasourceList->item(row);
+        DataSource *itemDataSource = PtrVariant<DataSource>::asPtr(item->data(DATASOURCE_ROLE));
+
+        if (itemDataSource == dataSource
+                || (itemDataSource
+                    && itemDataSource->name == dataSource->name
+                    && itemDataSource->rootPath == dataSource->rootPath))
+        {
+            m_ui->datasourceList->setCurrentRow(row);
+            m_ui->datasourceList->setFocus();
+            return;
+        }
+    }
+}
+
+void SettingsDialog::openCurrentDataSourceEditor()
+{
+    QTimer::singleShot(0, this, SLOT(editDataSource()));
 }
 
 void SettingsDialog::accept()

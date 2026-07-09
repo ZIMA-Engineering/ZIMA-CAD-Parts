@@ -570,6 +570,10 @@ int NavBar::insertPage(int index, QWidget *page, const QString &text, const QIco
     p.button->setIconSize(pageIconSize);
     p.button->setGeometry(0, visiblePages().size() * rowHeight(), pageListWidget->width(), rowHeight()); //TODO: move to NavBarPageListWidget
     p.button->setVisible(true);
+    p.button->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(p.button, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(showPageContextMenu(QPoint)));
 
     int oldIdx = stackedWidget->currentIndex();
 
@@ -809,6 +813,20 @@ void NavBar::onClickPageButton(QAction *action)
 
     if(autoPopupMode && collapsedState)
         showContentsPopup();
+}
+
+void NavBar::showPageContextMenu(const QPoint &point)
+{
+    QToolButton *button = qobject_cast<QToolButton*>(sender());
+    if(!button)
+        return;
+
+    for(int i = 0; i < pages.size(); i++)
+        if(pages[i].button == button)
+        {
+            emit pageContextMenuRequested(i, button->mapToGlobal(point));
+            return;
+        }
 }
 
 void NavBar::refillToolBar(int visCount)

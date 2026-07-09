@@ -112,6 +112,8 @@ void MainTabWidget::addDataSourceWidget(const QString &dir)
 
     connect(dsw, SIGNAL(showSettings(SettingsDialog::Section)),
             this, SIGNAL(showSettings(SettingsDialog::Section)));
+    connect(dsw, SIGNAL(editDataSourceRequested(DataSource*)),
+            this, SIGNAL(editDataSourceRequested(DataSource*)));
     connect(dsw, SIGNAL(directoryChanged(DataSourceWidget*, QString)),
             this, SLOT(updateTabTitle(DataSourceWidget*, QString)));
     connect(dsw, SIGNAL(directoryChanged(DataSourceWidget*,QString)),

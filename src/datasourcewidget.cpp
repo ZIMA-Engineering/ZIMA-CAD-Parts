@@ -5,6 +5,7 @@
 
 #include <QApplication>
 #include <QFileInfo>
+#include <QMenu>
 #include <QtDebug>
 
 
@@ -24,6 +25,8 @@ DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
     connect(dirWidget, SIGNAL(refreshRequested()), this, SIGNAL(refreshRequested()));
     connect(dirWidget, SIGNAL(openDirectoryRequested(QString)),
             this, SLOT(openDirectoryFromWebView(QString)));
+    connect(dsList, SIGNAL(pageContextMenuRequested(int,QPoint)),
+            this, SLOT(showDataSourceContextMenu(int,QPoint)));
 
     m_history = new DataSourceHistory(this);
 
@@ -64,6 +67,8 @@ void DataSourceWidget::settingsChanged()
     // Data sources
     if (Settings::get()->DataSourcesNeedsUpdate)
     {
+        m_dataSources.clear();
+
         // firstly delete all stuff used. Remember "the reset"
         while (dsList->count())
         {
@@ -138,6 +143,15 @@ QString DataSourceWidget::currentDir() const
     return m_currentDir;
 }
 
+DataSource *DataSourceWidget::dataSourceForPage(int index) const
+{
+    DataSourceView *view = qobject_cast<DataSourceView*>(dsList->widget(index));
+    if (!view)
+        return 0;
+
+    return m_dataSources.value(view, 0);
+}
+
 void DataSourceWidget::goToWorkingDirectory()
 {
     QString wdir = Settings::get()->getWorkingDir();
@@ -148,6 +162,24 @@ void DataSourceWidget::goToWorkingDirectory()
 void DataSourceWidget::openAboutPage()
 {
     dirWidget->openAboutPage();
+}
+
+void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &globalPos)
+{
+    DataSource *dataSource = dataSourceForPage(index);
+    if (!dataSource)
+        return;
+
+    dsList->setCurrentIndex(index);
+
+    QMenu menu(this);
+    QAction *editAction = menu.addAction(
+        QIcon(":/gfx/document-edit.png"),
+        tr("Edit data source...")
+    );
+
+    if (menu.exec(globalPos) == editAction)
+        emit editDataSourceRequested(dataSource);
 }
 
 void DataSourceWidget::setupDataSources(const QString &dir)
@@ -173,6 +205,7 @@ void DataSourceWidget::setupDataSources(const QString &dir)
         connect(view, SIGNAL(openInANewTabRequested(QString)),
                 this, SIGNAL(openInANewTabRequested(QString)));
 
+        m_dataSources.insert(view, ds);
         dsList->addPage(view, ds->name, ds->icon);
     }
 

@@ -58,6 +58,7 @@ public:
 
 public slots:
     void showSettings(SettingsDialog::Section section = SettingsDialog::General);
+    void showDataSourceSettings(DataSource *dataSource);
 
 protected:
     void keyPressEvent(QKeyEvent *event);

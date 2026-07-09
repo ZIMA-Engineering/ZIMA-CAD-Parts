@@ -30,6 +30,7 @@ public slots:
 
 signals:
     void showSettings(SettingsDialog::Section);
+    void editDataSourceRequested(DataSource *dataSource);
     void workingDirChanged();
     void newHistory(DataSourceHistory *history);
     void refreshRequested();

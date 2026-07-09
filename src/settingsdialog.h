@@ -52,6 +52,8 @@ public:
     virtual ~SettingsDialog();
 
     void setSection(Section s);
+    void setCurrentDataSource(DataSource *dataSource);
+    void openCurrentDataSourceEditor();
 
 protected:
     virtual void changeEvent(QEvent *e);

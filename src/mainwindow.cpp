@@ -83,6 +83,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
     connect(ui->tabWidget, SIGNAL(showSettings(SettingsDialog::Section)),
             this, SLOT(showSettings(SettingsDialog::Section)));
+    connect(ui->tabWidget, SIGNAL(editDataSourceRequested(DataSource*)),
+            this, SLOT(showDataSourceSettings(DataSource*)));
     connect(ui->tabWidget, SIGNAL(refreshRequested()),
             this, SLOT(handleRefresh()));
 
@@ -121,6 +123,16 @@ void MainWindow::showSettings(SettingsDialog::Section section)
 {
     SettingsDialog sd(&translator, this);
     sd.setSection(section);
+
+    if (sd.exec())
+        settingsChanged();
+}
+
+void MainWindow::showDataSourceSettings(DataSource *dataSource)
+{
+    SettingsDialog sd(&translator, this);
+    sd.setCurrentDataSource(dataSource);
+    sd.openCurrentDataSourceEditor();
 
     if (sd.exec())
         settingsChanged();
