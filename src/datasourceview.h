@@ -2,6 +2,7 @@
 #define DATASOURCEVIEW_H
 
 #include <QTreeView>
+#include <QStringList>
 
 #include "settingsdialog.h"
 
@@ -27,6 +28,7 @@ public:
 
 public slots:
     void releaseFileSystemModel();
+    void restoreFileSystemModelState();
 
 signals:
     void showSettings(SettingsDialog::Section);
@@ -41,10 +43,20 @@ private:
     DataSourceProxyModel *m_proxy;
     QSignalMapper *m_signalMapper;
     ScriptRunner *m_scriptRunner;
+    QStringList m_expandedPathsBeforeReset;
+    QString m_currentPathBeforeReset;
+    int m_verticalScrollBeforeReset;
+    int m_horizontalScrollBeforeReset;
+    bool m_hasModelState;
 
     QFileInfo currentFileInfo();
     void addScriptsToContextMenu(QMenu *menu);
     void setupModel();
+    void saveFileSystemModelState();
+    void collectExpandedPaths(const QModelIndex &parent);
+    bool expandPath(const QString &path);
+    bool pathBelongsToRoot(const QString &path) const;
+    QString nearestExistingPath(const QString &path) const;
 
 private slots:
     void refreshModel();

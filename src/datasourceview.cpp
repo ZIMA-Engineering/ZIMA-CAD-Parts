@@ -16,17 +16,25 @@
 #include <QHeaderView>
 #include <QApplication>
 #include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QSignalMapper>
 #include <QMenu>
 #include <QMessageBox>
 #include <QProcess>
+#include <QScrollBar>
 #include <QUrl>
 #include <QDebug>
+
+#include <algorithm>
 
 
 DataSourceView::DataSourceView(const QString &rootPath, QWidget *parent) :
     QTreeView(parent),
-    m_path(rootPath)
+    m_path(rootPath),
+    m_verticalScrollBeforeReset(0),
+    m_horizontalScrollBeforeReset(0),
+    m_hasModelState(false)
 {
     // boss requirement - icons shoudl have be at least 32px sized
     setStyleSheet("icon-size: 32px;");
@@ -62,6 +70,8 @@ void DataSourceView::setupModel()
 
 void DataSourceView::releaseFileSystemModel()
 {
+    saveFileSystemModelState();
+
     setModel(nullptr);
 
     delete m_proxy;
@@ -72,6 +82,54 @@ void DataSourceView::releaseFileSystemModel()
     setupModel();
 }
 
+void DataSourceView::restoreFileSystemModelState()
+{
+    if (!m_hasModelState || !m_model || !m_proxy)
+        return;
+
+    QStringList expandedPaths = m_expandedPathsBeforeReset;
+    QString currentPath = m_currentPathBeforeReset;
+    int verticalScroll = m_verticalScrollBeforeReset;
+    int horizontalScroll = m_horizontalScrollBeforeReset;
+
+    m_expandedPathsBeforeReset.clear();
+    m_currentPathBeforeReset.clear();
+    m_hasModelState = false;
+
+    expandedPaths.removeDuplicates();
+    std::sort(expandedPaths.begin(), expandedPaths.end(), [](const QString &a, const QString &b) {
+        return a.length() < b.length();
+    });
+
+    QStringList pending = expandedPaths;
+
+    for (int attempt = 0; attempt < 3 && !pending.isEmpty(); ++attempt)
+    {
+        QStringList remaining;
+
+        foreach (const QString &path, pending)
+        {
+            if (!expandPath(path))
+                remaining << path;
+        }
+
+        pending = remaining;
+
+        if (!pending.isEmpty())
+            qApp->processEvents();
+    }
+
+    currentPath = nearestExistingPath(currentPath);
+    if (!currentPath.isEmpty())
+        navigateToDirectory(currentPath);
+
+    if (verticalScrollBar())
+        verticalScrollBar()->setValue(verticalScroll);
+
+    if (horizontalScrollBar())
+        horizontalScrollBar()->setValue(horizontalScroll);
+}
+
 void DataSourceView::refreshModel()
 {
     if (!m_model || !m_proxy)
@@ -80,6 +138,94 @@ void DataSourceView::refreshModel()
     // it has to be reset here because calling QFileSystemModel's reset
     // or begin/end alternatives results in "/" as a root path
     setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
+}
+
+void DataSourceView::saveFileSystemModelState()
+{
+    m_expandedPathsBeforeReset.clear();
+    m_currentPathBeforeReset.clear();
+    m_verticalScrollBeforeReset = verticalScrollBar() ? verticalScrollBar()->value() : 0;
+    m_horizontalScrollBeforeReset = horizontalScrollBar() ? horizontalScrollBar()->value() : 0;
+    m_hasModelState = false;
+
+    if (!m_model || !m_proxy)
+        return;
+
+    QModelIndex current = currentIndex();
+    if (current.isValid())
+        m_currentPathBeforeReset = m_model->filePath(m_proxy->mapToSource(current));
+
+    collectExpandedPaths(rootIndex());
+    m_hasModelState = true;
+}
+
+void DataSourceView::collectExpandedPaths(const QModelIndex &parent)
+{
+    int rows = m_proxy->rowCount(parent);
+
+    for (int row = 0; row < rows; ++row)
+    {
+        QModelIndex child = m_proxy->index(row, 0, parent);
+
+        if (!child.isValid() || !isExpanded(child))
+            continue;
+
+        m_expandedPathsBeforeReset << m_model->filePath(m_proxy->mapToSource(child));
+        collectExpandedPaths(child);
+    }
+}
+
+bool DataSourceView::expandPath(const QString &path)
+{
+    if (!QFileInfo(path).isDir() || !pathBelongsToRoot(path))
+        return true;
+
+    QModelIndex index = m_proxy->mapFromSource(m_model->index(path));
+
+    if (!index.isValid())
+        return false;
+
+    setExpanded(index, true);
+    return true;
+}
+
+bool DataSourceView::pathBelongsToRoot(const QString &path) const
+{
+    const QString cleanRoot = QDir::cleanPath(m_path);
+    const QString cleanPath = QDir::cleanPath(path);
+
+#ifdef Q_OS_WIN
+    const Qt::CaseSensitivity sensitivity = Qt::CaseInsensitive;
+#else
+    const Qt::CaseSensitivity sensitivity = Qt::CaseSensitive;
+#endif
+
+    return cleanPath.compare(cleanRoot, sensitivity) == 0
+            || cleanPath.startsWith(cleanRoot + QLatin1Char('/'), sensitivity);
+}
+
+QString DataSourceView::nearestExistingPath(const QString &path) const
+{
+    if (path.isEmpty())
+        return QString();
+
+    QString current = QDir::cleanPath(path);
+
+    while (!current.isEmpty())
+    {
+        QFileInfo fi(current);
+
+        if (fi.isDir() && pathBelongsToRoot(current))
+            return current;
+
+        QString parentPath = QDir::cleanPath(QFileInfo(current).absolutePath());
+        if (parentPath == current)
+            break;
+
+        current = parentPath;
+    }
+
+    return QFileInfo(m_path).isDir() ? QDir::cleanPath(m_path) : QString();
 }
 
 void DataSourceView::modelClicked(const QModelIndex &index)
@@ -301,6 +447,12 @@ void DataSourceView::deleteDirectory()
         DirectoryRemover *rm = new DirectoryRemover(fi, this);
         rm->setMessage(tr("Please wait while the directory is being removed..."));
         rm->work();
+
+        QString restoredPath = nearestExistingPath(fi.absoluteFilePath());
+        restoreFileSystemModelState();
+
+        if (!restoredPath.isEmpty())
+            emit directorySelected(restoredPath);
     }
 }
 

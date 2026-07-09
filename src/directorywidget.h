@@ -38,6 +38,7 @@ signals:
     void changeSettings();
     void openPartDirectory(const QFileInfo &fi);
     void prepareFileOperation();
+    void fileOperationFinished();
     void refreshRequested();
 
 protected:

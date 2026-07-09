@@ -42,6 +42,7 @@ signals:
 public slots:
     void expand(const QModelIndex & index);
     void releaseFileSystemModels();
+    void restoreFileSystemModels();
     void settingsChanged();
     void setDirectory(const QString &path);
     void goToWorkingDirectory();

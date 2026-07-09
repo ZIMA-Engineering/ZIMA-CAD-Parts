@@ -19,6 +19,7 @@ DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
     connect(splitter, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int,int)));
     connect(dirWidget, SIGNAL(changeSettings()), this, SLOT(settingsChanged()));
     connect(dirWidget, SIGNAL(prepareFileOperation()), this, SLOT(releaseFileSystemModels()));
+    connect(dirWidget, SIGNAL(fileOperationFinished()), this, SLOT(restoreFileSystemModels()));
     connect(dirWidget, SIGNAL(refreshRequested()), this, SIGNAL(refreshRequested()));
 
     m_history = new DataSourceHistory(this);
@@ -78,6 +79,18 @@ void DataSourceWidget::releaseFileSystemModels()
         DataSourceView *view = qobject_cast<DataSourceView*>(dsList->widget(i));
         if (view)
             view->releaseFileSystemModel();
+    }
+
+    qApp->processEvents();
+}
+
+void DataSourceWidget::restoreFileSystemModels()
+{
+    for (int i = 0; i < dsList->count(); ++i)
+    {
+        DataSourceView *view = qobject_cast<DataSourceView*>(dsList->widget(i));
+        if (view)
+            view->restoreFileSystemModelState();
     }
 
     qApp->processEvents();
