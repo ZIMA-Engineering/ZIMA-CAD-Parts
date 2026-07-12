@@ -106,17 +106,21 @@ DirectoryWebView::DirectoryWebView(QWidget *parent) :
 void DirectoryWebView::setRootPath(QString path)
 {
     m_rootPath = path;
-    m_autoIndexPath.clear();
+    m_autoIndexUrl.clear();
 }
 
 bool DirectoryWebView::isAutoIndexPage() const
 {
-    return !m_autoIndexPath.isEmpty();
+    if (m_autoIndexUrl.isEmpty() || !url().isLocalFile())
+        return false;
+
+    return QDir::cleanPath(url().toLocalFile())
+            == QDir::cleanPath(m_autoIndexUrl.toLocalFile());
 }
 
 void DirectoryWebView::loadAboutPage()
 {
-    m_autoIndexPath.clear();
+    m_autoIndexUrl.clear();
 
     QString url = ":/data/zima-cad-parts%1.html";
     QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
@@ -132,9 +136,9 @@ void DirectoryWebView::loadAboutPage()
 void DirectoryWebView::loadAutoIndexPage(const QString &path)
 {
     m_rootPath = path;
-    m_autoIndexPath = path;
+    m_autoIndexUrl = QUrl::fromLocalFile(path + "/");
 
-    setHtml(autoIndexHtml(path), QUrl::fromLocalFile(path + "/"));
+    setHtml(autoIndexHtml(path), m_autoIndexUrl);
 }
 
 void DirectoryWebView::urlChange(const QUrl &url)

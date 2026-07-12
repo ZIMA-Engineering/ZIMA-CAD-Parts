@@ -22,6 +22,7 @@
 #define DIRECTORYWEBVIEW_H
 
 #include <QWebEngineView>
+#include <QUrl>
 
 class QFileInfo;
 class WebDownloaderDialog;
@@ -47,7 +48,7 @@ protected:
 
 private:
     QString m_rootPath;
-    QString m_autoIndexPath;
+    QUrl m_autoIndexUrl;
 
     QString autoIndexHtml(const QString &path) const;
     QString autoIndexTitle(const QString &path) const;
