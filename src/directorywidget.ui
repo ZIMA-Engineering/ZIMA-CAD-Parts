@@ -85,7 +85,7 @@
            <widget class="QPushButton" name="dirWebViewBackButton"/>
           </item>
           <item row="0" column="5">
-           <widget class="QPushButton" name="dirWebViewPinButton">
+           <widget class="QToolButton" name="dirWebViewPinButton">
             <property name="toolTip">
              <string>Pin this URL to current directory in tree (write permission required)</string>
             </property>
@@ -154,7 +154,7 @@
            <widget class="QLineEdit" name="partsIndexUrlLineEdit"/>
           </item>
           <item row="0" column="5">
-           <widget class="QPushButton" name="partsIndexPinButton">
+           <widget class="QToolButton" name="partsIndexPinButton">
             <property name="icon">
              <iconset resource="../zima-cad-parts.qrc">
               <normaloff>:/gfx/pin.png</normaloff>:/gfx/pin.png</iconset>

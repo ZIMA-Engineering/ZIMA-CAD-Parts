@@ -458,17 +458,17 @@
         <translation type="vanished">ZIMA-CAD-Parts Technická Specifikace</translation>
     </message>
     <message>
-        <location filename="../src/directorywebview.cpp" line="196"/>
+        <location filename="../src/directorywebview.cpp" line="200"/>
         <source>No subdirectories</source>
         <translation>Žádné podadresáře</translation>
     </message>
     <message>
-        <location filename="../src/directorywebview.cpp" line="200"/>
+        <location filename="../src/directorywebview.cpp" line="204"/>
         <source>Auto-generated directory index</source>
         <translation>Automaticky generovaný index adresáře</translation>
     </message>
     <message>
-        <location filename="../src/directorywebview.cpp" line="325"/>
+        <location filename="../src/directorywebview.cpp" line="329"/>
         <source>Open directory</source>
         <translation>Otevřít adresář</translation>
     </message>
@@ -550,8 +550,68 @@
         <translation type="vanished">Opravdu chcete smazat vybrané díly? Tato operace je nevratná.</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="406"/>
-        <location filename="../src/directorywidget.cpp" line="407"/>
+        <location filename="../src/directorywidget.cpp" line="256"/>
+        <source>Delete index</source>
+        <translation>Smazat index</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="266"/>
+        <source>Delete all indexes</source>
+        <translation>Smazat všechny indexy</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="309"/>
+        <source>The following index file will be deleted:
+
+%1
+
+Continue?</source>
+        <translation>Bude smazán následující soubor indexu:
+
+%1
+
+Pokračovat?</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="310"/>
+        <source>The following index files will be deleted:
+
+%1
+
+Continue?</source>
+        <translation>Budou smazány následující soubory indexu:
+
+%1
+
+Pokračovat?</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="311"/>
+        <source>Delete all indexes?</source>
+        <translation>Smazat všechny indexy?</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="311"/>
+        <source>Delete index?</source>
+        <translation>Smazat index?</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="336"/>
+        <source>Index deletion failed</source>
+        <translation>Mazání indexu se nezdařilo</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="337"/>
+        <source>The following index files could not be deleted:
+
+%1</source>
+        <translation>Následující soubory indexu se nepodařilo smazat:
+
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="568"/>
+        <location filename="../src/directorywidget.cpp" line="569"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>

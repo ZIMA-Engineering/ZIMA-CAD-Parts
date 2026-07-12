@@ -1,6 +1,7 @@
 #ifndef DIRECTORYWIDGET_H
 #define DIRECTORYWIDGET_H
 
+#include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QWidget>
 
@@ -9,6 +10,8 @@
 class FileModel;
 class FileFilterModel;
 class ProductView;
+class QMenu;
+class QToolButton;
 class QWebEngineView;
 
 namespace Ui {
@@ -57,10 +60,19 @@ private:
     Ui::DirectoryWidget *ui;
 
     ProductView *m_productView;
+    QMenu *m_directoryIndexMenu;
+    QMenu *m_partsIndexMenu;
     QString m_currentRootPath;
     QFileSystemWatcher m_autoIndexWatcher;
 
     void loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound, bool allowAutoIndex);
+    QStringList indexNameFilters(const QString &filterBase) const;
+    QFileInfoList indexFiles(const QString &rootPath, const QString &filterBase) const;
+    QFileInfo selectedIndexFile(const QFileInfoList &files) const;
+    void updateIndexMenus();
+    void updateIndexMenu(QToolButton *button, QMenu *menu, const QString &filterBase);
+    void deleteIndexFiles(const QString &filterBase, bool deleteAll);
+    void reloadPartsIndex();
     void editIndexFile(const QString &path);
     void watchAutoIndexDirectory(const QString &rootPath);
     void reloadDirectoryIndex();

@@ -3,8 +3,11 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QFile>
 #include <QFileInfo>
+#include <QMenu>
 #include <QProcess>
+#include <QToolButton>
 
 #include "directorywidget.h"
 #include "ui_directorywidget.h"
@@ -27,6 +30,11 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui->partsWebView->setPage(new BrowserPage(ui->partsWebView));
 
     m_productView = new ProductView(this);
+    m_directoryIndexMenu = new QMenu(this);
+    m_partsIndexMenu = new QMenu(this);
+
+    ui->dirWebViewPinButton->setPopupMode(QToolButton::MenuButtonPopup);
+    ui->partsIndexPinButton->setPopupMode(QToolButton::MenuButtonPopup);
 
     connect(ui->refreshButton, SIGNAL(clicked()),
             this, SLOT(refreshButton_clicked()));
@@ -35,6 +43,10 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui->dirWebViewForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
     ui->dirWebViewReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
     ui->dirWebViewGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+    ui->dirWebViewPinButton->setFixedWidth(
+        qMax(ui->dirWebViewGoButton->sizeHint().width(),
+             ui->dirWebViewEditButton->sizeHint().width())
+    );
 
     connect(ui->dirWebViewBackButton, SIGNAL(clicked()),
             ui->dirWebView, SLOT(back()));
@@ -63,6 +75,10 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui->partsIndexForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
     ui->partsIndexReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
     ui->partsIndexGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+    ui->partsIndexPinButton->setFixedWidth(
+        qMax(ui->partsIndexGoButton->sizeHint().width(),
+             ui->partsIndexEditButton->sizeHint().width())
+    );
 
     connect(ui->partsIndexBackButton, SIGNAL(clicked()),
             ui->partsWebView, SLOT(back()));
@@ -120,6 +136,7 @@ void DirectoryWidget::setDirectory(const QString &rootPath)
     loadIndexHtml(rootPath, ui->partsWebView, "index-parts", true, false);
     // handle the ui->partsWebView, custom index*.html page in "parts" tab
     loadIndexHtml(rootPath, ui->dirWebView, "index", false, true);
+    updateIndexMenus();
 
     setEnabled(true);
 }
@@ -141,14 +158,13 @@ void DirectoryWidget::openAboutPage()
 
 void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound, bool allowAutoIndex)
 {
-    QStringList filters;
-    filters << filterBase + "_??.html"
-            << filterBase + "_??.htm"
-            << filterBase + ".html"
-            << filterBase + ".htm";
+    QFileInfoList indexes;
 
-    QDir dir(rootPath + "/" + METADATA_DIR);
-    QStringList indexes = dir.entryList(filters, QDir::Files | QDir::Readable);
+    foreach (const QFileInfo &file, indexFiles(rootPath, filterBase))
+    {
+        if (file.isReadable())
+            indexes << file;
+    }
 
     if (indexes.isEmpty())
     {
@@ -179,25 +195,176 @@ void DirectoryWidget::loadIndexHtml(const QString &rootPath, QWebEngineView *web
         return;
     }
 
-    QString selectedIndex = indexes.first();
-    indexes.removeFirst();
-
-    foreach(QString index, indexes)
-    {
-        QString prefix = index.section('.', 0, 0);
-        if(prefix.lastIndexOf('_') == prefix.length()-3
-                && prefix.right(2) == Settings::get()->getCurrentLanguageCode().left(2))
-        {
-            selectedIndex = index;
-        }
-    }
+    QFileInfo selectedIndex = selectedIndexFile(indexes);
 
     webView->show();
 
     if (DirectoryWebView *dirView = qobject_cast<DirectoryWebView *>(webView))
         dirView->setRootPath(rootPath);
 
-    webView->load(QUrl::fromLocalFile(dir.path() + "/" + selectedIndex));
+    webView->load(QUrl::fromLocalFile(selectedIndex.absoluteFilePath()));
+}
+
+QStringList DirectoryWidget::indexNameFilters(const QString &filterBase) const
+{
+    return QStringList()
+            << filterBase + "_??.html"
+            << filterBase + "_??.htm"
+            << filterBase + ".html"
+            << filterBase + ".htm";
+}
+
+QFileInfoList DirectoryWidget::indexFiles(const QString &rootPath, const QString &filterBase) const
+{
+    QDir dir(rootPath + "/" + METADATA_DIR);
+    return dir.entryInfoList(indexNameFilters(filterBase),
+                             QDir::Files,
+                             QDir::Name);
+}
+
+QFileInfo DirectoryWidget::selectedIndexFile(const QFileInfoList &files) const
+{
+    if (files.isEmpty())
+        return QFileInfo();
+
+    QFileInfo selected = files.first();
+    QString language = Settings::get()->getCurrentLanguageCode().left(2);
+
+    foreach (const QFileInfo &file, files)
+    {
+        QString prefix = file.completeBaseName();
+
+        if (prefix.lastIndexOf('_') == prefix.length() - 3
+                && prefix.right(2) == language)
+        {
+            selected = file;
+        }
+    }
+
+    return selected;
+}
+
+void DirectoryWidget::updateIndexMenus()
+{
+    updateIndexMenu(ui->dirWebViewPinButton, m_directoryIndexMenu, "index");
+    updateIndexMenu(ui->partsIndexPinButton, m_partsIndexMenu, "index-parts");
+}
+
+void DirectoryWidget::updateIndexMenu(QToolButton *button, QMenu *menu, const QString &filterBase)
+{
+    menu->clear();
+    button->setMenu(nullptr);
+
+    QFileInfoList files = indexFiles(m_currentRootPath, filterBase);
+    if (files.isEmpty())
+        return;
+
+    QAction *deleteAction = menu->addAction(
+        QIcon(":/gfx/list-remove.png"),
+        tr("Delete index")
+    );
+    connect(deleteAction, &QAction::triggered, this, [this, filterBase]() {
+        deleteIndexFiles(filterBase, false);
+    });
+
+    if (files.count() > 1)
+    {
+        QAction *deleteAllAction = menu->addAction(
+            QIcon(":/gfx/list-remove.png"),
+            tr("Delete all indexes")
+        );
+        connect(deleteAllAction, &QAction::triggered, this, [this, filterBase]() {
+            deleteIndexFiles(filterBase, true);
+        });
+    }
+
+    button->setMenu(menu);
+}
+
+void DirectoryWidget::deleteIndexFiles(const QString &filterBase, bool deleteAll)
+{
+    QFileInfoList files = indexFiles(m_currentRootPath, filterBase);
+    if (files.isEmpty())
+    {
+        updateIndexMenus();
+        return;
+    }
+
+    QFileInfoList targets;
+
+    if (deleteAll)
+    {
+        targets = files;
+    }
+    else
+    {
+        QFileInfoList readableFiles;
+
+        foreach (const QFileInfo &file, files)
+        {
+            if (file.isReadable())
+                readableFiles << file;
+        }
+
+        QFileInfo selected = selectedIndexFile(readableFiles);
+
+        if (!selected.exists())
+            selected = selectedIndexFile(files);
+
+        if (selected.exists())
+            targets << selected;
+    }
+
+    if (targets.isEmpty())
+    {
+        updateIndexMenus();
+        return;
+    }
+
+    QStringList paths;
+    foreach (const QFileInfo &file, targets)
+        paths << QDir::toNativeSeparators(file.absoluteFilePath());
+
+    QString question = targets.count() == 1
+            ? tr("The following index file will be deleted:\n\n%1\n\nContinue?")
+            : tr("The following index files will be deleted:\n\n%1\n\nContinue?");
+    QString title = deleteAll ? tr("Delete all indexes?") : tr("Delete index?");
+
+    if (QMessageBox::question(
+                this,
+                title,
+                question.arg(paths.join("\n")),
+                QMessageBox::Yes | QMessageBox::No,
+                QMessageBox::No
+            ) != QMessageBox::Yes)
+    {
+        return;
+    }
+
+    QStringList failures;
+
+    foreach (const QFileInfo &file, targets)
+    {
+        if (!QFile::remove(file.absoluteFilePath()))
+            failures << QDir::toNativeSeparators(file.absoluteFilePath());
+    }
+
+    if (!failures.isEmpty())
+    {
+        QMessageBox::warning(
+            this,
+            tr("Index deletion failed"),
+            tr("The following index files could not be deleted:\n\n%1")
+                .arg(failures.join("\n"))
+        );
+    }
+
+    updateIndexMenus();
+
+    if (filterBase == "index")
+        reloadDirectoryIndex();
+    else
+        reloadPartsIndex();
 }
 
 void DirectoryWidget::watchAutoIndexDirectory(const QString &rootPath)
@@ -226,6 +393,14 @@ void DirectoryWidget::reloadDirectoryIndex()
     loadIndexHtml(m_currentRootPath, ui->dirWebView, "index", false, true);
 }
 
+void DirectoryWidget::reloadPartsIndex()
+{
+    if (m_currentRootPath.isEmpty())
+        return;
+
+    loadIndexHtml(m_currentRootPath, ui->partsWebView, "index-parts", true, false);
+}
+
 void DirectoryWidget::editIndexFile(const QString &path)
 {
     QUrl url = QUrl::fromUserInput(path);
@@ -247,6 +422,7 @@ void DirectoryWidget::changeEvent(QEvent *e)
     switch (e->type()) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
+        updateIndexMenus();
         if (ui->dirWebView->url().path().startsWith("/data/zima-cad-parts") )
             ui->dirWebView->loadAboutPage();
         break;
@@ -311,6 +487,7 @@ void DirectoryWidget::partsIndexGoButton_clicked()
 void DirectoryWidget::partsIndexPinButton_clicked()
 {
     ui->partsTreeView->createIndexHtmlFile(ui->partsIndexUrlLineEdit->text(), "index-parts");
+    updateIndexMenus();
 }
 
 void DirectoryWidget::partsIndexEditButton_clicked()
@@ -321,6 +498,7 @@ void DirectoryWidget::partsIndexEditButton_clicked()
 void DirectoryWidget::dirWebViewPinButton_clicked()
 {
     ui->partsTreeView->createIndexHtmlFile(ui->dirWebViewUrlLineEdit->text(), "index");
+    updateIndexMenus();
 }
 
 void DirectoryWidget::dirWebViewEditButton_clicked()
@@ -361,6 +539,10 @@ void DirectoryWidget::partsWebView_urlChanged(const QUrl &url)
 void DirectoryWidget::watchedAutoIndexDirectoryChanged(const QString &path)
 {
     watchAutoIndexDirectory(m_currentRootPath);
+    updateIndexMenus();
+
+    if (path != m_currentRootPath)
+        reloadPartsIndex();
 
     if (path == m_currentRootPath && !ui->dirWebView->isAutoIndexPage())
         return;
