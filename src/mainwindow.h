@@ -42,6 +42,7 @@
 #include "webdownloaderdialog.h"
 
 class WorkingDirWidget;
+class QMenu;
 
 namespace Ui
 {
@@ -62,6 +63,7 @@ public slots:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
+    QMenu *createPopupMenu() override;
 
 private:
     Ui::MainWindowClass *ui;

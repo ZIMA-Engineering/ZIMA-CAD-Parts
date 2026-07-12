@@ -94,6 +94,8 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     ui->toolBar->setupHistory(ui->tabWidget->currentDataSource()->history());
 
     restoreState(Settings::get()->MainWindowState);
+    ui->toolBar->setVisible(true);
+
     restoreGeometry(Settings::get()->MainWindowGeometry);
 
     QList<int> list;
@@ -147,6 +149,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 
     QMainWindow::keyPressEvent(event);
+}
+
+QMenu *MainWindow::createPopupMenu()
+{
+    return nullptr;
 }
 
 void MainWindow::changeEvent(QEvent *event)
