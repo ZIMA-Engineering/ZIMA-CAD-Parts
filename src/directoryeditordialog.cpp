@@ -10,10 +10,11 @@
 #include <QMessageBox>
 #include <QDebug>
 
-DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *parent) :
+DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *parent, Target target) :
     QDialog(parent),
     ui(new Ui::DirectoryEditorDialog),
-    m_fi(fi)
+    m_fi(fi),
+    m_target(target)
 {
     ui->setupUi(this);
 
@@ -25,7 +26,16 @@ DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *paren
     connect(ui->languageComboBox, SIGNAL(currentIndexChanged(int)),
             ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
-    ui->nameLineEdit->setText(fi.fileName());
+    if (m_target == DataSourceRoot)
+    {
+        setWindowTitle(tr("Edit data source"));
+        ui->nameLabel->hide();
+        ui->nameLineEdit->hide();
+    }
+    else
+    {
+        ui->nameLineEdit->setText(fi.fileName());
+    }
 
     // No idea why is this needed, but the stack widget's background
     // is white without this.
@@ -55,23 +65,26 @@ QString DirectoryEditorDialog::directoryPath() const
 void DirectoryEditorDialog::apply()
 {
     // Directory name
-    QString name = ui->nameLineEdit->text().trimmed();
-
-    if (name != m_fi.fileName())
+    if (m_target == Directory)
     {
-        FileRenamer rn;
+        QString name = ui->nameLineEdit->text().trimmed();
 
-        connect(&rn, SIGNAL(error(QFileInfo,QFileInfo,QString)),
-                this, SLOT(renameError(QFileInfo,QFileInfo,QString)));
+        if (name != m_fi.fileName())
+        {
+            FileRenamer rn;
 
-        if (rn.rename(m_fi.absolutePath(), m_fi, name)) {
-            m_dirPath = m_fi.absolutePath() +"/"+ name;
-        } else {
-            QMessageBox::warning(
-                this,
-                tr("Failed to rename directory"),
-                tr("Failed to rename directory '%1'").arg(m_dirPath)
-            );
+            connect(&rn, SIGNAL(error(QFileInfo,QFileInfo,QString)),
+                    this, SLOT(renameError(QFileInfo,QFileInfo,QString)));
+
+            if (rn.rename(m_fi.absolutePath(), m_fi, name)) {
+                m_dirPath = m_fi.absolutePath() +"/"+ name;
+            } else {
+                QMessageBox::warning(
+                    this,
+                    tr("Failed to rename directory"),
+                    tr("Failed to rename directory '%1'").arg(m_dirPath)
+                );
+            }
         }
     }
 

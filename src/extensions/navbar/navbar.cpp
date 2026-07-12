@@ -718,6 +718,9 @@ QIcon NavBar::pageIcon(int index) const
 void NavBar::setPageText(int index, const QString &text)
 {
     pages[index].setText(text);
+
+    if (index == currentIndex())
+        setHeaderText(text);
 }
 
 /**
@@ -810,6 +813,8 @@ void NavBar::onClickPageButton(QAction *action)
         setHeaderText(action->text());
         emit currentChanged(index);
     }
+
+    emit pageActivated(index);
 
     if(autoPopupMode && collapsedState)
         showContentsPopup();

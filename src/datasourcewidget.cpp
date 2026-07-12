@@ -2,6 +2,7 @@
 #include "datasourceview.h"
 #include "settings.h"
 #include "datasourcehistory.h"
+#include "directoryeditordialog.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -27,6 +28,10 @@ DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
             this, SLOT(openDirectoryFromWebView(QString)));
     connect(dsList, SIGNAL(pageContextMenuRequested(int,QPoint)),
             this, SLOT(showDataSourceContextMenu(int,QPoint)));
+    connect(dsList, SIGNAL(pageActivated(int)),
+            this, SLOT(openDataSourceRoot(int)));
+    connect(MetadataCache::get(), SIGNAL(cleared()),
+            this, SLOT(refreshDataSourceMetadata()));
 
     m_history = new DataSourceHistory(this);
 
@@ -152,6 +157,12 @@ DataSource *DataSourceWidget::dataSourceForPage(int index) const
     return m_dataSources.value(view, 0);
 }
 
+QString DataSourceWidget::dataSourceLabel(DataSource *dataSource) const
+{
+    QString label = MetadataCache::get()->label(dataSource->rootPath);
+    return label.isEmpty() ? dataSource->name : label;
+}
+
 void DataSourceWidget::goToWorkingDirectory()
 {
     QString wdir = Settings::get()->getWorkingDir();
@@ -175,15 +186,75 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
     QMenu menu(this);
     QAction *editAction = menu.addAction(
         QIcon(":/gfx/document-edit.png"),
-        tr("Edit data source...")
+        tr("Edit")
+    );
+    editAction->setEnabled(QFileInfo(dataSource->rootPath).isDir());
+
+    QAction *settingsAction = menu.addAction(
+        QIcon(":/gfx/configure.png"),
+        tr("Edit in settings")
     );
 
-    if (menu.exec(globalPos) == editAction)
+    QAction *selectedAction = menu.exec(globalPos);
+
+    if (selectedAction == editAction)
+    {
+        DirectoryEditorDialog dlg(
+            QFileInfo(dataSource->rootPath),
+            this,
+            DirectoryEditorDialog::DataSourceRoot
+        );
+
+        if (dlg.exec() == QDialog::Accepted)
+        {
+            dlg.apply();
+            MetadataCache::get()->clear();
+        }
+    }
+    else if (selectedAction == settingsAction)
+    {
         emit editDataSourceRequested(dataSource);
+    }
+}
+
+void DataSourceWidget::openDataSourceRoot(int index)
+{
+    DataSource *dataSource = dataSourceForPage(index);
+    if (!dataSource || !QFileInfo(dataSource->rootPath).isDir())
+        return;
+
+    DataSourceView *view = qobject_cast<DataSourceView*>(dsList->widget(index));
+    if (!view || !view->navigateToDirectory(dataSource->rootPath))
+        return;
+
+    dirWidget->setDirectory(dataSource->rootPath);
+    m_history->track(dataSource->rootPath);
+    announceDirectoryChange(dataSource->rootPath);
+}
+
+void DataSourceWidget::refreshDataSourceMetadata()
+{
+    DataSourceIconProvider iconProvider;
+
+    for (int i = 0; i < dsList->count(); ++i)
+    {
+        DataSource *dataSource = dataSourceForPage(i);
+        if (!dataSource)
+            continue;
+
+        dataSource->icon = iconProvider.icon(QFileInfo(dataSource->rootPath));
+        dsList->setPageText(i, dataSourceLabel(dataSource));
+        dsList->setPageIcon(i, dataSource->icon);
+    }
+
+    if (!m_currentDir.isEmpty())
+        dirWidget->updateDirectory(m_currentDir);
 }
 
 void DataSourceWidget::setupDataSources(const QString &dir)
 {
+    DataSourceIconProvider iconProvider;
+
     foreach(DataSource *ds, Settings::get()->DataSources)
     {
         DataSourceView *view = new DataSourceView(ds->rootPath, this);
@@ -205,8 +276,10 @@ void DataSourceWidget::setupDataSources(const QString &dir)
         connect(view, SIGNAL(openInANewTabRequested(QString)),
                 this, SIGNAL(openInANewTabRequested(QString)));
 
+        ds->icon = iconProvider.icon(QFileInfo(ds->rootPath));
+
         m_dataSources.insert(view, ds);
-        dsList->addPage(view, ds->name, ds->icon);
+        dsList->addPage(view, dataSourceLabel(ds), ds->icon);
     }
 
     dsList->setVisibleRows(dsList->count());

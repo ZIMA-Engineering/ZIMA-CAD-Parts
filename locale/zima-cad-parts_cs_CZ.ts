@@ -103,114 +103,114 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="122"/>
+        <location filename="../src/datasourceview.cpp" line="272"/>
         <source>Scripts...</source>
         <translation>Skripty...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="148"/>
+        <location filename="../src/datasourceview.cpp" line="298"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="149"/>
+        <location filename="../src/datasourceview.cpp" line="299"/>
         <source>Open in a new tab</source>
         <translation>Otevřít v novém tabu</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="150"/>
+        <location filename="../src/datasourceview.cpp" line="300"/>
         <source>Set as working directory</source>
         <translation>Nastavit jako pracovní adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="151"/>
+        <location filename="../src/datasourceview.cpp" line="301"/>
         <source>Create directory</source>
         <translation>Vytvořit adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="155"/>
+        <location filename="../src/datasourceview.cpp" line="305"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="156"/>
+        <location filename="../src/datasourceview.cpp" line="306"/>
         <source>Copy as...</source>
         <translation>Kopírovat jako...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="157"/>
+        <location filename="../src/datasourceview.cpp" line="307"/>
         <source>Delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="163"/>
+        <location filename="../src/datasourceview.cpp" line="313"/>
         <source>Clean with ZIMA-PTC-Cleaner</source>
         <translation>Vyčistit pomocí ZIMA-PTC-Cleaner</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="165"/>
+        <location filename="../src/datasourceview.cpp" line="315"/>
         <source>Sync with ZIMA-CAD-Sync</source>
         <translation>Synchronizovat pomocí ZIMA-CAD-Sync</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="167"/>
+        <location filename="../src/datasourceview.cpp" line="317"/>
         <source>Convert postscript to PDF with ZIMA-PS2PDF</source>
         <translation>Převést postscript do PDF pomocí ZIMA-PS2PDF</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="169"/>
+        <location filename="../src/datasourceview.cpp" line="319"/>
         <source>Edit step files with ZIMA-STEP-Edit</source>
         <translation>Editovat step soubory pomocí ZIMA-STEP-Edit</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="192"/>
-        <location filename="../src/datasourceview.cpp" line="199"/>
+        <location filename="../src/datasourceview.cpp" line="342"/>
+        <location filename="../src/datasourceview.cpp" line="349"/>
         <source>Configure %1</source>
         <translation>Nastavit %1</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="192"/>
+        <location filename="../src/datasourceview.cpp" line="342"/>
         <source>Please first configure path to %1 executable.</source>
         <translation>Nejdříve zadejte cestu k %1 programu.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="199"/>
+        <location filename="../src/datasourceview.cpp" line="349"/>
         <source>Path &apos;%1&apos; to %2 executable does not exists!</source>
         <translation>Cesta %1 k programu %2 neexistuje!</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="227"/>
-        <location filename="../src/datasourceview.cpp" line="270"/>
+        <location filename="../src/datasourceview.cpp" line="377"/>
+        <location filename="../src/datasourceview.cpp" line="420"/>
         <source>Directory exists</source>
         <translation>Tento adresář už existuje</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="228"/>
+        <location filename="../src/datasourceview.cpp" line="378"/>
         <source>Directory %1 already exists.</source>
         <translation>Adresář %1 už existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="270"/>
+        <location filename="../src/datasourceview.cpp" line="420"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Adresář &apos;%1&apos; již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="277"/>
+        <location filename="../src/datasourceview.cpp" line="427"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Prosím čekejte, adresář se kopíruje...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="291"/>
+        <location filename="../src/datasourceview.cpp" line="441"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Opravdu chcete smazat vybraný adresář?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="292"/>
+        <location filename="../src/datasourceview.cpp" line="442"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Opravdu chcete smazat adresář &quot;%1&quot;? Tuto akci nelze vzít zpět.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="302"/>
+        <location filename="../src/datasourceview.cpp" line="452"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Prosím čekejte, adresář se maže...</translation>
     </message>
@@ -218,9 +218,18 @@
 <context>
     <name>DataSourceWidget</name>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="152"/>
         <source>Edit data source...</source>
-        <translation>Upravit zdroj dat...</translation>
+        <translation type="vanished">Upravit zdroj dat...</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="189"/>
+        <source>Edit</source>
+        <translation>Upravit</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="195"/>
+        <source>Edit in settings</source>
+        <translation>Upravit v nastavení</translation>
     </message>
 </context>
 <context>
@@ -348,52 +357,57 @@
         <translation type="vanished">Adresář &apos;%1&apos; nelze přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="72"/>
+        <location filename="../src/directoryeditordialog.cpp" line="31"/>
+        <source>Edit data source</source>
+        <translation>Upravit zdroj dat</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="84"/>
         <source>Failed to rename directory</source>
         <translation>Nepodařilo se přejmenovat adresář</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="73"/>
+        <location filename="../src/directoryeditordialog.cpp" line="85"/>
         <source>Failed to rename directory &apos;%1&apos;</source>
         <translation>Nepodařilo se přejmenovat adresář &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="212"/>
+        <location filename="../src/directoryeditordialog.cpp" line="225"/>
         <source>No icon</source>
         <translation>Žádná ikona</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="247"/>
+        <location filename="../src/directoryeditordialog.cpp" line="260"/>
         <source>Unable to copy icon</source>
         <translation>Ikonu nelze zkopírovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="248"/>
+        <location filename="../src/directoryeditordialog.cpp" line="261"/>
         <source>Unable to copy &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Nelze zkopírovat &apos;%1&apos; do &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="259"/>
+        <location filename="../src/directoryeditordialog.cpp" line="272"/>
         <source>Unable to remove icon</source>
         <translation>Ikonu nelze odstranit</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="260"/>
+        <location filename="../src/directoryeditordialog.cpp" line="273"/>
         <source>Unable to remove icon &apos;%1&apos;</source>
         <translation>Nelze odstranit ikonu &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="319"/>
+        <location filename="../src/directoryeditordialog.cpp" line="332"/>
         <source>Select icon</source>
         <translation>Vyberte ikonu</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="385"/>
+        <location filename="../src/directoryeditordialog.cpp" line="398"/>
         <source>Unable to rename file</source>
         <translation>Soubor nelze přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="386"/>
+        <location filename="../src/directoryeditordialog.cpp" line="399"/>
         <source>Unable to rename file &apos;%1&apos; to &apos;%2&apos;: %3</source>
         <translation>Soubor &apos;%1&apos; nelze přejmenovat na &apos;%2&apos;: %3</translation>
     </message>
@@ -536,8 +550,8 @@
         <translation type="vanished">Opravdu chcete smazat vybrané díly? Tato operace je nevratná.</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="392"/>
-        <location filename="../src/directorywidget.cpp" line="393"/>
+        <location filename="../src/directorywidget.cpp" line="406"/>
+        <location filename="../src/directorywidget.cpp" line="407"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>
@@ -1863,17 +1877,17 @@
         <translation>Nástrojová lišta pro technickou specifikaci</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="356"/>
+        <location filename="../src/settingsdialog.cpp" line="363"/>
         <source>ZIMA-CAD-Parts - set %1 path</source>
         <translation>ZIMA-CAD-Parts - nastavit %1 cestu</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="364"/>
+        <location filename="../src/settingsdialog.cpp" line="371"/>
         <source>Locate ProE launcher</source>
         <translation>Zadejte cestu k ProE programu</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="366"/>
+        <location filename="../src/settingsdialog.cpp" line="373"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>ProE program (proe.exe);;Všechny soubory (*)</translation>
     </message>
@@ -1882,12 +1896,12 @@
         <translation type="vanished">ZIMA-CAD-Parts - nastavit cestu k ProductView</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="374"/>
+        <location filename="../src/settingsdialog.cpp" line="381"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts - vyberte textový editor</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="382"/>
+        <location filename="../src/settingsdialog.cpp" line="389"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts - vyberte terminál</translation>
     </message>

@@ -15,7 +15,13 @@ class DirectoryEditorDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit DirectoryEditorDialog(const QFileInfo &fi, QWidget *parent = 0);
+    enum Target {
+        Directory,
+        DataSourceRoot
+    };
+
+    explicit DirectoryEditorDialog(const QFileInfo &fi, QWidget *parent = 0,
+                                   Target target = Directory);
     ~DirectoryEditorDialog();
     QString directoryPath() const;
 
@@ -31,6 +37,7 @@ signals:
 private:
     Ui::DirectoryEditorDialog *ui;
     QFileInfo m_fi;
+    Target m_target;
     QString m_dirPath;
     Metadata *m_meta;
     QString m_iconPath;

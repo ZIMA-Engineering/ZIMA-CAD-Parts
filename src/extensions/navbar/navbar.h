@@ -93,6 +93,7 @@ public:
 
 signals:
     void currentChanged(int index);
+    void pageActivated(int index);
     void visibleRowsChanged(int rows);
     void stateChanged(bool collapsed);
     void pageContextMenuRequested(int index, const QPoint &globalPos);

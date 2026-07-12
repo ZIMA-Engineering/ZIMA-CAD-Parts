@@ -60,6 +60,7 @@ private:
     QHash<DataSourceView*, DataSource*> m_dataSources;
 
     DataSource *dataSourceForPage(int index) const;
+    QString dataSourceLabel(DataSource *dataSource) const;
 
 private slots:
     void setupDataSources(const QString &dir);
@@ -67,6 +68,8 @@ private slots:
     void handleOpenPartDirectory(const QFileInfo &fi);
     void openDirectoryFromWebView(const QString &path);
     void announceDirectoryChange(const QString &dir);
+    void openDataSourceRoot(int index);
+    void refreshDataSourceMetadata();
     void showDataSourceContextMenu(int index, const QPoint &globalPos);
 };
 
