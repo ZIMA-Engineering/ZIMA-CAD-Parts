@@ -43,10 +43,18 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui->dirWebViewForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
     ui->dirWebViewReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
     ui->dirWebViewGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
-    ui->dirWebViewPinButton->setFixedWidth(
-        qMax(ui->dirWebViewGoButton->sizeHint().width(),
-             ui->dirWebViewEditButton->sizeHint().width())
-    );
+    const auto resizePinButton = [this](QToolButton *button, QWidget *firstReference,
+                                        QWidget *secondReference) {
+        const QSize iconSize(22, 22);
+        const int menuWidth = style()->pixelMetric(QStyle::PM_MenuButtonIndicator,
+                                                   nullptr, button);
+        const QSize referenceSize = firstReference->sizeHint().expandedTo(secondReference->sizeHint());
+        button->setIconSize(iconSize);
+        button->setFixedSize(qMax(referenceSize.width(), iconSize.width() + menuWidth + 16),
+                             qMax(referenceSize.height(), iconSize.height() + 10));
+    };
+    resizePinButton(ui->dirWebViewPinButton,
+                    ui->dirWebViewGoButton, ui->dirWebViewEditButton);
 
     connect(ui->dirWebViewBackButton, SIGNAL(clicked()),
             ui->dirWebView, SLOT(back()));
@@ -75,10 +83,8 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui->partsIndexForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
     ui->partsIndexReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
     ui->partsIndexGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
-    ui->partsIndexPinButton->setFixedWidth(
-        qMax(ui->partsIndexGoButton->sizeHint().width(),
-             ui->partsIndexEditButton->sizeHint().width())
-    );
+    resizePinButton(ui->partsIndexPinButton,
+                    ui->partsIndexGoButton, ui->partsIndexEditButton);
 
     connect(ui->partsIndexBackButton, SIGNAL(clicked()),
             ui->partsWebView, SLOT(back()));
