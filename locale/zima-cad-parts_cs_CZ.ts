@@ -458,17 +458,17 @@
         <translation type="vanished">ZIMA-CAD-Parts Technická Specifikace</translation>
     </message>
     <message>
-        <location filename="../src/directorywebview.cpp" line="200"/>
+        <location filename="../src/directorywebview.cpp" line="202"/>
         <source>No subdirectories</source>
         <translation>Žádné podadresáře</translation>
     </message>
     <message>
-        <location filename="../src/directorywebview.cpp" line="204"/>
+        <location filename="../src/directorywebview.cpp" line="206"/>
         <source>Auto-generated directory index</source>
         <translation>Automaticky generovaný index adresáře</translation>
     </message>
     <message>
-        <location filename="../src/directorywebview.cpp" line="329"/>
+        <location filename="../src/directorywebview.cpp" line="331"/>
         <source>Open directory</source>
         <translation>Otevřít adresář</translation>
     </message>
@@ -550,17 +550,17 @@
         <translation type="vanished">Opravdu chcete smazat vybrané díly? Tato operace je nevratná.</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="256"/>
+        <location filename="../src/directorywidget.cpp" line="274"/>
         <source>Delete index</source>
         <translation>Smazat index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="266"/>
+        <location filename="../src/directorywidget.cpp" line="284"/>
         <source>Delete all indexes</source>
         <translation>Smazat všechny indexy</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="309"/>
+        <location filename="../src/directorywidget.cpp" line="339"/>
         <source>The following index file will be deleted:
 
 %1
@@ -573,7 +573,7 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="310"/>
+        <location filename="../src/directorywidget.cpp" line="340"/>
         <source>The following index files will be deleted:
 
 %1
@@ -586,22 +586,22 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="311"/>
+        <location filename="../src/directorywidget.cpp" line="341"/>
         <source>Delete all indexes?</source>
         <translation>Smazat všechny indexy?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="311"/>
+        <location filename="../src/directorywidget.cpp" line="341"/>
         <source>Delete index?</source>
         <translation>Smazat index?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="336"/>
+        <location filename="../src/directorywidget.cpp" line="366"/>
         <source>Index deletion failed</source>
         <translation>Mazání indexu se nezdařilo</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="337"/>
+        <location filename="../src/directorywidget.cpp" line="367"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -610,8 +610,8 @@ Pokračovat?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="568"/>
-        <location filename="../src/directorywidget.cpp" line="569"/>
+        <location filename="../src/directorywidget.cpp" line="598"/>
+        <location filename="../src/directorywidget.cpp" line="599"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>
@@ -1078,7 +1078,7 @@ Pokračovat?</translation>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
         <source>ZIMA-CAD-Parts</source>
-        <translation></translation>
+        <translation>ZIMA-CAD-Parts</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="65"/>
@@ -1187,51 +1187,76 @@ Pokračovat?</translation>
 <context>
     <name>OcctImportWorker</name>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="48"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="42"/>
+        <source>The CAD file does not exist or is not readable.</source>
+        <translation>Soubor CAD neexistuje nebo jej nelze přečíst.</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="59"/>
         <source>Unsupported OCCT preview format.</source>
         <translation>Nepodporovaný formát náhledu OCCT.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="57"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="65"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="68"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="76"/>
         <source>Unknown %1 import error.</source>
         <translation>Neznámá chyba importu %1.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="76"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="87"/>
         <source>STEP</source>
         <translation>STEP</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="78"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="89"/>
         <source>IGES</source>
         <translation>IGES</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="80"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="91"/>
         <source>STL</source>
         <translation>STL</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="82"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="93"/>
         <source>CAD</source>
         <translation>CAD</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="104"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="148"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="112"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="160"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="199"/>
+        <source>Reading %1 file...</source>
+        <translation>Načítání souboru %1...</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="117"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="165"/>
         <source>Failed to read %1 file.</source>
         <translation>Nepodařilo se přečíst soubor %1.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="114"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="158"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="124"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="172"/>
+        <source>Converting %1 geometry...</source>
+        <translation>Převod geometrie %1...</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="128"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="176"/>
         <source>Failed to transfer %1 file into OCCT document.</source>
         <translation>Nepodařilo se převést soubor %1 do dokumentu OCCT.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="184"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="211"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="139"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="187"/>
+        <source>Preparing %1 preview...</source>
+        <translation>Příprava náhledu %1...</translation>
+    </message>
+    <message>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="205"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="232"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="255"/>
         <source>The %1 file does not contain any displayable shapes.</source>
         <translation>Soubor %1 neobsahuje žádné zobrazitelné tvary.</translation>
     </message>
@@ -1249,13 +1274,13 @@ Pokračovat?</translation>
         <translation>Drátový model</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtproductview.cpp" line="50"/>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="56"/>
         <source>CAD part</source>
         <translation>CAD díl</translation>
     </message>
     <message>
         <location filename="../src/extensions/productview/occtproductview.ui" line="121"/>
-        <location filename="../src/extensions/productview/occtproductview.cpp" line="67"/>
+        <location filename="../src/extensions/productview/occtproductview.cpp" line="73"/>
         <source>Loading CAD preview...</source>
         <translation>Načítá se náhled CAD...</translation>
     </message>
@@ -1283,6 +1308,14 @@ Pokračovat?</translation>
         <location filename="../src/extensions/productview/occtproductview.ui" line="75"/>
         <source>Right</source>
         <translation>Zprava</translation>
+    </message>
+</context>
+<context>
+    <name>OcctViewWidget</name>
+    <message>
+        <location filename="../src/extensions/productview/occtviewwidget.cpp" line="201"/>
+        <source>The 3D viewer could not initialize OpenGL.</source>
+        <translation>3D prohlížeči se nepodařilo inicializovat OpenGL.</translation>
     </message>
 </context>
 <context>
@@ -1381,6 +1414,232 @@ Pokračovat?</translation>
         <location filename="../src/progressdialog.ui" line="49"/>
         <source>&amp;Cancel</source>
         <translation>Zrušit</translation>
+    </message>
+</context>
+<context>
+    <name>QKeychain::DeletePasswordJobPrivate</name>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="175"/>
+        <source>Could not open keystore</source>
+        <translation>ÃloÅ¾iÅ¡tÄ klÃ­ÄÅ¯ se nepodaÅilo otevÅÃ­t</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="181"/>
+        <source>Could not remove private key from keystore</source>
+        <translation>SoukromÃ½ klÃ­Ä se nepodaÅilo odstranit z ÃºloÅ¾iÅ¡tÄ klÃ­ÄÅ¯</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="589"/>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="597"/>
+        <source>Unknown error</source>
+        <translation>NeznÃ¡mÃ¡ chyba</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="618"/>
+        <source>Could not open wallet: %1; %2</source>
+        <translation>PenÄÅ¾enku se nepodaÅilo otevÅÃ­t: %1; %2</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="228"/>
+        <source>Password entry not found</source>
+        <translation>ZÃ¡znam hesla nebyl nalezen</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="232"/>
+        <source>Could not decrypt data</source>
+        <translation>Data se nepodaÅilo deÅ¡ifrovat</translation>
+    </message>
+</context>
+<context>
+    <name>QKeychain::JobPrivate</name>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="299"/>
+        <source>Unknown error</source>
+        <translation>NeznÃ¡mÃ¡ chyba</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="546"/>
+        <source>Access to keychain denied</source>
+        <translation>PÅÃ­stup ke klÃ­Äence byl odepÅen</translation>
+    </message>
+</context>
+<context>
+    <name>QKeychain::PlainTextStore</name>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/plaintextstore.cpp" line="65"/>
+        <source>Could not store data in settings: access error</source>
+        <translation>Data se nepodaÅilo uloÅ¾it do nastavenÃ­: chyba pÅÃ­stupu</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/plaintextstore.cpp" line="67"/>
+        <source>Could not store data in settings: format error</source>
+        <translation>Data se nepodaÅilo uloÅ¾it do nastavenÃ­: chyba formÃ¡tu</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/plaintextstore.cpp" line="85"/>
+        <source>Could not delete data from settings: access error</source>
+        <translation>Data se nepodaÅilo odstranit z nastavenÃ­: chyba pÅÃ­stupu</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/plaintextstore.cpp" line="87"/>
+        <source>Could not delete data from settings: format error</source>
+        <translation>Data se nepodaÅilo odstranit z nastavenÃ­: chyba formÃ¡tu</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/plaintextstore.cpp" line="104"/>
+        <source>Entry not found</source>
+        <translation>ZÃ¡znam nebyl nalezen</translation>
+    </message>
+</context>
+<context>
+    <name>QKeychain::ReadPasswordJobPrivate</name>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="52"/>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="397"/>
+        <source>Entry not found</source>
+        <translation>ZÃ¡znam nebyl nalezen</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="60"/>
+        <source>Could not open keystore</source>
+        <translation>ÃloÅ¾iÅ¡tÄ klÃ­ÄÅ¯ se nepodaÅilo otevÅÃ­t</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="68"/>
+        <source>Could not retrieve private key from keystore</source>
+        <translation>SoukromÃ½ klÃ­Ä se nepodaÅilo naÄÃ­st z ÃºloÅ¾iÅ¡tÄ klÃ­ÄÅ¯</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="75"/>
+        <source>Could not create decryption cipher</source>
+        <translation>NepodaÅilo se vytvoÅit deÅ¡ifrovacÃ­ Å¡ifru</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="205"/>
+        <source>D-Bus is not running</source>
+        <translation>D-Bus nenÃ­ spuÅ¡tÄn</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="214"/>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="224"/>
+        <source>Unknown error</source>
+        <translation>NeznÃ¡mÃ¡ chyba</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="320"/>
+        <source>No keychain service available</source>
+        <translation>NenÃ­ dostupnÃ¡ Å¾Ã¡dnÃ¡ sluÅ¾ba klÃ­Äenky</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="322"/>
+        <source>Could not open wallet: %1; %2</source>
+        <translation>PenÄÅ¾enku se nepodaÅilo otevÅÃ­t: %1; %2</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="367"/>
+        <source>Access to keychain denied</source>
+        <translation>PÅÃ­stup ke klÃ­Äence byl odepÅen</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="388"/>
+        <source>Could not determine data type: %1; %2</source>
+        <translation>NepodaÅilo se urÄit typ dat: %1; %2</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="406"/>
+        <source>Unsupported entry type &apos;Map&apos;</source>
+        <translation>NepodporovanÃ½ typ zÃ¡znamu &apos;Map&apos;</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="409"/>
+        <source>Unknown kwallet entry type &apos;%1&apos;</source>
+        <translation>NeznÃ¡mÃ½ typ zÃ¡znamu KWallet &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="104"/>
+        <source>Password entry not found</source>
+        <translation>ZÃ¡znam hesla nebyl nalezen</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="108"/>
+        <source>Could not decrypt data</source>
+        <translation>Data se nepodaÅilo deÅ¡ifrovat</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="132"/>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="253"/>
+        <source>Could not decrypt data: %1</source>
+        <translation>Data se nepodaÅilo deÅ¡ifrovat: %1</translation>
+    </message>
+</context>
+<context>
+    <name>QKeychain::WritePasswordJobPrivate</name>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="95"/>
+        <source>Could not open keystore</source>
+        <translation>ÃloÅ¾iÅ¡tÄ klÃ­ÄÅ¯ se nepodaÅilo otevÅÃ­t</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="126"/>
+        <source>Could not create private key generator</source>
+        <translation>NepodaÅilo se vytvoÅit generÃ¡tor soukromÃ©ho klÃ­Äe</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="133"/>
+        <source>Could not generate new private key</source>
+        <translation>NepodaÅilo se vygenerovat novÃ½ soukromÃ½ klÃ­Ä</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="141"/>
+        <source>Could not retrieve private key from keystore</source>
+        <translation>SoukromÃ½ klÃ­Ä se nepodaÅilo naÄÃ­st z ÃºloÅ¾iÅ¡tÄ klÃ­ÄÅ¯</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="149"/>
+        <source>Could not create encryption cipher</source>
+        <translation>NepodaÅilo se vytvoÅit Å¡ifrovacÃ­ Å¡ifru</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_android.cpp" line="157"/>
+        <source>Could not encrypt data</source>
+        <translation>Data se nepodaÅilo zaÅ¡ifrovat</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="449"/>
+        <source>D-Bus is not running</source>
+        <translation>D-Bus nenÃ­ spuÅ¡tÄn</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="459"/>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="486"/>
+        <source>Unknown error</source>
+        <translation>NeznÃ¡mÃ¡ chyba</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="505"/>
+        <source>Could not open wallet: %1; %2</source>
+        <translation>PenÄÅ¾enku se nepodaÅilo otevÅÃ­t: %1; %2</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="167"/>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="264"/>
+        <source>Encryption failed: %1</source>
+        <translation>Å ifrovÃ¡nÃ­ selhalo: %1</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="174"/>
+        <source>Credential size exceeds maximum size of %1: %2</source>
+        <translation>PÅihlaÅ¡ovacÃ­ Ãºdaje pÅekraÄujÃ­ maximÃ¡lnÃ­ velikost %1: %2</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="213"/>
+        <source>Credential key exceeds maximum size of %1</source>
+        <translation>KlÃ­Ä pÅihlaÅ¡ovacÃ­ch ÃºdajÅ¯ pÅekraÄuje maximÃ¡lnÃ­ velikost %1</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="218"/>
+        <source>Writing credentials failed: %1</source>
+        <translation>ZÃ¡pis pÅihlaÅ¡ovacÃ­ch ÃºdajÅ¯ selhal: %1</translation>
     </message>
 </context>
 <context>
@@ -1489,6 +1748,61 @@ Pokračovat?</translation>
         <location filename="../src/savedpasswordsdialog.cpp" line="80"/>
         <source>Never</source>
         <translation>Nikdy</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="259"/>
+        <source>Access to keychain denied</source>
+        <translation>PÅÃ­stup ke klÃ­Äence byl odepÅen</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="261"/>
+        <source>No keyring daemon</source>
+        <translation>DÃ©mon klÃ­Äenky nenÃ­ dostupnÃ½</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="263"/>
+        <source>Already unlocked</source>
+        <translation>JiÅ¾ odemÄeno</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="265"/>
+        <source>No such keyring</source>
+        <translation>TakovÃ¡ klÃ­Äenka neexistuje</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="267"/>
+        <source>Bad arguments</source>
+        <translation>NeplatnÃ© argumenty</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="269"/>
+        <source>I/O error</source>
+        <translation>Chyba vstupu/vÃ½stupu</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="271"/>
+        <source>Cancelled</source>
+        <translation>ZruÅ¡eno</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="273"/>
+        <source>Keyring already exists</source>
+        <translation>KlÃ­Äenka jiÅ¾ existuje</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="275"/>
+        <source>No match</source>
+        <translation>Nebyla nalezena shoda</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_unix.cpp" line="280"/>
+        <source>Unknown error</source>
+        <translation>NeznÃ¡mÃ¡ chyba</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/qtkeychain/qtkeychain/libsecret.cpp" line="119"/>
+        <source>Entry not found</source>
+        <translation>ZÃ¡znam nebyl nalezen</translation>
     </message>
 </context>
 <context>
@@ -1797,17 +2111,17 @@ Pokračovat?</translation>
     <message>
         <location filename="../src/settingsdialog.ui" line="14"/>
         <source>ZIMA-CAD-Parts Settings</source>
-        <translation></translation>
+        <translation>Nastavení ZIMA-CAD-Parts</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="100"/>
         <source>English</source>
-        <translation></translation>
+        <translation>English</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="105"/>
         <source>Česky</source>
-        <translation></translation>
+        <translation>Česky</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="123"/>
@@ -1822,7 +2136,7 @@ Pokračovat?</translation>
     <message>
         <location filename="../src/settingsdialog.ui" line="142"/>
         <source> ms</source>
-        <translation></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="175"/>

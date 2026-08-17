@@ -46,8 +46,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
       translator(translator),
       m_downloader(0)
 {
-    qApp->setWindowIcon(QIcon(":/gfx/icon.png"));
-
     QSplashScreen *splash = 0;
 
     if (Settings::get()->GUISplashEnabled)
@@ -60,6 +58,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     }
 
     ui->setupUi(this);
+    setWindowIcon(qApp->windowIcon());
 
     connect(ui->action_Preferences, SIGNAL(triggered()),
             this, SLOT(showSettings()));

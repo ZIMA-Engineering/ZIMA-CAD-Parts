@@ -1,25 +1,19 @@
 #ifndef OCCTVIEWWIDGET_H
 #define OCCTVIEWWIDGET_H
 
-#ifdef _MSC_VER
-#include <cmath>
-#endif
-
-#include <vector>
-
-#include <AIS_InteractiveContext.hxx>
-#include <AIS_InteractiveObject.hxx>
-#include <AIS_ViewController.hxx>
-#include <V3d_View.hxx>
-#include <V3d_Viewer.hxx>
-
-#include <Standard_WarningsDisable.hxx>
+#include <QMatrix4x4>
+#include <QOpenGLBuffer>
+#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
 #include <QOpenGLWidget>
-#include <Standard_WarningsRestore.hxx>
+#include <QPoint>
+#include <QQuaternion>
+#include <QVector3D>
 
 #include "occtimportworker.h"
 
-class OcctViewWidget : public QOpenGLWidget, public AIS_ViewController
+class OcctViewWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
 {
     Q_OBJECT
 
@@ -41,32 +35,36 @@ public:
     void setWireframeMode();
     bool hasLoadedModel() const;
 
+signals:
+    void initializationFailed(const QString &message);
+
 protected:
     void initializeGL() override;
     void paintGL() override;
-    bool event(QEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
+    void resizeGL(int width, int height) override;
     void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 
 private:
-    void createOcctViewer();
-    void displayImportedModel();
-    void applyDisplayMode(int mode);
-    void updateView();
-    void handleViewRedraw(const Handle(AIS_InteractiveContext) &context,
-                          const Handle(V3d_View) &view) override;
+    void uploadModel();
+    void updateProjection();
+    void setViewRotation(const QQuaternion &rotation);
 
-    Handle(V3d_Viewer) m_viewer;
-    Handle(V3d_View) m_view;
-    Handle(AIS_InteractiveContext) m_context;
-    std::vector<Handle(AIS_InteractiveObject)> m_objects;
-    OcctImportResultPtr m_pendingResult;
-    int m_displayMode;
-    bool m_viewInitialized;
-    bool m_loadedModel;
+    OcctImportResultPtr m_result;
+    QOpenGLShaderProgram m_program;
+    QOpenGLBuffer m_vertexBuffer;
+    QOpenGLVertexArrayObject m_vertexArray;
+    QMatrix4x4 m_projection;
+    QQuaternion m_rotation;
+    QVector3D m_center;
+    QVector3D m_pan;
+    QPoint m_lastMousePosition;
+    float m_radius;
+    float m_distance;
+    int m_vertexCount;
+    bool m_initialized;
+    bool m_wireframe;
 };
 
 #endif // OCCTVIEWWIDGET_H

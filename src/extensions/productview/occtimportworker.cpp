@@ -6,16 +6,25 @@
 
 #include <BRepBndLib.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <BRep_Tool.hxx>
 #include <IGESCAFControl_Reader.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <RWStl.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <Standard_Failure.hxx>
 #include <TDF_Label.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <XCAFApp_Application.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+
+#include <QFile>
+#include <QFileInfo>
 
 OcctImportWorker::OcctImportWorker(const QString &absolutePath,
                                    FileType::FileType fileType,
@@ -33,6 +42,14 @@ void OcctImportWorker::run()
 {
     try
     {
+        const QFileInfo fileInfo(m_path);
+        if (!fileInfo.isFile() || !fileInfo.isReadable())
+        {
+            emit failed(m_jobId, tr("The CAD file does not exist or is not readable."));
+            emit finished();
+            return;
+        }
+
         switch (m_fileType)
         {
         case FileType::STEP:
@@ -98,7 +115,9 @@ void OcctImportWorker::importStep()
     reader.SetLayerMode(true);
     reader.SetMatMode(true);
 
-    IFSelect_ReturnStatus status = reader.ReadFile(m_path.toUtf8().constData());
+    emit statusChanged(m_jobId, tr("Reading %1 file...").arg(formatName()));
+    const QByteArray encodedPath = QFile::encodeName(m_path);
+    IFSelect_ReturnStatus status = reader.ReadFile(encodedPath.constData());
     if (status != IFSelect_RetDone)
     {
         emit failed(m_jobId, tr("Failed to read %1 file.").arg(formatName()));
@@ -108,6 +127,7 @@ void OcctImportWorker::importStep()
     if (shouldStop())
         return;
 
+    emit statusChanged(m_jobId, tr("Converting %1 geometry...").arg(formatName()));
     if (!reader.Transfer(document))
     {
         emit failed(m_jobId,
@@ -122,9 +142,15 @@ void OcctImportWorker::importStep()
     if (shouldStop())
         return;
 
+    emit statusChanged(m_jobId, tr("Preparing %1 preview...").arg(formatName()));
     meshDocumentShapes(result);
 
-    if (!shouldStop())
+    if (!shouldStop() && result->vertices.isEmpty())
+    {
+        emit failed(m_jobId,
+                    tr("The %1 file does not contain any displayable shapes.").arg(formatName()));
+    }
+    else if (!shouldStop())
         emit imported(m_jobId, result);
 }
 
@@ -142,7 +168,9 @@ void OcctImportWorker::importIges()
     reader.SetNameMode(true);
     reader.SetLayerMode(true);
 
-    IFSelect_ReturnStatus status = reader.ReadFile(m_path.toUtf8().constData());
+    emit statusChanged(m_jobId, tr("Reading %1 file...").arg(formatName()));
+    const QByteArray encodedPath = QFile::encodeName(m_path);
+    IFSelect_ReturnStatus status = reader.ReadFile(encodedPath.constData());
     if (status != IFSelect_RetDone)
     {
         emit failed(m_jobId, tr("Failed to read %1 file.").arg(formatName()));
@@ -152,6 +180,7 @@ void OcctImportWorker::importIges()
     if (shouldStop())
         return;
 
+    emit statusChanged(m_jobId, tr("Converting %1 geometry...").arg(formatName()));
     if (!reader.Transfer(document))
     {
         emit failed(m_jobId,
@@ -166,9 +195,15 @@ void OcctImportWorker::importIges()
     if (shouldStop())
         return;
 
+    emit statusChanged(m_jobId, tr("Preparing %1 preview...").arg(formatName()));
     meshDocumentShapes(result);
 
-    if (!shouldStop())
+    if (!shouldStop() && result->vertices.isEmpty())
+    {
+        emit failed(m_jobId,
+                    tr("The %1 file does not contain any displayable shapes.").arg(formatName()));
+    }
+    else if (!shouldStop())
         emit imported(m_jobId, result);
 }
 
@@ -177,7 +212,9 @@ void OcctImportWorker::importStl()
     if (shouldStop())
         return;
 
-    Handle(Poly_Triangulation) triangulation = RWStl::ReadFile(m_path.toUtf8().constData());
+    emit statusChanged(m_jobId, tr("Reading %1 file...").arg(formatName()));
+    const QByteArray encodedPath = QFile::encodeName(m_path);
+    Handle(Poly_Triangulation) triangulation = RWStl::ReadFile(encodedPath.constData());
     if (triangulation.IsNull() || !triangulation->HasGeometry())
     {
         emit failed(m_jobId,
@@ -188,6 +225,7 @@ void OcctImportWorker::importStl()
     OcctImportResultPtr result(new OcctImportResult());
     result->triangulations.push_back(triangulation);
     addTriangulationBounds(triangulation, result->bbox);
+    appendTriangulation(triangulation, TopLoc_Location(), false, result);
 
     if (!shouldStop())
         emit imported(m_jobId, result);
@@ -214,7 +252,6 @@ bool OcctImportWorker::collectDocumentShapes(const Handle(TDocStd_Document) &doc
 
     result.reset(new OcctImportResult());
     result->document = document;
-    result->rootLabels = roots;
 
     for (Standard_Integer i = 1; i <= roots.Length(); ++i)
     {
@@ -223,7 +260,18 @@ bool OcctImportWorker::collectDocumentShapes(const Handle(TDocStd_Document) &doc
 
         TopoDS_Shape shape = shapeTool->GetShape(roots.Value(i));
         if (!shape.IsNull())
+        {
+            result->rootLabels.Append(roots.Value(i));
             BRepBndLib::Add(shape, result->bbox);
+        }
+    }
+
+    if (result->rootLabels.Length() == 0 || result->bbox.IsVoid())
+    {
+        emit failed(m_jobId,
+                    tr("The %1 file does not contain any displayable shapes.").arg(formatName));
+        result.clear();
+        return false;
     }
 
     return true;
@@ -258,7 +306,70 @@ void OcctImportWorker::meshDocumentShapes(const OcctImportResultPtr &result)
 
         TopoDS_Shape shape = shapeTool->GetShape(result->rootLabels.Value(i));
         if (!shape.IsNull())
+        {
             BRepMesh_IncrementalMesh(shape, linearDeflection, false, angularDeflection, true);
+
+            for (TopExp_Explorer explorer(shape, TopAbs_FACE);
+                 explorer.More(); explorer.Next())
+            {
+                const TopoDS_Face face = TopoDS::Face(explorer.Current());
+                TopLoc_Location location;
+                const Handle(Poly_Triangulation) triangulation =
+                        BRep_Tool::Triangulation(face, location);
+                appendTriangulation(triangulation,
+                                    location,
+                                    face.Orientation() == TopAbs_REVERSED,
+                                    result);
+            }
+        }
+    }
+}
+
+void OcctImportWorker::appendTriangulation(
+        const Handle(Poly_Triangulation) &triangulation,
+        const TopLoc_Location &location,
+        bool reversed,
+        const OcctImportResultPtr &result) const
+{
+    if (triangulation.IsNull())
+        return;
+
+    if (!triangulation->HasNormals())
+        triangulation->ComputeNormals();
+
+    const gp_Trsf transformation = location.Transformation();
+    for (Standard_Integer i = 1; i <= triangulation->NbTriangles(); ++i)
+    {
+        Standard_Integer n1 = 0;
+        Standard_Integer n2 = 0;
+        Standard_Integer n3 = 0;
+        triangulation->Triangle(i).Get(n1, n2, n3);
+        if (reversed)
+            std::swap(n2, n3);
+
+        const gp_Pnt p1 = triangulation->Node(n1).Transformed(transformation);
+        const gp_Pnt p2 = triangulation->Node(n2).Transformed(transformation);
+        const gp_Pnt p3 = triangulation->Node(n3).Transformed(transformation);
+        const QVector3D v1(p1.X(), p1.Y(), p1.Z());
+        const QVector3D v2(p2.X(), p2.Y(), p2.Z());
+        const QVector3D v3(p3.X(), p3.Y(), p3.Z());
+        const QVector3D faceNormal = QVector3D::crossProduct(v2 - v1, v3 - v1);
+        if (faceNormal.lengthSquared() <= 0.0f)
+            continue;
+
+        const auto transformedNormal = [&](Standard_Integer nodeIndex) {
+            gp_Dir normal = triangulation->Normal(nodeIndex);
+            normal.Transform(transformation);
+            QVector3D result(normal.X(), normal.Y(), normal.Z());
+            if (reversed)
+                result = -result;
+            return result.normalized();
+        };
+
+        result->vertices << v1 << v2 << v3;
+        result->normals << transformedNormal(n1)
+                        << transformedNormal(n2)
+                        << transformedNormal(n3);
     }
 }
 

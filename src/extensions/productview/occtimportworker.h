@@ -15,15 +15,21 @@
 #include <QMetaType>
 #include <QSharedPointer>
 #include <QString>
+#include <QVector>
+#include <QVector3D>
 
 #include "file.h"
 #include "threadworker.h"
+
+class TopLoc_Location;
 
 struct OcctImportResult
 {
     Handle(TDocStd_Document) document;
     TDF_LabelSequence rootLabels;
     std::vector<Handle(Poly_Triangulation)> triangulations;
+    QVector<QVector3D> vertices;
+    QVector<QVector3D> normals;
     Bnd_Box bbox;
 };
 
@@ -43,6 +49,7 @@ public:
 signals:
     void imported(quint64 jobId, const OcctImportResultPtr &result);
     void failed(quint64 jobId, const QString &message);
+    void statusChanged(quint64 jobId, const QString &message);
 
 public slots:
     void run() override;
@@ -56,6 +63,10 @@ private:
                                const QString &formatName,
                                OcctImportResultPtr &result);
     void meshDocumentShapes(const OcctImportResultPtr &result);
+    void appendTriangulation(const Handle(Poly_Triangulation) &triangulation,
+                             const TopLoc_Location &location,
+                             bool reversed,
+                             const OcctImportResultPtr &result) const;
     void addTriangulationBounds(const Handle(Poly_Triangulation) &triangulation,
                                 Bnd_Box &bbox) const;
 

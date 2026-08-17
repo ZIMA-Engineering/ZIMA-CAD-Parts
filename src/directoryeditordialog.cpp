@@ -39,7 +39,7 @@ DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *paren
 
     // No idea why is this needed, but the stack widget's background
     // is white without this.
-    ui->stackedWidget->setStyleSheet("background-color: pallete(window);");
+    ui->stackedWidget->setStyleSheet("background-color: palette(window);");
 
     setupIcon();
     connect(ui->removeIconButton, SIGNAL(clicked()),

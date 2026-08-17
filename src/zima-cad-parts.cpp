@@ -20,6 +20,7 @@
 
 #include <QApplication>
 #include <QGuiApplication>
+#include <QIcon>
 #include <QLocale>
 #include <QStandardPaths>
 #include <QTranslator>
@@ -80,6 +81,10 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     QGuiApplication::setDesktopFileName("cz.zima_engineering.ZimaCadParts");
+    const QIcon applicationIcon = QIcon::fromTheme(
+                "cz.zima_engineering.ZimaCadParts",
+                QIcon(":/gfx/icon.png"));
+    QApplication::setWindowIcon(applicationIcon);
 
     QTranslator translator;
     QString lang = Settings::get()->getCurrentLanguageCode();

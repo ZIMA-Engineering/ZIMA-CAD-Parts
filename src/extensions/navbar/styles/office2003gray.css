@@ -1,9 +1,10 @@
 NavBar {
-    border: 1px solid ##7f7f7f;
+    border: 1px solid #454b52;
+    background-color: #15181b;
 }
 NavBarHeader {
-    background-color: ##7f7f7f;
-    color: #fff;
+    background-color: #111315;
+    color: #f2f2f2;
     font-size: 14px;
     font-weight: bold;
     padding-left: 3px;
@@ -22,15 +23,15 @@ NavBarHeader QToolButton:checked {
     color: #fff;
 }
 NavBarHeader QToolButton:hover {
-    background-color: #b6bdd2;
-    color: #000;
+    background-color: #343a40;
+    color: #fff;
 }
 NavBarHeader QToolButton:pressed {
-    background-color: #8592b5;
-    color: #000;
+    background-color: #1f536b;
+    color: #fff;
 }
 NavBarSplitter:handle {
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #d4d0c8, stop:1 #8e8d8c);
+    background-color: #252a2f;
     background-image: url(:/styles/splitter2003gray.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -39,43 +40,47 @@ NavBarSplitter:handle:vertical {
     height: 6px;
 }
 NavBarButton {
-    border-top: 1px solid ##7f7f7f;
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #fff, stop:1 #d5d2ca);
+    border-top: 1px solid #454b52;
+    background-color: #202428;
+    color: #e6e6e6;
     font-weight: bold;
+    text-align: left;
+    padding-left: 8px;
 }
 NavBarButton:hover {
-    background-color: #b6bdd2;
+    background-color: #343a40;
 }
 NavBarButton:hover:checked {
-    background-color: #8592b5;
+    background-color: #27627d;
     color: #fff;
 }
 NavBarButton:checked {
-    background-color: #d4d5d8;
+    background-color: #1f536b;
+    color: #fff;
 }
 NavBarButton:pressed {
-    background-color: #8592b5;
+    background-color: #27627d;
     color: #fff;
 }
 NavBarToolBar {
-    border-top: 1px solid ##7f7f7f;
-    background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #fdfdfd, stop:1 #bebebe);
+    border-top: 1px solid #454b52;
+    background-color: #202428;
 }
 NavBarToolBar QToolButton {
     background-color: none;
     border: 0;
 }
 NavBarToolBar QToolButton:hover {
-    background-color: #b6bdd2;
+    background-color: #343a40;
 }
 NavBarToolBar QToolButton:hover:checked {
-    background-color: #8592b5;
+    background-color: #27627d;
 }
 NavBarToolBar QToolButton:checked {
-    background-color: #d4d5d8;
+    background-color: #1f536b;
 }
 NavBarToolBar QToolButton:pressed {
-    background-color: #8592b5;
+    background-color: #27627d;
 }
 NavBarToolBar QToolButton::menu-indicator {
     image: url(:/styles/downarrowblue.png);
@@ -83,26 +88,26 @@ NavBarToolBar QToolButton::menu-indicator {
     subcontrol-position: center;
 }
 NavBarTitleButton {
-    border-left  : 1px solid #fff;
-    border-top   : 1px solid #fff;
+    border-left  : 1px solid #454b52;
+    border-top   : 1px solid #454b52;
     border-right : none;
     border-bottom: none;
-    background-color: #ebebeb;
-    color: #000;
+    background-color: #202428;
+    color: #e6e6e6;
     font-size: 14px;
     font-weight: bold;
 }
 NavBarTitleButton:hover {
     border: none;
-    background-color: #b6bdd2;
+    background-color: #343a40;
 }
 NavBarTitleButton:pressed {
     border: none;
-    background-color: #8592b5;
+    background-color: #27627d;
 }
 QFrame#navBarPopup {
-    border: 1px solid ##7f7f7f;
-    background-color: #d5d2ca;
+    border: 1px solid #454b52;
+    background-color: #202428;
 }
 QFrame#navBarPopup QSizeGrip {
     background-image: url(:/styles/sizegrip2003gray.png);
@@ -110,5 +115,27 @@ QFrame#navBarPopup QSizeGrip {
     background-repeat: no-repeat;
 }
 NavBar QStackedWidget {
-    background-color: #fff;
+    background-color: #15181b;
+}
+NavBar QScrollBar:vertical {
+    background-color: #15181b;
+    width: 14px;
+    margin: 0;
+}
+NavBar QScrollBar::handle:vertical {
+    background-color: #59626b;
+    border-radius: 6px;
+    min-height: 28px;
+    margin: 2px;
+}
+NavBar QScrollBar::handle:vertical:hover {
+    background-color: #727d87;
+}
+NavBar QScrollBar::add-line:vertical,
+NavBar QScrollBar::sub-line:vertical {
+    height: 0;
+}
+NavBar QScrollBar::add-page:vertical,
+NavBar QScrollBar::sub-page:vertical {
+    background: none;
 }

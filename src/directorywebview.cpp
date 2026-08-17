@@ -97,8 +97,10 @@ DirectoryWebView::DirectoryWebView(QWidget *parent) :
             this, SIGNAL(openDirectoryRequested(QString)));
     setPage(browserPage);
 
-    connect(this, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChange(QUrl)));
-    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(pageLoaded(bool)));
+    connect(this, &QWebEngineView::urlChanged,
+            this, &DirectoryWebView::urlChange);
+    connect(this, &QWebEngineView::loadFinished,
+            this, &DirectoryWebView::pageLoaded);
 
     loadAboutPage();
 }

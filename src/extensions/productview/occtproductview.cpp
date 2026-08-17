@@ -34,6 +34,12 @@ OcctProductView::OcctProductView(QWidget *parent)
         else
             ui->viewer->setWireframeMode();
     });
+    connect(ui->viewer, &OcctViewWidget::initializationFailed,
+            this, [this](const QString &message) {
+        ui->errorLabel->setText(message);
+        ui->stackedWidget->setCurrentWidget(ui->errorPage);
+        setControlsEnabled(false);
+    });
 
     setControlsEnabled(false);
     ui->stackedWidget->setCurrentWidget(ui->loadingPage);
@@ -103,6 +109,12 @@ void OcctProductView::onFailed(quint64 jobId, const QString &message)
     setControlsEnabled(false);
 }
 
+void OcctProductView::onStatusChanged(quint64 jobId, const QString &message)
+{
+    if (jobId == m_jobId)
+        ui->loadingLabel->setText(message);
+}
+
 void OcctProductView::cancelActiveWorker()
 {
     QThread *thread = m_workerThread.data();
@@ -157,6 +169,9 @@ void OcctProductView::startWorker(const QString &absolutePath, FileType::FileTyp
             Qt::QueuedConnection);
     connect(worker, &OcctImportWorker::failed,
             this, &OcctProductView::onFailed,
+            Qt::QueuedConnection);
+    connect(worker, &OcctImportWorker::statusChanged,
+            this, &OcctProductView::onStatusChanged,
             Qt::QueuedConnection);
 
     m_workerThread = thread;

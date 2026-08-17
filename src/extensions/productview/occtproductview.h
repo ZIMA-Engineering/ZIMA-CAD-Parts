@@ -34,6 +34,7 @@ protected:
 private slots:
     void onImported(quint64 jobId, const OcctImportResultPtr &result);
     void onFailed(quint64 jobId, const QString &message);
+    void onStatusChanged(quint64 jobId, const QString &message);
 
 private:
     void cancelActiveWorker();

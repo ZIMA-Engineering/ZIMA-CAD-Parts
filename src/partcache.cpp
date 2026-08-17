@@ -17,6 +17,9 @@ PartCache *PartCache::get()
 
 QFileInfoList PartCache::parts(const QString &dir)
 {
+    if (dir.trimmed().isEmpty() || !QFileInfo(dir).isDir())
+        return QFileInfoList();
+
     if (m_parts.contains(dir))
         return m_parts.value(dir);
 
@@ -94,7 +97,8 @@ void PartCache::renameDirectory(const QString &oldDir, const QString &newDir)
     m_fsWatcher.removePath(oldDir);
     m_parts.insert(newDir, m_parts[oldDir]);
     m_parts.remove(oldDir);
-    m_fsWatcher.addPath(newDir);
+    if (!newDir.trimmed().isEmpty() && QFileInfo(newDir).isDir())
+        m_fsWatcher.addPath(newDir);
     emit directoryRenamed(oldDir, newDir);
 }
 

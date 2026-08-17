@@ -126,6 +126,16 @@ DirectoryWidget::~DirectoryWidget()
 
 void DirectoryWidget::setDirectory(const QString &rootPath)
 {
+    if (rootPath.trimmed().isEmpty())
+    {
+        m_currentRootPath.clear();
+        watchAutoIndexDirectory(QString());
+        ui->partsWebView->hide();
+        ui->dirWebView->loadAboutPage();
+        updateIndexMenus();
+        return;
+    }
+
     setEnabled(false);
     m_currentRootPath = rootPath;
     watchAutoIndexDirectory(rootPath);

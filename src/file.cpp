@@ -181,7 +181,7 @@ QString File::getLabelForFileType(FileType::FileType type)
     case FileType::STEP:
         return "*.step *.stp";
     case FileType::IGES:
-        return "*.iges";
+        return "*.iges *.igs";
     case FileType::DXF:
         return "*.dxf";
     case FileType::STL:
@@ -272,7 +272,7 @@ QString File::getRxForFileType(FileType::FileType type)
     case FileType::STEP:
         return "(^.+\\.step$|^.+\\.stp$)";
     case FileType::IGES:
-        return "(^.+\\.iges|.+\\.igs$)";
+        return "(^.+\\.iges$|^.+\\.igs$)";
     case FileType::DWB:
         return "(^.+\\.dwb$)";
     case FileType::FCSTD:

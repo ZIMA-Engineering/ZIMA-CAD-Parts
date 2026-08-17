@@ -1,86 +1,76 @@
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include "occtviewwidget.h"
 
-#include "occtgltools.h"
-#include "occtqttools.h"
+#include <algorithm>
+#include <cmath>
 
-#include <AIS_DisplayMode.hxx>
-#include <AIS_Triangulation.hxx>
-#include <Aspect_DisplayConnection.hxx>
-#include <Graphic3d_RenderingParams.hxx>
-#include <Message.hxx>
-#include <OpenGl_GraphicDriver.hxx>
-#include <Standard_WarningsDisable.hxx>
-#include <QApplication>
-#include <QEvent>
-#include <QKeyEvent>
 #include <QMouseEvent>
-#include <QPalette>
+#include <QOpenGLContext>
+#include <QSurfaceFormat>
+#include <QtMath>
 #include <QWheelEvent>
-#include <Standard_WarningsRestore.hxx>
-#include <V3d_TypeOfOrientation.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
-#include <XCAFPrs_AISObject.hxx>
 
 namespace {
 
-Aspect_Drawable toAspectDrawable(WId windowId)
+const char *vertexShaderSource = R"(
+#version 330 core
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
+uniform mat4 modelViewProjection;
+uniform mat3 normalMatrix;
+out vec3 surfaceNormal;
+void main()
 {
-#ifdef _WIN32
-    return reinterpret_cast<Aspect_Drawable>(windowId);
-#else
-    return static_cast<Aspect_Drawable>(windowId);
-#endif
+    surfaceNormal = normalize(normalMatrix * normal);
+    gl_Position = modelViewProjection * vec4(position, 1.0);
 }
+)";
+
+const char *fragmentShaderSource = R"(
+#version 330 core
+in vec3 surfaceNormal;
+uniform vec3 baseColor;
+out vec4 fragmentColor;
+void main()
+{
+    vec3 lightDirection = normalize(vec3(0.4, 0.6, 1.0));
+    float diffuse = max(dot(normalize(surfaceNormal), lightDirection), 0.0);
+    float lighting = 0.25 + 0.75 * diffuse;
+    fragmentColor = vec4(baseColor * lighting, 1.0);
+}
+)";
 
 }
 
 OcctViewWidget::OcctViewWidget(QWidget *parent)
     : QOpenGLWidget(parent),
-      m_displayMode(AIS_Shaded),
-      m_viewInitialized(false),
-      m_loadedModel(false)
+      m_vertexBuffer(QOpenGLBuffer::VertexBuffer),
+      m_rotation(QQuaternion::fromEulerAngles(-25.0f, 35.0f, 0.0f)),
+      m_radius(1.0f),
+      m_distance(3.0f),
+      m_vertexCount(0),
+      m_initialized(false),
+      m_wireframe(false)
 {
-    createOcctViewer();
-
-    setAttribute(Qt::WA_AcceptTouchEvents);
-    setMouseTracking(true);
-    setBackgroundRole(QPalette::NoRole);
+    QSurfaceFormat surfaceFormat;
+    surfaceFormat.setRenderableType(QSurfaceFormat::OpenGL);
+    surfaceFormat.setProfile(QSurfaceFormat::CoreProfile);
+    surfaceFormat.setVersion(3, 3);
+    surfaceFormat.setDepthBufferSize(24);
+    surfaceFormat.setStencilBufferSize(8);
+    surfaceFormat.setSamples(4);
+    setFormat(surfaceFormat);
     setFocusPolicy(Qt::StrongFocus);
-    setUpdatesEnabled(true);
-    setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 }
 
 OcctViewWidget::~OcctViewWidget()
 {
-    Handle(Aspect_DisplayConnection) displayConnection;
-    if (!m_viewer.IsNull())
-        displayConnection = m_viewer->Driver()->GetDisplayConnection();
+    if (!m_initialized)
+        return;
 
-    if (!m_context.IsNull())
-    {
-        m_context->RemoveAll(false);
-        m_context.Nullify();
-    }
-
-    if (!m_view.IsNull())
-    {
-        m_view->Remove();
-        m_view.Nullify();
-    }
-
-    m_viewer.Nullify();
-
-    if (m_viewInitialized)
-    {
-        makeCurrent();
-        displayConnection.Nullify();
-        doneCurrent();
-    }
+    makeCurrent();
+    m_vertexArray.destroy();
+    m_vertexBuffer.destroy();
+    doneCurrent();
 }
 
 QSize OcctViewWidget::minimumSizeHint() const
@@ -95,291 +85,245 @@ QSize OcctViewWidget::sizeHint() const
 
 void OcctViewWidget::clearScene()
 {
-    m_pendingResult.clear();
-    m_objects.clear();
-    m_loadedModel = false;
-
-    if (!m_context.IsNull())
+    m_result.clear();
+    m_vertexCount = 0;
+    if (m_initialized)
     {
-        m_context->RemoveAll(false);
-        if (!m_view.IsNull())
-            m_view->Invalidate();
+        makeCurrent();
+        m_vertexBuffer.bind();
+        m_vertexBuffer.allocate(nullptr, 0);
+        m_vertexBuffer.release();
+        doneCurrent();
     }
-
-    updateView();
+    update();
 }
 
 void OcctViewWidget::setImportedModel(const OcctImportResultPtr &result)
 {
-    m_pendingResult = result;
-    if (!m_viewInitialized)
-        return;
-
-    displayImportedModel();
+    m_result = result;
+    fitAll();
+    if (m_initialized)
+        uploadModel();
 }
 
 void OcctViewWidget::fitAll()
 {
-    if (m_view.IsNull() || !m_loadedModel)
+    if (m_result.isNull() || m_result->bbox.IsVoid())
         return;
 
-    m_view->FitAll(0.01, false);
-    m_view->ZFitAll();
-    updateView();
+    Standard_Real xmin = 0.0;
+    Standard_Real ymin = 0.0;
+    Standard_Real zmin = 0.0;
+    Standard_Real xmax = 0.0;
+    Standard_Real ymax = 0.0;
+    Standard_Real zmax = 0.0;
+    m_result->bbox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+    m_center = QVector3D((xmin + xmax) * 0.5,
+                         (ymin + ymax) * 0.5,
+                         (zmin + zmax) * 0.5);
+    const QVector3D extent(xmax - xmin, ymax - ymin, zmax - zmin);
+    m_radius = std::max(extent.length() * 0.5f, 0.001f);
+    m_distance = m_radius * 3.0f;
+    m_pan = QVector3D();
+    updateProjection();
+    update();
 }
 
 void OcctViewWidget::setIsometricView()
 {
-    if (m_view.IsNull())
-        return;
-
-    m_view->SetProj(V3d_XposYnegZpos);
-    fitAll();
+    setViewRotation(QQuaternion::fromEulerAngles(-35.264f, 45.0f, 0.0f));
 }
 
 void OcctViewWidget::setFrontView()
 {
-    if (m_view.IsNull())
-        return;
-
-    m_view->SetProj(V3d_Yneg);
-    fitAll();
+    setViewRotation(QQuaternion());
 }
 
 void OcctViewWidget::setTopView()
 {
-    if (m_view.IsNull())
-        return;
-
-    m_view->SetProj(V3d_Zpos);
-    fitAll();
+    setViewRotation(QQuaternion::fromEulerAngles(-90.0f, 0.0f, 0.0f));
 }
 
 void OcctViewWidget::setRightView()
 {
-    if (m_view.IsNull())
-        return;
-
-    m_view->SetProj(V3d_Xpos);
-    fitAll();
+    setViewRotation(QQuaternion::fromEulerAngles(0.0f, -90.0f, 0.0f));
 }
 
 void OcctViewWidget::setShadedMode()
 {
-    applyDisplayMode(AIS_Shaded);
+    m_wireframe = false;
+    update();
 }
 
 void OcctViewWidget::setWireframeMode()
 {
-    applyDisplayMode(AIS_WireFrame);
+    m_wireframe = true;
+    update();
 }
 
 bool OcctViewWidget::hasLoadedModel() const
 {
-    return m_loadedModel;
+    return m_vertexCount > 0;
 }
 
 void OcctViewWidget::initializeGL()
 {
-    if (m_viewer.IsNull() || m_view.IsNull())
-        createOcctViewer();
+    initializeOpenGLFunctions();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glClearColor(0.12f, 0.14f, 0.17f, 1.0f);
 
-    Handle(OpenGl_GraphicDriver) driver =
-            Handle(OpenGl_GraphicDriver)::DownCast(m_viewer->Driver());
-    OcctQtTools::qtGlCapsFromSurfaceFormat(driver->ChangeOptions(), format());
-
-    const Aspect_Drawable nativeWin = toAspectDrawable(effectiveWinId());
-    const Graphic3d_Vec2i viewSize(width(), height());
-    const bool firstInit = m_view->Window().IsNull();
-
-    if (!OcctGlTools::InitializeGlWindow(m_view, nativeWin, viewSize, devicePixelRatioF()))
+    if (!m_program.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource)
+            || !m_program.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource)
+            || !m_program.link())
+    {
+        emit initializationFailed(tr("The 3D viewer could not initialize OpenGL."));
         return;
+    }
 
-    makeCurrent();
-    m_viewInitialized = true;
-
-    if (firstInit && !m_pendingResult.isNull())
-        displayImportedModel();
+    m_vertexArray.create();
+    m_vertexBuffer.create();
+    m_initialized = true;
+    updateProjection();
+    uploadModel();
 }
 
 void OcctViewWidget::paintGL()
 {
-    if (m_view.IsNull() || m_view->Window().IsNull())
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (!m_initialized || m_vertexCount == 0)
         return;
 
-    const double oldPixelRatio = m_view->Window()->DevicePixelRatio();
-    if (m_view->Window()->NativeHandle()
-            != OcctGlTools::GetGlNativeWindow(toAspectDrawable(effectiveWinId()))
-            || devicePixelRatioF() != oldPixelRatio)
-    {
-        initializeGL();
-    }
+    QMatrix4x4 model;
+    model.rotate(m_rotation);
+    model.translate(-m_center);
+    QMatrix4x4 view;
+    view.translate(m_pan.x(), m_pan.y(), -m_distance);
+    const QMatrix4x4 modelView = view * model;
 
-    if (!OcctGlTools::InitializeGlFbo(m_view))
-        return;
+    m_program.bind();
+    m_program.setUniformValue("modelViewProjection", m_projection * modelView);
+    m_program.setUniformValue("normalMatrix", modelView.normalMatrix());
+    m_program.setUniformValue("baseColor", QVector3D(0.18f, 0.65f, 0.88f));
+    m_vertexArray.bind();
 
-    if (!OcctGlTools::BindShaderManagerToContext(m_view))
-        return;
+    glPolygonMode(GL_FRONT_AND_BACK, m_wireframe ? GL_LINE : GL_FILL);
+    glDrawArrays(GL_TRIANGLES, 0, m_vertexCount);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    OcctGlTools::ResetGlStateBeforeOcct(m_view);
-    m_view->InvalidateImmediate();
-    AIS_ViewController::FlushViewEvents(m_context, m_view, true);
-    OcctGlTools::ResetGlStateAfterOcct(m_view);
+    m_vertexArray.release();
+    m_program.release();
 }
 
-bool OcctViewWidget::event(QEvent *event)
+void OcctViewWidget::resizeGL(int width, int height)
 {
-    return QOpenGLWidget::event(event);
-}
-
-void OcctViewWidget::keyPressEvent(QKeyEvent *event)
-{
-    if (OcctQtTools::qtKey2VKey(event->key()) == Aspect_VKey_F)
-    {
-        fitAll();
-        event->accept();
-        return;
-    }
-
-    QOpenGLWidget::keyPressEvent(event);
+    Q_UNUSED(width);
+    Q_UNUSED(height);
+    updateProjection();
 }
 
 void OcctViewWidget::mousePressEvent(QMouseEvent *event)
 {
-    QOpenGLWidget::mousePressEvent(event);
-    if (OcctQtTools::qtHandleMouseEvent(*this, m_view, event))
+    if (event->button() == Qt::MiddleButton || event->button() == Qt::RightButton)
     {
+        m_lastMousePosition = event->position().toPoint();
         event->accept();
-        updateView();
+        return;
     }
-}
 
-void OcctViewWidget::mouseReleaseEvent(QMouseEvent *event)
-{
-    QOpenGLWidget::mouseReleaseEvent(event);
-    if (OcctQtTools::qtHandleMouseEvent(*this, m_view, event))
-    {
-        event->accept();
-        updateView();
-    }
+    QOpenGLWidget::mousePressEvent(event);
 }
 
 void OcctViewWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    QOpenGLWidget::mouseMoveEvent(event);
-    if (OcctQtTools::qtHandleMouseEvent(*this, m_view, event))
+    if (!(event->buttons() & Qt::MiddleButton))
     {
-        event->accept();
-        updateView();
+        QOpenGLWidget::mouseMoveEvent(event);
+        return;
     }
+
+    const QPoint delta = event->position().toPoint() - m_lastMousePosition;
+    m_lastMousePosition = event->position().toPoint();
+
+    if (event->buttons().testFlag(Qt::RightButton))
+    {
+        const float viewportHeight = std::max(height(), 1);
+        const float unitsPerPixel = 2.0f * m_distance
+                * std::tan(qDegreesToRadians(22.5f)) / viewportHeight;
+        m_pan += QVector3D(delta.x() * unitsPerPixel,
+                           -delta.y() * unitsPerPixel,
+                           0.0f);
+        update();
+        event->accept();
+        return;
+    }
+
+    const QQuaternion horizontal = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f,
+                                                                 delta.x() * 0.5f);
+    const QQuaternion vertical = QQuaternion::fromAxisAndAngle(1.0f, 0.0f, 0.0f,
+                                                               delta.y() * 0.5f);
+    m_rotation = horizontal * vertical * m_rotation;
+    update();
+    event->accept();
 }
 
 void OcctViewWidget::wheelEvent(QWheelEvent *event)
 {
-    QOpenGLWidget::wheelEvent(event);
-    if (OcctQtTools::qtHandleWheelEvent(*this, m_view, event))
-    {
-        event->accept();
-        updateView();
-    }
+    const float steps = event->angleDelta().y() / 120.0f;
+    m_distance *= std::pow(0.85f, steps);
+    m_distance = std::clamp(m_distance, m_radius * 0.05f, m_radius * 100.0f);
+    updateProjection();
+    update();
+    event->accept();
 }
 
-void OcctViewWidget::createOcctViewer()
+void OcctViewWidget::uploadModel()
 {
-    if (!m_viewer.IsNull())
+    if (!m_initialized || m_result.isNull()
+            || m_result->vertices.size() != m_result->normals.size())
         return;
 
-    Handle(Aspect_DisplayConnection) displayConnection = new Aspect_DisplayConnection();
-    Handle(OpenGl_GraphicDriver) driver = new OpenGl_GraphicDriver(displayConnection, false);
-    driver->ChangeOptions().buffersNoSwap = true;
-    driver->ChangeOptions().buffersOpaqueAlpha = true;
-    driver->ChangeOptions().useSystemBuffer = false;
-
-    m_viewer = new V3d_Viewer(driver);
-    m_viewer->SetDefaultBackgroundColor(OcctQtTools::qtColorToOcct(palette().base().color()));
-    m_viewer->SetDefaultLights();
-    m_viewer->SetLightOn();
-
-    m_context = new AIS_InteractiveContext(m_viewer);
-    m_context->SetDisplayMode(m_displayMode, false);
-
-    m_view = m_viewer->CreateView();
-    m_view->SetImmediateUpdate(false);
-    m_view->SetBackgroundColor(OcctQtTools::qtColorToOcct(palette().base().color()));
-#ifndef __APPLE__
-    m_view->ChangeRenderingParams().NbMsaaSamples = 4;
-#endif
-}
-
-void OcctViewWidget::displayImportedModel()
-{
-    if (m_pendingResult.isNull()
-            || m_context.IsNull())
-        return;
-
-    m_context->RemoveAll(false);
-    m_objects.clear();
-    m_loadedModel = false;
-
-    if (!m_pendingResult->document.IsNull())
+    QVector<float> data;
+    data.reserve(m_result->vertices.size() * 6);
+    for (qsizetype i = 0; i < m_result->vertices.size(); ++i)
     {
-        for (Standard_Integer i = 1; i <= m_pendingResult->rootLabels.Length(); ++i)
-        {
-            Handle(XCAFPrs_AISObject) object =
-                    new XCAFPrs_AISObject(m_pendingResult->rootLabels.Value(i));
-            m_context->Display(object, false);
-            m_context->SetDisplayMode(object, m_displayMode, false);
-            m_objects.push_back(object);
-        }
+        const QVector3D &vertex = m_result->vertices.at(i);
+        const QVector3D &normal = m_result->normals.at(i);
+        data << vertex.x() << vertex.y() << vertex.z()
+             << normal.x() << normal.y() << normal.z();
     }
 
-    for (const Handle(Poly_Triangulation) &triangulation : m_pendingResult->triangulations)
-    {
-        if (triangulation.IsNull() || !triangulation->HasGeometry())
-            continue;
+    makeCurrent();
+    m_vertexArray.bind();
+    m_vertexBuffer.bind();
+    m_vertexBuffer.allocate(data.constData(), data.size() * int(sizeof(float)));
+    m_program.bind();
+    m_program.enableAttributeArray(0);
+    m_program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 6 * int(sizeof(float)));
+    m_program.enableAttributeArray(1);
+    m_program.setAttributeBuffer(1, GL_FLOAT, 3 * int(sizeof(float)), 3,
+                                 6 * int(sizeof(float)));
+    m_program.release();
+    m_vertexBuffer.release();
+    m_vertexArray.release();
+    doneCurrent();
 
-        Handle(AIS_Triangulation) object = new AIS_Triangulation(triangulation);
-        m_context->Display(object, 0, -1, false);
-        m_objects.push_back(object);
-    }
-
-    m_loadedModel = !m_objects.empty();
-    if (m_loadedModel)
-    {
-        setIsometricView();
-        fitAll();
-    }
-
-    m_view->Invalidate();
-    updateView();
-}
-
-void OcctViewWidget::applyDisplayMode(int mode)
-{
-    m_displayMode = mode;
-    if (m_context.IsNull())
-        return;
-
-    for (const Handle(AIS_InteractiveObject) &object : m_objects)
-    {
-        if (!object.IsNull() && Handle(AIS_Triangulation)::DownCast(object).IsNull())
-            m_context->SetDisplayMode(object, m_displayMode, false);
-    }
-
-    if (!m_view.IsNull())
-        m_view->Invalidate();
-    updateView();
-}
-
-void OcctViewWidget::updateView()
-{
+    m_vertexCount = m_result->vertices.size();
     update();
 }
 
-void OcctViewWidget::handleViewRedraw(const Handle(AIS_InteractiveContext) &context,
-                                      const Handle(V3d_View) &view)
+void OcctViewWidget::updateProjection()
 {
-    AIS_ViewController::handleViewRedraw(context, view);
-    if (myToAskNextFrame)
-        updateView();
+    const float aspect = height() > 0 ? float(width()) / float(height()) : 1.0f;
+    m_projection.setToIdentity();
+    m_projection.perspective(45.0f, aspect,
+                             std::max(m_radius * 0.001f, 0.0001f),
+                             std::max(m_radius * 200.0f, 10.0f));
+}
+
+void OcctViewWidget::setViewRotation(const QQuaternion &rotation)
+{
+    m_rotation = rotation;
+    fitAll();
 }
