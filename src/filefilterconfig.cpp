@@ -18,7 +18,12 @@ QStringList splitList(const QVariant &value)
     else
         values = value.toString().split(QRegularExpression("[;,]"), Qt::SkipEmptyParts);
     for (QString &item : values)
+    {
         item = item.trimmed();
+        // Migrate the incorrect NX assembly pattern written by older releases.
+        if (item.compare("*.asm_.asm", Qt::CaseInsensitive) == 0)
+            item = "*.asm_.prt";
+    }
     values.removeAll(QString());
     return values;
 }

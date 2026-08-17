@@ -161,7 +161,7 @@ QString File::getLabelForFileType(FileType::FileType type)
     case FileType::NX_PRT:
         return "*.prt";
     case FileType::NX_ASM:
-        return "*.asm_.asm";
+        return "*.asm_.prt";
     case FileType::NX_DRW:
         return "*._drw.prt";
     case FileType::SLDPRT:
@@ -262,7 +262,7 @@ QString File::getRxForFileType(FileType::FileType type)
     case FileType::NX_PRT:
         return "(^.+\\.prt$)";
     case FileType::NX_ASM:
-        return "(^.+\\.asm_\\.asm$)";
+        return "(^.+\\.asm_\\.prt$)";
     case FileType::NX_DRW:
         return "(^.+\\._drw\\.prt$)";
     case FileType::SLDPRT:
