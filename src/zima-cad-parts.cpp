@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 
     {
         MainWindow w(&translator);
-        w.show();
+        w.showMaximized();
 
         ret = a.exec();
     }
