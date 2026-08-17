@@ -4,8 +4,10 @@
 #include "filemodel.h"
 #include "file.h"
 #include "settings.h"
+#include "partcache.h"
 
 #include <optional>
+#include <algorithm>
 
 
 FileFilterModel::FileFilterModel(QObject *parent) :
@@ -19,6 +21,13 @@ void FileFilterModel::setShowProeVersions(bool show)
 {
     m_showProeVersions = show;
     invalidate();
+}
+
+void FileFilterModel::setDirectory(const QString &directory)
+{
+    m_directory = directory;
+    m_config = FileFilterConfig::load(directory);
+    invalidateFilter();
 }
 
 void FileFilterModel::filterColumn(int column, const QString &text)
@@ -53,34 +62,43 @@ bool FileFilterModel::filterAcceptsRow(int source_row, const QModelIndex& source
 
     if (f.fileInfo.isDir())
     {
-        if (f.fileInfo.baseName() == METADATA_DIR)
+        if (f.fileInfo.fileName().compare(METADATA_DIR, Qt::CaseInsensitive) == 0)
             return false;
 
         return MetadataCache::get()->showDirectoriesAsParts(fm->path())
-               && isFiltered(fm->path(), f.fileInfo.baseName());
+               && isFiltered(fm->path(), File::partBaseName(f.fileInfo));
     }
-    else if (!Settings::get()->filtersRegex.match(f.fileInfo.fileName()).hasMatch())
-    {
+    const FileFilterMatch configMatch = m_config.match(f.fileInfo.fileName());
+    if (!configMatch.accepted)
         return false;
-    }
-    else if (f.type == FileType::UNDEFINED)
-    {
-        return false;
-    }
-    else if (m_showProeVersions)
-    {
-        // now we know that it's supported file and we should not take care about versions
-        return isFiltered(fm->path(), f.fileInfo.baseName());
-    }
-    else if (File::versionedTypes().contains(f.type))
-    {
-        MetadataVersionsMap versions = MetadataCache::get()->partVersions(fm->path());
 
-        return versions[f.fileInfo.completeBaseName()] == f.fileInfo.fileName()
-               && isFiltered(fm->path(), f.fileInfo.baseName());
+    if (m_config.configured)
+    {
+        if (!configMatch.showVersions && configMatch.versionMode == FileVersionMode::ZimaCad
+                && configMatch.version >= 0)
+            return false;
+
+        if (!configMatch.showVersions && configMatch.versionMode == FileVersionMode::ProE)
+        {
+            int highestVersion = configMatch.version;
+            for (const QFileInfo &candidate : PartCache::get()->parts(fm->path()))
+            {
+                const FileFilterMatch candidateMatch = m_config.match(candidate.fileName());
+                if (candidateMatch.accepted
+                        && candidateMatch.versionMode == FileVersionMode::ProE
+                        && candidateMatch.logicalName.compare(configMatch.logicalName,
+                                                              Qt::CaseInsensitive) == 0)
+                    highestVersion = std::max(highestVersion, candidateMatch.version);
+            }
+            if (configMatch.version != highestVersion)
+                return false;
+        }
+
+        return isFiltered(fm->path(), File::partBaseName(f.fileInfo));
     }
 
-    return isFiltered(fm->path(), f.fileInfo.baseName());
+    // Sources without files.ini are intentionally permissive for backwards compatibility.
+    return isFiltered(fm->path(), File::partBaseName(f.fileInfo));
 }
 
 bool FileFilterModel::filterAcceptsColumn(int source_column, const QModelIndex & source_parent) const

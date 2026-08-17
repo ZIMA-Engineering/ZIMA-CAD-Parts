@@ -1,5 +1,6 @@
 #include "thumbnailmanager.h"
 #include "settings.h"
+#include "file.h"
 #include <QtDebug>
 
 ThumbnailWorker::ThumbnailWorker(const QString &path)
@@ -101,20 +102,22 @@ void ThumbnailManager::dataReady(const ThumbnailMap &data)
 
 QPixmap ThumbnailManager::thumbnail(const QFileInfo &fi)
 {
+    const QString partName = File::partBaseName(fi);
     if (m_isLoading)
         return m_loading;
-    else if (m_cache.contains(fi.baseName()) && !m_cache[fi.baseName()].second.isNull())
-        return m_cache[fi.baseName()].second;
+    else if (m_cache.contains(partName) && !m_cache[partName].second.isNull())
+        return m_cache[partName].second;
     else
         return QPixmap();
 }
 
 QString ThumbnailManager::tooltip(const QFileInfo &fi)
 {
-    if (!m_cache[fi.baseName()].first.isEmpty())
+    const QString partName = File::partBaseName(fi);
+    if (!m_cache[partName].first.isEmpty())
     {
         return QString("<img src=\"%1\" width=\"%2\">")
-               .arg(m_cache[fi.baseName()].first)
+               .arg(m_cache[partName].first)
                .arg(Settings::get()->GUIPreviewWidth);
     }
     return tr("No thumbnail");
@@ -122,9 +125,10 @@ QString ThumbnailManager::tooltip(const QFileInfo &fi)
 
 QString ThumbnailManager::path(const QFileInfo &fi)
 {
-    if (!m_cache[fi.baseName()].first.isEmpty())
+    const QString partName = File::partBaseName(fi);
+    if (!m_cache[partName].first.isEmpty())
     {
-        return m_cache[fi.baseName()].first;
+        return m_cache[partName].first;
     }
     return QString();
 }

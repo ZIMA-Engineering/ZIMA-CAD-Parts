@@ -98,7 +98,7 @@ void ProductView::setFile(FileMetadata* f)
     if (!pt.isNull())
         m_current->move(pt);
 
-    m_current->setWindowTitle(f->fileInfo.baseName() + " " + m_current->title());
+    m_current->setWindowTitle(File::partBaseName(f->fileInfo) + " " + m_current->title());
     m_current->handle(f);
     m_current->show();
 }

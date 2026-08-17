@@ -475,44 +475,43 @@ void Metadata::removeParameter(const QString &handle)
 
 QString Metadata::partParam(const QString &partName, const QString &param)
 {
-    QString partGroup = partName.section('.', 0, 0);
-    QString anyVal;
-    QString val;
-
-    m_settings->beginGroup("Parts");
-    m_settings->beginGroup(partGroup);
-    m_settings->beginGroup(param);
+    const auto readValue = [&](const QString &partGroup)
     {
-        foreach (const QString &lang, m_settings->childKeys())
+        QString anyValue;
+        QString localizedValue;
+        m_settings->beginGroup("Parts");
+        m_settings->beginGroup(partGroup);
+        m_settings->beginGroup(param);
         {
-            val = m_settings->value(lang).toString();
+            foreach (const QString &lang, m_settings->childKeys())
+            {
+                const QString value = m_settings->value(lang).toString();
 
-            if (!(val).isEmpty() && lang == Settings::get()->LanguageMetadata)
-                break;
+                if (!value.isEmpty() && lang == Settings::get()->LanguageMetadata)
+                {
+                    localizedValue = value;
+                    break;
+                }
 
-            if (anyVal.isEmpty())
-                anyVal = val;
+                if (anyValue.isEmpty())
+                    anyValue = value;
+            }
         }
-    }
-    m_settings->endGroup();
-    m_settings->endGroup();
-    m_settings->endGroup();
+        m_settings->endGroup();
+        m_settings->endGroup();
+        m_settings->endGroup();
 
-    if (!val.isEmpty())
-        return val;
+        if (!localizedValue.isEmpty())
+            return localizedValue;
+        if (!anyValue.isEmpty())
+            return anyValue;
+        return m_settings->value(QString("Parts/%1/%2").arg(partGroup, param)).toString();
+    };
 
-    QString ret;
-
-    if (anyVal.isEmpty())
-    {
-        ret = m_settings->value(
-                  QString("Parts/%1/%2").arg(partGroup).arg(param),
-                  QString()
-              ).toString();
-
-    } else {
-        ret = anyVal;
-    }
+    QString ret = readValue(partName);
+    // Older releases stored dotted names under the text before the first dot.
+    if (ret.isEmpty() && partName.contains('.'))
+        ret = readValue(partName.section('.', 0, 0));
 
     if (ret.isEmpty())
     {
@@ -535,7 +534,7 @@ QString Metadata::partParam(const QString &partName, int index)
 
 void Metadata::setPartParam(const QString &partName, const QString &param, const QString &value)
 {
-    QString partGroup = partName.section('.', 0, 0);
+    const QString partGroup = partName;
 
     m_settings->beginGroup("Parts");
     m_settings->beginGroup(partGroup);
@@ -681,7 +680,7 @@ QList<Metadata *> Metadata::thumbnailIncludes()
 
 void Metadata::deletePart(const QString &part)
 {
-    QString grp = part.section('.', 0, 0);
+    const QString grp = part;
 
     if(grp.isEmpty())
         return;
@@ -691,11 +690,8 @@ void Metadata::deletePart(const QString &part)
 
 void Metadata::renamePart(const QString &oldPart, const QString &newPart)
 {
-    QString oldPartGroup = oldPart.section('.', 0, 0);
-    QString newPartGroup = newPart.section('.', 0, 0);
-
     m_settings->beginGroup("Parts");
-    rename(oldPartGroup, newPartGroup);
+    rename(oldPart, newPart);
     m_settings->endGroup();
 }
 
@@ -712,7 +708,7 @@ void Metadata::pruneParts()
     // Walk through files and find existing parts
     foreach (const QFileInfo &fi, files)
     {
-        parts.removeOne(fi.baseName());
+        parts.removeOne(File::partBaseName(fi));
     }
 
     // Remove parts without files

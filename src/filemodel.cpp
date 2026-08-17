@@ -107,7 +107,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
     // thumbnail
     else if (col == 1)
     {
-        QString key(part.baseName());
+        QString key(File::partBaseName(part));
         switch( role )
         {
         case Qt::DecorationRole:
@@ -414,7 +414,7 @@ void FileModel::moveParts(FileMover *mv)
                 pc->clearBelow(fname);
             }
 
-            metaCache->movePart(dir, fi.baseName(), dstDir);
+            metaCache->movePart(dir, File::partBaseName(fi), dstDir);
         }
 
         clearList << dir;
@@ -475,7 +475,7 @@ void FileModel::deleteParts(DirectoryRemover *rm)
                 pc->clearBelow(fname);
             }
 
-            MetadataCache::get()->deletePart(dir, fi.baseName());
+            MetadataCache::get()->deletePart(dir, File::partBaseName(fi));
         }
 
         clearList << dir;
@@ -522,7 +522,7 @@ void FileModel::copyToWorkingDir(FileCopier *cp)
 
             selector->clear(key, fname);
 
-            metaCache->copyPart(key, fi.baseName(), dstDir);
+            metaCache->copyPart(key, File::partBaseName(fi), dstDir);
         }
     }
 

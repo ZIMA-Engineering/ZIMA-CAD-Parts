@@ -1,6 +1,9 @@
 #include "filerenamedialog.h"
 #include "ui_filerenamedialog.h"
 #include "filerenamer.h"
+#include "file.h"
+
+#include <QMessageBox>
 
 FileRenameDialog::FileRenameDialog(QString dir, QFileInfo file, QWidget *parent) :
     QDialog(parent),
@@ -11,13 +14,13 @@ FileRenameDialog::FileRenameDialog(QString dir, QFileInfo file, QWidget *parent)
 {
     ui->setupUi(this);
 
-    setWindowTitle(tr("Rename %1").arg(file.baseName()));
+    setWindowTitle(tr("Rename %1").arg(File::partBaseName(file)));
 
     if (m_file.isDir()) {
         ui->fileNameLabel->setText(tr("Directory name"));
     }
 
-    ui->fileNameLineEdit->setText(file.baseName());
+    ui->fileNameLineEdit->setText(File::partBaseName(file));
 
     connect(ui->renameButton, SIGNAL(clicked(bool)),
             this, SLOT(rename()));
@@ -37,6 +40,14 @@ FileRenameDialog::~FileRenameDialog()
 
 void FileRenameDialog::rename()
 {
+    const QString newName = ui->fileNameLineEdit->text().trimmed();
+    QString validationError;
+    if (!File::isValidPartName(newName, &validationError))
+    {
+        QMessageBox::warning(this, tr("Invalid name"), validationError);
+        return;
+    }
+
     FileRenamer rn;
 
     connect(&rn, SIGNAL(renamed(QFileInfo,QFileInfo)),
@@ -51,7 +62,7 @@ void FileRenameDialog::rename()
     ui->closeButton->setDisabled(true);
     ui->closeButton->show();
 
-    if (rn.rename(m_dir.absolutePath(), m_file, ui->fileNameLineEdit->text())) {
+    if (rn.rename(m_dir.absolutePath(), m_file, newName)) {
         accept();
     } else {
         ui->logWidget->show();

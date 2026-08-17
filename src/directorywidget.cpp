@@ -608,7 +608,7 @@ void DirectoryWidget::moveSelectedParts()
 
 void DirectoryWidget::setFiltersDialog()
 {
-    FiltersDialog dlg;
+    FiltersDialog dlg(m_currentRootPath, this);
 
     if (dlg.exec())
     {

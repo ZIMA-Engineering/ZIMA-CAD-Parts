@@ -4,6 +4,7 @@
 #include <QtDebug>
 
 #include "settings.h"
+#include "file.h"
 #include "directoryremover.h"
 #include "unusedthumbnailsdialog.h"
 
@@ -93,10 +94,10 @@ QSet<QString> ThumbnailCleaner::collectBaseNames(const QString &directory) const
 
     foreach (const QFileInfo &fi, entries)
     {
-        if (fi.fileName() == METADATA_DIR)
+        if (fi.fileName().compare(METADATA_DIR, Qt::CaseInsensitive) == 0)
             continue;
 
-        baseNames.insert(fi.baseName());
+        baseNames.insert(File::partBaseName(fi));
     }
 
     qDebug() << "ThumbnailCleaner: collected base names list size" << baseNames.size();

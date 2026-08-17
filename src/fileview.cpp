@@ -73,6 +73,7 @@ void FileView::setDirectory(const QString &path)
         return;
     }
     m_path = path;
+    m_proxy->setDirectory(m_path);
     // it has to be reset here because calling QFileSystemModel's reset
     // or begin/end alternatives results in "/" as a root path
     m_model->setDirectory(m_path);
@@ -202,7 +203,7 @@ void FileView::scrollContentsBy(int dx, int dy)
 
 QModelIndex FileView::findNextPartIndex(const QModelIndex &from)
 {
-    QString name = fileInfo(from).baseName();
+    QString name = File::partBaseName(fileInfo(from));
     QModelIndex index = from;
 
     while (true) {
@@ -211,7 +212,7 @@ QModelIndex FileView::findNextPartIndex(const QModelIndex &from)
         if (!index.isValid())
             return index;
 
-        if (fileInfo(index).baseName() == name)
+        if (File::partBaseName(fileInfo(index)) == name)
             continue;
 
         return index;

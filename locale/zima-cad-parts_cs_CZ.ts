@@ -739,37 +739,37 @@ Pokračovat?</translation>
         <translation>Uložit a upravit další</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="23"/>
+        <location filename="../src/fileeditdialog.cpp" line="24"/>
         <source>Edit %1</source>
         <translation>Upravit %1</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="90"/>
+        <location filename="../src/fileeditdialog.cpp" line="91"/>
         <source>No thumbnail</source>
         <translation>Žádný náhled</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="114"/>
+        <location filename="../src/fileeditdialog.cpp" line="115"/>
         <source>Unable to copy icon</source>
         <translation>Ikonu nelze zkopírovat</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="115"/>
+        <location filename="../src/fileeditdialog.cpp" line="116"/>
         <source>Unable to copy &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Nelze zkopírovat &apos;%1&apos; do &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="128"/>
+        <location filename="../src/fileeditdialog.cpp" line="129"/>
         <source>Unable to remove thumbnail</source>
         <translation>Náhled nelze odstranit</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="129"/>
+        <location filename="../src/fileeditdialog.cpp" line="130"/>
         <source>Unable to remove thumbnail &apos;%1&apos;</source>
         <translation>Náhled &apos;%1&apos; nelze odstranit</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="151"/>
+        <location filename="../src/fileeditdialog.cpp" line="152"/>
         <source>Select thumbnail</source>
         <translation>Vyberte náhled</translation>
     </message>
@@ -888,40 +888,45 @@ Pokračovat?</translation>
     </message>
     <message>
         <location filename="../src/filerenamedialog.ui" line="93"/>
-        <location filename="../src/filerenamedialog.cpp" line="60"/>
-        <location filename="../src/filerenamedialog.cpp" line="85"/>
+        <location filename="../src/filerenamedialog.cpp" line="71"/>
+        <location filename="../src/filerenamedialog.cpp" line="96"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="14"/>
+        <location filename="../src/filerenamedialog.cpp" line="17"/>
         <source>Rename %1</source>
         <translation>Přejmenovat %1</translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="17"/>
+        <location filename="../src/filerenamedialog.cpp" line="20"/>
         <source>Directory name</source>
         <translation>Název adresáře</translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="50"/>
+        <location filename="../src/filerenamedialog.cpp" line="47"/>
+        <source>Invalid name</source>
+        <translation>Neplatný název</translation>
+    </message>
+    <message>
+        <location filename="../src/filerenamedialog.cpp" line="61"/>
         <source>Renaming files...</source>
         <translation>Soubory se přejmenovávají...</translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="58"/>
+        <location filename="../src/filerenamedialog.cpp" line="69"/>
         <source>Renamed %1 files and failed.</source>
         <translation>Přejmenováno %1 souborů a poté došlo k chybě.</translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="67"/>
+        <location filename="../src/filerenamedialog.cpp" line="78"/>
         <source>Renamed &quot;%1&quot; to &quot;%2&quot;
 </source>
         <translation>Přejmenováno &quot;%1&quot; na &quot;%2&quot;
 </translation>
     </message>
     <message>
-        <location filename="../src/filerenamedialog.cpp" line="78"/>
+        <location filename="../src/filerenamedialog.cpp" line="89"/>
         <source>Unable to rename &quot;%1&quot; to &quot;%2&quot;: %3
 </source>
         <translation>Nelze přejmenovat &quot;%1&quot; na &quot;%2&quot;: %3
@@ -931,42 +936,42 @@ Pokračovat?</translation>
 <context>
     <name>FileView</name>
     <message>
-        <location filename="../src/fileview.cpp" line="137"/>
+        <location filename="../src/fileview.cpp" line="138"/>
         <source>HTML index file already exists</source>
         <translation>HTML index soubor již existuje</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="138"/>
+        <location filename="../src/fileview.cpp" line="139"/>
         <source>HTML index for already exists, would you like to overwrite it?</source>
         <translation>HTML index soubor již existuje. Přepsat jej?</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="167"/>
+        <location filename="../src/fileview.cpp" line="168"/>
         <source>Please wait while the parts are being removed...</source>
         <translation>Prosím čekejte, díly se odstraňují...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="184"/>
+        <location filename="../src/fileview.cpp" line="185"/>
         <source>Please wait while the parts are being copied...</source>
         <translation>Prosím čekejte, díly se kopírují...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="275"/>
+        <location filename="../src/fileview.cpp" line="276"/>
         <source>ProE Startup Error</source>
         <translation>Chyba startu ProE</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="276"/>
+        <location filename="../src/fileview.cpp" line="277"/>
         <source>An error occured while ProE has been requested to start</source>
         <translation>Při spouštění ProE nastala chyba</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="296"/>
+        <location filename="../src/fileview.cpp" line="297"/>
         <source>Rename</source>
         <translation>Přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="299"/>
+        <location filename="../src/fileview.cpp" line="300"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
@@ -974,14 +979,142 @@ Pokračovat?</translation>
 <context>
     <name>FiltersDialog</name>
     <message>
-        <location filename="../src/filtersdialog.ui" line="14"/>
+        <location filename="../src/filtersdialog.ui" line="7"/>
         <source>Filters</source>
         <translation>Filtry</translation>
     </message>
     <message>
-        <location filename="../src/filtersdialog.ui" line="31"/>
+        <location filename="../src/filtersdialog.ui" line="9"/>
+        <source>Rules for the current directory</source>
+        <translation>Pravidla pro aktuální adresář</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="10"/>
+        <source>Inherit rules from parent directories</source>
+        <translation>Dědit pravidla z nadřazených adresářů</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="16"/>
+        <source>Groups and formats</source>
+        <translation>Skupiny a formáty</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="19"/>
+        <source>Properties</source>
+        <translation>Vlastnosti</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="21"/>
+        <source>Name</source>
+        <translation>Název</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="23"/>
+        <source>Pattern</source>
+        <translation>Vzor</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="24"/>
+        <source>*.pdf</source>
+        <translation>*.pdf</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="25"/>
+        <source>Version handling</source>
+        <translation>Práce s verzemi</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="27"/>
+        <source>Show versions</source>
+        <translation>Ukázat verze</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="35"/>
+        <location filename="../src/filtersdialog.cpp" line="227"/>
+        <source>New group</source>
+        <translation>Nová skupina</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="36"/>
+        <source>New format</source>
+        <translation>Nový formát</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="37"/>
+        <source>Delete</source>
+        <translation>Smazat</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="38"/>
+        <source>Move up</source>
+        <translation>Posunout nahoru</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.ui" line="39"/>
+        <source>Move down</source>
+        <translation>Posunout dolů</translation>
+    </message>
+    <message>
         <source>Available Groups</source>
-        <translation>Dostupné skupiny</translation>
+        <translation type="vanished">Dostupné skupiny</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="35"/>
+        <source>Rules for: %1</source>
+        <translation>Pravidla pro: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="36"/>
+        <source>No version handling</source>
+        <translation>Bez práce s verzemi</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="37"/>
+        <source>Pro/E numbered versions</source>
+        <translation>Číslované verze Pro/E</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="38"/>
+        <source>ZIMA-CAD current file and history</source>
+        <translation>Aktuální soubor a historie ZIMA-CAD</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="96"/>
+        <source>ZIMA-CAD files</source>
+        <translation>Soubory ZIMA-CAD</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="305"/>
+        <location filename="../src/filtersdialog.cpp" line="310"/>
+        <location filename="../src/filtersdialog.cpp" line="321"/>
+        <location filename="../src/filtersdialog.cpp" line="326"/>
+        <source>Invalid filters</source>
+        <translation>Neplatné filtry</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="305"/>
+        <source>Every group must have a name.</source>
+        <translation>Každá skupina musí mít název.</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="310"/>
+        <source>Group identifiers must be unique.</source>
+        <translation>Identifikátory skupin musí být jedinečné.</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="321"/>
+        <source>A file pattern cannot be empty.</source>
+        <translation>Vzor souboru nesmí být prázdný.</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="327"/>
+        <source>The pattern %1 occurs more than once in a group.</source>
+        <translation>Vzor %1 se ve skupině vyskytuje vícekrát.</translation>
+    </message>
+    <message>
+        <location filename="../src/filtersdialog.cpp" line="337"/>
+        <source>Unable to save filters</source>
+        <translation>Filtry nelze uložit</translation>
     </message>
 </context>
 <context>
@@ -1187,76 +1320,78 @@ Pokračovat?</translation>
 <context>
     <name>OcctImportWorker</name>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="42"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="48"/>
         <source>The CAD file does not exist or is not readable.</source>
         <translation>Soubor CAD neexistuje nebo jej nelze přečíst.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="59"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="65"/>
         <source>Unsupported OCCT preview format.</source>
         <translation>Nepodporovaný formát náhledu OCCT.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="68"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="76"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="74"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="82"/>
         <source>Unknown %1 import error.</source>
         <translation>Neznámá chyba importu %1.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="87"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="93"/>
         <source>STEP</source>
         <translation>STEP</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="89"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="95"/>
         <source>IGES</source>
         <translation>IGES</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="91"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="97"/>
         <source>STL</source>
         <translation>STL</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="93"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="99"/>
         <source>CAD</source>
         <translation>CAD</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="112"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="160"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="199"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="118"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="171"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="215"/>
         <source>Reading %1 file...</source>
         <translation>Načítání souboru %1...</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="117"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="165"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="123"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="176"/>
         <source>Failed to read %1 file.</source>
         <translation>Nepodařilo se přečíst soubor %1.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="124"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="172"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="130"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="183"/>
         <source>Converting %1 geometry...</source>
         <translation>Převod geometrie %1...</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="128"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="176"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="134"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="187"/>
         <source>Failed to transfer %1 file into OCCT document.</source>
         <translation>Nepodařilo se převést soubor %1 do dokumentu OCCT.</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="139"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="187"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="145"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="198"/>
         <source>Preparing %1 preview...</source>
         <translation>Příprava náhledu %1...</translation>
     </message>
     <message>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="205"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="232"/>
-        <location filename="../src/extensions/productview/occtimportworker.cpp" line="255"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="151"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="204"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="221"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="249"/>
+        <location filename="../src/extensions/productview/occtimportworker.cpp" line="272"/>
         <source>The %1 file does not contain any displayable shapes.</source>
         <translation>Soubor %1 neobsahuje žádné zobrazitelné tvary.</translation>
     </message>
@@ -1313,7 +1448,7 @@ Pokračovat?</translation>
 <context>
     <name>OcctViewWidget</name>
     <message>
-        <location filename="../src/extensions/productview/occtviewwidget.cpp" line="201"/>
+        <location filename="../src/extensions/productview/occtviewwidget.cpp" line="181"/>
         <source>The 3D viewer could not initialize OpenGL.</source>
         <translation>3D prohlížeči se nepodařilo inicializovat OpenGL.</translation>
     </message>
@@ -1624,7 +1759,7 @@ Pokračovat?</translation>
         <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="167"/>
         <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="264"/>
         <source>Encryption failed: %1</source>
-        <translation>Å ifrovÃ¡nÃ­ selhalo: %1</translation>
+        <translation>Å&#xa0;ifrovÃ¡nÃ­ selhalo: %1</translation>
     </message>
     <message>
         <location filename="../3rdparty/qtkeychain/qtkeychain/keychain_win.cpp" line="174"/>
@@ -1645,44 +1780,59 @@ Pokračovat?</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/file.cpp" line="194"/>
+        <location filename="../src/file.cpp" line="204"/>
         <source>Office document</source>
         <translation>Office dokument</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="196"/>
+        <location filename="../src/file.cpp" line="206"/>
         <source>Office spreadsheet</source>
         <translation>Office tabulka</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="198"/>
+        <location filename="../src/file.cpp" line="208"/>
         <source>Office presentation</source>
         <translation>Office prezentace</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="200"/>
+        <location filename="../src/file.cpp" line="210"/>
         <source>Office drawing</source>
         <translation>Office schema</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="202"/>
+        <location filename="../src/file.cpp" line="212"/>
         <source>Office project</source>
         <translation>Office projekt</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="204"/>
+        <location filename="../src/file.cpp" line="214"/>
         <source>Office database</source>
         <translation>Office databáze</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="218"/>
+        <location filename="../src/file.cpp" line="228"/>
         <source>Image/Picture</source>
         <translation>Obrázek</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="220"/>
+        <location filename="../src/file.cpp" line="230"/>
         <source>Audio/Music</source>
         <translation>Zvuk/Hudba</translation>
+    </message>
+    <message>
+        <location filename="../src/file.cpp" line="393"/>
+        <source>The name cannot be empty or begin or end with a space.</source>
+        <translation>Název nesmí být prázdný ani začínat nebo končit mezerou.</translation>
+    </message>
+    <message>
+        <location filename="../src/file.cpp" line="399"/>
+        <source>The name cannot end with a dot.</source>
+        <translation>Název nesmí končit tečkou.</translation>
+    </message>
+    <message>
+        <location filename="../src/file.cpp" line="406"/>
+        <source>The name contains a character that is not valid on Windows.</source>
+        <translation>Název obsahuje znak, který není ve Windows povolen.</translation>
     </message>
     <message>
         <location filename="../src/filefilters/versionfilter.cpp" line="27"/>
@@ -1803,6 +1953,16 @@ Pokračovat?</translation>
         <location filename="../3rdparty/qtkeychain/qtkeychain/libsecret.cpp" line="119"/>
         <source>Entry not found</source>
         <translation>ZÃ¡znam nebyl nalezen</translation>
+    </message>
+    <message>
+        <location filename="../src/filefilterconfig.cpp" line="153"/>
+        <source>Imported file rules</source>
+        <translation>Importovaná pravidla souborů</translation>
+    </message>
+    <message>
+        <location filename="../src/filefilterconfig.cpp" line="242"/>
+        <source>Unable to create %1.</source>
+        <translation>Nelze vytvořit %1.</translation>
     </message>
 </context>
 <context>
@@ -2298,7 +2458,7 @@ Pokračovat?</translation>
 <context>
     <name>ThumbnailCleaner</name>
     <message>
-        <location filename="../src/thumbnailcleaner.cpp" line="45"/>
+        <location filename="../src/thumbnailcleaner.cpp" line="46"/>
         <source>Please wait while the unused thumbnails are being removed...</source>
         <translation>Prosím čekejte, nepoužívané náhledy se odstraňují...</translation>
     </message>
@@ -2306,7 +2466,7 @@ Pokračovat?</translation>
 <context>
     <name>ThumbnailManager</name>
     <message>
-        <location filename="../src/thumbnailmanager.cpp" line="120"/>
+        <location filename="../src/thumbnailmanager.cpp" line="123"/>
         <source>No thumbnail</source>
         <translation>Žádný náhled</translation>
     </message>

@@ -1,53 +1,44 @@
-/*
-  ZIMA-CAD-Parts
-  http://www.zima-construction.cz/software/ZIMA-Parts
-
-  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #ifndef FILTERSDIALOG_H
 #define FILTERSDIALOG_H
 
 #include <QDialog>
-#include <QList>
-#include <QGroupBox>
-#include <QCheckBox>
-#include <QVBoxLayout>
-#include <QTreeWidgetItem>
 
+#include "filefilterconfig.h"
 
-namespace Ui {
-class FiltersDialog;
-}
+class QTreeWidgetItem;
+
+namespace Ui { class FiltersDialog; }
 
 class FiltersDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit FiltersDialog(QWidget *parent = 0);
+    explicit FiltersDialog(const QString &directory, QWidget *parent = nullptr);
     ~FiltersDialog();
-    void accept();
-
-private:
-    Ui::FiltersDialog *ui;
+    void accept() override;
 
 private slots:
-    void listWidget_currentRowChanged(int row);
-    void treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*);
+    void currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+    void updateCurrentItem();
+    void addGroup();
+    void addFormat();
+    void deleteCurrent();
+    void moveCurrentUp();
+    void moveCurrentDown();
+
+private:
+    enum ItemRole { GroupIndexRole = Qt::UserRole, FormatIndexRole };
+
+    Ui::FiltersDialog *ui;
+    QString m_directory;
+    FileFilterConfig m_config;
+    bool m_updating;
+
+    void setupDefaults();
+    void rebuildTree(int groupIndex = 0, int formatIndex = -1);
+    void commitEditor();
+    QString uniqueGroupId(const QString &base) const;
 };
 
 #endif // FILTERSDIALOG_H

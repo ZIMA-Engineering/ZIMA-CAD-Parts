@@ -54,6 +54,7 @@ SOURCES += src/zima-cad-parts.cpp \
     src/settingsdialog.cpp \
     src/qtkeychainsecretstore.cpp \
     src/file.cpp \
+    src/filefilterconfig.cpp \
     src/filemodel.cpp \
     src/addeditdatasource.cpp \
     src/settings.cpp \
@@ -163,6 +164,7 @@ HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
     src/qtkeychainsecretstore.h \
     src/file.h \
+    src/filefilterconfig.h \
     src/filemodel.h \
     src/addeditdatasource.h \
     src/settings.h \

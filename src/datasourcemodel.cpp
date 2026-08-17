@@ -83,7 +83,7 @@ bool DataSourceProxyModel::filterAcceptsRow(int sourceRow,
         const QModelIndex &sourceParent) const
 {
     QModelIndex ix = sourceModel()->index(sourceRow, 0, sourceParent);
-    return ix.data().toString() != METADATA_DIR;
+    return ix.data().toString().compare(METADATA_DIR, Qt::CaseInsensitive) != 0;
 }
 
 DataSourceIconProvider::DataSourceIconProvider()

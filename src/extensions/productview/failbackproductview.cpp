@@ -29,7 +29,7 @@ bool FailbackProductView::handle(FileMetadata *f)
 
     QString html = "<html><body><table width=\"100%\" border=\"0\">";
     html += "<tr><th>" + tr("Property") + "</th><th>" + tr("Value") + "</th></tr>";
-    html += "<tr><td>" + tr("Name") + "</td><td>" + f->fileInfo.baseName() + "</td></tr>";
+    html += "<tr><td>" + tr("Name") + "</td><td>" + File::partBaseName(f->fileInfo) + "</td></tr>";
     html += "<tr><td>" + tr("Last Modified") + "</td><td>" + lastModified + "</td></tr>";
     html += "<tr><td>" + tr("Size") + "</td><td>" + QString("%1").arg(f->fileInfo.size()) + "</td></tr>";
     html += "</table></body></html>";

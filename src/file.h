@@ -38,6 +38,10 @@ typedef enum {
     PROE_DRW,
     FRM,
     PROE_NEU,
+    // ZIMA-CAD
+    ZIMA_PRT,
+    ZIMA_ASM,
+    ZIMA_DRW,
     // CATIA
     CATPART,
     CATPRODUCT,
@@ -108,8 +112,11 @@ public:
     static FileTypeList versionedTypes();
     static QString getInternalNameForFileType(FileType::FileType type);
     static QString getLabelForFileType(FileType::FileType type);
+    static QStringList getPatternsForFileType(FileType::FileType type);
     static QString getRxForFileType(FileType::FileType type);
     static QString getRxFromStringList(const QStringList &extensions);
+    static QString partBaseName(const QFileInfo &fileInfo);
+    static bool isValidPartName(const QString &name, QString *errorMessage = nullptr);
 };
 
 

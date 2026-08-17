@@ -47,6 +47,10 @@ QString File::getInternalNameForFileType(FileType::FileType type)
         return "frm";
     case FileType::PROE_NEU:
         return "neu_proe";
+    case FileType::ZIMA_PRT:
+    case FileType::ZIMA_ASM:
+    case FileType::ZIMA_DRW:
+        return "undefined";
     case FileType::CATPART:
         return "catpart";
     case FileType::CATPRODUCT:
@@ -142,6 +146,12 @@ QString File::getLabelForFileType(FileType::FileType type)
         return "*.frm";
     case FileType::PROE_NEU:
         return "*.neu";
+    case FileType::ZIMA_PRT:
+        return "*.prtz";
+    case FileType::ZIMA_ASM:
+        return "*.asmz";
+    case FileType::ZIMA_DRW:
+        return "*.drwz";
     case FileType::CATPART:
         return "*.catpart";
     case FileType::CATPRODUCT:
@@ -237,6 +247,12 @@ QString File::getRxForFileType(FileType::FileType type)
         return "((^.+\\.frm)\\.(\\d+)$)";
     case FileType::PROE_NEU:
         return "((^.+\\.neu)\\.(\\d+)$)";
+    case FileType::ZIMA_PRT:
+        return "(^.+\\.prtz(?:\\.\\d+)?$)";
+    case FileType::ZIMA_ASM:
+        return "(^.+\\.asmz(?:\\.\\d+)?$)";
+    case FileType::ZIMA_DRW:
+        return "(^.+\\.drwz(?:\\.\\d+)?$)";
     case FileType::CATPART:
         return "(^.+\\.catpart$)";
     case FileType::CATPRODUCT:
@@ -318,6 +334,31 @@ QString File::getRxForFileType(FileType::FileType type)
     }
 }
 
+QStringList File::getPatternsForFileType(FileType::FileType type)
+{
+    switch (type)
+    {
+    case FileType::OFFICE_WRITER:
+        return {"*.odt", "*.ott", "*.odm", "*.doc", "*.dot", "*.docx", "*.docm", "*.dotx", "*.dotm"};
+    case FileType::OFFICE_CALC:
+        return {"*.ods", "*.ots", "*.xls", "*.xlt", "*.xlm", "*.xlsx", "*.xlsm", "*.xltx", "*.xltm", "*.csv"};
+    case FileType::OFFICE_IMPRESS:
+        return {"*.odp", "*.otp", "*.ppt", "*.pot", "*.pps", "*.pptx", "*.pptm", "*.potx", "*.potm", "*.ppam", "*.ppsx", "*.ppsm", "*.sldx", "*.sldm"};
+    case FileType::OFFICE_DRAW:
+        return {"*.odg", "*.otg"};
+    case FileType::OFFICE_PROJECT:
+        return {"*.mpd", "*.mpp"};
+    case FileType::OFFICE_BASE:
+        return {"*.odb", "*.mdb", "*.accdb", "*.accde", "*.accdt", "*.accdr"};
+    case FileType::FILE_IMAGE:
+        return {"*.png", "*.jpg", "*.jpeg"};
+    case FileType::FILE_AUDIO:
+        return {"*.flac", "*.m4a", "*.mp3", "*.ogg", "*.wav"};
+    default:
+        return getLabelForFileType(type).split(' ', Qt::SkipEmptyParts);
+    }
+}
+
 QString File::getRxFromStringList(const QStringList &extensions)
 {
     QString ret;
@@ -327,6 +368,45 @@ QString File::getRxFromStringList(const QStringList &extensions)
     }
     ret.chop(1);
     return ret;
+}
+
+QString File::partBaseName(const QFileInfo &fileInfo)
+{
+    if (fileInfo.isDir())
+        return fileInfo.fileName();
+
+    static const QRegularExpression cadName(
+                "^(.+)\\.(?:prt|asm|drw|frm|neu|prtz|asmz|drwz)(?:\\.\\d+)?$",
+                QRegularExpression::CaseInsensitiveOption);
+    const QRegularExpressionMatch match = cadName.match(fileInfo.fileName());
+    if (match.hasMatch())
+        return match.captured(1);
+
+    return fileInfo.completeBaseName();
+}
+
+bool File::isValidPartName(const QString &name, QString *errorMessage)
+{
+    if (name.isEmpty() || name != name.trimmed())
+    {
+        if (errorMessage)
+            *errorMessage = QObject::tr("The name cannot be empty or begin or end with a space.");
+        return false;
+    }
+    if (name.endsWith('.'))
+    {
+        if (errorMessage)
+            *errorMessage = QObject::tr("The name cannot end with a dot.");
+        return false;
+    }
+    static const QRegularExpression invalidCharacters("[<>:\"/\\\\|?*]");
+    if (name.contains(invalidCharacters))
+    {
+        if (errorMessage)
+            *errorMessage = QObject::tr("The name contains a character that is not valid on Windows.");
+        return false;
+    }
+    return true;
 }
 
 FileMetadata::FileMetadata(const QString &path)

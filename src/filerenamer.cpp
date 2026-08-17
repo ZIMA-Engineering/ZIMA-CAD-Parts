@@ -2,6 +2,7 @@
 #include "settings.h"
 #include "partcache.h"
 #include "metadata.h"
+#include "file.h"
 
 #include <QDir>
 #include <QFile>
@@ -15,6 +16,10 @@ FileRenamer::FileRenamer(QObject *parent)
 
 bool FileRenamer::rename(const QString &dir, const QFileInfo &file, QString newName)
 {
+    newName = newName.trimmed();
+    if (!File::isValidPartName(newName))
+        return false;
+
     bool isDir = file.isDir();
     QString newDirPath;
 
@@ -28,16 +33,16 @@ bool FileRenamer::rename(const QString &dir, const QFileInfo &file, QString newN
             return false;
     } else {
         /* Files in the current directory */
-        if (!renameFilesInDir(dir, file.baseName(), newName))
+        if (!renameFilesInDir(dir, File::partBaseName(file), newName))
             return false;
     }
 
     /* Thumbnails in index directory */
-    if (!renameFilesInDir(dir + "/" + THUMBNAILS_DIR, file.baseName(), newName))
+    if (!renameFilesInDir(dir + "/" + THUMBNAILS_DIR, File::partBaseName(file), newName))
         return false;
 
     /* Metadata */
-    MetadataCache::get()->renamePart(dir, file.baseName(), newName);
+    MetadataCache::get()->renamePart(dir, File::partBaseName(file), newName);
 
     /* Directory rename */
     if (isDir) {
@@ -61,10 +66,11 @@ bool FileRenamer::renameFilesInDir(const QString &dir, const QString &oldName, c
     QFile f;
 
     foreach (const QFileInfo &fi, entries) {
-        QString newPath = QString("%1/%2.%3")
+        const QString suffix = fi.fileName().mid(oldName.size());
+        QString newPath = QString("%1/%2%3")
                           .arg(fi.absolutePath())
                           .arg(newName)
-                          .arg(fi.completeSuffix());
+                          .arg(suffix);
 
         qDebug() << "Rename" << fi.absoluteFilePath() << "to" << newPath;
         f.setFileName(fi.absoluteFilePath());

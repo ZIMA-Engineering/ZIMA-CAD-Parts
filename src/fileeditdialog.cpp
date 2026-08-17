@@ -3,6 +3,7 @@
 #include "metadata.h"
 #include "filemodel.h"
 #include "settings.h"
+#include "file.h"
 
 #include <QLineEdit>
 #include <QFileDialog>
@@ -18,7 +19,7 @@ FileEditDialog::FileEditDialog(QFileInfo file, FileModel *fileModel, QWidget *pa
     ui->setupUi(this);
 
     m_dir = m_fileInfo.absoluteDir().path();
-    m_fileName = m_fileInfo.baseName();
+    m_fileName = File::partBaseName(m_fileInfo);
 
     setWindowTitle(tr("Edit %1").arg(m_fileName));
     ui->nameLabel->setText(m_fileName);

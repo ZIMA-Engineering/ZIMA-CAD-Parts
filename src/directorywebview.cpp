@@ -190,7 +190,7 @@ QString DirectoryWebView::autoIndexHtml(const QString &path) const
 
     foreach (const QFileInfo &child, dirs)
     {
-        if (child.fileName() == METADATA_DIR)
+        if (child.fileName().compare(METADATA_DIR, Qt::CaseInsensitive) == 0)
             continue;
 
         tiles += autoIndexTileHtml(path, child);
