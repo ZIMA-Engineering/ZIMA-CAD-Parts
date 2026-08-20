@@ -44,6 +44,8 @@ FiltersDialog::FiltersDialog(const QString &directory, QWidget *parent)
 
     connect(ui->treeWidget, &QTreeWidget::currentItemChanged,
             this, &FiltersDialog::currentItemChanged);
+    connect(ui->treeWidget, &QTreeWidget::itemChanged,
+            this, &FiltersDialog::treeItemChanged);
     connect(ui->nameLineEdit, &QLineEdit::textEdited, this, &FiltersDialog::updateCurrentItem);
     connect(ui->patternLineEdit, &QLineEdit::textEdited, this, &FiltersDialog::updateCurrentItem);
     connect(ui->versionModeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
@@ -180,6 +182,22 @@ void FiltersDialog::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem
                 ui->versionModeComboBox->findData(int(group.versionMode)));
     ui->showVersionsCheckBox->setChecked(group.showVersions);
     ui->addFormatButton->setEnabled(true);
+    m_updating = false;
+}
+
+void FiltersDialog::treeItemChanged(QTreeWidgetItem *item, int column)
+{
+    if (m_updating || !item || column != 0
+            || item->data(0, FormatIndexRole).toInt() >= 0)
+        return;
+
+    const Qt::CheckState state = item->checkState(0);
+    if (state == Qt::PartiallyChecked)
+        return;
+
+    m_updating = true;
+    for (int childIndex = 0; childIndex < item->childCount(); ++childIndex)
+        item->child(childIndex)->setCheckState(0, state);
     m_updating = false;
 }
 

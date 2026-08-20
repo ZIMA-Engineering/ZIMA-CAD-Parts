@@ -20,6 +20,7 @@ public:
 
 private slots:
     void currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+    void treeItemChanged(QTreeWidgetItem *item, int column);
     void updateCurrentItem();
     void addGroup();
     void addFormat();
