@@ -1599,57 +1599,57 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/file.cpp" line="226"/>
+        <location filename="../src/file.cpp" line="216"/>
         <source>Office document</source>
         <translation>Textdokument</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="228"/>
+        <location filename="../src/file.cpp" line="218"/>
         <source>Office spreadsheet</source>
         <translation>Tabellendokument</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="230"/>
+        <location filename="../src/file.cpp" line="220"/>
         <source>Office presentation</source>
         <translation>Präsentation</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="232"/>
+        <location filename="../src/file.cpp" line="222"/>
         <source>Office drawing</source>
         <translation>Zeichnung</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="234"/>
+        <location filename="../src/file.cpp" line="224"/>
         <source>Office project</source>
         <translation>Projekt</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="236"/>
+        <location filename="../src/file.cpp" line="226"/>
         <source>Office database</source>
         <translation>Datenbank</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="250"/>
+        <location filename="../src/file.cpp" line="240"/>
         <source>Image/Picture</source>
         <translation>Bild</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="252"/>
+        <location filename="../src/file.cpp" line="242"/>
         <source>Audio/Music</source>
         <translation>Audio/Musik</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="426"/>
+        <location filename="../src/file.cpp" line="410"/>
         <source>The name cannot be empty or begin or end with a space.</source>
         <translation>Der Name darf nicht leer sein oder mit einem Leerzeichen beginnen oder enden.</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="432"/>
+        <location filename="../src/file.cpp" line="416"/>
         <source>The name cannot end with a dot.</source>
         <translation>Der Name darf nicht mit einem Punkt enden.</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="439"/>
+        <location filename="../src/file.cpp" line="423"/>
         <source>The name contains a character that is not valid on Windows.</source>
         <translation>Der Name enthält ein unter Windows ungültiges Zeichen.</translation>
     </message>
@@ -1984,130 +1984,130 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
         <translation>Automatisch erkennen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="103"/>
+        <location filename="../src/settingsdialog.ui" line="104"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="113"/>
+        <location filename="../src/settingsdialog.ui" line="114"/>
         <source>Splash screen</source>
         <translation>Startbildschirm</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="125"/>
+        <location filename="../src/settingsdialog.ui" line="126"/>
         <source>Duration</source>
         <translation>Anzeigedauer</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="132"/>
+        <location filename="../src/settingsdialog.ui" line="133"/>
         <source> ms</source>
         <translation> ms</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="165"/>
+        <location filename="../src/settingsdialog.ui" line="166"/>
         <source>&amp;Browser</source>
         <translation>&amp;Browser</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="171"/>
+        <location filename="../src/settingsdialog.ui" line="172"/>
         <source>Browser</source>
         <translation>Browser</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="177"/>
+        <location filename="../src/settingsdialog.ui" line="178"/>
         <source>Save passwords for web forms</source>
         <translation>Passwörter für Webformulare speichern</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="187"/>
+        <location filename="../src/settingsdialog.ui" line="188"/>
         <source>Automatically fill saved passwords</source>
         <translation>Gespeicherte Passwörter automatisch ausfüllen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="197"/>
+        <location filename="../src/settingsdialog.ui" line="198"/>
         <source>Remember HTTP authentication credentials</source>
         <translation>HTTP-Anmeldedaten speichern</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="207"/>
+        <location filename="../src/settingsdialog.ui" line="208"/>
         <source>Passwords are stored in the system credential store.</source>
         <translation>Passwörter werden im Anmeldedatenspeicher des Systems gespeichert.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="217"/>
+        <location filename="../src/settingsdialog.ui" line="218"/>
         <source>Saved passwords...</source>
         <translation>Gespeicherte Passwörter...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="241"/>
+        <location filename="../src/settingsdialog.ui" line="242"/>
         <source>&amp;Data sources</source>
         <translation>&amp;Datenquellen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="271"/>
+        <location filename="../src/settingsdialog.ui" line="272"/>
         <source>&amp;Add</source>
         <translation>&amp;Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="278"/>
+        <location filename="../src/settingsdialog.ui" line="279"/>
         <source>&amp;Edit</source>
         <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="285"/>
+        <location filename="../src/settingsdialog.ui" line="286"/>
         <source>&amp;Remove</source>
         <translation>&amp;Entfernen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="305"/>
+        <location filename="../src/settingsdialog.ui" line="306"/>
         <source>Move &amp;Up</source>
         <translation>Nach &amp;oben</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="312"/>
+        <location filename="../src/settingsdialog.ui" line="313"/>
         <source>Move &amp;Down</source>
         <translation>Nach &amp;unten</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="335"/>
+        <location filename="../src/settingsdialog.ui" line="336"/>
         <source>External programs</source>
         <translation>Externe Programme</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="344"/>
-        <location filename="../src/settingsdialog.ui" line="379"/>
-        <location filename="../src/settingsdialog.ui" line="399"/>
+        <location filename="../src/settingsdialog.ui" line="345"/>
+        <location filename="../src/settingsdialog.ui" line="380"/>
+        <location filename="../src/settingsdialog.ui" line="400"/>
         <source>Find...</source>
         <translation>Suchen...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="357"/>
+        <location filename="../src/settingsdialog.ui" line="358"/>
         <source>ProE executable:</source>
         <translation>Ausführbare Pro/E-Datei:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="364"/>
+        <location filename="../src/settingsdialog.ui" line="365"/>
         <source>ZIMA utilities</source>
         <translation>ZIMA-Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="372"/>
+        <location filename="../src/settingsdialog.ui" line="373"/>
         <source>Text editor:</source>
         <translation>Texteditor:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="406"/>
+        <location filename="../src/settingsdialog.ui" line="407"/>
         <source>Terminal:</source>
         <translation>Terminal:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="414"/>
-        <location filename="../src/settingsdialog.ui" line="423"/>
+        <location filename="../src/settingsdialog.ui" line="415"/>
+        <location filename="../src/settingsdialog.ui" line="424"/>
         <source>Developer mode</source>
         <translation>Entwicklermodus</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="435"/>
+        <location filename="../src/settingsdialog.ui" line="436"/>
         <source>Toolbar for technical specifications</source>
         <translation>Werkzeugleiste für technische Spezifikationen</translation>
     </message>

@@ -1599,57 +1599,57 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/file.cpp" line="226"/>
+        <location filename="../src/file.cpp" line="216"/>
         <source>Office document</source>
         <translation>Textový dokument</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="228"/>
+        <location filename="../src/file.cpp" line="218"/>
         <source>Office spreadsheet</source>
         <translation>Tabulka</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="230"/>
+        <location filename="../src/file.cpp" line="220"/>
         <source>Office presentation</source>
         <translation>Prezentace</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="232"/>
+        <location filename="../src/file.cpp" line="222"/>
         <source>Office drawing</source>
         <translation>Kresba</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="234"/>
+        <location filename="../src/file.cpp" line="224"/>
         <source>Office project</source>
         <translation>Projekt</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="236"/>
+        <location filename="../src/file.cpp" line="226"/>
         <source>Office database</source>
         <translation>Databáze</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="250"/>
+        <location filename="../src/file.cpp" line="240"/>
         <source>Image/Picture</source>
         <translation>Obrázek</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="252"/>
+        <location filename="../src/file.cpp" line="242"/>
         <source>Audio/Music</source>
         <translation>Zvuk/hudba</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="426"/>
+        <location filename="../src/file.cpp" line="410"/>
         <source>The name cannot be empty or begin or end with a space.</source>
         <translation>Název nesmí být prázdný ani začínat nebo končit mezerou.</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="432"/>
+        <location filename="../src/file.cpp" line="416"/>
         <source>The name cannot end with a dot.</source>
         <translation>Název nesmí končit tečkou.</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="439"/>
+        <location filename="../src/file.cpp" line="423"/>
         <source>The name contains a character that is not valid on Windows.</source>
         <translation>Název obsahuje znak, který není ve Windows platný.</translation>
     </message>
@@ -1974,7 +1974,7 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
         <translation>Šířka zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="103"/>
+        <location filename="../src/settingsdialog.ui" line="104"/>
         <source>Language</source>
         <translation>Jazyk</translation>
     </message>
@@ -1989,125 +1989,125 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
         <translation>Nastavení ZIMA-CAD-Parts</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="113"/>
+        <location filename="../src/settingsdialog.ui" line="114"/>
         <source>Splash screen</source>
         <translation>Úvodní obrazovka</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="125"/>
+        <location filename="../src/settingsdialog.ui" line="126"/>
         <source>Duration</source>
         <translation>Doba zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="132"/>
+        <location filename="../src/settingsdialog.ui" line="133"/>
         <source> ms</source>
         <translation> ms</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="165"/>
+        <location filename="../src/settingsdialog.ui" line="166"/>
         <source>&amp;Browser</source>
         <translation>&amp;Prohlížeč</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="171"/>
+        <location filename="../src/settingsdialog.ui" line="172"/>
         <source>Browser</source>
         <translation>Prohlížeč</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="177"/>
+        <location filename="../src/settingsdialog.ui" line="178"/>
         <source>Save passwords for web forms</source>
         <translation>Ukládat hesla webových formulářů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="187"/>
+        <location filename="../src/settingsdialog.ui" line="188"/>
         <source>Automatically fill saved passwords</source>
         <translation>Automaticky vyplňovat uložená hesla</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="197"/>
+        <location filename="../src/settingsdialog.ui" line="198"/>
         <source>Remember HTTP authentication credentials</source>
         <translation>Pamatovat přihlašovací údaje ověření HTTP</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="207"/>
+        <location filename="../src/settingsdialog.ui" line="208"/>
         <source>Passwords are stored in the system credential store.</source>
         <translation>Hesla jsou uložena v systémovém úložišti přihlašovacích údajů.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="217"/>
+        <location filename="../src/settingsdialog.ui" line="218"/>
         <source>Saved passwords...</source>
         <translation>Uložená hesla...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="241"/>
+        <location filename="../src/settingsdialog.ui" line="242"/>
         <source>&amp;Data sources</source>
         <translation>&amp;Zdroje dat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="271"/>
+        <location filename="../src/settingsdialog.ui" line="272"/>
         <source>&amp;Add</source>
         <translation>&amp;Přidat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="278"/>
+        <location filename="../src/settingsdialog.ui" line="279"/>
         <source>&amp;Edit</source>
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="285"/>
+        <location filename="../src/settingsdialog.ui" line="286"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="305"/>
+        <location filename="../src/settingsdialog.ui" line="306"/>
         <source>Move &amp;Up</source>
         <translation>Posunout &amp;nahoru</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="312"/>
+        <location filename="../src/settingsdialog.ui" line="313"/>
         <source>Move &amp;Down</source>
         <translation>Posunout &amp;dolů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="335"/>
+        <location filename="../src/settingsdialog.ui" line="336"/>
         <source>External programs</source>
         <translation>Externí programy</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="364"/>
+        <location filename="../src/settingsdialog.ui" line="365"/>
         <source>ZIMA utilities</source>
         <translation>Nástroje ZIMA</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="357"/>
+        <location filename="../src/settingsdialog.ui" line="358"/>
         <source>ProE executable:</source>
         <translation>Spustitelný soubor Pro/E:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="344"/>
-        <location filename="../src/settingsdialog.ui" line="379"/>
-        <location filename="../src/settingsdialog.ui" line="399"/>
+        <location filename="../src/settingsdialog.ui" line="345"/>
+        <location filename="../src/settingsdialog.ui" line="380"/>
+        <location filename="../src/settingsdialog.ui" line="400"/>
         <source>Find...</source>
         <translation>Najít...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="372"/>
+        <location filename="../src/settingsdialog.ui" line="373"/>
         <source>Text editor:</source>
         <translation>Textový editor:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="406"/>
+        <location filename="../src/settingsdialog.ui" line="407"/>
         <source>Terminal:</source>
         <translation>Terminál:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="414"/>
-        <location filename="../src/settingsdialog.ui" line="423"/>
+        <location filename="../src/settingsdialog.ui" line="415"/>
+        <location filename="../src/settingsdialog.ui" line="424"/>
         <source>Developer mode</source>
         <translation>Režim vývojáře</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="435"/>
+        <location filename="../src/settingsdialog.ui" line="436"/>
         <source>Toolbar for technical specifications</source>
         <translation>Panel nástrojů technických specifikací</translation>
     </message>

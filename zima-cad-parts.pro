@@ -314,7 +314,7 @@ OTHER_FILES += \
     src/extensions/navbar/styles/office2007silver.css \
     src/extensions/navbar/COPYING
 
-TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts locale/zima-cad-parts_de_DE.ts locale/zima-cad-parts_fr_FR.ts
+TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts locale/zima-cad-parts_de_DE.ts locale/zima-cad-parts_fr_FR.ts locale/zima-cad-parts_ru_RU.ts
 CONFIG += lrelease embed_translations
 QM_FILES_RESOURCE_PREFIX = /i18n
 

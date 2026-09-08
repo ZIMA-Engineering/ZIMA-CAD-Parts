@@ -54,23 +54,26 @@ private slots:
     void languageSwitching()
     {
         auto settings = Settings::get();
-        QCOMPARE(settings->Languages, QStringList({"en_US", "cs_CZ", "de_DE", "fr_FR"}));
+        QCOMPARE(settings->Languages, QStringList({"en_US", "cs_CZ", "de_DE", "fr_FR", "ru_RU"}));
         settings->setCurrentLanguageCode("unsupported");
         QCOMPARE(settings->getCurrentLanguageCode(), QString("en_US"));
         settings->setCurrentLanguageCode("fr_CA");
         QCOMPARE(settings->getCurrentLanguageCode(), QString("fr_FR"));
+        settings->setCurrentLanguageCode("ru_BY");
+        QCOMPARE(settings->getCurrentLanguageCode(), QString("ru_RU"));
         settings->setCurrentLanguageCode("en_US");
         MainToolBar toolbar;
         toolbar.show();
         auto flags = toolbar.findChild<LanguageFlagsWidget *>();
         QVERIFY(flags);
         const auto buttons = flags->findChildren<QPushButton *>();
-        QCOMPARE(buttons.size(), 4);
+        QCOMPARE(buttons.size(), 5);
         QVERIFY(!buttons.last()->icon().pixmap(24, 16).isNull());
         QTemporaryDir directory;
-        const QStringList labels = {"Settings", QString::fromUtf8("NastavenĂ­"),
-                                    "Einstellungen", QString::fromUtf8("ParamĂ¨tres")};
-        for (int i : {3, 1, 2, 0, 3, 0}) {
+        const QStringList labels = {"Settings", QString::fromUtf8("Nastavení"),
+                                    "Einstellungen", QString::fromUtf8("Paramètres"),
+                                    QString::fromUtf8("Настройки")};
+        for (int i : {4, 3, 1, 2, 0, 4, 0}) {
             buttons.at(i)->click();
             QCoreApplication::processEvents();
             QCOMPARE(settings->getCurrentLanguageCode(), settings->Languages.at(i));
@@ -81,6 +84,18 @@ private slots:
                 QCOMPARE(dialog.windowTitle(), QString("Filtres"));
                 QDialogButtonBox standardButtons(QDialogButtonBox::Cancel);
                 QCOMPARE(standardButtons.button(QDialogButtonBox::Cancel)->text().remove('&'), QString("Annuler"));
+            }
+            if (i == 4) {
+                QCOMPARE(dialog.windowTitle(), QString::fromUtf8("Фильтры"));
+                QDialogButtonBox standardButtons(QDialogButtonBox::Cancel);
+                QCOMPARE(standardButtons.button(QDialogButtonBox::Cancel)->text().remove('&'),
+                         QString::fromUtf8("Отмена"));
+                for (int count : {1, 2, 5, 21}) {
+                    const auto plural = QCoreApplication::translate("UnusedThumbnailsDialog",
+                        "The following %n unused thumbnails were found. Delete them?", "", count);
+                    QVERIFY(plural.contains(QString::number(count)));
+                    QVERIFY(plural.startsWith(QString::fromUtf8("Найден")));
+                }
             }
             QCOMPARE(QSettings().value("Language").toString(), settings->Languages.at(i));
         }

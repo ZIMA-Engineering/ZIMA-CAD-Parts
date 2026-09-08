@@ -15,7 +15,7 @@ ui_*.h
 # Local Windows release and Qt deployment (generated)
 /*.exe
 /*.dll
-/zima-cad-parts_cs_CZ.qm
+/zima-cad-parts_*.qm
 /generic/
 /iconengines/
 /imageformats/
@@ -28,3 +28,6 @@ ui_*.h
 /styles/
 /tls/
 /translations/
+
+# Local configuration backups and cleanup receipts
+/.local-backups/

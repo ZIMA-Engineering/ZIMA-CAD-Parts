@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 root = Path(__file__).resolve().parents[1]
 reference = None
-for locale in ("cs_CZ", "de_DE", "fr_FR"):
+for locale in ("cs_CZ", "de_DE", "fr_FR", "ru_RU"):
     tree = ET.parse(root / "locale" / ("zima-cad-parts_" + locale + ".ts"))
     assert tree.getroot().get("language") == locale
     keys = set()
@@ -18,7 +18,7 @@ for locale in ("cs_CZ", "de_DE", "fr_FR"):
             assert translation.get("type") not in ("unfinished", "vanished", "obsolete"), source
             forms = translation.findall("numerusform")
             if message.get("numerus") == "yes":
-                assert len(forms) == (3 if locale == "cs_CZ" else 2), (locale, source)
+                assert len(forms) == (3 if locale in ("cs_CZ", "ru_RU") else 2), (locale, source)
             texts = [f.text or "" for f in forms] if forms else [translation.text or ""]
             for text in texts:
                 assert text.strip(), (locale, source)

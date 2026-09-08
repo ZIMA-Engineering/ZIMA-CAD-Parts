@@ -13,12 +13,14 @@
         <file>data/zima-cad-parts.html</file>
         <file>data/zima-cad-parts_de_DE.html</file>
         <file>data/zima-cad-parts_fr_FR.html</file>
+        <file>data/zima-cad-parts_ru_RU.html</file>
         <file>data/zima-cad-parts_cs_CZ.html</file>
         <file>data/password_manager.js</file>
         <file>gfx/flags/cs.png</file>
         <file>gfx/flags/en.png</file>
         <file>gfx/flags/de.png</file>
         <file>gfx/flags/fr.svg</file>
+        <file>gfx/flags/ru.png</file>
         <file>gfx/pin.png</file>
         <file>gfx/icons/asm.png</file>
         <file>gfx/icons/blend.png</file>

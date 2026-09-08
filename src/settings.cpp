@@ -38,7 +38,7 @@ void Settings::load()
 
     DataSourcesNeedsUpdate = false;
 
-    Languages << "en_US" << "cs_CZ" << "de_DE" << "fr_FR";
+    Languages << "en_US" << "cs_CZ" << "de_DE" << "fr_FR" << "ru_RU";
     Language = s.value("Language", "detect").toString();
     LanguageMetadata = s.value("LanguageMetadata", "en").toString();
 
@@ -369,6 +369,8 @@ int Settings::langIndex(const QString &lang)
         return GERMAN;
     else if ( lang.left(2).compare("fr", Qt::CaseInsensitive) == 0 )
         return FRENCH;
+    else if (lang.left(2).compare("ru", Qt::CaseInsensitive) == 0)
+        return RUSSIAN;
     else
         return DETECT;
 }
@@ -385,6 +387,8 @@ QString Settings::langIndexToName(int lang)
         return "de_DE";
     case FRENCH:
         return "fr_FR";
+    case RUSSIAN:
+        return "ru_RU";
     default:
         return "detect";
     }

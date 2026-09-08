@@ -61,7 +61,8 @@ public:
         ENGLISH,
         CZECH,
         GERMAN,
-        FRENCH
+        FRENCH,
+        RUSSIAN
     };
 
     //! The main access method to settings

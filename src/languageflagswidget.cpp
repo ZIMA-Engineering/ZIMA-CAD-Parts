@@ -24,7 +24,7 @@ LanguageFlagsWidget::LanguageFlagsWidget(QWidget *parent) :
 
         QPushButton *flag = new QPushButton(QIcon(QString(":/gfx/flags/%1.%2").arg(langCode, langCode == "fr" ? "svg" : "png")), "", this);
         const QStringList names = {QStringLiteral("English"), QString::fromUtf8("Čeština"),
-                                   QStringLiteral("Deutsch"), QString::fromUtf8("Français")};
+                                   QStringLiteral("Deutsch"), QString::fromUtf8("Français"), QString::fromUtf8("Русский")};
         flag->setToolTip(names.at(Settings::get()->Languages.indexOf(lang)));
         flag->setAccessibleName(flag->toolTip());
         flag->setFlat(true);

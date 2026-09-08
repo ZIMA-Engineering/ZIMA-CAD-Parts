@@ -157,3 +157,15 @@ Run
 See [local filters and performance](doc/filters.md) and [localization](doc/localization.md).
 The Windows release can be deployed to the repository root with windeployqt.
 Application translations are compiled and embedded automatically by qmake.
+
+## Local Windows release and generated files
+
+Run ZIMA-CAD-Parts.exe from the repository root. Keep its DLL files,
+QtWebEngineProcess.exe and deployed Qt folders beside it; these are runtime
+dependencies. The app includes English, Czech, German, French and Russian.
+The application catalogs are embedded, so loose app QM files are not needed.
+
+Build out of source (for example in .build-release) to avoid mixing generated
+UI headers, object files and source files. After deployment, intermediate
+build folders can be removed. Personal filter backups and local cleanup
+receipts are kept in .local-backups, which is excluded from Git.
