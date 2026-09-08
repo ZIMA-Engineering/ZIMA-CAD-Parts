@@ -24,6 +24,7 @@
 #include <QLocale>
 #include "mainwindow.h"
 #include "settings.h"
+#include "applicationlanguage.h"
 
 /**
 \mainpage ZIMA-CAD-Parts Developer Documentation
@@ -60,31 +61,8 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    QTranslator translator;
-    QString lang = Settings::get()->getCurrentLanguageCode();
-
-    QString filename = "zima-cad-parts_" + lang;
-    QStringList paths;
-
-    paths
-            << filename
-            << QApplication::applicationDirPath() + "/" + filename
-            << QApplication::applicationDirPath() + "/locale/" + filename
-            << ("locale/" + filename)
-            << (":/" + filename);
-
-#ifdef Q_OS_MAC
-    paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
-#endif
-
-    foreach(QString path, paths)
-        if( translator.load(path) )
-        {
-            a.installTranslator(&translator);
-            break;
-        }
-
-    MainWindow w(&translator);
+    applyApplicationLanguage(Settings::get()->getCurrentLanguageCode());
+    MainWindow w(nullptr);
     w.show();
 
     int ret = a.exec();

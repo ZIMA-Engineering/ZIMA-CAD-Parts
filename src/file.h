@@ -89,6 +89,12 @@ typedef enum {
     FILE_IMAGE,
     // audio
     FILE_AUDIO,
+    // ZIMA-CAD current documents and numbered archive copies
+    ZIMA_PART,
+    ZIMA_ASSEMBLY,
+    ZIMA_DRAWING,
+    ZIMA_FORMAT,
+    ZIMA_TITLE_BLOCK,
     // this must go last
     TYPES_COUNT,
     UNDEFINED

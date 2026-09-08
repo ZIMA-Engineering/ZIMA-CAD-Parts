@@ -64,6 +64,7 @@ public:
     void reloadParts();
 
     void reloadThumbnails();
+    void cancelThumbnails();
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QStringList mimeTypes() const;
@@ -96,6 +97,8 @@ private:
     ThumbnailManager *m_thumb;
     PrtReader *m_prtReader;
 
+    QHash<QString, int> m_thumbnailRows;
+    void prepareThumbnailRows();
     void setupColumns(const QString &path);
 
 private slots:
@@ -116,6 +119,8 @@ public:
     virtual QIcon   icon ( IconType type ) const;
     virtual QIcon   icon ( const QFileInfo & info ) const;
     virtual QString type ( const QFileInfo & info ) const;
+private:
+    mutable QHash<QString, QIcon> m_cadIcons;
 };
 
 #endif // FILEMODEL_H

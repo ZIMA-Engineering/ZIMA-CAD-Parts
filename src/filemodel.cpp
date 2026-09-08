@@ -24,6 +24,7 @@
 
 #include "filemodel.h"
 #include "settings.h"
+#include "localfilters.h"
 #include "errordialog.h"
 #include "directoryremover.h"
 #include "filecopier.h"
@@ -32,13 +33,32 @@
 #include "partcache.h"
 #include "prtreader.h"
 
+namespace {
+QFileInfoList versionFamily(const QFileInfo &selected)
+{
+    QFileInfoList result;
+    const auto files = PartCache::get()->parts(selected.absolutePath());
+    for (const QFileInfo &file : files) {
+        if (!file.isDir() && file.completeBaseName() == selected.completeBaseName()
+                && File::versionedTypes().contains(FileMetadata(file).type))
+            result.append(file);
+    }
+    return result;
+}
+}
+
 FileModel::FileModel(QObject *parent) :
     QAbstractItemModel(parent)
 {
     m_iconProvider = new FileIconProvider();
     m_thumb = new ThumbnailManager(this);
     m_prtReader = new PrtReader(this);
-    connect(m_thumb, SIGNAL(updateModel()), this, SLOT(updateThumbnails()));
+    connect(m_thumb, &ThumbnailManager::thumbnailReady, this, [this](const QString &file) {
+        const auto row = m_thumbnailRows.constFind(file);
+        if (row != m_thumbnailRows.cend())
+            emit dataChanged(index(row.value(), 1), index(row.value(), 1),
+                             {Qt::DecorationRole, Qt::ToolTipRole});
+    });
     connect(PartCache::get(), SIGNAL(cleared(QString)),
             this, SLOT(directoryCleared(QString)));
     connect(PartCache::get(), SIGNAL(directoryRenamed(QString,QString)),
@@ -55,7 +75,9 @@ FileModel::~FileModel()
 QModelIndex FileModel::index(int row, int column,
                              const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
+    if (parent.isValid() || row < 0 || column < 0
+            || row >= rowCount() || column >= columnCount())
+        return QModelIndex();
     return createIndex(row, column);
 }
 
@@ -73,7 +95,7 @@ int FileModel::columnCount(const QModelIndex & parent) const
 
 int FileModel::rowCount(const QModelIndex & parent) const
 {
-    if (!parent.column()) return 0;
+    if (parent.isValid() || m_path.isEmpty()) return 0;
     return PartCache::get()->count(m_path);
 }
 
@@ -81,7 +103,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 {
     auto pc = PartCache::get();
 
-    if (!index.isValid() || m_path.isEmpty() || !pc->count(m_path))
+    if (!index.isValid() || m_path.isEmpty() || index.row() >= pc->count(m_path))
         return QVariant();
 
     QFileInfo part = pc->partAt(m_path, index.row());
@@ -112,19 +134,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
         {
         case Qt::DecorationRole:
         {
-            // TODO/FIXME: this is quite slow. Think about optimization
-            FileMetadata m(part);
-            // generate thumbnail for image files
-            if (m.type == FileType::FILE_IMAGE)
-            {
-                return QPixmap(m.fileInfo.absoluteFilePath()).scaled(
-                           Settings::get()->GUIThumbWidth,
-                           Settings::get()->GUIThumbWidth,
-                           Qt::KeepAspectRatio
-                       );
-            }
-            else
-                return m_thumb->thumbnail(part);
+            return m_thumb->thumbnail(part);
             break;
         }
         case Qt::SizeHintRole:
@@ -132,7 +142,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
                          Settings::get()->GUIThumbWidth);
             break;
         case Qt::ToolTipRole:
-            return m_thumb->tooltip(part);
+            return m_thumb->tooltip(part, Settings::get()->GUIPreviewWidth);
             break;
         }
     } // additional metadata
@@ -150,9 +160,9 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 
 void FileModel::updateThumbnails()
 {
-    // TODO/FIXME: proper index subset for udpate
-    beginResetModel();
-    endResetModel();
+    if (rowCount() > 0)
+        emit dataChanged(index(0, 1), index(rowCount() - 1, 1),
+                         {Qt::DecorationRole, Qt::ToolTipRole});
 }
 
 QFileInfo FileModel::fileInfo(const QModelIndex &ix)
@@ -173,7 +183,7 @@ QString FileModel::findThumbnailPath(const QFileInfo &fi)
 void FileModel::setupColumns(const QString &path)
 {
     m_columnLabels.clear();
-    m_columnLabels << tr("Part name") << "Thumbnail";
+    m_columnLabels << tr("Part name") << tr("Thumbnail");
     m_columnLabels << MetadataCache::get()->parameterLabels(path);
 
     m_parameterHandles = MetadataCache::get()->parameterHandles(path);
@@ -187,8 +197,10 @@ void FileModel::directoryCleared(const QString &dir)
 
 void FileModel::directoryRenamed(const QString &oldName, const QString &newName)
 {
-    if (oldName == m_path)
+    if (oldName == m_path) {
         m_path = newName;
+        refreshModel();
+    }
 }
 
 void FileModel::directoryChanged(const QString &dir)
@@ -199,6 +211,8 @@ void FileModel::directoryChanged(const QString &dir)
 
 Qt::ItemFlags FileModel::flags(const QModelIndex& index) const
 {
+    if (!index.isValid())
+        return Qt::NoItemFlags;
     int col = index.column();
     int flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
 
@@ -316,62 +330,63 @@ void FileModel::setSelectedIndexes(const QModelIndexList &list)
 
 void FileModel::setDirectory(const QString &path)
 {
-    // this has to go before path != m_path check to reload the header translations
-    setupColumns(path);
-
-    if (path != m_path)
-    {
-        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-        m_thumb->setPath(path);
+    if (path != m_path) {
+        beginResetModel();
         m_prtReader->stop();
         m_path = path;
-
-        beginResetModel();
+        setupColumns(path);
+        m_thumb->setPath(path, Settings::get()->GUIThumbWidth);
+        prepareThumbnailRows();
         endResetModel();
-
-        QApplication::restoreOverrideCursor();
     }
-
-    // simulating "directory loaded" signal even when is the path the
-    // same as before to recalculate the column sizes in view
     emit directoryLoaded(m_path);
+}
+
+void FileModel::prepareThumbnailRows()
+{
+    m_thumbnailRows.clear();
+    const auto files = fileInfoList();
+    for (int row = 0; row < files.size(); ++row)
+        m_thumbnailRows.insert(files.at(row).absoluteFilePath(), row);
 }
 
 void FileModel::refreshModel()
 {
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
     beginResetModel();
+    setupColumns(m_path);
+    m_thumb->setPath(m_path, Settings::get()->GUIThumbWidth);
+    prepareThumbnailRows();
     endResetModel();
-
-    QApplication::restoreOverrideCursor();
+    emit directoryLoaded(m_path);
 }
 
 void FileModel::reloadParts()
 {
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
+    beginResetModel();
     PartCache::get()->refresh(m_path);
-
     setupColumns(m_path);
-    m_thumb->clear();
+    m_thumb->setPath(m_path, Settings::get()->GUIThumbWidth);
+    prepareThumbnailRows();
+    endResetModel();
     m_prtReader->load(m_path, fileInfoList());
+    emit directoryLoaded(m_path);
+}
 
-    QApplication::restoreOverrideCursor();
+void FileModel::cancelThumbnails()
+{
+    m_thumb->cancelPending();
 }
 
 void FileModel::reloadThumbnails()
 {
     m_thumb->clear();
+    updateThumbnails();
 }
 
 void FileModel::settingsChanged()
 {
-    //setDirectory(m_path);
+    refreshModel();
 }
-
-
 void FileModel::moveParts(FileMover *mv)
 {
     QStringList clearList;
@@ -392,12 +407,13 @@ void FileModel::moveParts(FileMover *mv)
         {
             QFileInfo fi(fname);
 
-            if (!Settings::get()->ShowProeVersions
-                    && metaCache->partVersions(m_path).contains(fi.completeBaseName()))
+            LocalFilters filters;
+            filters.load(dir, Settings::get()->ShowProeVersions);
+            if (!filters.showVersions && !fi.isDir()
+                    && File::versionedTypes().contains(FileMetadata(fi).type))
             {
                 // When moving Pro/E files, we need to find all part versions
-                QDir d(m_path);
-                mv->addSourceFiles(d.entryInfoList(QStringList() << (fi.completeBaseName() + ".*")));
+                mv->addSourceFiles(versionFamily(fi));
 
             } else {
                 mv->addSourceFile(fi);
@@ -453,14 +469,13 @@ void FileModel::deleteParts(DirectoryRemover *rm)
         {
             QFileInfo fi(fname);
 
-            if (!Settings::get()->ShowProeVersions
-                    && MetadataCache::get()->partVersions(m_path).contains(fi.completeBaseName()))
+            LocalFilters filters;
+            filters.load(dir, Settings::get()->ShowProeVersions);
+            if (!filters.showVersions && !fi.isDir()
+                    && File::versionedTypes().contains(FileMetadata(fi).type))
             {
                 // When deleting Pro/E files, we need to find all part versions
-                QDir d(m_path);
-                deleteList << d.entryInfoList(
-                               QStringList() << (fi.completeBaseName() + ".*")
-                           );
+                deleteList << versionFamily(fi);
 
             } else {
                 deleteList << fi;
@@ -541,12 +556,17 @@ QIcon FileIconProvider::icon ( IconType type ) const
 QIcon FileIconProvider::icon ( const QFileInfo & info ) const
 {
     FileMetadata fi(info);
-    QString s = QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(fi.type));
+    const bool zima = fi.type >= FileType::ZIMA_PART && fi.type <= FileType::ZIMA_TITLE_BLOCK;
+    QString s = QString(":/gfx/icons/%1.%2").arg(File::getInternalNameForFileType(fi.type),
+                                               zima ? "svg" : "png");
 
-    if (QFile::exists(s))
-        return QPixmap(s);
-
-    return QFileIconProvider().icon(info).pixmap(64);
+    if ((zima || File::versionedTypes().contains(fi.type)) && QFile::exists(s)) {
+        auto found = m_cadIcons.constFind(s);
+        if (found == m_cadIcons.cend())
+            found = m_cadIcons.insert(s, QIcon(s));
+        return found.value();
+    }
+    return QFileIconProvider::icon(info);
 }
 
 QString FileIconProvider::type ( const QFileInfo & info ) const

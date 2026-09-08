@@ -66,7 +66,7 @@ void PartCache::renameDirectory(const QString &oldDir, const QString &newDir)
         return;
 
     m_fsWatcher.removePath(oldDir);
-    m_parts.insert(newDir, m_parts[oldDir]);
+    m_parts.insert(newDir, listFiles(newDir));
     m_parts.remove(oldDir);
     m_fsWatcher.addPath(newDir);
     emit directoryRenamed(oldDir, newDir);
@@ -84,7 +84,8 @@ QFileInfoList PartCache::listFiles(const QString &dir)
     return d.entryInfoList(
                QDir::Files
                | QDir::Dirs
-               | QDir::Readable
+               | QDir::Hidden
+               | QDir::System
                | QDir::NoDotAndDotDot,
                QDir::Name
            );

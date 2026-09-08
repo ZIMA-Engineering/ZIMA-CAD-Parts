@@ -1,9 +1,12 @@
+#include <QEvent>
 #include "datasourcewidget.h"
 #include "datasourceview.h"
 #include "settings.h"
 #include "datasourcehistory.h"
 
 #include <QtDebug>
+#include <QShowEvent>
+#include <QTimer>
 
 
 DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
@@ -23,7 +26,23 @@ DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
     connect(m_history, SIGNAL(openDirectory(QString)),
             this, SLOT(setDirectory(QString)));
 
-    setupDataSources(dir);
+    m_currentDir = dir;
+}
+
+void DataSourceWidget::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    if (m_initialized || m_initializationQueued)
+        return;
+    m_initializationQueued = true;
+    QTimer::singleShot(0, this, [this] {
+        m_initializationQueued = false;
+        if (m_initialized || !isVisible())
+            return;
+        m_initialized = true;
+        setupDataSources(m_currentDir);
+        dirWidget->settingsChanged();
+    });
 }
 
 void DataSourceWidget::splitterMoved(int, int)
@@ -44,6 +63,8 @@ void DataSourceWidget::announceDirectoryChange(const QString &dir)
 
 void DataSourceWidget::settingsChanged()
 {
+    if (!m_initialized)
+        return;
     // Data sources
     if (Settings::get()->DataSourcesNeedsUpdate)
     {
@@ -75,6 +96,10 @@ QModelIndex DataSourceWidget::currentIndex()
 
 void DataSourceWidget::setDirectory(const QString &path)
 {
+    if (!m_initialized) {
+        m_currentDir = path;
+        return;
+    }
     for (int i = 0; i < dsList->count(); ++i)
     {
         DataSourceView *w = qobject_cast<DataSourceView*>(dsList->widget(i));
@@ -139,4 +164,12 @@ void DataSourceWidget::setupDataSources(const QString &dir)
 
     setDirectory(dir);
     m_history->track(dir);
+}
+
+void DataSourceWidget::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange) {
+        retranslateUi(this);
+    }
+    QWidget::changeEvent(event);
 }

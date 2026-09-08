@@ -678,7 +678,7 @@ void Metadata::pruneParts()
 {
     QDir d(m_path);
     QFileInfoList files = d.entryInfoList(QStringList(),
-                                          QDir::Files | QDir::Dirs | QDir::Readable,
+                                          QDir::Files | QDir::Dirs | QDir::Hidden | QDir::System | QDir::NoDotAndDotDot,
                                           QDir::Name);
 
     m_settings->beginGroup("Parts");

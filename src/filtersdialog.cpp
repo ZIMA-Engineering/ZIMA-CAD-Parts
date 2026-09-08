@@ -1,89 +1,61 @@
-/*
-  ZIMA-CAD-Parts
-  http://www.zima-construction.cz/software/ZIMA-Parts
-
-  Copyright (C) 2011-2012 Jakub Skokan <aither@havefun.cz>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include <QGridLayout>
-#include <QVBoxLayout>
-#include <QGroupBox>
-#include <QCheckBox>
-
 #include "filtersdialog.h"
-#include "ui_filtersdialog.h"
+#include "localfilters.h"
 #include "settings.h"
+#include <QCheckBox>
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPlainTextEdit>
+#include <QVBoxLayout>
 
-
-FiltersDialog::FiltersDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::FiltersDialog)
+FiltersDialog::FiltersDialog(const QString &directory, QWidget *parent)
+    : QDialog(parent), m_directory(directory)
 {
-    ui->setupUi(this);
-
-    int cnt = Settings::get()->FilterGroups.count();
-    for(int i = 0; i < cnt; i++)
-    {
-        ui->treeWidget->addTopLevelItem(Settings::get()->FilterGroups[i].widget());
-        ui->listWidget->addItem(Settings::get()->FilterGroups[i].label);
-    }
-
-    ui->treeWidget->expandAll();
-    ui->treeWidget->setFocus();
-
-    connect(ui->listWidget, SIGNAL(currentRowChanged(int)),
-            this, SLOT(listWidget_currentRowChanged(int)));
-    connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-            this, SLOT(treeWidget_currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    setWindowTitle(tr("Filters"));
+    resize(520, 360);
+    auto layout = new QVBoxLayout(this);
+    auto explanation = new QLabel(tr("Show all files except the names or patterns below.\n"
+        "One pattern per line, for example *.bak or Thumbs.db.\n"
+        "These settings apply only to this folder; subfolders do not inherit them."), this);
+    explanation->setWordWrap(true);
+    layout->addWidget(explanation);
+    LocalFilters filters;
+    filters.load(directory, Settings::get()->ShowProeVersions);
+    m_hidden = new QPlainTextEdit(this);
+    m_hidden->setPlainText(filters.hidden.join('\n'));
+    layout->addWidget(m_hidden);
+    m_versions = new QCheckBox(tr("Show all Pro/E versions (otherwise only the newest)"), this);
+    m_versions->setChecked(filters.showVersions);
+    layout->addWidget(m_versions);
+    m_zimaVersions = new QCheckBox(tr("Show ZIMA-CAD archive versions (.1, .2, ...)"), this);
+    m_zimaVersions->setChecked(filters.showZimaVersions);
+    layout->addWidget(m_zimaVersions);
+    auto buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+    connect(buttons, &QDialogButtonBox::accepted, this, &FiltersDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    layout->addWidget(buttons);
 }
-
-FiltersDialog::~FiltersDialog()
-{
-    delete ui;
-}
-
 void FiltersDialog::accept()
 {
-    int cnt = Settings::get()->FilterGroups.count();
-
-    for(int i = 0; i < cnt; i++)
-        Settings::get()->FilterGroups[i].apply();
-
-    Settings::get()->recalculateFilters();
-    QDialog::accept();
-}
-
-void FiltersDialog::listWidget_currentRowChanged(int row)
-{
-    ui->listWidget->blockSignals(true);
-    ui->treeWidget->setCurrentItem(Settings::get()->FilterGroups[row].currentItem());
-    ui->listWidget->blockSignals(false);
-}
-
-void FiltersDialog::treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
-{
-    if (!current)
+    const QString path = LocalFilters::filePath(m_directory);
+    if (!QDir().mkpath(QFileInfo(path).absolutePath())) {
+        QMessageBox::warning(this, tr("Filters"), tr("Cannot create the settings folder."));
         return;
-
-    ui->listWidget->blockSignals(true);
-    QTreeWidgetItem *parent = current->parent();
-    if (!parent)
-        parent = current;
-
-    int ix = ui->treeWidget->indexOfTopLevelItem(parent);
-    ui->listWidget->setCurrentRow(ix);
-    ui->listWidget->blockSignals(false);
+    }
+    QStringList hidden;
+    for (const QString &line : m_hidden->toPlainText().split('\n')) {
+        if (!line.trimmed().isEmpty())
+            hidden.append(line.trimmed());
+    }
+    hidden.removeDuplicates();
+    QSettings settings(path, QSettings::IniFormat);
+    settings.setValue("Filters/Hide", hidden);
+    settings.setValue("Filters/ShowVersions", m_versions->isChecked());
+    settings.setValue("Filters/ShowZimaVersions", m_zimaVersions->isChecked());
+    settings.sync();
+    if (settings.status() != QSettings::NoError) {
+        QMessageBox::warning(this, tr("Filters"), tr("Cannot save the filters."));
+        return;
+    }
+    QDialog::accept();
 }

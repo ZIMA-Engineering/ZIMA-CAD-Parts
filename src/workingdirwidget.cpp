@@ -1,3 +1,4 @@
+#include <QEvent>
 #include <QFileDialog>
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -23,4 +24,12 @@ WorkingDirWidget::~WorkingDirWidget()
 void WorkingDirWidget::settingsChanged()
 {
     ui->workingDirectoryEdit->setText(Settings::get()->getWorkingDir());
+}
+
+void WorkingDirWidget::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+    }
+    QWidget::changeEvent(event);
 }

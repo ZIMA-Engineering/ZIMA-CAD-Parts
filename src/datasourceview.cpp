@@ -10,6 +10,7 @@
 #include "directoryremover.h"
 #include "scriptrunner.h"
 #include "filecopier.h"
+#include "partcache.h"
 
 #include <QHeaderView>
 #include <QDesktopServices>
@@ -269,6 +270,16 @@ void DataSourceView::deleteDirectory()
         DirectoryRemover *rm = new DirectoryRemover(fi, this);
         rm->setMessage(tr("Please wait while the directory is being removed..."));
         rm->work();
+        rm->deleteLater();
+        if (!QFileInfo::exists(fi.absoluteFilePath())) {
+            const QString parentPath = fi.absolutePath();
+            // QFileSystemModel observes the actual removal and updates that
+            // branch. Keep its root and expanded siblings intact.
+            if (navigateToDirectory(parentPath))
+                emit directorySelected(parentPath);
+            MetadataCache::get()->clearBelow(fi.absoluteFilePath());
+            PartCache::get()->clear(fi.absoluteFilePath());
+        }
     }
 }
 
@@ -285,10 +296,13 @@ bool DataSourceView::navigateToDirectory(const QString &path)
     // note: all QFileSystemModels have the index(path) so we need to
     // handle prefixes. ::match() did not work here.
     QString root = m_model->filePath(m_proxy->mapToSource(rootIndex()));
-    if (!path.startsWith(root))
+    const QString relative = QDir(root).relativeFilePath(path);
+    if (relative == ".." || relative.startsWith("../") || QDir::isAbsolutePath(relative))
         return false;
 
     auto index = m_proxy->mapFromSource(m_model->index(path));
+    if (!index.isValid())
+        return false;
     setCurrentIndex(index);
     setExpanded(index, true);
 

@@ -34,6 +34,7 @@ public slots:
     void directoryChanged();
 
 protected:
+    void hideEvent(QHideEvent *event) override;
     void scrollContentsBy(int dx, int dy);
 
 private:

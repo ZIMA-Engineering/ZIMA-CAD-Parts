@@ -1,3 +1,4 @@
+#include <QEvent>
 #include "maintoolbar.h"
 #include "ui_maintoolbar.h"
 #include "languageflagswidget.h"
@@ -94,4 +95,13 @@ void MainToolBar::canGoBackChange(bool can)
 void MainToolBar::canGoForwardChange(bool can)
 {
     ui->actionHistoryForward->setEnabled(can);
+}
+
+void MainToolBar::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+        ui->actionSettings->menu()->actions().first()->setText(tr("About..."));
+    }
+    QToolBar::changeEvent(event);
 }

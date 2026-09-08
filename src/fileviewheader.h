@@ -37,6 +37,9 @@ protected:
     QSize sizeHint() const;
     void showEvent(QShowEvent *e);
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     FileModel *m_model;
     QMap<int, QLineEdit*> m_edits;

@@ -78,7 +78,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
 
     m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
     m_ui->previewWidthSpinBox->setValue(Settings::get()->GUIPreviewWidth);
-    m_ui->languageComboBox->setCurrentIndex(Settings::get()->langIndex(Settings::get()->getCurrentLanguageCode()));
+    m_ui->languageComboBox->setCurrentIndex(Settings::get()->langIndex(Settings::get()->languagePreference()));
     m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
     m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
     m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
@@ -152,33 +152,8 @@ void SettingsDialog::accept()
 
 
     QString lang = Settings::get()->langIndexToName( m_ui->languageComboBox->currentIndex() );
-    if (lang != Settings::get()->getCurrentLanguageCode())
-    {
-        qApp->removeTranslator(*translator);
-
-        QTranslator *t = new QTranslator(parent());
-        QString filename = "zima-cad-parts_" + (lang == "detect" ? QLocale::system().name() : lang);
-        QStringList paths;
-
-        paths
-                << filename
-                << ("locale/" + filename)
-                << (":/" + filename);
-
-#ifdef Q_OS_MAC
-        paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
-#endif
-
-        foreach(QString path, paths)
-            if( t->load(path) )
-            {
-                qApp->installTranslator(t);
-                *translator = t;
-                break;
-            }
-    }
-
     Settings::get()->setCurrentLanguageCode(lang);
+    MetadataCache::get()->clear();
 
     QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
     int i = 0;

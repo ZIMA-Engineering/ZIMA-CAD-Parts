@@ -23,6 +23,9 @@ public:
 
     void settingsChanged();
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     Ui::WorkingDirWidget *ui;
 
