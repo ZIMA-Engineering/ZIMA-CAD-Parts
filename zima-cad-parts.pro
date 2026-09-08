@@ -351,6 +351,8 @@ unix:!macx {
     desktop.files = dist/linux/$${APP_ID}.desktop
     desktop.path = $${install_prefix}/share/applications
 
+    # Resolve the generated catalogs before constructing the install target.
+    load(lrelease)
     translations.files = $$QM_FILES
     translations.CONFIG += no_check_exist
     translations.path = $${install_prefix}/share/ZIMA-CAD-Parts/locale
