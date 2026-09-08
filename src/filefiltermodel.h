@@ -1,36 +1,27 @@
 #ifndef FILEFILTERMODEL_H
 #define FILEFILTERMODEL_H
-
 #include <QSortFilterProxyModel>
 #include <QMap>
-
-#include "filefilterconfig.h"
+#include <QBitArray>
+#include <QTimer>
 
 class FileFilterModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
-    explicit FileFilterModel(QObject *parent = 0);
+    explicit FileFilterModel(QObject *parent = nullptr);
+    void setSourceModel(QAbstractItemModel *model) override;
     void setShowProeVersions(bool show);
-    void setDirectory(const QString &directory);
-
 public slots:
     void filterColumn(int column, const QString &text);
     void resetFilters();
-
 protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
-    bool filterAcceptsColumn(int source_column, const QModelIndex & source_parent) const override;
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
-
+    bool filterAcceptsRow(int row, const QModelIndex &parent) const override;
 private:
-    bool m_showProeVersions;
-    QString m_directory;
-    FileFilterConfig m_config;
+    bool m_showProeVersions = true;
     QMap<int, QString> m_filters;
-
-    bool isFiltered(const QString &path, const QString &name) const;
-
+    QTimer m_filterTimer;
+    mutable bool m_prepared = false;
+    mutable QBitArray m_accepted;
 };
-
-#endif // FILEFILTERMODEL_H
+#endif

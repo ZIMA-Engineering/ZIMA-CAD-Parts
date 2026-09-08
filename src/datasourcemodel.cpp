@@ -27,7 +27,7 @@ DataSourceModel::DataSourceModel(QObject *parent) :
     QFileSystemModel(parent)
 {
     setReadOnly(true);
-    setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
+    setFilter(QDir::Dirs|QDir::Hidden|QDir::System|QDir::NoDotAndDotDot);
     m_iconProvider = new DataSourceIconProvider();
     // do not install icon provider. The icon handling is quite complex. See ServersIconProvider
     //setIconProvider(m_iconProvider);

@@ -53,7 +53,15 @@ public slots:
     void goToWorkingDirectory();
     void openAboutPage();
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
+    bool m_initialized = false;
+    bool m_initializationQueued = false;
     DataSourceHistory *m_history;
     QStringList m_zimaUtils;
     QString m_currentDir;

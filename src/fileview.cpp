@@ -35,11 +35,13 @@ FileView::FileView(QWidget *parent) :
     connect(selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(updateSelection(QItemSelection,QItemSelection)));
 
+    setUniformRowHeights(true);
     setSortingEnabled(true);
     sortByColumn(100, Qt::AscendingOrder);
 
     m_header = new FileViewHeader(m_model, this);
     setHeader(m_header);
+    m_header->setResizeContentsPrecision(50);
 
     connect(m_header, SIGNAL(filterColumn(int,QString)),
             m_proxy, SLOT(filterColumn(int,QString)));
@@ -73,14 +75,11 @@ void FileView::setDirectory(const QString &path)
         return;
     }
     m_path = path;
-    m_proxy->setDirectory(m_path);
     // it has to be reset here because calling QFileSystemModel's reset
     // or begin/end alternatives results in "/" as a root path
     m_model->setDirectory(m_path);
     m_proxy->resetFilters();
     //setRootIndex(m_proxy->mapFromSource(m_model->setRootPath(m_path)));
-    resizeColumnToContents();
-
     sortByColumn(0, MetadataCache::get()->sortOrder(m_path));
 }
 
@@ -101,7 +100,10 @@ void FileView::resizeColumnToContents()
     int columnCnt = m_model->columnCount(QModelIndex());
     for (int i = 0; i < columnCnt; i++)
     {
-        QTreeView::resizeColumnToContents(i);
+        if (i == 1)
+            setColumnWidth(i, Settings::get()->GUIThumbWidth + 12);
+        else
+            QTreeView::resizeColumnToContents(i);
         // hack. Probably some QFontMetrics for header should be used. But not urgent for now.
         if (columnWidth(i) < 50)
             setColumnWidth(i, 50);
@@ -110,9 +112,9 @@ void FileView::resizeColumnToContents()
 
 void FileView::settingsChanged()
 {
-    m_model->settingsChanged();
     m_proxy->setShowProeVersions(Settings::get()->ShowProeVersions);
-    refreshModel();
+    m_model->settingsChanged();
+    resizeColumnToContents();
 }
 
 QFileInfo FileView::fileInfo(const QModelIndex &filteredIndex)
@@ -191,6 +193,12 @@ void FileView::directoryChanged()
     m_model->reloadParts();
     m_header->newDirectory(m_path);
     sortByColumn(0, MetadataCache::get()->sortOrder(m_path));
+}
+
+void FileView::hideEvent(QHideEvent *event)
+{
+    m_model->cancelThumbnails();
+    QTreeView::hideEvent(event);
 }
 
 void FileView::scrollContentsBy(int dx, int dy)

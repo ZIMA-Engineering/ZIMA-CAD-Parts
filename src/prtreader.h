@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <QPointer>
 #include <QFileInfoList>
 
 class PtrReaderThread : public QThread
@@ -29,6 +30,7 @@ class PrtReader : public QObject
     Q_OBJECT
 public:
     explicit PrtReader(QObject *parent = nullptr);
+    ~PrtReader() override;
     bool isRunning() const;
 
 signals:
@@ -39,7 +41,7 @@ public slots:
     void stop();
 
 private:
-    PtrReaderThread *m_thread;
+    QPointer<PtrReaderThread> m_thread;
     QString m_dir;
 
 private slots:

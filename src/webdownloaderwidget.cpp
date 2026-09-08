@@ -34,7 +34,7 @@ void WebDownloaderWidget::stateChange(QWebEngineDownloadRequest::DownloadState s
 {
     switch (state) {
     case QWebEngineDownloadRequest::DownloadCancelled:
-        ui->statusLabel->setText("Cancelled by user");
+        ui->statusLabel->setText(tr("Cancelled by user"));
         break;
 
     case QWebEngineDownloadRequest::DownloadCompleted:
@@ -55,7 +55,7 @@ void WebDownloaderWidget::stateChange(QWebEngineDownloadRequest::DownloadState s
 
 void WebDownloaderWidget::abort()
 {
-    ui->statusLabel->setText("Cancelling...");
+    ui->statusLabel->setText(tr("Cancelling..."));
     ui->abortButton->hide();
     m_download->cancel();
 }

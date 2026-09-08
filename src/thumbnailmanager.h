@@ -1,64 +1,67 @@
 #ifndef THUMBNAILMANAGER_H
 #define THUMBNAILMANAGER_H
-
-#include <QObject>
+#include <QCache>
 #include <QFileInfo>
+#include <QHash>
+#include <QImage>
+#include <QMutex>
 #include <QPixmap>
+#include <QQueue>
+#include <QSet>
 #include <QThread>
+#include <QWaitCondition>
+#include <atomic>
+#include <functional>
 
-#include "metadata.h"
-
-//! \brief Thumbnail map: baseName -> full path to the file (including the file name)
-typedef QHash<QString,QPair<QString,QPixmap> > ThumbnailMap;
-
+using ThumbnailPaths = QHash<QString, QString>;
 
 class ThumbnailWorker : public QThread
 {
     Q_OBJECT
-
 public:
-    ThumbnailWorker(const QString &path);
-
+    explicit ThumbnailWorker(QObject *parent = nullptr);
+    ~ThumbnailWorker() override;
+    void setContext(quint64 generation, const QString &directory, int width);
+    void enqueue(quint64 generation, const QFileInfo &file);
+    static ThumbnailPaths discover(const QString &directory, const std::function<bool()> &cancelled);
 signals:
-    void dataReady(const ThumbnailMap &data);
-
+    void sourcesReady(quint64 generation, const ThumbnailPaths &paths);
+    void imageReady(quint64 generation, const QString &file, const QImage &image);
 protected:
-    void run();
-
+    void run() override;
 private:
-    QString m_path;
-
-    void cacheThumbnails(const QString &dirpath, ThumbnailMap* map);
-    void getThumbs(Metadata *m, ThumbnailMap* map);
+    QMutex m_mutex;
+    QWaitCondition m_workAvailable;
+    QQueue<QFileInfo> m_queue;
+    QString m_directory;
+    int m_width = 32;
+    std::atomic<quint64> m_generation{0};
+    bool m_stopping = false;
 };
 
 class ThumbnailManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit ThumbnailManager(QObject *parent = 0);
-
-    QPixmap thumbnail(const QFileInfo &fi);
-    QString tooltip(const QFileInfo &fi);
-    QString path(const QFileInfo &fi);
-
-signals:
-    void updateModel();
-
-public slots:
-    void setPath(const QString &path);
+    explicit ThumbnailManager(QObject *parent = nullptr);
+    QPixmap thumbnail(const QFileInfo &file);
+    QString tooltip(const QFileInfo &file, int width = 256) const;
+    QString path(const QFileInfo &file);
+    void setPath(const QString &path, int width = 32);
     void clear();
-    void dataReady(const ThumbnailMap &data);
-
+    void cancelPending();
+signals:
+    void thumbnailReady(const QString &file);
 private:
     ThumbnailWorker *m_worker;
-
     QString m_path;
+    int m_width = 32;
+    quint64 m_generation = 0;
     QPixmap m_loading;
-    ThumbnailMap m_cache;
-    bool m_isLoading;
-
-    void load();
+    QCache<QString, QPixmap> m_cache;
+    QSet<QString> m_pending;
+    QSet<QString> m_missing;
+    ThumbnailPaths m_sources;
+    bool m_sourcesLoaded = false;
 };
-
-#endif // THUMBNAILMANAGER_H
+#endif

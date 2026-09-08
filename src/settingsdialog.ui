@@ -90,21 +90,11 @@
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="languageComboBox">
-            <item>
-             <property name="text">
-              <string>Detect automatically</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>English</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Česky</string>
-             </property>
-            </item>
+            <item><property name="text"><string>Detect automatically</string></property></item>
+            <item><property name="text"><string notr="true">English</string></property></item>
+            <item><property name="text"><string notr="true">Čeština</string></property></item>
+            <item><property name="text"><string notr="true">Deutsch</string></property></item>
+            <item><property name="text"><string notr="true">Français</string></property></item>
            </widget>
           </item>
           <item row="2" column="0">

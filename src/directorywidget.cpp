@@ -614,7 +614,7 @@ void DirectoryWidget::moveSelectedParts()
 
 void DirectoryWidget::setFiltersDialog()
 {
-    FiltersDialog dlg(m_currentRootPath, this);
+    FiltersDialog dlg(ui->partsTreeView->currentPath(), this);
 
     if (dlg.exec())
     {

@@ -1,3 +1,5 @@
+win32:DEFINES += NOMINMAX
+
 OCCT_AVAILABLE = 0
 
 defineTest(occtHasLibrary) {

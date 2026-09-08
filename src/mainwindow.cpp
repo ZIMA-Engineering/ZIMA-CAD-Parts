@@ -27,6 +27,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QShortcut>
+#include <QTimer>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -110,8 +111,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
     if (Settings::get()->GUISplashEnabled)
     {
-        SleeperThread::msleep(Settings::get()->GUISplashDuration);
-        splash->finish(this);
+        splash->setAttribute(Qt::WA_DeleteOnClose);
+        QTimer::singleShot(qMax(0, Settings::get()->GUISplashDuration),
+                          splash, &QWidget::close);
     }
 }
 

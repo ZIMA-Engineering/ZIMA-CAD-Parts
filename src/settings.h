@@ -61,7 +61,7 @@ public:
         ENGLISH,
         CZECH,
         GERMAN,
-        RUSSIAN
+        FRENCH
     };
 
     //! The main access method to settings
@@ -76,6 +76,7 @@ public:
      * Returns language code in QLocale::name() form. Eg. en_EN
      */
     QString getCurrentLanguageCode();
+    QString languagePreference() const { return Language; }
     /** \brief Set language code.
      *
      * \param lang a QLocale::name() form of string or "default"
@@ -146,7 +147,7 @@ public:
     void recalculateFilters();
 
     //! Flag to show Pro/E versions \todo what is it?
-    bool ShowProeVersions;
+    bool ShowProeVersions = true;
 
     //! Available languages in QLocale::name() form (en_EN,...)
     QStringList Languages;

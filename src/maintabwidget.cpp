@@ -1,3 +1,4 @@
+#include <QEvent>
 #include "maintabwidget.h"
 #include "ui_maintabwidget.h"
 #include "datasourcewidget.h"
@@ -18,7 +19,7 @@ MainTabWidget::MainTabWidget(QWidget *parent) :
     addTabBtn->setToolTip(tr("Open a new tab"));
     connect(addTabBtn, SIGNAL(clicked()), this, SLOT(addNewTab()));
 
-    int i = addTab(new QLabel("Add tabs by pressing \"+\""), QString());
+    int i = addTab(new QLabel(tr("Add tabs by pressing \"+\"")), QString());
     setTabEnabled(i, false);
     tabBar()->setTabButton(i, QTabBar::RightSide, addTabBtn);
 
@@ -95,6 +96,7 @@ void MainTabWidget::load()
     if (tabDirs.empty())
     {
         addDataSourceWidget(Settings::get()->getWorkingDir());
+        m_loading = false;
         return;
     }
 
@@ -202,4 +204,16 @@ void MainTabWidget::save()
     }
 
     Settings::get()->setMainTabs(tabDirs, currentIndex());
+}
+
+void MainTabWidget::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+        if (auto label = qobject_cast<QLabel *>(widget(count() - 1)))
+            label->setText(tr("Add tabs by pressing \"+\""));
+        if (auto button = tabBar()->tabButton(count() - 1, QTabBar::RightSide))
+            button->setToolTip(tr("Open a new tab"));
+    }
+    QTabWidget::changeEvent(event);
 }

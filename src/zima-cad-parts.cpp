@@ -30,6 +30,7 @@
 #include "browserprofilemanager.h"
 #include "mainwindow.h"
 #include "settings.h"
+#include "applicationlanguage.h"
 
 /**
 \mainpage ZIMA-CAD-Parts Developer Documentation
@@ -86,41 +87,11 @@ int main(int argc, char *argv[])
                 QIcon(":/gfx/icon.png"));
     QApplication::setWindowIcon(applicationIcon);
 
-    QTranslator translator;
-    QString lang = Settings::get()->getCurrentLanguageCode();
-
-    QString filename = "zima-cad-parts_" + lang;
-    QStringList paths;
-    QString installedTranslation = QStandardPaths::locate(
-                QStandardPaths::GenericDataLocation,
-                "ZIMA-CAD-Parts/locale/" + filename + ".qm");
-
-    paths
-            << filename
-            << QApplication::applicationDirPath() + "/" + filename
-            << QApplication::applicationDirPath() + "/locale/" + filename
-            << ("locale/" + filename)
-            << (":/" + filename);
-
-    if (!installedTranslation.isEmpty())
-        paths << installedTranslation;
-
-#ifdef Q_OS_MAC
-    paths << QCoreApplication::applicationDirPath() + "/../../../locale/" + filename;
-    paths << QCoreApplication::applicationDirPath() + "/../Resources/" + filename;
-#endif
-
-    foreach(QString path, paths)
-        if( translator.load(path) )
-        {
-            a.installTranslator(&translator);
-            break;
-        }
-
+    applyApplicationLanguage(Settings::get()->getCurrentLanguageCode());
     int ret = 0;
 
     {
-        MainWindow w(&translator);
+        MainWindow w(nullptr);
         w.showMaximized();
 
         ret = a.exec();

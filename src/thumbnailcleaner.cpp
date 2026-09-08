@@ -68,7 +68,7 @@ QFileInfoList ThumbnailCleaner::findUnusedThumbnails(const QString &directory) c
     {
         QFileInfo fi(thumbDir.absoluteFilePath(thumb));
 
-        if (!baseNames.contains(fi.baseName()))
+        if (!baseNames.contains(File::partBaseName(fi)))
         {
             qDebug() << "ThumbnailCleaner: thumbnail without match" << fi.absoluteFilePath();
             unused << fi;

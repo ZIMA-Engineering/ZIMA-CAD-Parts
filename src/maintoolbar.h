@@ -27,6 +27,9 @@ signals:
     void aboutRequested();
     void refreshRequested();
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     Ui::MainToolBar *ui;
     WorkingDirWidget *m_wdirWidget;

@@ -9,6 +9,7 @@
 #include <OpenGl_Caps.hxx>
 #include <Standard_Version.hxx>
 #include <V3d_View.hxx>
+#include <Graphic3d_Vec2.hxx>
 
 Quantity_Color OcctQtTools::qtColorToOcct(const QColor &color)
 {

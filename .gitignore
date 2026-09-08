@@ -9,3 +9,22 @@ moc_*.cpp
 moc_*.h
 qrc_*.cpp
 ui_*.h
+
+.build-*/
+
+# Local Windows release and Qt deployment (generated)
+/*.exe
+/*.dll
+/zima-cad-parts_cs_CZ.qm
+/generic/
+/iconengines/
+/imageformats/
+/networkinformation/
+/platforms/
+/position/
+/qml/
+/qmltooling/
+/resources/
+/styles/
+/tls/
+/translations/

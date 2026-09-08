@@ -37,6 +37,17 @@ QString File::getInternalNameForFileType(FileType::FileType type)
 {
     switch(type)
     {
+    case FileType::ZIMA_PRT:
+        return "zima-cad/part";
+    case FileType::ZIMA_ASM:
+        return "zima-cad/assembly";
+    case FileType::ZIMA_DRW:
+        return "zima-cad/drawing";
+    case FileType::ZIMA_FORMAT:
+        return "zima-cad/drawing-format";
+    case FileType::ZIMA_TITLE_BLOCK:
+        return "zima-cad/title-block";
+
     case FileType::PROE_PRT:
         return "prt_proe";
     case FileType::PROE_ASM:
@@ -47,10 +58,6 @@ QString File::getInternalNameForFileType(FileType::FileType type)
         return "frm";
     case FileType::PROE_NEU:
         return "neu_proe";
-    case FileType::ZIMA_PRT:
-    case FileType::ZIMA_ASM:
-    case FileType::ZIMA_DRW:
-        return "undefined";
     case FileType::CATPART:
         return "catpart";
     case FileType::CATPRODUCT:
@@ -136,6 +143,17 @@ QString File::getLabelForFileType(FileType::FileType type)
 {
     switch(type)
     {
+    case FileType::ZIMA_PRT:
+        return "*.prtz";
+    case FileType::ZIMA_ASM:
+        return "*.asmz";
+    case FileType::ZIMA_DRW:
+        return "*.drwz";
+    case FileType::ZIMA_FORMAT:
+        return "*.frmz";
+    case FileType::ZIMA_TITLE_BLOCK:
+        return "*.tblz";
+
     case FileType::PROE_PRT:
         return "*.prt";
     case FileType::PROE_ASM:
@@ -146,12 +164,6 @@ QString File::getLabelForFileType(FileType::FileType type)
         return "*.frm";
     case FileType::PROE_NEU:
         return "*.neu";
-    case FileType::ZIMA_PRT:
-        return "*.prtz";
-    case FileType::ZIMA_ASM:
-        return "*.asmz";
-    case FileType::ZIMA_DRW:
-        return "*.drwz";
     case FileType::CATPART:
         return "*.catpart";
     case FileType::CATPRODUCT:
@@ -237,6 +249,17 @@ QString File::getRxForFileType(FileType::FileType type)
 {
     switch(type)
     {
+    case FileType::ZIMA_PRT:
+        return "^.+\\.prtz(?:\\.[0-9]+)?$";
+    case FileType::ZIMA_ASM:
+        return "^.+\\.asmz(?:\\.[0-9]+)?$";
+    case FileType::ZIMA_DRW:
+        return "^.+\\.drwz(?:\\.[0-9]+)?$";
+    case FileType::ZIMA_FORMAT:
+        return "^.+\\.frmz(?:\\.[0-9]+)?$";
+    case FileType::ZIMA_TITLE_BLOCK:
+        return "^.+\\.tblz(?:\\.[0-9]+)?$";
+
     case FileType::PROE_PRT:
         return "((^.+\\.prt)\\.(\\d+)$)";
     case FileType::PROE_ASM:
@@ -247,12 +270,6 @@ QString File::getRxForFileType(FileType::FileType type)
         return "((^.+\\.frm)\\.(\\d+)$)";
     case FileType::PROE_NEU:
         return "((^.+\\.neu)\\.(\\d+)$)";
-    case FileType::ZIMA_PRT:
-        return "(^.+\\.prtz(?:\\.\\d+)?$)";
-    case FileType::ZIMA_ASM:
-        return "(^.+\\.asmz(?:\\.\\d+)?$)";
-    case FileType::ZIMA_DRW:
-        return "(^.+\\.drwz(?:\\.\\d+)?$)";
     case FileType::CATPART:
         return "(^.+\\.catpart$)";
     case FileType::CATPRODUCT:
@@ -376,7 +393,7 @@ QString File::partBaseName(const QFileInfo &fileInfo)
         return fileInfo.fileName();
 
     static const QRegularExpression cadName(
-                "^(.+)\\.(?:prt|asm|drw|frm|neu|prtz|asmz|drwz)(?:\\.\\d+)?$",
+                "^(.+)\\.(?:prt|asm|drw|frm|neu|prtz|asmz|drwz|frmz|tblz)(?:\\.\\d+)?$",
                 QRegularExpression::CaseInsensitiveOption);
     const QRegularExpressionMatch match = cadName.match(fileInfo.fileName());
     if (match.hasMatch())
@@ -429,10 +446,20 @@ FileMetadata::~FileMetadata()
 
 void FileMetadata::detectFileType()
 {
+    static const QList<QRegularExpression> expressions = [] {
+        QList<QRegularExpression> result;
+        for (int i = 0; i < FileType::TYPES_COUNT; ++i) {
+            QRegularExpression rx(File::getRxForFileType((FileType::FileType)i),
+                                  QRegularExpression::CaseInsensitiveOption);
+            rx.optimize();
+            result.append(rx);
+        }
+        return result;
+    }();
+    const QString name = fileInfo.fileName();
     for(int i = 0; i < FileType::TYPES_COUNT; i++)
     {
-        QRegularExpression rx(File::getRxForFileType((FileType::FileType)i), QRegularExpression::CaseInsensitiveOption);
-        auto match = rx.match(fileInfo.fileName());
+        auto match = expressions.at(i).match(name);
 
         if(match.hasMatch())
         {

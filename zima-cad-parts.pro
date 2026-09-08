@@ -54,7 +54,6 @@ SOURCES += src/zima-cad-parts.cpp \
     src/settingsdialog.cpp \
     src/qtkeychainsecretstore.cpp \
     src/file.cpp \
-    src/filefilterconfig.cpp \
     src/filemodel.cpp \
     src/addeditdatasource.cpp \
     src/settings.cpp \
@@ -164,7 +163,6 @@ HEADERS += src/mainwindow.h \
     src/settingsdialog.h \
     src/qtkeychainsecretstore.h \
     src/file.h \
-    src/filefilterconfig.h \
     src/filemodel.h \
     src/addeditdatasource.h \
     src/settings.h \
@@ -251,7 +249,6 @@ FORMS += mainwindow.ui \
     settingsdialog.ui \
     addeditdatasource.ui \
     src/directorycopyasdialog.ui \
-    src/filtersdialog.ui \
     src/errordialog.ui \
     src/extensions/productview/dxfproductview.ui \
     src/extensions/productview/pdfproductview.ui \
@@ -317,7 +314,9 @@ OTHER_FILES += \
     src/extensions/navbar/styles/office2007silver.css \
     src/extensions/navbar/COPYING
 
-TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts
+TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts locale/zima-cad-parts_de_DE.ts locale/zima-cad-parts_fr_FR.ts
+CONFIG += lrelease embed_translations
+QM_FILES_RESOURCE_PREFIX = /i18n
 
 win32-msvc:DEFINES += _USE_MATH_DEFINES
 win32:QMAKE_CXXFLAGS += /MP
@@ -352,7 +351,8 @@ unix:!macx {
     desktop.files = dist/linux/$${APP_ID}.desktop
     desktop.path = $${install_prefix}/share/applications
 
-    translations.files = locale/zima-cad-parts_cs_CZ.qm
+    translations.files = $$QM_FILES
+    translations.CONFIG += no_check_exist
     translations.path = $${install_prefix}/share/ZIMA-CAD-Parts/locale
 
     icon16.files = dist/icons/hicolor/16x16/apps/$${APP_ID}.png
@@ -390,3 +390,5 @@ DISTFILES += \
     doc/password-manager.md \
     doc/users.md \
     $${APP_ICON_FILES}
+
+HEADERS += src/localfilters.h src/applicationlanguage.h

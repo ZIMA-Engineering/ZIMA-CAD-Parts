@@ -1,4 +1,5 @@
 #include "settings.h"
+#include "applicationlanguage.h"
 #include "zimautils.h"
 #include "filefilters/extensionfilter.h"
 #include "filefilters/versionfilter.h"
@@ -37,7 +38,7 @@ void Settings::load()
 
     DataSourcesNeedsUpdate = false;
 
-    Languages << "en_US" << "cs_CZ" << "de_DE" << "ru_RU";
+    Languages << "en_US" << "cs_CZ" << "de_DE" << "fr_FR";
     Language = s.value("Language", "detect").toString();
     LanguageMetadata = s.value("LanguageMetadata", "en").toString();
 
@@ -343,24 +344,31 @@ void Settings::recalculateFilters()
 QString Settings::getCurrentLanguageCode()
 {
     QString lang = Settings::get()->Language;
-    return (lang.isEmpty() || lang == "detect") ? QLocale::system().name() : lang;
+    if (lang.isEmpty() || lang == "detect")
+        lang = QLocale::system().name();
+    const int index = langIndex(lang);
+    return index == DETECT ? QStringLiteral("en_US") : langIndexToName(index);
 }
 
 void Settings::setCurrentLanguageCode(const QString &lang)
 {
     Language = lang;
+    LanguageMetadata = getCurrentLanguageCode().left(2);
+    applyApplicationLanguage(getCurrentLanguageCode());
+    QSettings settings;
+    settings.setValue("Language", Language);
 }
 
 int Settings::langIndex(const QString &lang)
 {
-    if( lang.startsWith("en_") )
+    if( lang.left(2).compare("en", Qt::CaseInsensitive) == 0 )
         return ENGLISH;
-    else if( lang == "cs_CZ" )
+    else if( lang.left(2).compare("cs", Qt::CaseInsensitive) == 0 )
         return CZECH;
-    else if ( lang == "de_DE" )
+    else if ( lang.left(2).compare("de", Qt::CaseInsensitive) == 0 )
         return GERMAN;
-    else if ( lang == "ru_RU" )
-        return RUSSIAN;
+    else if ( lang.left(2).compare("fr", Qt::CaseInsensitive) == 0 )
+        return FRENCH;
     else
         return DETECT;
 }
@@ -375,8 +383,8 @@ QString Settings::langIndexToName(int lang)
         return "cs_CZ";
     case GERMAN:
         return "de_DE";
-    case RUSSIAN:
-        return "ru_RU";
+    case FRENCH:
+        return "fr_FR";
     default:
         return "detect";
     }

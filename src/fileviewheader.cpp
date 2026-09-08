@@ -1,3 +1,4 @@
+#include <QEvent>
 #include "fileviewheader.h"
 #include "filemodel.h"
 
@@ -86,7 +87,7 @@ void FileViewHeader::createFields()
             continue;
 
         auto edit = new QLineEdit(this);
-        edit->setPlaceholderText("Search...");
+        edit->setPlaceholderText(tr("Search..."));
 
         connect(edit, SIGNAL(textChanged(QString)), m_mapper, SLOT(map()));
         m_mapper->setMapping(edit, i);
@@ -154,4 +155,13 @@ void FileViewHeader::sortIndicatorChange(int logicalIndex, Qt::SortOrder order)
     Q_UNUSED(order)
 
     forceRedraw();
+}
+
+void FileViewHeader::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange) {
+        for (auto edit : m_edits)
+            edit->setPlaceholderText(tr("Search..."));
+    }
+    QHeaderView::changeEvent(event);
 }

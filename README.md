@@ -151,3 +151,9 @@ Run
 ```
 ./ZIMA-CAD-Parts
 ```
+
+## Local filters, previews and languages
+
+See [local filters and performance](doc/filters.md) and [localization](doc/localization.md).
+The Windows release can be deployed to the repository root with windeployqt.
+Application translations are compiled and embedded automatically by qmake.

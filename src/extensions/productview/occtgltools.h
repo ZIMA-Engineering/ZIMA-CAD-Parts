@@ -9,6 +9,7 @@
 #include <Aspect_DisplayConnection.hxx>
 #include <Aspect_NeutralWindow.hxx>
 #include <V3d_View.hxx>
+#include <Graphic3d_Vec2.hxx>
 
 class OpenGl_Context;
 

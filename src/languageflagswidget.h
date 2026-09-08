@@ -16,6 +16,9 @@ class LanguageFlagsWidget : public QWidget
 public:
     explicit LanguageFlagsWidget(QWidget *parent = 0);
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     QButtonGroup *m_buttons;
 

@@ -132,7 +132,7 @@ void DirectoryWebView::loadAboutPage()
     f.open(QIODevice::ReadOnly);
     QTextStream stream(&f);
 
-    setHtml( stream.readAll().replace("%VERSION%", VERSION) );
+    setHtml(stream.readAll().replace("%VERSION%", VERSION), QUrl("qrc" + filename));
 }
 
 void DirectoryWebView::loadAutoIndexPage(const QString &path)

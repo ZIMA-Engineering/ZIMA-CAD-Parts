@@ -36,11 +36,14 @@ void PtrReaderThread::run()
 void PtrReaderThread::parseFile(const QFileInfo &fi)
 {
     QFile f(fi.absoluteFilePath());
-    f.open(QIODevice::ReadOnly);
+    if (!f.open(QIODevice::ReadOnly))
+        return;
     QTextStream s(&f);
 
     while (!s.atEnd())
     {
+        if (isInterruptionRequested())
+            return;
         QString line = s.readLine();
 
         if (!line.startsWith("description") || line.startsWith("descriptions"))
@@ -98,6 +101,11 @@ PrtReader::PrtReader(QObject *parent)
 
 }
 
+PrtReader::~PrtReader()
+{
+    stop();
+}
+
 bool PrtReader::isRunning() const
 {
     return m_thread != nullptr;
@@ -110,21 +118,22 @@ void PrtReader::load(const QString &dir, const QFileInfoList &partList)
 
     m_dir = dir;
     m_thread = new PtrReaderThread(partList);
-    connect(m_thread, SIGNAL(partParam(QString,QString,QString)),
-            this, SLOT(setPartParam(QString,QString,QString)));
-    m_thread->start();
+    auto thread = m_thread.data();
+    connect(thread, &PtrReaderThread::partParam, this,
+            [this, thread](const QString &part, const QString &param, const QString &value) {
+        if (m_thread == thread)
+            setPartParam(part, param, value);
+    });
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    thread->start();
 }
 
 void PrtReader::stop()
 {
     if (isRunning())
     {
-        disconnect(m_thread, SIGNAL(partParam(QString,QString,QString)),
-                   this, SLOT(setPartParam(QString,QString,QString)));
-
+        disconnect(m_thread, nullptr, this, nullptr);
         m_thread->requestInterruption();
-        m_thread->wait();
-        m_thread->deleteLater();
         m_thread = nullptr;
     }
 }

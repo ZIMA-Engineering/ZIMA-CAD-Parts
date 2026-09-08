@@ -39,6 +39,9 @@ protected:
     void tabInserted(int index);
     void tabRemoved(int index);
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     Ui::MainTabWidget *ui;
     bool m_loading;
