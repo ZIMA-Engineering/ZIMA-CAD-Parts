@@ -169,3 +169,8 @@ Build out of source (for example in .build-release) to avoid mixing generated
 UI headers, object files and source files. After deployment, intermediate
 build folders can be removed. Personal filter backups and local cleanup
 receipts are kept in .local-backups, which is excluded from Git.
+Use windeployqt from the same Qt kit as qmake, with --release --force.
+When copying OCCT runtime dependencies from vcpkg, exclude Qt6*.dll: that
+installation can contain a different Qt version. Mixing Qt DLL versions
+can prevent the executable from starting. Verify the deployed executable
+starts using DLLs beside it, without adding the development Qt kit to PATH.

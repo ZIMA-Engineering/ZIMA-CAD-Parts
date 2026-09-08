@@ -106,12 +106,15 @@ jobs:
           New-Item -ItemType Directory -Force package | Out-Null
           Copy-Item release\ZIMA-CAD-Parts.exe .\package\
           # Keep all OCCT exchange/runtime DLLs for STEP, IGES, and STL previews.
-          Copy-Item "$env:OCCT_ROOT\bin\*.dll" .\package\ -Force
+          # vcpkg may also contain a different Qt build. Use only the build kit.
+          Get-ChildItem "$env:OCCT_ROOT\bin\*.dll" |
+            Where-Object { $_.Name -notlike "Qt6*.dll" } |
+            Copy-Item -Destination .\package\ -Force
           New-Item -ItemType Directory -Force package\locale | Out-Null
           Copy-Item locale\*.qm package\locale\
           New-Item -ItemType Directory -Force package\licenses | Out-Null
           Copy-Item licenses\* package\licenses\ -Force
-          windeployqt --release --compiler-runtime .\package\ZIMA-CAD-Parts.exe
+          windeployqt --release --force --compiler-runtime .\package\ZIMA-CAD-Parts.exe
 
       - name: Compute artifact name + zip name
         id: names
