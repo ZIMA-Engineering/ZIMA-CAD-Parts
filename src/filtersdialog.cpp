@@ -27,8 +27,9 @@ FiltersDialog::FiltersDialog(const QString &directory, QWidget *parent)
     m_versions = new QCheckBox(tr("Show all Pro/E versions (otherwise only the newest)"), this);
     m_versions->setChecked(filters.showVersions);
     layout->addWidget(m_versions);
-    m_zimaVersions = new QCheckBox(tr("Show ZIMA-CAD archive versions (.1, .2, ...)"), this);
-    m_zimaVersions->setChecked(filters.showZimaVersions);
+    m_zimaVersions = new QCheckBox(tr("Hide ZIMA-CAD archive versions (.1, .2, ...)"), this);
+    m_zimaVersions->setObjectName("hideZimaVersions");
+    m_zimaVersions->setChecked(!filters.showZimaVersions);
     layout->addWidget(m_zimaVersions);
     auto buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     connect(buttons, &QDialogButtonBox::accepted, this, &FiltersDialog::accept);
@@ -51,7 +52,7 @@ void FiltersDialog::accept()
     QSettings settings(path, QSettings::IniFormat);
     settings.setValue("Filters/Hide", hidden);
     settings.setValue("Filters/ShowVersions", m_versions->isChecked());
-    settings.setValue("Filters/ShowZimaVersions", m_zimaVersions->isChecked());
+    settings.setValue("Filters/ShowZimaVersions", !m_zimaVersions->isChecked());
     settings.sync();
     if (settings.status() != QSettings::NoError) {
         QMessageBox::warning(this, tr("Filters"), tr("Cannot save the filters."));

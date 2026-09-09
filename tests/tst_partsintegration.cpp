@@ -8,6 +8,14 @@
 #include "localfilters.h"
 #include "datasourcewidget.h"
 #include "datasourceview.h"
+#include "directorywidget.h"
+#include "createdirectorydialog.h"
+#include "directoryeditordialog.h"
+#include "filerenamer.h"
+#include "fileview.h"
+#include <QLineEdit>
+#include <QComboBox>
+#include <QCheckBox>
 #include "mainwindow.h"
 #include <QMessageBox>
 #include <QTimer>
@@ -209,6 +217,149 @@ private slots:
         QCOMPARE(selected.first().first().toString(), directory.filePath("work"));
     }
 
+    void zimaArchivesAreVisibleUntilExplicitlyHidden()
+    {
+        QTemporaryDir directory;
+        FiltersDialog dialog(directory.path());
+        auto hideArchives = dialog.findChild<QCheckBox *>("hideZimaVersions");
+        QVERIFY(hideArchives);
+        QVERIFY(!hideArchives->isChecked());
+        dialog.accept();
+        LocalFilters filters;
+        filters.load(directory.path(), true);
+        QVERIFY(filters.showZimaVersions);
+        const QFileInfoList files{QFileInfo(directory.filePath("part.prtz")),
+                                 QFileInfo(directory.filePath("part.prtz.1"))};
+        QCOMPARE(filters.accepted(files, true).count(true), 2);
+        hideArchives->setChecked(true);
+        dialog.accept();
+        filters.load(directory.path(), true);
+        QVERIFY(!filters.showZimaVersions);
+        QCOMPARE(filters.accepted(files, true).count(true), 1);
+        FiltersDialog reopened(directory.path());
+        QVERIFY(reopened.findChild<QCheckBox *>("hideZimaVersions")->isChecked());
+    }
+
+    void modelRejectsStaleColumnsAfterMetadataChange()
+    {
+        QTemporaryDir directory;
+        touch(directory.path(), "fixture.txt");
+        auto metadata = MetadataCache::get()->metadata(directory.path());
+        metadata->setParameterHandles({"description"});
+        metadata->setParameterLabel("description", Settings::get()->LanguageMetadata, "Description");
+        FileModel model;
+        model.setDirectory(directory.path());
+        const QModelIndex stale = model.index(0, 2);
+        QVERIFY(stale.isValid());
+        metadata->setParameterHandles({});
+        model.refreshModel();
+        QVERIFY(!model.headerData(-1, Qt::Horizontal, Qt::DisplayRole).isValid());
+        QVERIFY(!model.headerData(2, Qt::Horizontal, Qt::DisplayRole).isValid());
+        QVERIFY(!model.data(stale, Qt::DisplayRole).isValid());
+    }
+    void prototypeDirectoryCanBeRenamedAndDeletedWhileDisplayed()
+    {
+        QTemporaryDir directory;
+        const QString prototypeName = "project-prototype";
+        const QString prototype = directory.filePath("0000-index/prototypes/" + prototypeName);
+        QVERIFY(QDir().mkpath(prototype + "/0000-index"));
+        QVERIFY(QDir().mkpath(prototype + "/child/0000-index"));
+        {
+            QSettings metadata(prototype + "/0000-index/metadata.ini", QSettings::IniFormat);
+            metadata.setValue("Directory/Version", 2);
+            metadata.setValue("Directory/Label/en", "Project label from metadata");
+            metadata.setValue("Directory/Label/cs", "Popis projektu");
+            metadata.setValue("Directory/AutoIndex", true);
+        }
+        touch(prototype + "/child", "fixture.txt");
+        DataSourceView view(directory.path());
+        DirectoryWidget pane;
+        DirectoryWidget secondPane;
+        view.show();
+        pane.show();
+        QTRY_VERIFY(view.navigateToDirectory(directory.path()));
+        const QString created = directory.filePath("created-project");
+        const QString renamed = directory.filePath("renamed-project");
+        QStringList warnings;
+        QTimer responder;
+        bool createdDialogAnswered = false;
+        bool editedDialogAnswered = false;
+        connect(&responder, &QTimer::timeout, this, [&] {
+            for (QWidget *widget : QApplication::topLevelWidgets())
+            {
+                if (auto box = qobject_cast<QMessageBox *>(widget); box && box->isVisible())
+                {
+                    if (box->standardButtons().testFlag(QMessageBox::Yes)
+                            && box->text().contains(renamed))
+                        box->button(QMessageBox::Yes)->click();
+                    else
+                    {
+                        warnings << box->text();
+                        box->accept();
+                    }
+                }
+                else if (auto dialog = qobject_cast<CreateDirectoryDialog *>(widget);
+                         dialog && dialog->isVisible() && !createdDialogAnswered)
+                {
+                    createdDialogAnswered = true;
+                    dialog->findChild<QLineEdit *>("nameLineEdit")->setText("created-project");
+                    auto combo = dialog->findChild<QComboBox *>("prototypeComboBox");
+                    combo->setCurrentIndex(combo->findData(prototypeName));
+                    dialog->findChild<QDialogButtonBox *>("buttonBox")
+                            ->button(QDialogButtonBox::Ok)->click();
+                }
+                else if (auto dialog = qobject_cast<DirectoryEditorDialog *>(widget);
+                         dialog && dialog->isVisible() && !editedDialogAnswered)
+                {
+                    editedDialogAnswered = true;
+                    dialog->findChild<QLineEdit *>("nameLineEdit")->setText("renamed-project");
+                    dialog->accept();
+                }
+            }
+        });
+        responder.start(10);
+        QVERIFY(QMetaObject::invokeMethod(&view, "createDirectory", Qt::DirectConnection));
+        QVERIFY(QFileInfo::exists(created + "/child/fixture.txt"));
+        QTRY_VERIFY(view.navigateToDirectory(created));
+        view.expand(view.currentIndex());
+        pane.setDirectory(created);
+        secondPane.setDirectory(created);
+        auto firstFiles = pane.findChild<FileView *>();
+        auto secondFiles = secondPane.findChild<FileView *>();
+        QVERIFY(firstFiles);
+        QVERIFY(secondFiles);
+        auto proxy = qobject_cast<QSortFilterProxyModel *>(view.model());
+        QSignalSpy resets(proxy->sourceModel(), &QAbstractItemModel::modelReset);
+
+        // A failed operation must restore watchers too, without changing either directory.
+        QVERIFY(QDir(directory.path()).mkdir("occupied"));
+        FileRenamer renamer;
+        QVERIFY(!renamer.rename(directory.path(), QFileInfo(created), "occupied"));
+        QCOMPARE(firstFiles->currentPath(), created);
+        QCOMPARE(secondFiles->currentPath(), created);
+
+        QVERIFY(QMetaObject::invokeMethod(&view, "editDirectory", Qt::DirectConnection));
+        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join("; ")));
+        QVERIFY(!QFileInfo::exists(created));
+        QVERIFY(QFileInfo::exists(renamed + "/child/fixture.txt"));
+        QCOMPARE(firstFiles->currentPath(), renamed);
+        QCOMPARE(secondFiles->currentPath(), renamed);
+        QCOMPARE(MetadataCache::get()->metadata(renamed)->getLabel("en"),
+                 QString("Project label from metadata"));
+        QCOMPARE(MetadataCache::get()->metadata(renamed)->getLabel("cs"), QString("Popis projektu"));
+        QTRY_VERIFY(view.navigateToDirectory(renamed));
+        QVERIFY(QMetaObject::invokeMethod(&view, "deleteDirectory", Qt::DirectConnection));
+        responder.stop();
+        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join("; ")));
+        QVERIFY(!QFileInfo::exists(renamed));
+        QCOMPARE(firstFiles->currentPath(), directory.path());
+        QCOMPARE(secondFiles->currentPath(), directory.path());
+        QCOMPARE(resets.size(), 0);
+        QCoreApplication::processEvents();
+        QVERIFY(!QFileInfo::exists(created));
+        QVERIFY(!QFileInfo::exists(renamed));
+        QVERIFY(QFileInfo::exists(prototype + "/child/fixture.txt"));
+    }
     void splashDoesNotSleepInWindowConstructor()
     {
         QTemporaryDir directory;

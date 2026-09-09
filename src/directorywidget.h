@@ -64,6 +64,7 @@ private:
     QMenu *m_partsIndexMenu;
     QString m_currentRootPath;
     QFileSystemWatcher m_autoIndexWatcher;
+    QStringList m_directoryOperations;
 
     void loadIndexHtml(const QString &rootPath, QWebEngineView *webView, const QString &filterBase, bool hideIfNotFound, bool allowAutoIndex);
     QStringList indexNameFilters(const QString &filterBase) const;
@@ -93,6 +94,8 @@ private slots:
     void partsWebView_urlChanged(const QUrl &url);
     void watchedAutoIndexDirectoryChanged(const QString &path);
     void cachedDirectoryChanged(const QString &path);
+    void directoryOperationStarted(const QString &path);
+    void directoryOperationFinished(const QString &path, const QString &destination);
 
     void previewInProductView(const QFileInfo &fi);
 

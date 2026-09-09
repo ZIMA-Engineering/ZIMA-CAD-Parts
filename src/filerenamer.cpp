@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QFile>
 #include <QDebug>
+#include <QScopeGuard>
 
 FileRenamer::FileRenamer(QObject *parent)
     : QObject(parent)
@@ -22,6 +23,13 @@ bool FileRenamer::rename(const QString &dir, const QFileInfo &file, QString newN
 
     bool isDir = file.isDir();
     QString newDirPath;
+    QString destination = file.absoluteFilePath();
+    if (isDir)
+        emit PartCache::get()->directoryOperationStarted(file.absoluteFilePath());
+    const auto restoreDirectory = qScopeGuard([&] {
+        if (isDir)
+            emit PartCache::get()->directoryOperationFinished(file.absoluteFilePath(), destination);
+    });
 
     if (isDir) {
         /* Rename part directory */
@@ -31,6 +39,7 @@ bool FileRenamer::rename(const QString &dir, const QFileInfo &file, QString newN
 
         if (!QFile::rename(file.absoluteFilePath(), newDirPath))
             return false;
+        destination = newDirPath;
     } else {
         /* Files in the current directory */
         if (!renameFilesInDir(dir, File::partBaseName(file), newName))

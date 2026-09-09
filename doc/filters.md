@@ -85,7 +85,7 @@ a Open CASCADE 8.0.0. Integrační testy přebírají stejné OCCT_ROOT jako apl
 Typy dokumentů: .prtz díl, .asmz sestava, .drwz výkres, .frmz rámeček, .tblz razítko.
 Aktuální dokument nemá číselnou příponu. Soubory .1, .2, ... jsou archivní kopie
 předchozích uložení. ShowZimaVersions=false skryje všechny takové archivy, i když
-aktuální dokument chybí; nikdy je nevydává za aktuální verzi. Výchozí hodnota je true.
+aktuální dokument chybí; nikdy je nevydává za aktuální verzi. Výchozí hodnota je true: v dialogu je volba „Skrýt archivní verze ZIMA-CAD“ vypnutá a číslované verze zůstávají viditelné.
 Přepínač je nezávislý na Pro/E a platí pouze pro aktuální složku.
 Ikony jsou kopie původních SVG ze ZIMA-CAD/resources/icons, uložené přímo v Parts.
 

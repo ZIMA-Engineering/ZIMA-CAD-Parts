@@ -1,11 +1,13 @@
 #include "directoryremover.h"
 #include "progressdialog.h"
+#include "partcache.h"
 
 #include <QDir>
 #include <QDebug>
 #include <QProgressBar>
 #include <QLabel>
 #include <QMessageBox>
+#include <QScopeGuard>
 
 DirectoryRemover::DirectoryRemover(QWidget *parent)
     : DirectoryRemover(QFileInfoList(), parent)
@@ -44,6 +46,21 @@ void DirectoryRemover::setStopOnError(bool stop)
 
 void DirectoryRemover::work()
 {
+    QStringList directories;
+    for (const QFileInfo &file : m_fileInfos)
+    {
+        if (file.isDir() && !file.isSymLink())
+        {
+            directories << file.absoluteFilePath();
+            emit PartCache::get()->directoryOperationStarted(file.absoluteFilePath());
+        }
+    }
+    const auto restoreDirectories = qScopeGuard([&] {
+        for (const QString &path : directories)
+            emit PartCache::get()->directoryOperationFinished(
+                    path, QFileInfo::exists(path) ? path : QString());
+    });
+
     m_rm = ThreadWorker::create<DirectoryRemoverWorker>();
     m_rm->setFileInfos(m_fileInfos);
     m_rm->setStopOnError(m_stopOnError);
@@ -67,6 +84,10 @@ void DirectoryRemover::work()
 
     if (m_progress->exec() == QDialog::Rejected)
         m_rm->stop();
+
+    // Finish cancellation before any view can reopen a directory watcher.
+    m_rm->thread()->quit();
+    m_rm->thread()->wait();
 
     m_rm->deleteLater();
     m_progress->deleteLater();

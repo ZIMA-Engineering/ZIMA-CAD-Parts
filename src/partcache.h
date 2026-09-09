@@ -19,6 +19,9 @@ public:
     void renameDirectory(const QString &oldDir, const QString &newDir);
 
 signals:
+    void directoryOperationStarted(const QString &path);
+    // An empty destination means the directory was removed.
+    void directoryOperationFinished(const QString &path, const QString &destination);
     void cleared(const QString &dir);
     void directoryRenamed(const QString &oldDir, const QString &newDir);
     void directoryChanged(const QString &dir);

@@ -103,7 +103,9 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
 {
     auto pc = PartCache::get();
 
-    if (!index.isValid() || m_path.isEmpty() || index.row() >= pc->count(m_path))
+    if (!index.isValid() || m_path.isEmpty() || index.row() < 0
+            || index.row() >= pc->count(m_path) || index.column() < 0
+            || index.column() >= m_columnLabels.size())
         return QVariant();
 
     QFileInfo part = pc->partAt(m_path, index.row());
@@ -146,7 +148,7 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
             break;
         }
     } // additional metadata
-    else if (role == Qt::DisplayRole && col > 1)
+    else if (role == Qt::DisplayRole && col > 1 && col - 2 < m_parameterHandles.size())
     {
         return MetadataCache::get()->partParam(
                    m_path,
@@ -317,7 +319,8 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
 QVariant FileModel::headerData (int section, Qt::Orientation orientation, int role) const
 {
-    if( role != Qt::DisplayRole || orientation != Qt::Horizontal || !m_columnLabels.size())
+    if (role != Qt::DisplayRole || orientation != Qt::Horizontal
+            || section < 0 || section >= m_columnLabels.size())
         return QVariant();
 
     return m_columnLabels[section];

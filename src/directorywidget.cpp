@@ -78,6 +78,10 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
             this, SLOT(watchedAutoIndexDirectoryChanged(QString)));
     connect(PartCache::get(), SIGNAL(directoryChanged(QString)),
             this, SLOT(cachedDirectoryChanged(QString)));
+    connect(PartCache::get(), &PartCache::directoryOperationStarted,
+            this, &DirectoryWidget::directoryOperationStarted);
+    connect(PartCache::get(), &PartCache::directoryOperationFinished,
+            this, &DirectoryWidget::directoryOperationFinished);
 
     ui->partsIndexBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
     ui->partsIndexForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
@@ -390,7 +394,7 @@ void DirectoryWidget::watchAutoIndexDirectory(const QString &rootPath)
     if (!watched.isEmpty())
         m_autoIndexWatcher.removePaths(watched);
 
-    if (!QFileInfo(rootPath).isDir())
+    if (!m_directoryOperations.isEmpty() || !QFileInfo(rootPath).isDir())
         return;
 
     m_autoIndexWatcher.addPath(rootPath);
@@ -403,7 +407,7 @@ void DirectoryWidget::watchAutoIndexDirectory(const QString &rootPath)
 
 void DirectoryWidget::reloadDirectoryIndex()
 {
-    if (m_currentRootPath.isEmpty())
+    if (!m_directoryOperations.isEmpty() || m_currentRootPath.isEmpty())
         return;
 
     loadIndexHtml(m_currentRootPath, ui->dirWebView, "index", false, true);
@@ -411,7 +415,7 @@ void DirectoryWidget::reloadDirectoryIndex()
 
 void DirectoryWidget::reloadPartsIndex()
 {
-    if (m_currentRootPath.isEmpty())
+    if (!m_directoryOperations.isEmpty() || m_currentRootPath.isEmpty())
         return;
 
     loadIndexHtml(m_currentRootPath, ui->partsWebView, "index-parts", true, false);
@@ -554,6 +558,9 @@ void DirectoryWidget::partsWebView_urlChanged(const QUrl &url)
 
 void DirectoryWidget::watchedAutoIndexDirectoryChanged(const QString &path)
 {
+    if (!m_directoryOperations.isEmpty())
+        return;
+
     watchAutoIndexDirectory(m_currentRootPath);
     updateIndexMenus();
 
@@ -568,8 +575,61 @@ void DirectoryWidget::watchedAutoIndexDirectoryChanged(const QString &path)
 
 void DirectoryWidget::cachedDirectoryChanged(const QString &path)
 {
+    if (!m_directoryOperations.isEmpty())
+        return;
+
     if (path == m_currentRootPath && ui->dirWebView->isAutoIndexPage())
         reloadDirectoryIndex();
+}
+
+void DirectoryWidget::directoryOperationStarted(const QString &path)
+{
+    const QString directory = QDir::cleanPath(path);
+    const QString current = QDir::cleanPath(m_currentRootPath);
+#ifdef Q_OS_WIN
+    const auto sensitivity = Qt::CaseInsensitive;
+#else
+    const auto sensitivity = Qt::CaseSensitive;
+#endif
+    if (current.compare(directory, sensitivity) != 0
+            && !current.startsWith(directory + '/', sensitivity))
+        return;
+
+    m_directoryOperations << directory;
+    // A watch on 0000-index keeps a descendant directory open on Windows.
+    // Release it synchronously before renaming or removing its parent.
+    watchAutoIndexDirectory(QString());
+}
+
+void DirectoryWidget::directoryOperationFinished(const QString &path, const QString &destination)
+{
+    const QString directory = QDir::cleanPath(path);
+    if (!m_directoryOperations.removeOne(directory))
+        return;
+
+    QString current = QDir::cleanPath(m_currentRootPath);
+#ifdef Q_OS_WIN
+    const auto sensitivity = Qt::CaseInsensitive;
+#else
+    const auto sensitivity = Qt::CaseSensitive;
+#endif
+    if (current.compare(directory, sensitivity) == 0
+            || current.startsWith(directory + '/', sensitivity))
+    {
+        current = destination.isEmpty()
+                ? QFileInfo(directory).absolutePath()
+                : QDir::cleanPath(destination) + current.mid(directory.size());
+    }
+    while (!QFileInfo(current).isDir())
+    {
+        const QString parent = QFileInfo(current).absolutePath();
+        if (parent == current)
+            break;
+        current = parent;
+    }
+    m_currentRootPath = current;
+    if (m_directoryOperations.isEmpty())
+        setDirectory(current);
 }
 
 void DirectoryWidget::deleteSelectedParts()

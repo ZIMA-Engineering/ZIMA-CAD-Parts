@@ -116,3 +116,16 @@ on. The following environment variables are set:
   - `ZCP_DATASOURCE_ROOT` - absolute path to the datasource root directory
   - `ZCP_DIRECTORY` - absolute path to the directory the script is run on (same
     as the processes' working directory)
+
+## Přejmenování a mazání otevřených adresářů
+
+Před přejmenováním nebo mazáním adresáře ZCP dočasně uvolní sledování změn
+v jeho `0000-index` ve všech náhledech, které zobrazují daný adresář nebo
+jeho podadresáře. Otevřené sledování podsložky na Windows jinak blokuje
+operaci nad rodičem chybou přístupu, i když jsou práva prototypu správná.
+Během operace se sledování znovu neotevírá. Po úspěchu se náhledy přepnou
+na novou cestu, po smazání na existujícího rodiče; při neúspěchu se obnoví
+původní cesta. Rozbalené větve stromu se kvůli tomu neresetují.
+
+Zobrazované názvy a parametry se nadále načítají z `0000-index/metadata.ini`.
+Přejmenování fyzické složky samo o sobě nemění její jazykové popisky.

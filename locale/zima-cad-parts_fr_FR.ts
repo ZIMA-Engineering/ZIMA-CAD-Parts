@@ -421,12 +421,12 @@
 <context>
     <name>DirectoryRemover</name>
     <message>
-        <location filename="../src/directoryremover.cpp" line="53"/>
+        <location filename="../src/directoryremover.cpp" line="70"/>
         <source>Please wait while the files are being removed...</source>
         <translation>Veuillez patienter pendant la suppression des fichiers...</translation>
     </message>
     <message>
-        <location filename="../src/directoryremover.cpp" line="86"/>
+        <location filename="../src/directoryremover.cpp" line="107"/>
         <source>Directory deletion failed</source>
         <translation>Échec de la suppression du dossier</translation>
     </message>
@@ -434,7 +434,7 @@
 <context>
     <name>DirectoryRemoverWorker</name>
     <message>
-        <location filename="../src/directoryremover.cpp" line="139"/>
+        <location filename="../src/directoryremover.cpp" line="160"/>
         <source>Unable to delete &apos;%1&apos;</source>
         <translation>Impossible de supprimer &apos;%1&apos;</translation>
     </message>
@@ -526,17 +526,17 @@
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="280"/>
+        <location filename="../src/directorywidget.cpp" line="284"/>
         <source>Delete index</source>
         <translation>Supprimer l’index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="290"/>
+        <location filename="../src/directorywidget.cpp" line="294"/>
         <source>Delete all indexes</source>
         <translation>Supprimer tous les index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="345"/>
+        <location filename="../src/directorywidget.cpp" line="349"/>
         <source>The following index file will be deleted:
 
 %1
@@ -549,7 +549,7 @@ Continue?</source>
 Continuer ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="346"/>
+        <location filename="../src/directorywidget.cpp" line="350"/>
         <source>The following index files will be deleted:
 
 %1
@@ -562,22 +562,22 @@ Continue?</source>
 Continuer ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="347"/>
+        <location filename="../src/directorywidget.cpp" line="351"/>
         <source>Delete all indexes?</source>
         <translation>Supprimer tous les index ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="347"/>
+        <location filename="../src/directorywidget.cpp" line="351"/>
         <source>Delete index?</source>
         <translation>Supprimer l’index ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="372"/>
+        <location filename="../src/directorywidget.cpp" line="376"/>
         <source>Index deletion failed</source>
         <translation>Échec de la suppression de l’index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="373"/>
+        <location filename="../src/directorywidget.cpp" line="377"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -586,8 +586,8 @@ Continuer ?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="604"/>
-        <location filename="../src/directorywidget.cpp" line="605"/>
+        <location filename="../src/directorywidget.cpp" line="664"/>
+        <location filename="../src/directorywidget.cpp" line="665"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Voulez-vous vraiment déplacer les pièces sélectionnées ?</translation>
     </message>
@@ -946,8 +946,8 @@ Continuer ?</translation>
     <name>FiltersDialog</name>
     <message>
         <location filename="../src/filtersdialog.cpp" line="14"/>
-        <location filename="../src/filtersdialog.cpp" line="42"/>
-        <location filename="../src/filtersdialog.cpp" line="57"/>
+        <location filename="../src/filtersdialog.cpp" line="43"/>
+        <location filename="../src/filtersdialog.cpp" line="58"/>
         <source>Filters</source>
         <translation>Filtres</translation>
     </message>
@@ -967,16 +967,16 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
     </message>
     <message>
         <location filename="../src/filtersdialog.cpp" line="30"/>
-        <source>Show ZIMA-CAD archive versions (.1, .2, ...)</source>
-        <translation>Afficher les versions archivées ZIMA-CAD (.1, .2, ...)</translation>
+        <source>Hide ZIMA-CAD archive versions (.1, .2, ...)</source>
+        <translation>Masquer les versions archivées ZIMA-CAD (.1, .2, ...)</translation>
     </message>
     <message>
-        <location filename="../src/filtersdialog.cpp" line="42"/>
+        <location filename="../src/filtersdialog.cpp" line="43"/>
         <source>Cannot create the settings folder.</source>
         <translation>Impossible de créer le dossier des paramètres.</translation>
     </message>
     <message>
-        <location filename="../src/filtersdialog.cpp" line="57"/>
+        <location filename="../src/filtersdialog.cpp" line="58"/>
         <source>Cannot save the filters.</source>
         <translation>Impossible d’enregistrer les filtres.</translation>
     </message>

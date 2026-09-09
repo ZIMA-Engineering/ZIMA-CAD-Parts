@@ -421,12 +421,12 @@
 <context>
     <name>DirectoryRemover</name>
     <message>
-        <location filename="../src/directoryremover.cpp" line="53"/>
+        <location filename="../src/directoryremover.cpp" line="70"/>
         <source>Please wait while the files are being removed...</source>
         <translation>Počkejte prosím na odstranění souborů...</translation>
     </message>
     <message>
-        <location filename="../src/directoryremover.cpp" line="86"/>
+        <location filename="../src/directoryremover.cpp" line="107"/>
         <source>Directory deletion failed</source>
         <translation>Odstranění adresáře selhalo</translation>
     </message>
@@ -434,7 +434,7 @@
 <context>
     <name>DirectoryRemoverWorker</name>
     <message>
-        <location filename="../src/directoryremover.cpp" line="139"/>
+        <location filename="../src/directoryremover.cpp" line="160"/>
         <source>Unable to delete &apos;%1&apos;</source>
         <translation>Nelze smazat &apos;%1&apos;</translation>
     </message>
@@ -526,17 +526,17 @@
         <translation>Kopírovat</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="280"/>
+        <location filename="../src/directorywidget.cpp" line="284"/>
         <source>Delete index</source>
         <translation>Smazat index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="290"/>
+        <location filename="../src/directorywidget.cpp" line="294"/>
         <source>Delete all indexes</source>
         <translation>Smazat všechny indexy</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="345"/>
+        <location filename="../src/directorywidget.cpp" line="349"/>
         <source>The following index file will be deleted:
 
 %1
@@ -549,7 +549,7 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="346"/>
+        <location filename="../src/directorywidget.cpp" line="350"/>
         <source>The following index files will be deleted:
 
 %1
@@ -562,22 +562,22 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="347"/>
+        <location filename="../src/directorywidget.cpp" line="351"/>
         <source>Delete all indexes?</source>
         <translation>Smazat všechny indexy?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="347"/>
+        <location filename="../src/directorywidget.cpp" line="351"/>
         <source>Delete index?</source>
         <translation>Smazat index?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="372"/>
+        <location filename="../src/directorywidget.cpp" line="376"/>
         <source>Index deletion failed</source>
         <translation>Smazání indexu selhalo</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="373"/>
+        <location filename="../src/directorywidget.cpp" line="377"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -586,8 +586,8 @@ Pokračovat?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="604"/>
-        <location filename="../src/directorywidget.cpp" line="605"/>
+        <location filename="../src/directorywidget.cpp" line="664"/>
+        <location filename="../src/directorywidget.cpp" line="665"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>
@@ -946,8 +946,8 @@ Pokračovat?</translation>
     <name>FiltersDialog</name>
     <message>
         <location filename="../src/filtersdialog.cpp" line="14"/>
-        <location filename="../src/filtersdialog.cpp" line="42"/>
-        <location filename="../src/filtersdialog.cpp" line="57"/>
+        <location filename="../src/filtersdialog.cpp" line="43"/>
+        <location filename="../src/filtersdialog.cpp" line="58"/>
         <source>Filters</source>
         <translation>Filtry</translation>
     </message>
@@ -966,19 +966,19 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
         <translation>Zobrazit všechny verze Pro/E (jinak jen nejnovější)</translation>
     </message>
     <message>
-        <location filename="../src/filtersdialog.cpp" line="42"/>
+        <location filename="../src/filtersdialog.cpp" line="43"/>
         <source>Cannot create the settings folder.</source>
         <translation>Nelze vytvořit složku s nastavením.</translation>
     </message>
     <message>
-        <location filename="../src/filtersdialog.cpp" line="57"/>
+        <location filename="../src/filtersdialog.cpp" line="58"/>
         <source>Cannot save the filters.</source>
         <translation>Filtry nelze uložit.</translation>
     </message>
     <message>
         <location filename="../src/filtersdialog.cpp" line="30"/>
-        <source>Show ZIMA-CAD archive versions (.1, .2, ...)</source>
-        <translation>Zobrazit archivní verze ZIMA-CAD (.1, .2, ...)</translation>
+        <source>Hide ZIMA-CAD archive versions (.1, .2, ...)</source>
+        <translation>Skrýt archivní verze ZIMA-CAD (.1, .2, ...)</translation>
     </message>
 </context>
 <context>
