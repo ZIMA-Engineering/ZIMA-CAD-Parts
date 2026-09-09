@@ -586,8 +586,8 @@ Pokračovat?</translation>
 %1</translation>
     </message>
     <message>
+        <location filename="../src/directorywidget.cpp" line="663"/>
         <location filename="../src/directorywidget.cpp" line="664"/>
-        <location filename="../src/directorywidget.cpp" line="665"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>
@@ -1989,150 +1989,144 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
         <translation>Nastavení ZIMA-CAD-Parts</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="114"/>
+        <location filename="../src/settingsdialog.ui" line="124"/>
         <source>Splash screen</source>
         <translation>Úvodní obrazovka</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="126"/>
+        <location filename="../src/settingsdialog.ui" line="136"/>
         <source>Duration</source>
         <translation>Doba zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="133"/>
+        <location filename="../src/settingsdialog.ui" line="143"/>
         <source> ms</source>
         <translation> ms</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="166"/>
+        <location filename="../src/settingsdialog.ui" line="176"/>
         <source>&amp;Browser</source>
         <translation>&amp;Prohlížeč</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="172"/>
+        <location filename="../src/settingsdialog.ui" line="182"/>
         <source>Browser</source>
         <translation>Prohlížeč</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="178"/>
+        <location filename="../src/settingsdialog.ui" line="188"/>
         <source>Save passwords for web forms</source>
         <translation>Ukládat hesla webových formulářů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="188"/>
+        <location filename="../src/settingsdialog.ui" line="198"/>
         <source>Automatically fill saved passwords</source>
         <translation>Automaticky vyplňovat uložená hesla</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="198"/>
+        <location filename="../src/settingsdialog.ui" line="208"/>
         <source>Remember HTTP authentication credentials</source>
         <translation>Pamatovat přihlašovací údaje ověření HTTP</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="208"/>
+        <location filename="../src/settingsdialog.ui" line="218"/>
         <source>Passwords are stored in the system credential store.</source>
         <translation>Hesla jsou uložena v systémovém úložišti přihlašovacích údajů.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="218"/>
+        <location filename="../src/settingsdialog.ui" line="228"/>
         <source>Saved passwords...</source>
         <translation>Uložená hesla...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="242"/>
+        <location filename="../src/settingsdialog.ui" line="252"/>
         <source>&amp;Data sources</source>
         <translation>&amp;Zdroje dat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="272"/>
+        <location filename="../src/settingsdialog.ui" line="282"/>
         <source>&amp;Add</source>
         <translation>&amp;Přidat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="279"/>
+        <location filename="../src/settingsdialog.ui" line="289"/>
         <source>&amp;Edit</source>
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="286"/>
+        <location filename="../src/settingsdialog.ui" line="296"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="306"/>
+        <location filename="../src/settingsdialog.ui" line="316"/>
         <source>Move &amp;Up</source>
         <translation>Posunout &amp;nahoru</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="313"/>
+        <location filename="../src/settingsdialog.ui" line="323"/>
         <source>Move &amp;Down</source>
         <translation>Posunout &amp;dolů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="336"/>
+        <location filename="../src/settingsdialog.ui" line="346"/>
         <source>External programs</source>
         <translation>Externí programy</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="365"/>
+        <location filename="../src/settingsdialog.ui" line="375"/>
         <source>ZIMA utilities</source>
         <translation>Nástroje ZIMA</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="358"/>
+        <location filename="../src/settingsdialog.ui" line="368"/>
         <source>ProE executable:</source>
         <translation>Spustitelný soubor Pro/E:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="345"/>
-        <location filename="../src/settingsdialog.ui" line="380"/>
-        <location filename="../src/settingsdialog.ui" line="400"/>
+        <location filename="../src/settingsdialog.ui" line="355"/>
+        <location filename="../src/settingsdialog.ui" line="390"/>
+        <location filename="../src/settingsdialog.ui" line="410"/>
         <source>Find...</source>
         <translation>Najít...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="373"/>
+        <location filename="../src/settingsdialog.ui" line="383"/>
         <source>Text editor:</source>
         <translation>Textový editor:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="407"/>
+        <location filename="../src/settingsdialog.ui" line="417"/>
         <source>Terminal:</source>
         <translation>Terminál:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="415"/>
-        <location filename="../src/settingsdialog.ui" line="424"/>
-        <source>Developer mode</source>
-        <translation>Režim vývojáře</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="436"/>
+        <location filename="../src/settingsdialog.ui" line="111"/>
         <source>Toolbar for technical specifications</source>
         <translation>Panel nástrojů technických specifikací</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="337"/>
+        <location filename="../src/settingsdialog.cpp" line="335"/>
         <source>ZIMA-CAD-Parts - set %1 path</source>
         <translation>ZIMA-CAD-Parts – nastavit cestu k %1</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="345"/>
+        <location filename="../src/settingsdialog.cpp" line="343"/>
         <source>Locate ProE launcher</source>
         <translation>Najít spouštěč Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="347"/>
+        <location filename="../src/settingsdialog.cpp" line="345"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Spustitelný soubor Pro/E (proe.exe);;Všechny soubory (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="355"/>
+        <location filename="../src/settingsdialog.cpp" line="353"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts – vybrat textový editor</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="363"/>
+        <location filename="../src/settingsdialog.cpp" line="361"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts – vybrat terminál</translation>
     </message>

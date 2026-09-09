@@ -85,8 +85,7 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
     m_ui->languageComboBox->setCurrentIndex(Settings::get()->langIndex(Settings::get()->languagePreference()));
     m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
     m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
-    m_ui->developerModeGroupBox->setChecked(Settings::get()->DeveloperEnabled);
-    m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->DeveloperDirWebViewToolBar);
+    m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->TechSpecToolBarEnabled);
     m_ui->browserSavePasswordsCheckBox->setChecked(Settings::get()->BrowserSaveFormPasswords);
     m_ui->browserAutofillCheckBox->setChecked(Settings::get()->BrowserAutoFillPasswords);
     m_ui->browserRememberHttpAuthCheckBox->setChecked(Settings::get()->BrowserRememberHttpAuth);
@@ -181,8 +180,7 @@ void SettingsDialog::accept()
     Settings::get()->GUIPreviewWidth = m_ui->previewWidthSpinBox->value();
     Settings::get()->GUISplashEnabled = m_ui->splashGroupBox->isChecked();
     Settings::get()->GUISplashDuration = m_ui->splashDurationSpinBox->value();
-    Settings::get()->DeveloperEnabled = m_ui->developerModeGroupBox->isChecked();
-    Settings::get()->DeveloperDirWebViewToolBar = m_ui->techSpecToolBarCheckBox->isChecked();
+    Settings::get()->TechSpecToolBarEnabled = m_ui->techSpecToolBarCheckBox->isChecked();
     Settings::get()->BrowserSaveFormPasswords = m_ui->browserSavePasswordsCheckBox->isChecked();
     Settings::get()->BrowserAutoFillPasswords = m_ui->browserAutofillCheckBox->isChecked();
     Settings::get()->BrowserRememberHttpAuth = m_ui->browserRememberHttpAuthCheckBox->isChecked();

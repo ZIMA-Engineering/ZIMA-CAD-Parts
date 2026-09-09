@@ -55,7 +55,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QWidget" name="dirWebViewDevWidget" native="true">
+        <widget class="QWidget" name="dirWebViewToolBar" native="true">
          <layout class="QGridLayout" name="gridLayout_2">
           <property name="leftMargin">
            <number>0</number>
@@ -136,7 +136,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QWidget" name="partsIndexDeveloperWidget" native="true">
+        <widget class="QWidget" name="partsIndexToolBar" native="true">
          <layout class="QGridLayout" name="gridLayout_3">
           <property name="leftMargin">
            <number>0</number>

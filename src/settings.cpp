@@ -66,8 +66,8 @@ void Settings::load()
     GUIPreviewWidth = s.value("GUIPreviewWidth", 256).toInt();
     GUISplashEnabled = s.value("GUISplashEnabled", true).toBool();
     GUISplashDuration = s.value("GUISplashDuration", 1500).toInt();
-    DeveloperEnabled = s.value("DeveloperEnabled", false).toBool();
-    DeveloperDirWebViewToolBar = s.value("DeveloperTechSpecToolBar", true).toBool();
+    // Keep the stored toolbar preference independently of the removed mode.
+    TechSpecToolBarEnabled = s.value("DeveloperTechSpecToolBar", true).toBool();
     BrowserSaveFormPasswords = s.value("Browser/SaveFormPasswords", true).toBool();
     BrowserAutoFillPasswords = s.value("Browser/AutoFillPasswords", true).toBool();
     BrowserRememberHttpAuth = s.value("Browser/RememberHttpAuth", true).toBool();
@@ -119,8 +119,8 @@ void Settings::save()
     s.setValue("GUIPreviewWidth", GUIPreviewWidth);
     s.setValue("GUISplashEnabled", GUISplashEnabled);
     s.setValue("GUISplashDuration", GUISplashDuration);
-    s.setValue("DeveloperEnabled", DeveloperEnabled);
-    s.setValue("DeveloperTechSpecToolBar", DeveloperDirWebViewToolBar);
+    s.remove("DeveloperEnabled");
+    s.setValue("DeveloperTechSpecToolBar", TechSpecToolBarEnabled);
     s.setValue("Browser/SaveFormPasswords", BrowserSaveFormPasswords);
     s.setValue("Browser/AutoFillPasswords", BrowserAutoFillPasswords);
     s.setValue("Browser/RememberHttpAuth", BrowserRememberHttpAuth);

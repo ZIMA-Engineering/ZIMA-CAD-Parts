@@ -108,10 +108,8 @@ public:
     bool GUISplashEnabled;
     //! How long it should stop on splash screen
     int GUISplashDuration;
-    //! Flag: run in developer mode
-    bool DeveloperEnabled;
-    //! Flag: show developer tool bar
-    bool DeveloperDirWebViewToolBar;
+    //! Flag: show technical specification and parts index toolbars
+    bool TechSpecToolBarEnabled;
     //! Flag: save HTML form passwords
     bool BrowserSaveFormPasswords;
     //! Flag: automatically fill saved HTML form passwords

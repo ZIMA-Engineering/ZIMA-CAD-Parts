@@ -53,6 +53,11 @@ ZCP looks for directory icons in `0000-index` at:
 Only one of these icons should exist in a single directory.
 
 ## Technical specification
+Settings > General includes **Toolbar for technical specifications**. This
+independent option controls the navigation and editing toolbars for both the
+technical specification and the parts index. Developer mode has been removed;
+the existing toolbar preference is preserved and defaults to enabled.
+
 Technical specification viewer displays HTML files found in `0000-index`.
 These files are used to describe the contents of the directory using text
 or images. The HTML file can load images, CSS or JavaScript files that can be

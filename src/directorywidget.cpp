@@ -453,9 +453,8 @@ void DirectoryWidget::changeEvent(QEvent *e)
 
 void DirectoryWidget::settingsChanged()
 {
-    ui->dirWebViewDevWidget->setVisible(Settings::get()->DeveloperEnabled
-                                        && Settings::get()->DeveloperDirWebViewToolBar);
-    ui->partsIndexDeveloperWidget->setVisible(Settings::get()->DeveloperEnabled);
+    ui->dirWebViewToolBar->setVisible(Settings::get()->TechSpecToolBarEnabled);
+    ui->partsIndexToolBar->setVisible(Settings::get()->TechSpecToolBarEnabled);
     ui->thumbnailSizeSlider->setValue(Settings::get()->GUIThumbWidth);
 
     ui->partsTreeView->settingsChanged();

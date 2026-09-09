@@ -586,8 +586,8 @@ Continue?</source>
 %1</translation>
     </message>
     <message>
+        <location filename="../src/directorywidget.cpp" line="663"/>
         <location filename="../src/directorywidget.cpp" line="664"/>
-        <location filename="../src/directorywidget.cpp" line="665"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Вы действительно хотите переместить выбранные детали?</translation>
     </message>
@@ -1989,150 +1989,144 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
         <translation>Язык</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="114"/>
+        <location filename="../src/settingsdialog.ui" line="124"/>
         <source>Splash screen</source>
         <translation>Заставка</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="126"/>
+        <location filename="../src/settingsdialog.ui" line="136"/>
         <source>Duration</source>
         <translation>Длительность</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="133"/>
+        <location filename="../src/settingsdialog.ui" line="143"/>
         <source> ms</source>
         <translation> мс</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="166"/>
+        <location filename="../src/settingsdialog.ui" line="176"/>
         <source>&amp;Browser</source>
         <translation>&amp;Браузер</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="172"/>
+        <location filename="../src/settingsdialog.ui" line="182"/>
         <source>Browser</source>
         <translation>Браузер</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="178"/>
+        <location filename="../src/settingsdialog.ui" line="188"/>
         <source>Save passwords for web forms</source>
         <translation>Сохранять пароли веб-форм</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="188"/>
+        <location filename="../src/settingsdialog.ui" line="198"/>
         <source>Automatically fill saved passwords</source>
         <translation>Автоматически подставлять сохранённые пароли</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="198"/>
+        <location filename="../src/settingsdialog.ui" line="208"/>
         <source>Remember HTTP authentication credentials</source>
         <translation>Запоминать учётные данные HTTP</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="208"/>
+        <location filename="../src/settingsdialog.ui" line="218"/>
         <source>Passwords are stored in the system credential store.</source>
         <translation>Пароли сохраняются в системном хранилище учётных данных.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="218"/>
+        <location filename="../src/settingsdialog.ui" line="228"/>
         <source>Saved passwords...</source>
         <translation>Сохранённые пароли...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="242"/>
+        <location filename="../src/settingsdialog.ui" line="252"/>
         <source>&amp;Data sources</source>
         <translation>&amp;Источники данных</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="272"/>
+        <location filename="../src/settingsdialog.ui" line="282"/>
         <source>&amp;Add</source>
         <translation>&amp;Добавить</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="279"/>
+        <location filename="../src/settingsdialog.ui" line="289"/>
         <source>&amp;Edit</source>
         <translation>&amp;Изменить</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="286"/>
+        <location filename="../src/settingsdialog.ui" line="296"/>
         <source>&amp;Remove</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="306"/>
+        <location filename="../src/settingsdialog.ui" line="316"/>
         <source>Move &amp;Up</source>
         <translation>Переместить &amp;вверх</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="313"/>
+        <location filename="../src/settingsdialog.ui" line="323"/>
         <source>Move &amp;Down</source>
         <translation>Переместить в&amp;низ</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="336"/>
+        <location filename="../src/settingsdialog.ui" line="346"/>
         <source>External programs</source>
         <translation>Внешние программы</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="345"/>
-        <location filename="../src/settingsdialog.ui" line="380"/>
-        <location filename="../src/settingsdialog.ui" line="400"/>
+        <location filename="../src/settingsdialog.ui" line="355"/>
+        <location filename="../src/settingsdialog.ui" line="390"/>
+        <location filename="../src/settingsdialog.ui" line="410"/>
         <source>Find...</source>
         <translation>Найти...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="358"/>
+        <location filename="../src/settingsdialog.ui" line="368"/>
         <source>ProE executable:</source>
         <translation>Исполняемый файл Pro/E:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="365"/>
+        <location filename="../src/settingsdialog.ui" line="375"/>
         <source>ZIMA utilities</source>
         <translation>Утилиты ZIMA</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="373"/>
+        <location filename="../src/settingsdialog.ui" line="383"/>
         <source>Text editor:</source>
         <translation>Текстовый редактор:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="407"/>
+        <location filename="../src/settingsdialog.ui" line="417"/>
         <source>Terminal:</source>
         <translation>Терминал:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="415"/>
-        <location filename="../src/settingsdialog.ui" line="424"/>
-        <source>Developer mode</source>
-        <translation>Режим разработчика</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="436"/>
+        <location filename="../src/settingsdialog.ui" line="111"/>
         <source>Toolbar for technical specifications</source>
         <translation>Панель инструментов технических спецификаций</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="337"/>
+        <location filename="../src/settingsdialog.cpp" line="335"/>
         <source>ZIMA-CAD-Parts - set %1 path</source>
         <translation>ZIMA-CAD-Parts — указать путь к %1</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="345"/>
+        <location filename="../src/settingsdialog.cpp" line="343"/>
         <source>Locate ProE launcher</source>
         <translation>Найти программу запуска Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="347"/>
+        <location filename="../src/settingsdialog.cpp" line="345"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Исполняемый файл Pro/E (proe.exe);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="355"/>
+        <location filename="../src/settingsdialog.cpp" line="353"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts — выбрать текстовый редактор</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="363"/>
+        <location filename="../src/settingsdialog.cpp" line="361"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts — выбрать терминал</translation>
     </message>

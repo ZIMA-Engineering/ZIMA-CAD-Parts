@@ -586,8 +586,8 @@ Continuer ?</translation>
 %1</translation>
     </message>
     <message>
+        <location filename="../src/directorywidget.cpp" line="663"/>
         <location filename="../src/directorywidget.cpp" line="664"/>
-        <location filename="../src/directorywidget.cpp" line="665"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Voulez-vous vraiment déplacer les pièces sélectionnées ?</translation>
     </message>
@@ -1989,150 +1989,144 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
         <translation>Langue</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="114"/>
+        <location filename="../src/settingsdialog.ui" line="124"/>
         <source>Splash screen</source>
         <translation>Écran de démarrage</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="126"/>
+        <location filename="../src/settingsdialog.ui" line="136"/>
         <source>Duration</source>
         <translation>Durée</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="133"/>
+        <location filename="../src/settingsdialog.ui" line="143"/>
         <source> ms</source>
         <translation> ms</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="166"/>
+        <location filename="../src/settingsdialog.ui" line="176"/>
         <source>&amp;Browser</source>
         <translation>&amp;Navigateur</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="172"/>
+        <location filename="../src/settingsdialog.ui" line="182"/>
         <source>Browser</source>
         <translation>Navigateur</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="178"/>
+        <location filename="../src/settingsdialog.ui" line="188"/>
         <source>Save passwords for web forms</source>
         <translation>Enregistrer les mots de passe des formulaires web</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="188"/>
+        <location filename="../src/settingsdialog.ui" line="198"/>
         <source>Automatically fill saved passwords</source>
         <translation>Remplir automatiquement les mots de passe enregistrés</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="198"/>
+        <location filename="../src/settingsdialog.ui" line="208"/>
         <source>Remember HTTP authentication credentials</source>
         <translation>Mémoriser les identifiants d’authentification HTTP</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="208"/>
+        <location filename="../src/settingsdialog.ui" line="218"/>
         <source>Passwords are stored in the system credential store.</source>
         <translation>Les mots de passe sont enregistrés dans le coffre-fort du système.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="218"/>
+        <location filename="../src/settingsdialog.ui" line="228"/>
         <source>Saved passwords...</source>
         <translation>Mots de passe enregistrés...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="242"/>
+        <location filename="../src/settingsdialog.ui" line="252"/>
         <source>&amp;Data sources</source>
         <translation>&amp;Sources de données</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="272"/>
+        <location filename="../src/settingsdialog.ui" line="282"/>
         <source>&amp;Add</source>
         <translation>&amp;Ajouter</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="279"/>
+        <location filename="../src/settingsdialog.ui" line="289"/>
         <source>&amp;Edit</source>
         <translation>&amp;Modifier</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="286"/>
+        <location filename="../src/settingsdialog.ui" line="296"/>
         <source>&amp;Remove</source>
         <translation>&amp;Supprimer</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="306"/>
+        <location filename="../src/settingsdialog.ui" line="316"/>
         <source>Move &amp;Up</source>
         <translation>&amp;Monter</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="313"/>
+        <location filename="../src/settingsdialog.ui" line="323"/>
         <source>Move &amp;Down</source>
         <translation>&amp;Descendre</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="336"/>
+        <location filename="../src/settingsdialog.ui" line="346"/>
         <source>External programs</source>
         <translation>Programmes externes</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="345"/>
-        <location filename="../src/settingsdialog.ui" line="380"/>
-        <location filename="../src/settingsdialog.ui" line="400"/>
+        <location filename="../src/settingsdialog.ui" line="355"/>
+        <location filename="../src/settingsdialog.ui" line="390"/>
+        <location filename="../src/settingsdialog.ui" line="410"/>
         <source>Find...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="358"/>
+        <location filename="../src/settingsdialog.ui" line="368"/>
         <source>ProE executable:</source>
         <translation>Exécutable Pro/E :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="365"/>
+        <location filename="../src/settingsdialog.ui" line="375"/>
         <source>ZIMA utilities</source>
         <translation>Utilitaires ZIMA</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="373"/>
+        <location filename="../src/settingsdialog.ui" line="383"/>
         <source>Text editor:</source>
         <translation>Éditeur de texte :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="407"/>
+        <location filename="../src/settingsdialog.ui" line="417"/>
         <source>Terminal:</source>
         <translation>Terminal :</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="415"/>
-        <location filename="../src/settingsdialog.ui" line="424"/>
-        <source>Developer mode</source>
-        <translation>Mode développeur</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="436"/>
+        <location filename="../src/settingsdialog.ui" line="111"/>
         <source>Toolbar for technical specifications</source>
         <translation>Barre d’outils des spécifications techniques</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="337"/>
+        <location filename="../src/settingsdialog.cpp" line="335"/>
         <source>ZIMA-CAD-Parts - set %1 path</source>
         <translation>ZIMA-CAD-Parts – définir le chemin de %1</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="345"/>
+        <location filename="../src/settingsdialog.cpp" line="343"/>
         <source>Locate ProE launcher</source>
         <translation>Localiser le lanceur Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="347"/>
+        <location filename="../src/settingsdialog.cpp" line="345"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Exécutable Pro/E (proe.exe);;Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="355"/>
+        <location filename="../src/settingsdialog.cpp" line="353"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts – sélectionner un éditeur de texte</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="363"/>
+        <location filename="../src/settingsdialog.cpp" line="361"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts – sélectionner un terminal</translation>
     </message>
