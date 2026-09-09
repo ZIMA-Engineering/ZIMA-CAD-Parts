@@ -2,6 +2,8 @@
 
 Parts zobrazuje všechny typy souborů, včetně skrytých a systémových.
 Adresář `0000-index` zůstává vyhrazený pro metadata a nezobrazuje se.
+Pomocný soubor `.directory` se také vždy skrývá na Windows i Linuxu,
+bez zápisu výjimky do lokálních filtrů; na disku zůstává zachovaný.
 Zobrazení podadresářů jako dílů dál řídí `Directory/SubdirectoriesAsParts`.
 
 ## Lokální výjimky

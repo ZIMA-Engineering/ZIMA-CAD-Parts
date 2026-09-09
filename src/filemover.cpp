@@ -1,11 +1,15 @@
 #include "filemover.h"
 #include "progressdialog.h"
+#include "partcache.h"
+#include "metadata.h"
 
 #include <QDir>
 #include <QDebug>
 #include <QProgressBar>
 #include <QLabel>
 #include <QMessageBox>
+#include <QMap>
+#include <QScopeGuard>
 
 FileMover::FileMover(QWidget *parent)
     : QObject(parent)
@@ -41,6 +45,47 @@ void FileMover::setDestination(const QString &dst)
 
 void FileMover::work()
 {
+    QMap<QString, QString> directories;
+    QStringList watchedPaths;
+    for (const auto &source : m_sourceFiles)
+    {
+        if (!source.first.isDir() || source.first.isSymLink())
+            continue;
+        const QString path = source.first.absoluteFilePath();
+        const QString destination = QDir::cleanPath(
+                m_dst + "/" + source.second + "/" + source.first.fileName());
+        directories.insert(path, destination);
+        watchedPaths << path;
+        if (QFileInfo(destination).isDir())
+            watchedPaths << destination;
+    }
+    watchedPaths.removeDuplicates();
+    for (const QString &path : watchedPaths)
+        emit PartCache::get()->directoryOperationStarted(path);
+    const auto restoreDirectories = qScopeGuard([&] {
+        // Directory renames are atomic: a retained source means the move
+        // failed or was skipped, so its views must stay at the original path.
+        for (auto it = directories.cbegin(); it != directories.cend(); ++it)
+        {
+            if (!QFileInfo::exists(it.key()) && QFileInfo(it.value()).isDir())
+            {
+                PartCache::get()->renameDirectory(it.key(), it.value());
+                MetadataCache::get()->clearBelow(it.key());
+            }
+        }
+        for (const QString &path : watchedPaths)
+        {
+            QString destination = path;
+            if (!QFileInfo::exists(path))
+            {
+                destination = directories.value(path);
+                if (!QFileInfo(destination).isDir())
+                    destination.clear();
+            }
+            emit PartCache::get()->directoryOperationFinished(path, destination);
+        }
+    });
+
     m_mv = ThreadWorker::create<FileMoverWorker>();
     m_mv->setSourceFiles(m_sourceFiles, m_dst);
 
@@ -67,6 +112,9 @@ void FileMover::work()
 
     if (m_progress->exec() == QDialog::Rejected)
         m_mv->stop();
+
+    m_mv->thread()->quit();
+    m_mv->thread()->wait();
 
     m_mv->deleteLater();
     m_progress->deleteLater();

@@ -12,6 +12,7 @@
 #include "createdirectorydialog.h"
 #include "directoryeditordialog.h"
 #include "filerenamer.h"
+#include "filemover.h"
 #include "fileview.h"
 #include <QLineEdit>
 #include <QComboBox>
@@ -359,6 +360,66 @@ private slots:
         QVERIFY(!QFileInfo::exists(created));
         QVERIFY(!QFileInfo::exists(renamed));
         QVERIFY(QFileInfo::exists(prototype + "/child/fixture.txt"));
+    }
+    void moveDisplayedDirectoryAndBack()
+    {
+        QTemporaryDir directory;
+        const QString source = directory.filePath("source/project");
+        const QString destination = directory.filePath("destination");
+        const QString moved = destination + "/project";
+        QVERIFY(QDir().mkpath(source + "/0000-index"));
+        QVERIFY(QDir().mkpath(source + "/child"));
+        QVERIFY(QDir().mkpath(destination));
+        {
+            QSettings metadata(source + "/0000-index/metadata.ini", QSettings::IniFormat);
+            metadata.setValue("Directory/Version", 2);
+            metadata.setValue("Directory/AutoIndex", true);
+            metadata.setValue("Directory/Label/en", "Project metadata");
+        }
+        touch(source + "/child", "fixture.txt");
+        DirectoryWidget pane;
+        DirectoryWidget secondPane;
+        pane.setDirectory(source);
+        secondPane.setDirectory(source);
+        pane.show();
+        auto firstFiles = pane.findChild<FileView *>();
+        auto secondFiles = secondPane.findChild<FileView *>();
+        QVERIFY(firstFiles);
+        QVERIFY(secondFiles);
+        QStringList warnings;
+        QTimer responder;
+        connect(&responder, &QTimer::timeout, this, [&] {
+            for (QWidget *widget : QApplication::topLevelWidgets())
+            {
+                if (auto box = qobject_cast<QMessageBox *>(widget); box && box->isVisible())
+                {
+                    warnings << box->text();
+                    box->accept();
+                }
+            }
+        });
+        responder.start(10);
+        FileMover mover;
+        mover.addSourceFile(QFileInfo(source));
+        mover.setDestination(destination);
+        mover.work();
+        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join("; ")));
+        QVERIFY(!QFileInfo::exists(source));
+        QVERIFY(QFileInfo::exists(moved + "/child/fixture.txt"));
+        QCOMPARE(firstFiles->currentPath(), moved);
+        QCOMPARE(secondFiles->currentPath(), moved);
+        QCOMPARE(MetadataCache::get()->metadata(moved)->getLabel("en"), QString("Project metadata"));
+
+        FileMover back;
+        back.addSourceFile(QFileInfo(moved));
+        back.setDestination(directory.filePath("source"));
+        back.work();
+        responder.stop();
+        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join("; ")));
+        QVERIFY(!QFileInfo::exists(moved));
+        QVERIFY(QFileInfo::exists(source + "/child/fixture.txt"));
+        QCOMPARE(firstFiles->currentPath(), source);
+        QCOMPARE(secondFiles->currentPath(), source);
     }
     void splashDoesNotSleepInWindowConstructor()
     {

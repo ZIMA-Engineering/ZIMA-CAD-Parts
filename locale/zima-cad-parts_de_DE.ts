@@ -753,12 +753,12 @@ Fortfahren?</translation>
 <context>
     <name>FileModel</name>
     <message>
-        <location filename="../src/filemodel.cpp" line="186"/>
+        <location filename="../src/filemodel.cpp" line="188"/>
         <source>Part name</source>
         <translation>Teilename</translation>
     </message>
     <message>
-        <location filename="../src/filemodel.cpp" line="186"/>
+        <location filename="../src/filemodel.cpp" line="188"/>
         <source>Thumbnail</source>
         <translation>Vorschaubild</translation>
     </message>
@@ -766,32 +766,32 @@ Fortfahren?</translation>
 <context>
     <name>FileMover</name>
     <message>
-        <location filename="../src/filemover.cpp" line="49"/>
+        <location filename="../src/filemover.cpp" line="94"/>
         <source>Please wait while the files are being moved...</source>
         <translation>Bitte warten, die Dateien werden verschoben...</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="86"/>
+        <location filename="../src/filemover.cpp" line="134"/>
         <source>File move failed</source>
         <translation>Verschieben der Datei fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="97"/>
+        <location filename="../src/filemover.cpp" line="145"/>
         <source>Overwrite file?</source>
         <translation>Datei überschreiben?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="98"/>
+        <location filename="../src/filemover.cpp" line="146"/>
         <source>File %1 already exists. Overwrite?</source>
         <translation>Die Datei %1 existiert bereits. Überschreiben?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="134"/>
+        <location filename="../src/filemover.cpp" line="182"/>
         <source>Replace directory?</source>
         <translation>Verzeichnis ersetzen?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="135"/>
+        <location filename="../src/filemover.cpp" line="183"/>
         <source>Directory %1 already exists. Replace it?</source>
         <translation>Das Verzeichnis %1 existiert bereits. Ersetzen?</translation>
     </message>
@@ -799,19 +799,19 @@ Fortfahren?</translation>
 <context>
     <name>FileMoverWorker</name>
     <message>
-        <location filename="../src/filemover.cpp" line="260"/>
+        <location filename="../src/filemover.cpp" line="308"/>
         <source>Unable to move &apos;%1&apos;: %2</source>
         <translation>&apos;%1&apos; kann nicht verschoben werden: %2</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="296"/>
+        <location filename="../src/filemover.cpp" line="344"/>
         <source>directory rename failed</source>
         <translation>Umbenennen des Verzeichnisses fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="323"/>
-        <location filename="../src/filemover.cpp" line="334"/>
-        <location filename="../src/filemover.cpp" line="349"/>
+        <location filename="../src/filemover.cpp" line="371"/>
+        <location filename="../src/filemover.cpp" line="382"/>
+        <location filename="../src/filemover.cpp" line="397"/>
         <source>Unable to remove &apos;%1&apos;</source>
         <translation>&apos;%1&apos; kann nicht entfernt werden</translation>
     </message>

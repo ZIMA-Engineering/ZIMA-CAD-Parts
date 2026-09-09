@@ -54,6 +54,12 @@ public:
                 result.clearBit(row);
                 continue;
             }
+            // KDE stores folder presentation settings in this helper file.
+            // Keep it on disk but never present it as an engineering document.
+            if (!file.isDir() && name.compare(".directory", Qt::CaseInsensitive) == 0) {
+                result.clearBit(row);
+                continue;
+            }
             for (const QRegularExpression &pattern : patterns) {
                 if (pattern.match(name).hasMatch()) {
                     result.clearBit(row);

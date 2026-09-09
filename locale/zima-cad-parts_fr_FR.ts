@@ -753,12 +753,12 @@ Continuer ?</translation>
 <context>
     <name>FileModel</name>
     <message>
-        <location filename="../src/filemodel.cpp" line="186"/>
+        <location filename="../src/filemodel.cpp" line="188"/>
         <source>Part name</source>
         <translation>Nom de la pièce</translation>
     </message>
     <message>
-        <location filename="../src/filemodel.cpp" line="186"/>
+        <location filename="../src/filemodel.cpp" line="188"/>
         <source>Thumbnail</source>
         <translation>Miniature</translation>
     </message>
@@ -766,32 +766,32 @@ Continuer ?</translation>
 <context>
     <name>FileMover</name>
     <message>
-        <location filename="../src/filemover.cpp" line="49"/>
+        <location filename="../src/filemover.cpp" line="94"/>
         <source>Please wait while the files are being moved...</source>
         <translation>Veuillez patienter pendant le déplacement des fichiers...</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="86"/>
+        <location filename="../src/filemover.cpp" line="134"/>
         <source>File move failed</source>
         <translation>Échec du déplacement du fichier</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="97"/>
+        <location filename="../src/filemover.cpp" line="145"/>
         <source>Overwrite file?</source>
         <translation>Écraser le fichier ?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="98"/>
+        <location filename="../src/filemover.cpp" line="146"/>
         <source>File %1 already exists. Overwrite?</source>
         <translation>Le fichier %1 existe déjà. L’écraser ?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="134"/>
+        <location filename="../src/filemover.cpp" line="182"/>
         <source>Replace directory?</source>
         <translation>Remplacer le dossier ?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="135"/>
+        <location filename="../src/filemover.cpp" line="183"/>
         <source>Directory %1 already exists. Replace it?</source>
         <translation>Le dossier %1 existe déjà. Le remplacer ?</translation>
     </message>
@@ -799,19 +799,19 @@ Continuer ?</translation>
 <context>
     <name>FileMoverWorker</name>
     <message>
-        <location filename="../src/filemover.cpp" line="260"/>
+        <location filename="../src/filemover.cpp" line="308"/>
         <source>Unable to move &apos;%1&apos;: %2</source>
         <translation>Impossible de déplacer &apos;%1&apos; : %2</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="296"/>
+        <location filename="../src/filemover.cpp" line="344"/>
         <source>directory rename failed</source>
         <translation>échec du renommage du dossier</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="323"/>
-        <location filename="../src/filemover.cpp" line="334"/>
-        <location filename="../src/filemover.cpp" line="349"/>
+        <location filename="../src/filemover.cpp" line="371"/>
+        <location filename="../src/filemover.cpp" line="382"/>
+        <location filename="../src/filemover.cpp" line="397"/>
         <source>Unable to remove &apos;%1&apos;</source>
         <translation>Impossible de supprimer &apos;%1&apos;</translation>
     </message>

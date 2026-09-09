@@ -248,6 +248,27 @@ private slots:
         QVERIFY(filters.showZimaVersions);
     }
 
+    void directoryMetadataIsHiddenWithoutLocalFilters()
+    {
+        QTemporaryDir dir;
+        const QFileInfoList files{
+            QFileInfo(touch(dir.path(), ".directory")),
+            QFileInfo(touch(dir.path(), ".directory.txt")),
+            QFileInfo(touch(dir.path(), ".other")),
+            QFileInfo(touch(dir.path(), "part.prtz.1"))
+        };
+        LocalFilters filters;
+        filters.load(dir.path(), true);
+        QVERIFY(filters.hidden.isEmpty());
+        const auto accepted = filters.accepted(files, true);
+        QVERIFY(!accepted.testBit(0));
+        QVERIFY(accepted.testBit(1));
+        QVERIFY(accepted.testBit(2));
+        QVERIFY(accepted.testBit(3));
+        QVERIFY(!QFileInfo::exists(LocalFilters::filePath(dir.path())));
+        QVERIFY(QFileInfo::exists(dir.filePath(".directory")));
+    }
+
     void fileTypesStillRecognized()
     {
         QCOMPARE(FileMetadata("part.prt.12").type, FileType::PROE_PRT);
