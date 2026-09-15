@@ -18,7 +18,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdio>
+#include <cstring>
 #include <QApplication>
+#include "zima-cad-parts.h"
 #include <QGuiApplication>
 #include <QIcon>
 #include <QLocale>
@@ -59,11 +62,19 @@ See metadata.h for metadata handling description
 
 int main(int argc, char *argv[])
 {
+    // Packaging can verify the binary version without starting the GUI/WebEngine.
+    if (argc == 2 && std::strcmp(argv[1], "--build-info") == 0)
+    {
+        std::printf("{\"version\":\"%s\"}\n", VERSION);
+        return 0;
+    }
+
     Q_INIT_RESOURCE(zima_cad_parts);
 
     QCoreApplication::setOrganizationName("ZIMA-Construction");
     QCoreApplication::setOrganizationDomain("zima-contruction.cz");
     QCoreApplication::setApplicationName("ZIMA-CAD-Parts");
+    QCoreApplication::setApplicationVersion(QStringLiteral(VERSION));
 
 #ifdef HAVE_OCCT
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);

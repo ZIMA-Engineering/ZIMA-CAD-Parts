@@ -188,3 +188,18 @@ navigation icons and the renamed Properties actions.
 
 See [verification](doc/verification.md) for the build and test requirements and
 the validation of the current Windows release.
+
+## Approved distribution design
+
+The [binding distribution and versioning policy](doc/distribution-policy.md)
+defines the planned versioned Windows/Debian packages, shared source archives,
+launchers and two-version retention. This is the approved implementation target;
+the deployment instructions above describe the current application.
+
+The first [Windows packaging implementation](doc/windows-distribution.md)
+provides a clean versioned source/runtime bundle and configurable launcher.
+It does not yet implement automatic updates or signing.
+
+[Debian packaging](doc/debian-distribution.md) is prepared for Debian 13 CI;
+Linux runtime validation is still pending. Windows packages now use a native
+root EXE launcher without a PowerShell dependency.

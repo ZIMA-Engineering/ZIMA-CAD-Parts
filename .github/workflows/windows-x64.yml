@@ -5,7 +5,7 @@ on:
     branches:
       - "**"
     tags:
-      - "v*"
+      - "ZIMA-CAD-Parts-*"
 
 permissions:
   contents: write
@@ -27,6 +27,7 @@ jobs:
       - name: Install Qt (MSVC 2022, x64)
         uses: jurplel/install-qt-action@v4
         with:
+          version: "6.10.1"
           target: "desktop"
           arch: "win64_msvc2022_64"
           modules: qtwebengine qtwebchannel qtpositioning
@@ -94,57 +95,61 @@ jobs:
 
       - name: Configure build
         shell: pwsh
-        run: qmake "OCCT_ROOT=$env:OCCT_ROOT" zima-cad-parts.pro
+        run: |
+          New-Item -ItemType Directory -Force .build-ci | Out-Null
+          Set-Location .build-ci
+          qmake "OCCT_ROOT=$env:OCCT_ROOT" "OCCT_REQUIRED=1" ../zima-cad-parts.pro
 
       - name: Build project
+        working-directory: .build-ci
         run: nmake release
 
-      - name: Deploy (windeployqt)
+      - name: Test packaging contracts
+        run: python tests/test_distribution.py
+
+      - name: Create versioned distribution
+        id: package
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          New-Item -ItemType Directory -Force package | Out-Null
-          Copy-Item release\ZIMA-CAD-Parts.exe .\package\
-          # Keep all OCCT exchange/runtime DLLs for STEP, IGES, and STL previews.
-          # vcpkg may also contain a different Qt build. Use only the build kit.
-          Get-ChildItem "$env:OCCT_ROOT\bin\*.dll" |
-            Where-Object { $_.Name -notlike "Qt6*.dll" } |
-            Copy-Item -Destination .\package\ -Force
-          New-Item -ItemType Directory -Force package\locale | Out-Null
-          Copy-Item locale\*.qm package\locale\
-          New-Item -ItemType Directory -Force package\licenses | Out-Null
-          Copy-Item licenses\* package\licenses\ -Force
-          windeployqt --release --force --compiler-runtime .\package\ZIMA-CAD-Parts.exe
+          $qtRoot = (qmake -query QT_INSTALL_PREFIX).Trim()
+          $env:PATH = "$qtRoot/bin;$env:OCCT_ROOT/bin;$env:PATH"
+          $packageArgs = @(
+            "tools/distribution/package-windows.py",
+            "--exe", ".build-ci/release/ZIMA-CAD-Parts.exe",
+            "--qt", $qtRoot,
+            "--occt", $env:OCCT_ROOT,
+            "--output", ".dist-output/package"
+          )
+          if ("${{ github.ref_type }}" -eq "tag") { $packageArgs += "--release" }
+          python @packageArgs
+          if ($LASTEXITCODE -ne 0) { throw "Packaging failed" }
+          $manifest = Get-ChildItem .dist-output/package/ZIMA-CAD-Parts/windows/*/version.json |
+            Select-Object -First 1 | Get-Content -Raw | ConvertFrom-Json
+          $name = "ZIMA-CAD-Parts-$($manifest.version)-windows-x64"
+          "release_name=ZIMA-CAD-Parts-$($manifest.version)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "name=$name" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
-      - name: Compute artifact name + zip name
-        id: names
+      - name: Test native launcher
         shell: pwsh
         run: |
-          if ("${{ github.ref_type }}" -eq "tag") {
-            $label = "${{ github.ref_name }}"      # tag name
-          } else {
-            $label = "git.$("${{ github.sha }}".Substring(0,9))"
-          }
-          $artifact = "ZIMA-CAD-Parts-$label-windows-x64"
-          "artifact_name=$artifact" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-          "zip_name=$artifact.zip"  | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          $env:PARTS_LAUNCHER = "$env:GITHUB_WORKSPACE/.dist-output/package/ZIMA-CAD-Parts/ZIMA-CAD-Parts.exe"
+          python tests/test_distribution.py
 
-      # Always upload the Actions artifact (folder upload = GitHub makes the zip)
-      - name: Upload artifact
+      - name: Upload distribution
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ steps.names.outputs.artifact_name }}
-          path: package/**
+          name: ${{ steps.package.outputs.name }}
+          path: .dist-output/package/ZIMA-CAD-Parts/
 
-      # Only for tag pushes: create a real ZIP and attach it to the GitHub Release
-      - name: Create zip for Release asset
+      - name: Create release archive
         if: github.ref_type == 'tag'
         shell: pwsh
-        run: |
-          Compress-Archive -Path .\package\* -DestinationPath ${{ steps.names.outputs.zip_name }}
+        run: Compress-Archive -Path .dist-output/package/ZIMA-CAD-Parts -DestinationPath "${{ steps.package.outputs.release_name }}.zip"
 
-      - name: Create GitHub Release + upload asset
+      - name: Upload release candidate
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.names.outputs.zip_name }}
+          draft: true
+          files: ${{ steps.package.outputs.release_name }}.zip

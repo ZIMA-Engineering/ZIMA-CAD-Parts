@@ -1,143 +1,28 @@
-name: Linux distro builds
-
+name: Debian 13 distribution
 on:
   push:
-    branches:
-      - "**"
+    branches: ["**"]
   pull_request:
-
+  workflow_dispatch:
 permissions:
   contents: read
-  packages: write
-
-defaults:
-  run:
-    shell: bash
-
 jobs:
-  build-linux:
-    name: ${{ matrix.name }}
+  build-debian:
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: Ubuntu 26.04
-            base-image: ubuntu:26.04
-            distro: ubuntu
-            image: ghcr.io/zima-engineering/zcp-linux-build:ubuntu-26.04
-          - name: Debian 13
-            base-image: debian:trixie
-            distro: debian
-            image: ghcr.io/zima-engineering/zcp-linux-build:debian-trixie
-          - name: Fedora 44
-            base-image: fedora:44
-            distro: fedora
-            image: ghcr.io/zima-engineering/zcp-linux-build:fedora-44
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
         with:
-          submodules: true
-
-      - name: Log in to GitHub Container Registry
-        if: github.event_name == 'push'
-        uses: docker/login-action@v4
+          submodules: recursive
+      - name: Build Debian toolchain image
+        run: docker build --pull --build-arg BASE_IMAGE=debian:13 --build-arg DISTRO=debian -f .github/ci/linux-build.Dockerfile -t parts-debian-build .
+      - name: Build and package on Debian
+        run: >-
+          docker run --rm --user "$(id -u):$(id -g)"
+          --volume "$PWD:/workspace" --workdir /workspace --env HOME=/tmp
+          parts-debian-build bash .github/ci/build-debian.sh
+      - name: Upload experimental Debian package
+        uses: actions/upload-artifact@v6
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull prebuilt image
-        id: prebuilt
-        env:
-          IMAGE: ${{ matrix.image }}
-        run: |
-          set -euxo pipefail
-
-          if docker pull "$IMAGE"; then
-            echo "found=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "found=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Build image
-        if: steps.prebuilt.outputs.found != 'true'
-        env:
-          BASE_IMAGE: ${{ matrix.base-image }}
-          DISTRO: ${{ matrix.distro }}
-          IMAGE: ${{ matrix.image }}
-        run: |
-          set -euxo pipefail
-
-          docker build \
-            --pull \
-            --build-arg "BASE_IMAGE=$BASE_IMAGE" \
-            --build-arg "DISTRO=$DISTRO" \
-            --file .github/ci/linux-build.Dockerfile \
-            --tag "$IMAGE" \
-            .
-
-      - name: Push image
-        if: github.event_name == 'push' && steps.prebuilt.outputs.found != 'true'
-        env:
-          IMAGE: ${{ matrix.image }}
-        run: |
-          set -euxo pipefail
-          docker push "$IMAGE"
-
-      - name: Build project in image
-        env:
-          IMAGE: ${{ matrix.image }}
-        run: |
-          set -euxo pipefail
-
-          docker run --rm \
-            --user "$(id -u):$(id -g)" \
-            --volume "$PWD:/workspace" \
-            --workdir /workspace \
-            --env HOME=/tmp \
-            "$IMAGE" \
-            bash -lc '
-              set -euxo pipefail
-
-              find_tool() {
-                variable="$1"
-                shift
-
-                for candidate in "$@"; do
-                  if command -v "$candidate" >/dev/null 2>&1; then
-                    export "$variable=$(command -v "$candidate")"
-                    return
-                  fi
-
-                  if [ -x "$candidate" ]; then
-                    export "$variable=$candidate"
-                    return
-                  fi
-                done
-
-                echo "Unable to find any candidate for $variable: $*" >&2
-                exit 1
-              }
-
-              git config --global --add safe.directory /workspace
-              find_tool QMAKE qmake6 qmake /usr/lib/qt6/bin/qmake6 \
-                /usr/lib/qt6/bin/qmake /usr/lib64/qt6/bin/qmake6 \
-                /usr/lib64/qt6/bin/qmake
-              find_tool LRELEASE lrelease-qt6 lrelease6 lrelease \
-                /usr/lib/qt6/bin/lrelease /usr/lib64/qt6/bin/lrelease
-
-              "$LRELEASE" locale/zima-cad-parts_cs_CZ.ts
-              "$QMAKE" "OCCT_REQUIRED=1" zima-cad-parts.pro 2>&1 | tee qmake.log
-              grep -F "STEP/IGES/STL preview enabled" qmake.log
-              make -j"$(nproc)"
-              install_root="$(mktemp -d)"
-              make install PREFIX=/usr/local INSTALL_ROOT="$install_root"
-              test -x "$install_root/usr/local/bin/ZIMA-CAD-Parts"
-              test -f "$install_root/usr/local/share/applications/cz.zima_engineering.ZimaCadParts.desktop"
-              test -f "$install_root/usr/local/share/ZIMA-CAD-Parts/locale/zima-cad-parts_cs_CZ.qm"
-              test -f "$install_root/usr/local/share/icons/hicolor/256x256/apps/cz.zima_engineering.ZimaCadParts.png"
-            '
+          name: ZIMA-CAD-Parts-debian-13-x86_64
+          path: .dist-output/*.tar.gz
+          if-no-files-found: error

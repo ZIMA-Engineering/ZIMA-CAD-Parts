@@ -31,3 +31,8 @@ ui_*.h
 
 # Local configuration backups and cleanup receipts
 /.local-backups/
+
+# Generated distribution packages
+/.dist-output/
+
+__pycache__/
