@@ -3,14 +3,19 @@
 ## Windows — ověřeno 15. září 2026
 
 Aplikace byla sestavena z kompletního projektu pomocí Qt 6.10.1 MSVC x64
-s Open CASCADE 8.0.0. Finální integrační sada dokončila **22 testů bez chyby**.
-Kontrola všech čtyř překladových katalogů ověřila **412 úplných textů** v každém
+s Open CASCADE 8.0.0. Integrační sada před doplněním menu hlavních zdrojů dokončila
+**22 testů bez chyby**.
+Kontrola všech čtyř překladových katalogů ověřila **413 úplných textů** v každém
 jazyce, včetně parametrů, nových dialogů a množných tvarů.
 
 Nasazený `ZIMA-CAD-Parts.exe` v kořeni vytvořil reagující hlavní okno a korektně
 se ukončil s návratovým kódem 0. Vzhled zelených záložek a SVG ikon byl
 zkontrolován v běžícím programu na Windows. Běh na Linuxu/KDE v této změně
 nebyl samostatně ověřen.
+
+Doplnění položky **Otevřít v nové kartě** u hlavních zdrojů bylo ověřeno
+sestavením celého projektu, kontrolou překladů a spuštěním výsledného EXE
+s korektním ukončením. Integrační sada se pro tuto drobnou změnu neopakovala.
 
 ## Co ověřují integrační testy
 

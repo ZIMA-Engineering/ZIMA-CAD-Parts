@@ -37,6 +37,6 @@ Integrační test ověřuje všech pět vlajek, změnu skutečných textů
 hlavní lišty, francouzský a ruský dialog filtrů, regionální variantu,
 nepodporovaný jazyk, uložení volby a opakovaný návrat do angličtiny.
 
-Aktuální katalogy obsahují 412 textů včetně správy hesel, automatických indexů
+Aktuální katalogy obsahují 413 textů včetně správy hesel, automatických indexů
 a CAD náhledů, vlastností adresáře, zámečku a hromadného použití na podadresáře. Kontrola zahrnuje také české, německé, francouzské a ruské množné tvary.
 Ruština se za běhu ověřuje pro počty 1, 2, 5 a 21.

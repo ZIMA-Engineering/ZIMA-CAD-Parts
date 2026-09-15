@@ -224,11 +224,16 @@
     <name>DataSourceWidget</name>
     <message>
         <location filename="../src/datasourcewidget.cpp" line="214"/>
+        <source>Open in a new tab</source>
+        <translation>Открыть в новой вкладке</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="221"/>
         <source>Data source properties</source>
         <translation>Свойства источника данных</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="220"/>
+        <location filename="../src/datasourcewidget.cpp" line="227"/>
         <source>Edit in settings</source>
         <translation>Изменить в настройках</translation>
     </message>

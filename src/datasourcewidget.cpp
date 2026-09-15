@@ -209,6 +209,13 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
     dsList->setCurrentIndex(index);
 
     QMenu menu(this);
+    QAction *openInNewTabAction = menu.addAction(
+        QIcon(":/gfx/tab-new.png"),
+        tr("Open in a new tab")
+    );
+    openInNewTabAction->setEnabled(QFileInfo(dataSource->rootPath).isDir());
+    menu.addSeparator();
+
     QAction *editAction = menu.addAction(
         QIcon(":/gfx/document-edit.png"),
         tr("Data source properties")
@@ -222,7 +229,11 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
 
     QAction *selectedAction = menu.exec(globalPos);
 
-    if (selectedAction == editAction)
+    if (selectedAction == openInNewTabAction)
+    {
+        emit openInANewTabRequested(dataSource->rootPath);
+    }
+    else if (selectedAction == editAction)
     {
         DirectoryEditorDialog dlg(
             QFileInfo(dataSource->rootPath),

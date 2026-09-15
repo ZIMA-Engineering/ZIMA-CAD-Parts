@@ -29,3 +29,8 @@ povolené a zamčené podadresáře neblokují práci se soubory v nezamčených
 Volba **Zobrazit archivní verze ZIMA-CAD** má stejný smysl jako volba verzí
 Pro/E: zaškrtnuto znamená zobrazit. Dříve uložené hodnoty `ShowZimaVersions`
 zůstávají platné a nevyžadují přepis nastavení.
+
+Kontextové menu hlavního datového zdroje ve stromu nabízí také
+**Otevřít v nové kartě**. Otevře kořen vybraného zdroje v nové hlavní
+záložce, stejně jako tato volba u jednotlivých adresářů. Pokud kořenový
+adresář není dostupný, je položka neaktivní.

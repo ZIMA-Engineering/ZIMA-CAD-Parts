@@ -224,11 +224,16 @@
     <name>DataSourceWidget</name>
     <message>
         <location filename="../src/datasourcewidget.cpp" line="214"/>
+        <source>Open in a new tab</source>
+        <translation>Ouvrir dans un nouvel onglet</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="221"/>
         <source>Data source properties</source>
         <translation>Propriétés de la source de données</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="220"/>
+        <location filename="../src/datasourcewidget.cpp" line="227"/>
         <source>Edit in settings</source>
         <translation>Modifier dans les paramètres</translation>
     </message>

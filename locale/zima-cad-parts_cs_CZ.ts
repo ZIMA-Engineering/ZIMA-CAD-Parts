@@ -224,11 +224,16 @@
     <name>DataSourceWidget</name>
     <message>
         <location filename="../src/datasourcewidget.cpp" line="214"/>
+        <source>Open in a new tab</source>
+        <translation>Otevřít v nové kartě</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="221"/>
         <source>Data source properties</source>
         <translation>Vlastnosti datového zdroje</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="220"/>
+        <location filename="../src/datasourcewidget.cpp" line="227"/>
         <source>Edit in settings</source>
         <translation>Upravit v nastavení</translation>
     </message>
