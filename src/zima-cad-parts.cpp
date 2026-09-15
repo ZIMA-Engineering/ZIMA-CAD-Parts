@@ -33,6 +33,8 @@
 #include "browserprofilemanager.h"
 #include "mainwindow.h"
 #include "settings.h"
+#include "update/installationclient.h"
+#include <QMessageBox>
 #include "applicationlanguage.h"
 
 /**
@@ -92,6 +94,8 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication a(argc, argv);
+    QString instanceError;
+    if (!registerPartsInstance(&instanceError)) { QMessageBox::warning(nullptr, "ZIMA-CAD-Parts", instanceError); return 1; }
     QGuiApplication::setDesktopFileName("cz.zima_engineering.ZimaCadParts");
     const QIcon applicationIcon = QIcon::fromTheme(
                 "cz.zima_engineering.ZimaCadParts",

@@ -14,6 +14,7 @@
 #include "partselector.h"
 
 #include "directorywidget.h"
+#include "updateservice.h"
 #include "ui_directorywidget.h"
 #include "browserpage.h"
 #include "directorywebview.h"
@@ -35,6 +36,14 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     QFile tabStyle(":/gfx/navigation/tabs.css");
     if (tabStyle.open(QIODevice::ReadOnly))
         ui->tabWidget->tabBar()->setStyleSheet(QString::fromUtf8(tabStyle.readAll()));
+    m_updateIndicator = new QToolButton(ui->tabWidget);
+    m_updateIndicator->setObjectName("updateAvailableIndicator");
+    m_updateIndicator->setAutoRaise(true);
+    m_updateIndicator->setFocusPolicy(Qt::StrongFocus);
+    ui->tabWidget->setCornerWidget(m_updateIndicator, Qt::TopRightCorner);
+    connect(m_updateIndicator, &QToolButton::clicked, UpdateService::get(), &UpdateService::showSettingsRequested);
+    connect(UpdateService::get(), &UpdateService::changed, this, &DirectoryWidget::updateReleaseIndicator);
+    updateReleaseIndicator();
     ui->tabWidget->setIconSize(QSize(20, 20));
     ui->tabWidget->setTabIcon(0, QIcon(":/gfx/navigation/folder.svg"));
     ui->tabWidget->setTabIcon(1, QIcon(":/gfx/navigation/parts.svg"));
@@ -494,6 +503,7 @@ void DirectoryWidget::changeEvent(QEvent *e)
     switch (e->type()) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
+        updateReleaseIndicator();
         updateProtectionControls();
         updateIndexMenus();
         if (ui->dirWebView->url().path().startsWith("/data/zima-cad-parts") )
@@ -732,4 +742,13 @@ void DirectoryWidget::setFiltersDialog()
     {
         emit changeSettings();
     }
+}
+
+void DirectoryWidget::updateReleaseIndicator()
+{
+    const auto version = UpdateService::get()->offer()["availableVersion"].toString();
+    m_updateIndicator->setText(tr("Update available"));
+    m_updateIndicator->setToolTip(tr("New version %1. Open Settings to install it.").arg(version));
+    m_updateIndicator->setAccessibleName(m_updateIndicator->toolTip());
+    m_updateIndicator->setVisible(!version.isEmpty());
 }

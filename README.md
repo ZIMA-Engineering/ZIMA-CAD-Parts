@@ -34,7 +34,7 @@ Debian 13 / Ubuntu:
 
 ```
 sudo apt install build-essential git libsecret-1-dev \
-    qt6-base-dev qt6-base-dev-tools qmake6 \
+    qt6-base-dev qt6-base-private-dev qt6-base-dev-tools qmake6 libssl-dev pkg-config \
     qt6-declarative-dev qt6-positioning-dev \
     qt6-webchannel-dev qt6-webengine-dev \
     qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools \
@@ -210,7 +210,13 @@ the deployment instructions above describe the current application.
 
 The first [Windows packaging implementation](doc/windows-distribution.md)
 provides a clean versioned source/runtime bundle and configurable launcher.
-It does not yet implement automatic updates or signing.
+It includes the updater helper; final publisher signing is a separate step.
+
+The [GitHub updates guide](doc/github-updates.md) describes automatic
+silent startup checks, an unobtrusive indicator beside Directory/Parts,
+installation from Settings after confirmation, signed release assets,
+rollback and two-version retention. Windows implementation and fixture tests
+are available; Debian runtime verification remains pending.
 
 [Debian packaging](doc/debian-distribution.md) is prepared for Debian 13 CI;
 Linux runtime validation is still pending. Windows packages now use a native
@@ -227,3 +233,7 @@ with the CLI and supplies the active tab as the default directory.
 
 The built-in [PS2PDF, PTC-Cleaner and STEP-Edit](doc/integrated-tools.md)
 functions are available from the GUI and CLI. ZIMA-CAD-Sync is no longer offered.
+
+The [GitHub updates guide](doc/github-updates.md) describes silent startup
+checks, installation from Settings, signing and rollback. Packagers now require
+the separately built `zima-cad-parts-update.pro` helper (`--updater`).

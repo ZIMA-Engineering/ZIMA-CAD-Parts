@@ -1,9 +1,10 @@
 # Windows distribution implementation
 
-This stage implements the structure and launchers from the
-[binding policy](distribution-policy.md). Automatic updates, signing and
-old-version cleanup are not implemented. Debian runtime verification is
-pending. The resulting development bundle is not a signed official release.
+This implements the structure and launchers from the
+[binding policy](distribution-policy.md), including the separate update helper.
+See [GitHub updates](github-updates.md) for signing, installation and retention.
+A development candidate is unsigned until publisher finalization; Debian
+runtime verification remains pending.
 
 ## Version and build
 
@@ -24,10 +25,11 @@ python tools/distribution/prepare-ghostscript.py --sevenzip "C:/Program Files/7-
 ```
 
 See [built-in tools](integrated-tools.md) for details and conversion commands.
-After building the GUI and CLI:
+After building the GUI, CLI and `zima-cad-parts-update.pro` helper
+(the helper requires `OPENSSL_ROOT`, for example `C:/zb/i/x64-windows`):
 
 ```powershell
-python tools/distribution/package-windows.py --exe .build-release/release/ZIMA-CAD-Parts.exe --cli .build-cli/release/ZIMA-CAD-Parts-cli.exe --qt C:/Qt/6.10.1/msvc2022_64 --occt C:/zb/i/x64-windows --output .dist-output/2026091501
+python tools/distribution/package-windows.py --exe .build-release/release/ZIMA-CAD-Parts.exe --cli .build-cli/release/ZIMA-CAD-Parts-cli.exe --updater .build-updater/release/ZIMA-CAD-Parts-update.exe --qt C:/Qt/6.10.1/msvc2022_64 --occt C:/zb/i/x64-windows --output .dist-output/2026091501
 ```
 
 The executable must come from this checkout. If it cannot locate DLLs in
@@ -46,7 +48,7 @@ building directly from the exported sources.
 `--release` requires a clean checkout and a `ZIMA-CAD-Parts-<VERSION>` tag
 at HEAD. It creates a release candidate, not a signature or an officially
 verified distribution. The GitHub workflow uses this script; a date-based
-tag creates a draft release with an archive. Until signing is implemented,
+tag creates a draft release with an archive. Until the publisher finalizes signatures,
 this is not automatic publication of a signed release.
 
 `windeployqt` deploys Qt. Other DLLs are resolved recursively from imports
@@ -127,3 +129,9 @@ not an extra level in the final distribution.
 After adding the Linux build, preserve the Windows entries in `launcher.ini`
 and regenerate `checksums.json`. Scripts do not yet automatically merge
 platform outputs and rebuild the shared archive.
+
+Clean release exports use committed Git bytes rather than checkout line endings.
+The updater requires Qt Core private headers and an exact matching Qt runtime.
+It ships OpenSSL 3 with its license, the installation marker and versioned helper.
+After signing, root launchers coordinate recovery through `.updates/engine.ini`;
+unsigned local candidates still run, but cannot install an update.

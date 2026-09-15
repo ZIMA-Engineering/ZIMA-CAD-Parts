@@ -13,6 +13,7 @@ import re
 import runpy
 import shutil
 import subprocess
+import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
 shared = runpy.run_path(str(ROOT / 'tools/distribution/package-windows.py'))
@@ -38,7 +39,9 @@ def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--exe', required=True, type=Path)
     parser.add_argument('--cli', required=True, type=Path)
+    parser.add_argument('--updater', type=Path, required=True)
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--release', action='store_true', help='Require a clean tagged release candidate')
     parser.add_argument('--qmake', default='qmake6')
     args = parser.parse_args()
     distro = platform.freedesktop_os_release()
@@ -47,12 +50,20 @@ def main():
     if not shutil.which('gs'):
         raise RuntimeError('Install Debian ghostscript for the integrated ps2pdf function')
     build = version()
+    commit = run('git', 'rev-parse', 'HEAD').strip()
+    dirty = bool(run('git', 'status', '--porcelain', '--untracked-files=normal').strip())
+    if args.release:
+        if dirty or run('git', 'rev-parse', f'ZIMA-CAD-Parts-{build}^{{commit}}').strip() != commit:
+            raise RuntimeError('Release requires a clean checkout at the matching tag')
     exe = args.exe.resolve()
     if json.loads(run(str(exe), '--build-info')).get('version') != build:
         raise RuntimeError('Rebuild executable: version differs from source')
     cli = args.cli.resolve()
     if run(str(cli), '--version').strip() != build:
         raise RuntimeError('CLI version differs from source')
+    updater = args.updater.resolve()
+    if not updater.is_file() or run(str(updater), '--version').strip() != build:
+        raise RuntimeError('Missing updater or updater version differs from source')
     output = args.output.resolve()
     if output.exists():
         raise RuntimeError('Output must not exist')
@@ -65,6 +76,7 @@ def main():
     query = lambda key: Path(run(args.qmake, '-query', key).strip())
     shutil.copy2(exe, binary / 'ZIMA-CAD-Parts')
     shutil.copy2(cli, binary / 'ZIMA-CAD-Parts-cli')
+    shutil.copy2(updater, binary / 'ZIMA-CAD-Parts-update')
     process = query('QT_INSTALL_LIBEXECS') / 'QtWebEngineProcess'
     shutil.copy2(process, binary / 'QtWebEngineProcess')
     plugin_root = query('QT_INSTALL_PLUGINS')
@@ -81,7 +93,7 @@ def main():
     if occt is None:
         raise RuntimeError('OCCT resources with Shaders not found')
     shutil.copytree(occt, runtime / 'occt', symlinks=False)
-    seeds = [exe, cli, process] + list((runtime / 'plugins').rglob('*.so'))
+    seeds = [exe, cli, updater, process] + list((runtime / 'plugins').rglob('*.so'))
     inspected = set()
     host = set()
     while seeds:
@@ -107,17 +119,21 @@ def main():
     (package / 'ZIMA-CAD-Parts.sh').chmod(0o755)
     for folder in ('windows', 'custom/windows', 'custom/linux'):
         (package / folder).mkdir(parents=True, exist_ok=True)
-    (package / 'launcher.ini').write_text(f'[launcher]\nwindows=\nlinux={build}\nlinux_custom=false\n')
+    (package / 'installation.json').write_text(json.dumps({'product': 'ZIMA-CAD-Parts', 'protocol': 1, 'id': str(uuid.uuid4())}) + '\n', encoding='utf-8')
+    (package / 'launcher.ini').write_text(f'[launcher]\nwindows=\nwindows_custom=false\nlinux={build}\nlinux_custom=false\n')
     for source, relative in source_files():
         target = package / 'source' / build / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
+    if args.release:
+        shared['export_clean_sources'](package / 'source' / build)
     shutil.copytree(ROOT / 'licenses', runtime / 'licenses')
+    shutil.copy2('/usr/share/doc/libssl3t64/copyright', runtime / 'licenses/OpenSSL-LICENSE.txt')
     shutil.copy2(ROOT / 'LICENSE', runtime / 'licenses/Parts-LICENSE')
     shutil.copy2(ROOT / 'LICENSE', package / 'LICENSE')
     (runtime / 'build.ini').write_text(f'[build]\nversion={build}\nplatform=debian-13-x86_64\n')
     metadata = dict(version=build, platform='debian-13-x86_64', commit=run('git', 'rev-parse', 'HEAD').strip(),
-                    origin='experimental', signed=False, host_libraries=sorted(host),
+                    origin='release-candidate' if args.release else 'experimental', source_modified=dirty, signed=False, host_libraries=sorted(host),
                     qt=run(args.qmake, '-query', 'QT_VERSION').strip())
     metadata['system_packages'] = ['ghostscript']
     (runtime / 'version.json').write_text(json.dumps(metadata, indent=2) + '\n')

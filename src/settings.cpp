@@ -41,6 +41,7 @@ void Settings::load()
     Language = s.value("Language", "detect").toString();
     LanguageMetadata = s.value("LanguageMetadata", "en").toString();
 
+    UpdatesAutomatic = s.value("Updates/Automatic", true).toBool();
     ToolsRecursive = s.value("Tools/Recursive", false).toBool();
     ToolsCleanOld = s.value("Tools/CleanOld", true).toBool();
     ToolsCleanMasks = s.value("Tools/CleanMasks").toStringList();
@@ -82,6 +83,7 @@ void Settings::save()
     s.setValue("Language", Language);
     s.setValue("LanguageMetadata", LanguageMetadata);
 
+    s.setValue("Updates/Automatic", UpdatesAutomatic);
     s.setValue("Tools/Recursive", ToolsRecursive);
     s.setValue("Tools/CleanOld", ToolsCleanOld);
     s.setValue("Tools/CleanMasks", ToolsCleanMasks);

@@ -1,4 +1,6 @@
 #include "commandpanel.h"
+#include "updateservice.h"
+#include <QTimer>
 #include <QDockWidget>
 /*
   ZIMA-CAD-Parts
@@ -60,6 +62,9 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     }
 
     ui->setupUi(this);
+    connect(UpdateService::get(), &UpdateService::showSettingsRequested, this, [this] { showSettings(SettingsDialog::Updates); });
+    UpdateService::get()->scheduleStartupCheck();
+    QTimer::singleShot(0, UpdateService::get(), &UpdateService::acknowledgeStartup);
     setWindowIcon(qApp->windowIcon());
 
     connect(ui->action_Preferences, SIGNAL(triggered()),
@@ -148,6 +153,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::showSettings(SettingsDialog::Section section)
 {
+    for (auto existing : findChildren<SettingsDialog *>(QString(), Qt::FindDirectChildrenOnly)) {
+        existing->setSection(section); existing->raise(); existing->activateWindow(); return;
+    }
     SettingsDialog sd(&translator, this);
     sd.setSection(section);
 

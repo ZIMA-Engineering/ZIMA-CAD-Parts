@@ -63,6 +63,8 @@ private:
     QMenu *m_directoryIndexMenu;
     QMenu *m_partsIndexMenu;
     QString m_currentRootPath;
+    QToolButton *m_updateIndicator;
+    void updateReleaseIndicator();
     QFileSystemWatcher m_autoIndexWatcher;
     QStringList m_directoryOperations;
 

@@ -4,6 +4,7 @@
 #include <cstdio>
 #include "../core/partscommand.h"
 #include "../zima-cad-parts.h"
+#include "../update/installationclient.h"
 
 int main(int argc, char **argv)
 {
@@ -12,6 +13,11 @@ int main(int argc, char **argv)
     QCoreApplication::setOrganizationDomain("zima-contruction.cz");
     QCoreApplication::setApplicationName("ZIMA-CAD-Parts");
     QCoreApplication::setApplicationVersion(VERSION);
+    QString registrationError;
+    if (!registerPartsInstance(&registrationError)) {
+        const auto bytes = QJsonDocument(QJsonObject{{"error", registrationError}}).toJson(QJsonDocument::Compact);
+        std::fwrite(bytes.constData(), 1, size_t(bytes.size()), stderr); return 3;
+    }
     QSettings settings;
     PartsCore::CommandContext context;
     context.language = settings.value("LanguageMetadata", "en").toString();

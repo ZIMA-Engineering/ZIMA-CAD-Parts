@@ -406,3 +406,9 @@ HEADERS += src/core/partstools.h
 
 SOURCES += src/partstoolsdialog.cpp
 HEADERS += src/partstoolsdialog.h
+
+SOURCES += src/updateservice.cpp src/updatespage.cpp src/update/installationclient.cpp
+HEADERS += src/updateservice.h src/updatespage.h src/update/installationclient.h
+
+SOURCES += src/core/partsupdatecommand.cpp
+HEADERS += src/core/partsupdatecommand.h

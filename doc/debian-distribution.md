@@ -65,3 +65,11 @@ through the system service, version switching and copying the whole bundle
 to a different path. The distribution license inventory for all bundled
 system packages and signing also need completion. These results have not
 yet been confirmed.
+
+## Updater build
+
+The build image includes `qt6-base-private-dev`, `libssl-dev` and `pkg-config`.
+Build `zima-cad-parts-update.pro` with the same Qt kit as the GUI and pass the
+result to the packager with `--updater`. The helper and OpenSSL are bundled.
+Signing uses the shared [publisher workflow](github-updates.md); add installation
+and rollback to the pending KDE/Wayland acceptance run.

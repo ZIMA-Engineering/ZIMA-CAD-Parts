@@ -105,3 +105,12 @@ for the latest recorded results.
 Their previews, `--apply` execution and file modification rules are described
 in the [tools documentation](integrated-tools.md). The read-only guarantees
 above apply to `list` and `params`, not to tool execution.
+
+## Updates
+
+`update check`, `update download --target YYYYMMDDNN`, `update status`,
+`update install --target YYYYMMDDNN --apply` and `update rollback --apply`
+use the same helper as Settings. Installation and rollback are asynchronous
+and restart Parts after its instances close. Without `--apply`, they return
+`confirmation-required`. See [GitHub updates](github-updates.md) for prerequisites
+and result files. The active project path never selects the installation root.

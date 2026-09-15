@@ -1,6 +1,7 @@
 #include "partscommand.h"
 #include "partsquery.h"
 #include "partstools.h"
+#include "partsupdatecommand.h"
 #include "../zima-cad-parts.h"
 #include <QCommandLineParser>
 #include <QDir>
@@ -29,9 +30,10 @@ QStringList PartsCore::splitCommand(const QString &line)
 
 PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments, const CommandContext &context)
 {
+    if (!arguments.isEmpty() && arguments[0] == "update") return executeUpdateCommand(arguments.mid(1));
     const auto fail = [](const QString &error, int code) { return CommandResult{{}, {}, error, code}; };
     QCommandLineParser parser;
-    parser.setApplicationDescription("Parts commands: list, params, ps2pdf, ptc-clean, step-edit. Tools preview by default; --apply executes. UTF-8 JSON output.");
+    parser.setApplicationDescription("Parts commands: list, params, ps2pdf, ptc-clean, step-edit, update. Tools preview by default; --apply executes. UTF-8 JSON output.");
     parser.addHelpOption();
     parser.addOption({"apply", "Execute a tool operation (otherwise preview only)."});
     parser.addOption({"recursive", "Include subdirectories, excluding 0000-index and links."});
@@ -44,7 +46,7 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
     parser.addOption({"language", "Metadata language, e.g. cs or en.", "language"});
     parser.addOption({"name", "Case-insensitive filename substring for list.", "text"});
     parser.addOption({"default-proe-versions", "Fallback if filters.ini omits ShowVersions: all or latest.", "mode"});
-    parser.addPositionalArgument("command", "help, list, params, ps2pdf, ptc-clean or step-edit");
+    parser.addPositionalArgument("command", "help, list, params, ps2pdf, ptc-clean, step-edit or update");
     parser.addPositionalArgument("path", "Directory or part path. The panel supplies the active directory.");
     if (!parser.parse(QStringList{"ZIMA-CAD-Parts-cli"} + arguments))
         return fail(parser.errorText(), 2);

@@ -10,6 +10,7 @@
 #include <QKeyEvent>
 #include <QJsonDocument>
 #include <memory>
+#include <QTimer>
 
 CommandPanel::CommandPanel(std::function<PartsCore::CommandContext()> context, QWidget *parent)
     : QWidget(parent), m_context(std::move(context))
@@ -128,6 +129,8 @@ void CommandPanel::submit()
         retranslate();
         if (isAncestorOf(QApplication::focusWidget())) focusInput();
         emit commandFinished(result->code);
+        if (!result->code && result->data["requestApplicationClose"].toBool())
+            QTimer::singleShot(0, qApp, [] { QApplication::closeAllWindows(); });
     });
     worker->start();
 }

@@ -43,10 +43,11 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
         for (const auto &arg : args) if (arg == L"-Check") check = true;
         bool custom = false;
         std::wstring version;
+        bool explicitVersion = false;
         for (size_t i = 0; i < args.size(); ++i) {
             if (args[i] == L"-Check") continue;
             if (args[i] == L"-Custom") custom = true;
-            else if (args[i] == L"-Version" && i + 1 < args.size()) version = args[++i];
+            else if (args[i] == L"-Version" && i + 1 < args.size()) { version = args[++i]; explicitVersion = true; }
             else throw std::wstring(L"Usage: ZIMA-CAD-Parts.exe [-Version NAME] [-Custom] [-Check]");
         }
         wchar_t module[32768];
@@ -72,9 +73,10 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
         }
         if (!valid) throw std::wstring(L"Invalid build name in launcher.ini or command line.");
         const std::wstring directory = root + (custom ? L"\\custom\\windows\\" : L"\\windows\\") + version;
-        const std::wstring exe = directory + L"\\ZIMA-CAD-Parts.exe";
-        if (!exists(exe)) throw std::wstring(L"Build not found: ") + exe;
-        if (!custom) {
+        std::wstring exe = directory + L"\\ZIMA-CAD-Parts.exe";
+        const bool recoverable = !custom && !explicitVersion && !check && exists(root + L"\\.updates\\engine.ini");
+        if (!recoverable && !exists(exe)) throw std::wstring(L"Build not found: ") + exe;
+        if (!custom && !recoverable) {
             const auto manifest = directory + L"\\build.ini";
             if (setting(manifest, L"build", L"version") != version ||
                 setting(manifest, L"build", L"platform") != L"windows-x64")
@@ -100,13 +102,34 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
         const auto searchPath = directory + L";" + system + L";" + windows;
         SetEnvironmentVariableW(L"PATH", searchPath.c_str());
         std::wstring command = L"\"" + exe + L"\"";
+        bool managed = false;
+        if (!custom && !explicitVersion && exists(root + L"\\installation.json") &&
+            (recoverable || exists(root + L"\\release-info\\windows-x64-" + version + L".json") ||
+             exists(root + L"\\.updates\\installed\\windows-x64-" + version + L".json"))) {
+            auto engine = setting(root + L"\\.updates\\engine.ini", L"updater", L"windows");
+            if (engine.empty()) engine = version;
+            bool validEngine = engine.size() == 10;
+            for (wchar_t c : engine) validEngine = validEngine && c >= L'0' && c <= L'9';
+            if (!validEngine) throw std::wstring(L"Invalid updater engine version.");
+            exe = root + L"\\windows\\" + engine + L"\\ZIMA-CAD-Parts-update.exe";
+            if (!exists(exe)) throw std::wstring(L"Update component is missing: ") + exe;
+            command = L"\"" + exe + L"\" launch --root \"" + root + L"\"";
+            managed = true;
+        }
+        const auto workingDirectory = managed ? exe.substr(0, exe.find_last_of(L"\\/")) : directory;
         STARTUPINFOW startup = {};
         startup.cb = sizeof(startup);
         PROCESS_INFORMATION process = {};
-        if (!CreateProcessW(exe.c_str(), command.data(), nullptr, nullptr, FALSE, 0, nullptr, directory.c_str(), &startup, &process))
+        if (!CreateProcessW(exe.c_str(), command.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, workingDirectory.c_str(), &startup, &process))
             throw std::wstring(L"Cannot start selected build. Windows error: ") + std::to_wstring(GetLastError());
         CloseHandle(process.hThread);
+        DWORD exitCode = 0;
+        if (managed) {
+            WaitForSingleObject(process.hProcess, INFINITE);
+            GetExitCodeProcess(process.hProcess, &exitCode);
+        }
         CloseHandle(process.hProcess);
+        if (exitCode) throw std::wstring(L"Parts could not start. See .updates/windows-x64-result.json in the installation folder.");
         return 0;
     } catch (const std::wstring &error) {
         output(error + L"\n", STD_ERROR_HANDLE);

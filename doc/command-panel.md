@@ -54,3 +54,7 @@ Standalone CLI process tests protect compatibility of public commands.
 Panel visibility and the keyboard shortcut were also checked in the running
 Windows application. See [verification](verification.md) for build details
 and current test results. Linux execution remains unverified.
+
+The panel also accepts the [update commands](github-updates.md#cli). Checking
+and downloading run in its worker; approved installation/rollback hand off to
+the helper and request normal application shutdown.

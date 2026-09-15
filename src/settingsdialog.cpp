@@ -19,6 +19,7 @@
 */
 
 #include "settingsdialog.h"
+#include "updatespage.h"
 #include "settings.h"
 #include "ui_settingsdialog.h"
 
@@ -63,6 +64,8 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
     translator(translator)
 {
     m_ui->setupUi(this);
+    m_updatesPage = new UpdatesPage(this);
+    m_ui->tabWidget->addTab(m_updatesPage, tr("Updates"));
 
     connect(m_ui->btnAdd, SIGNAL(clicked()), this, SLOT(addDataSource()));
     connect(m_ui->editBtn, SIGNAL(clicked()), this, SLOT(editDataSource()));
@@ -125,6 +128,7 @@ void SettingsDialog::changeEvent(QEvent *e)
     switch (e->type()) {
     case QEvent::LanguageChange:
         m_ui->retranslateUi(this);
+        m_ui->tabWidget->setTabText(Updates, tr("Updates"));
         break;
     default:
         break;
@@ -167,6 +171,7 @@ void SettingsDialog::openCurrentDataSourceEditor()
 
 void SettingsDialog::accept()
 {
+    m_updatesPage->save();
     Settings::get()->GUIThumbWidth = m_ui->spinPicture->value();
     Settings::get()->GUIPreviewWidth = m_ui->previewWidthSpinBox->value();
     Settings::get()->GUISplashEnabled = m_ui->splashGroupBox->isChecked();

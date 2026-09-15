@@ -591,17 +591,17 @@ Fehlgeschlagene Ordner: %2</translation>
         <translation>Kopieren</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="336"/>
+        <location filename="../src/directorywidget.cpp" line="345"/>
         <source>Delete index</source>
         <translation>Index löschen</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="346"/>
+        <location filename="../src/directorywidget.cpp" line="355"/>
         <source>Delete all indexes</source>
         <translation>Alle Indizes löschen</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="401"/>
+        <location filename="../src/directorywidget.cpp" line="410"/>
         <source>The following index file will be deleted:
 
 %1
@@ -614,7 +614,7 @@ Continue?</source>
 Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="402"/>
+        <location filename="../src/directorywidget.cpp" line="411"/>
         <source>The following index files will be deleted:
 
 %1
@@ -627,22 +627,22 @@ Continue?</source>
 Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="403"/>
+        <location filename="../src/directorywidget.cpp" line="412"/>
         <source>Delete all indexes?</source>
         <translation>Alle Indizes löschen?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="403"/>
+        <location filename="../src/directorywidget.cpp" line="412"/>
         <source>Delete index?</source>
         <translation>Index löschen?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="428"/>
+        <location filename="../src/directorywidget.cpp" line="437"/>
         <source>Index deletion failed</source>
         <translation>Löschen des Index fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="429"/>
+        <location filename="../src/directorywidget.cpp" line="438"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -651,10 +651,20 @@ Fortfahren?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="716"/>
-        <location filename="../src/directorywidget.cpp" line="717"/>
+        <location filename="../src/directorywidget.cpp" line="726"/>
+        <location filename="../src/directorywidget.cpp" line="727"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Möchten Sie die ausgewählten Teile wirklich verschieben?</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="750"/>
+        <source>Update available</source>
+        <translation>Update verfügbar</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="751"/>
+        <source>New version %1. Open Settings to install it.</source>
+        <translation>Neue Version %1. Öffnen Sie zum Installieren die Einstellungen.</translation>
     </message>
 </context>
 <context>
@@ -1137,8 +1147,8 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="97"/>
-        <location filename="../src/mainwindow.cpp" line="188"/>
+        <location filename="../src/mainwindow.cpp" line="102"/>
+        <location filename="../src/mainwindow.cpp" line="196"/>
         <source>Command panel</source>
         <translation>Befehlsbereich</translation>
     </message>
@@ -2377,42 +2387,48 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
         <translation>Werkzeugleiste für technische Spezifikationen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="99"/>
+        <location filename="../src/settingsdialog.cpp" line="68"/>
+        <location filename="../src/settingsdialog.cpp" line="131"/>
+        <source>Updates</source>
+        <translation>Aktualisierungen</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="102"/>
         <source>Include subdirectories by default</source>
         <translation>Unterverzeichnisse standardmäßig einbeziehen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="101"/>
+        <location filename="../src/settingsdialog.cpp" line="104"/>
         <source>Cleaner: remove old numbered versions</source>
         <translation>Bereinigung: alte nummerierte Versionen entfernen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="106"/>
+        <location filename="../src/settingsdialog.cpp" line="109"/>
         <source>Cleaner: additional masks (semicolon separated)</source>
         <translation>Bereinigung: weitere Muster (durch Semikolon getrennt)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="110"/>
+        <location filename="../src/settingsdialog.cpp" line="113"/>
         <source>Ghostscript runtime is missing</source>
         <translation>Ghostscript-Laufzeit fehlt</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="324"/>
+        <location filename="../src/settingsdialog.cpp" line="329"/>
         <source>Locate ProE launcher</source>
         <translation>Pro/E-Startprogramm auswählen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="326"/>
+        <location filename="../src/settingsdialog.cpp" line="331"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Ausführbare Pro/E-Datei (proe.exe);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="334"/>
+        <location filename="../src/settingsdialog.cpp" line="339"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts – Texteditor auswählen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="342"/>
+        <location filename="../src/settingsdialog.cpp" line="347"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts – Terminal auswählen</translation>
     </message>
@@ -2457,6 +2473,154 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
             <numerusform>Anzahl gefundener unbenutzter Vorschaubilder: %n. Löschen?</numerusform>
             <numerusform>Anzahl gefundener unbenutzter Vorschaubilder: %n. Löschen?</numerusform>
         </translation>
+    </message>
+</context>
+<context>
+    <name>UpdateService</name>
+    <message>
+        <location filename="../src/updateservice.cpp" line="21"/>
+        <source>Update response is too large.</source>
+        <translation>Die Antwort des Aktualisierungsdienstes ist zu groß.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="34"/>
+        <source>The update component could not be started.</source>
+        <translation>Die Aktualisierungskomponente konnte nicht gestartet werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="38"/>
+        <source>Update cancelled. The installed version is unchanged.</source>
+        <translation>Aktualisierung abgebrochen. Die installierte Version bleibt unverändert.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="41"/>
+        <source>The update operation failed.</source>
+        <translation>Die Aktualisierung ist fehlgeschlagen.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="74"/>
+        <source>Use the distribution launcher to install updates.</source>
+        <translation>Verwenden Sie zum Installieren von Updates den Starter des Distributionspakets.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="77"/>
+        <source>The installer could not be started.</source>
+        <translation>Das Installationsprogramm konnte nicht gestartet werden.</translation>
+    </message>
+</context>
+<context>
+    <name>UpdatesPage</name>
+    <message>
+        <location filename="../src/updatespage.cpp" line="39"/>
+        <location filename="../src/updatespage.cpp" line="53"/>
+        <source>Install update</source>
+        <translation>Update installieren</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="39"/>
+        <source>Download and install the update, then restart Parts? Your project files will be preserved.</source>
+        <translation>Update herunterladen und installieren und anschließend Parts neu starten? Ihre Projektdateien bleiben erhalten.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="43"/>
+        <location filename="../src/updatespage.cpp" line="54"/>
+        <source>Return to previous version</source>
+        <translation>Zur vorherigen Version zurückkehren</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="43"/>
+        <source>Restart Parts with the previous verified version? This does not restore older project data.</source>
+        <translation>Parts mit der vorherigen geprüften Version neu starten? Ältere Projektdaten werden dadurch nicht wiederhergestellt.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="52"/>
+        <source>Check for updates silently at startup</source>
+        <translation>Beim Start im Hintergrund nach Updates suchen</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="53"/>
+        <source>Check for updates</source>
+        <translation>Nach Updates suchen</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="54"/>
+        <source>Cancel download</source>
+        <translation>Download abbrechen</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="55"/>
+        <source>Release notes will appear here.</source>
+        <translation>Hier erscheinen die Versionshinweise.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="66"/>
+        <source>Installed version: %1</source>
+        <translation>Installierte Version: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="66"/>
+        <source>Available version: %1</source>
+        <translation>Verfügbare Version: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="68"/>
+        <source>Update check or installation failed. See details below.</source>
+        <translation>Die Suche oder Installation ist fehlgeschlagen. Einzelheiten stehen unten.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="69"/>
+        <source>Checking for updates...</source>
+        <translation>Suche nach Updates…</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="70"/>
+        <source>Downloading update...</source>
+        <translation>Update wird heruntergeladen…</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="71"/>
+        <source>Verifying the downloaded update...</source>
+        <translation>Das heruntergeladene Update wird geprüft…</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="72"/>
+        <source>Waiting for Parts to close...</source>
+        <translation>Warten, bis Parts geschlossen wird…</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="73"/>
+        <source>A new version is available.</source>
+        <translation>Eine neue Version ist verfügbar.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="74"/>
+        <source>No newer compatible release is available.</source>
+        <translation>Keine neuere kompatible Version verfügbar.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="75"/>
+        <source>Updates have not been checked yet.</source>
+        <translation>Es wurde noch nicht nach Updates gesucht.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="79"/>
+        <source>Last successful check: %1</source>
+        <translation>Letzte erfolgreiche Prüfung: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="79"/>
+        <source>Never</source>
+        <translation>Nie</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="80"/>
+        <source>Download size: %1 MiB</source>
+        <translation>Downloadgröße: %1 MiB</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="81"/>
+        <source>This is a development or custom copy. Use the distribution launcher to install updates.</source>
+        <translation>Dies ist eine Entwicklungs- oder eigene Kopie. Verwenden Sie zum Aktualisieren den Starter des Distributionspakets.</translation>
     </message>
 </context>
 <context>

@@ -591,17 +591,17 @@ Adresáře s chybou: %2</translation>
         <translation>Kopírovat</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="336"/>
+        <location filename="../src/directorywidget.cpp" line="345"/>
         <source>Delete index</source>
         <translation>Smazat index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="346"/>
+        <location filename="../src/directorywidget.cpp" line="355"/>
         <source>Delete all indexes</source>
         <translation>Smazat všechny indexy</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="401"/>
+        <location filename="../src/directorywidget.cpp" line="410"/>
         <source>The following index file will be deleted:
 
 %1
@@ -614,7 +614,7 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="402"/>
+        <location filename="../src/directorywidget.cpp" line="411"/>
         <source>The following index files will be deleted:
 
 %1
@@ -627,22 +627,22 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="403"/>
+        <location filename="../src/directorywidget.cpp" line="412"/>
         <source>Delete all indexes?</source>
         <translation>Smazat všechny indexy?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="403"/>
+        <location filename="../src/directorywidget.cpp" line="412"/>
         <source>Delete index?</source>
         <translation>Smazat index?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="428"/>
+        <location filename="../src/directorywidget.cpp" line="437"/>
         <source>Index deletion failed</source>
         <translation>Smazání indexu selhalo</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="429"/>
+        <location filename="../src/directorywidget.cpp" line="438"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -651,10 +651,20 @@ Pokračovat?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="716"/>
-        <location filename="../src/directorywidget.cpp" line="717"/>
+        <location filename="../src/directorywidget.cpp" line="726"/>
+        <location filename="../src/directorywidget.cpp" line="727"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="750"/>
+        <source>Update available</source>
+        <translation>Dostupná aktualizace</translation>
+    </message>
+    <message>
+        <location filename="../src/directorywidget.cpp" line="751"/>
+        <source>New version %1. Open Settings to install it.</source>
+        <translation>Nová verze %1. Pro instalaci otevřete Nastavení.</translation>
     </message>
 </context>
 <context>
@@ -1137,8 +1147,8 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="97"/>
-        <location filename="../src/mainwindow.cpp" line="188"/>
+        <location filename="../src/mainwindow.cpp" line="102"/>
+        <location filename="../src/mainwindow.cpp" line="196"/>
         <source>Command panel</source>
         <translation>Příkazový panel</translation>
     </message>
@@ -2377,42 +2387,48 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
         <translation>Panel nástrojů technických specifikací</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="99"/>
+        <location filename="../src/settingsdialog.cpp" line="68"/>
+        <location filename="../src/settingsdialog.cpp" line="131"/>
+        <source>Updates</source>
+        <translation>Aktualizace</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="102"/>
         <source>Include subdirectories by default</source>
         <translation>Výchozí procházení včetně podadresářů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="101"/>
+        <location filename="../src/settingsdialog.cpp" line="104"/>
         <source>Cleaner: remove old numbered versions</source>
         <translation>Cleaner: odstranit staré číslované verze</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="106"/>
+        <location filename="../src/settingsdialog.cpp" line="109"/>
         <source>Cleaner: additional masks (semicolon separated)</source>
         <translation>Cleaner: další masky (oddělené středníkem)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="110"/>
+        <location filename="../src/settingsdialog.cpp" line="113"/>
         <source>Ghostscript runtime is missing</source>
         <translation>Chybí převodní program Ghostscript</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="324"/>
+        <location filename="../src/settingsdialog.cpp" line="329"/>
         <source>Locate ProE launcher</source>
         <translation>Najít spouštěč Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="326"/>
+        <location filename="../src/settingsdialog.cpp" line="331"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Spustitelný soubor Pro/E (proe.exe);;Všechny soubory (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="334"/>
+        <location filename="../src/settingsdialog.cpp" line="339"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts – vybrat textový editor</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="342"/>
+        <location filename="../src/settingsdialog.cpp" line="347"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts – vybrat terminál</translation>
     </message>
@@ -2458,6 +2474,154 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
             <numerusform>Počet nalezených nepoužívaných náhledů: %n. Smazat?</numerusform>
             <numerusform>Počet nalezených nepoužívaných náhledů: %n. Smazat?</numerusform>
         </translation>
+    </message>
+</context>
+<context>
+    <name>UpdateService</name>
+    <message>
+        <location filename="../src/updateservice.cpp" line="21"/>
+        <source>Update response is too large.</source>
+        <translation>Odpověď aktualizátoru je příliš velká.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="34"/>
+        <source>The update component could not be started.</source>
+        <translation>Aktualizační součást se nepodařilo spustit.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="38"/>
+        <source>Update cancelled. The installed version is unchanged.</source>
+        <translation>Aktualizace zrušena. Nainstalovaná verze se nezměnila.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="41"/>
+        <source>The update operation failed.</source>
+        <translation>Aktualizace se nezdařila.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="74"/>
+        <source>Use the distribution launcher to install updates.</source>
+        <translation>Pro instalaci aktualizací použijte spouštěč distribučního balíku.</translation>
+    </message>
+    <message>
+        <location filename="../src/updateservice.cpp" line="77"/>
+        <source>The installer could not be started.</source>
+        <translation>Instalátor se nepodařilo spustit.</translation>
+    </message>
+</context>
+<context>
+    <name>UpdatesPage</name>
+    <message>
+        <location filename="../src/updatespage.cpp" line="39"/>
+        <location filename="../src/updatespage.cpp" line="53"/>
+        <source>Install update</source>
+        <translation>Nainstalovat aktualizaci</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="39"/>
+        <source>Download and install the update, then restart Parts? Your project files will be preserved.</source>
+        <translation>Stáhnout a nainstalovat aktualizaci a potom restartovat Parts? Soubory projektů zůstanou zachovány.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="43"/>
+        <location filename="../src/updatespage.cpp" line="54"/>
+        <source>Return to previous version</source>
+        <translation>Vrátit předchozí verzi</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="43"/>
+        <source>Restart Parts with the previous verified version? This does not restore older project data.</source>
+        <translation>Restartovat Parts s předchozí ověřenou verzí? Starší data projektů se tím neobnoví.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="52"/>
+        <source>Check for updates silently at startup</source>
+        <translation>Při spuštění tiše kontrolovat aktualizace</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="53"/>
+        <source>Check for updates</source>
+        <translation>Zkontrolovat aktualizace</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="54"/>
+        <source>Cancel download</source>
+        <translation>Zrušit stahování</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="55"/>
+        <source>Release notes will appear here.</source>
+        <translation>Zde se zobrazí poznámky k vydání.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="66"/>
+        <source>Installed version: %1</source>
+        <translation>Nainstalovaná verze: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="66"/>
+        <source>Available version: %1</source>
+        <translation>Dostupná verze: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="68"/>
+        <source>Update check or installation failed. See details below.</source>
+        <translation>Kontrola nebo instalace aktualizace se nezdařila. Podrobnosti jsou níže.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="69"/>
+        <source>Checking for updates...</source>
+        <translation>Kontroluji aktualizace…</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="70"/>
+        <source>Downloading update...</source>
+        <translation>Stahuji aktualizaci…</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="71"/>
+        <source>Verifying the downloaded update...</source>
+        <translation>Ověřuji staženou aktualizaci…</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="72"/>
+        <source>Waiting for Parts to close...</source>
+        <translation>Čekám na zavření Parts…</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="73"/>
+        <source>A new version is available.</source>
+        <translation>Je dostupná nová verze.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="74"/>
+        <source>No newer compatible release is available.</source>
+        <translation>Není dostupná novější kompatibilní verze.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="75"/>
+        <source>Updates have not been checked yet.</source>
+        <translation>Aktualizace dosud nebyly zkontrolovány.</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="79"/>
+        <source>Last successful check: %1</source>
+        <translation>Poslední úspěšná kontrola: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="79"/>
+        <source>Never</source>
+        <translation>Nikdy</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="80"/>
+        <source>Download size: %1 MiB</source>
+        <translation>Velikost ke stažení: %1 MiB</translation>
+    </message>
+    <message>
+        <location filename="../src/updatespage.cpp" line="81"/>
+        <source>This is a development or custom copy. Use the distribution launcher to install updates.</source>
+        <translation>Toto je vývojová nebo vlastní kopie. Pro instalaci aktualizací použijte spouštěč distribučního balíku.</translation>
     </message>
 </context>
 <context>

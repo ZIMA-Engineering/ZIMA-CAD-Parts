@@ -80,7 +80,7 @@ jobs:
           & "$vcpkgRoot\bootstrap-vcpkg.bat" -disableMetrics
           $env:VCPKG_BINARY_SOURCES = "clear;files,$env:VCPKG_BINARY_CACHE,readwrite"
           Push-Location $env:GITHUB_WORKSPACE
-          & "$vcpkgRoot\vcpkg.exe" install "opencascade:$env:VCPKG_TRIPLET" --clean-after-build
+          & "$vcpkgRoot\vcpkg.exe" install "opencascade:$env:VCPKG_TRIPLET" "openssl:$env:VCPKG_TRIPLET" --clean-after-build
           Pop-Location
 
           $cacheFiles = Get-ChildItem $env:VCPKG_BINARY_CACHE -Recurse -File
@@ -128,6 +128,17 @@ jobs:
           python tests/test_tools.py
           if ($LASTEXITCODE -ne 0) { throw "Integrated tools tests failed" }
 
+      - name: Build updater
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force .build-updater | Out-Null
+          Push-Location .build-updater
+          qmake ../zima-cad-parts-update.pro "OPENSSL_ROOT=$env:OCCT_ROOT"
+          if ($LASTEXITCODE -ne 0) { throw "Updater configure failed" }
+          nmake release
+          if ($LASTEXITCODE -ne 0) { throw "Updater build failed" }
+          Pop-Location
+
       - name: Test packaging contracts
         run: python tests/test_distribution.py
 
@@ -142,6 +153,7 @@ jobs:
             "tools/distribution/package-windows.py",
             "--exe", ".build-ci/release/ZIMA-CAD-Parts.exe",
             "--cli", ".build-cli/release/ZIMA-CAD-Parts-cli.exe",
+            "--updater", ".build-updater/release/ZIMA-CAD-Parts-update.exe",
             "--qt", $qtRoot,
             "--occt", $env:OCCT_ROOT,
             "--output", ".dist-output/package"
@@ -160,6 +172,33 @@ jobs:
         run: |
           $env:PARTS_LAUNCHER = "$env:GITHUB_WORKSPACE/.dist-output/package/ZIMA-CAD-Parts/ZIMA-CAD-Parts.exe"
           python tests/test_distribution.py
+
+      - name: Test signed update lifecycle with isolated keys
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          python -m pip install cryptography==50.0.1
+          if ($LASTEXITCODE -ne 0) { throw "Test dependency setup failed" }
+          $qtRoot = (qmake -query QT_INSTALL_PREFIX).Trim()
+          $env:PATH = "$qtRoot/bin;$env:OCCT_ROOT/bin;$env:PATH"
+          New-Item -ItemType Directory -Force .build-updater-tests, .build-update-fixture | Out-Null
+          Push-Location .build-updater-tests
+          qmake ../zima-cad-parts-update.pro "OPENSSL_ROOT=$env:OCCT_ROOT" "CONFIG+=update_tests"
+          if ($LASTEXITCODE -ne 0) { throw "Test updater configure failed" }
+          nmake release
+          if ($LASTEXITCODE -ne 0) { throw "Test updater build failed" }
+          Pop-Location
+          Push-Location .build-update-fixture
+          qmake ../tests/update-fixture.pro
+          if ($LASTEXITCODE -ne 0) { throw "Fixture configure failed" }
+          nmake release
+          if ($LASTEXITCODE -ne 0) { throw "Fixture build failed" }
+          Pop-Location
+          $env:PARTS_UPDATER_TEST_EXE = "$env:GITHUB_WORKSPACE/.build-updater-tests/release/ZIMA-CAD-Parts-update.exe"
+          $env:PARTS_UPDATE_FIXTURE_EXE = "$env:GITHUB_WORKSPACE/.build-update-fixture/release/update-fixture.exe"
+          $env:PARTS_UPDATE_TEST_RUNTIME = (Get-ChildItem .dist-output/package/ZIMA-CAD-Parts/windows -Directory | Select-Object -First 1).FullName
+          python tests/test_updates.py
+          if ($LASTEXITCODE -ne 0) { throw "Updater tests failed" }
 
       - name: Upload distribution
         uses: actions/upload-artifact@v6

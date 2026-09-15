@@ -11,8 +11,8 @@ RUN set -eux; \
             export DEBIAN_FRONTEND=noninteractive; \
             apt-get update; \
             apt-get install -y --no-install-recommends \
-                build-essential ca-certificates git libsecret-1-dev python3 patchelf binutils ghostscript \
-                pkg-config qmake6 qt6-base-dev qt6-base-dev-tools \
+                build-essential ca-certificates git libsecret-1-dev python3 python3-cryptography libssl-dev patchelf binutils ghostscript \
+                pkg-config qmake6 qt6-base-dev qt6-base-private-dev qt6-base-dev-tools \
                 qt6-declarative-dev qt6-l10n-tools qt6-positioning-dev \
                 qt6-tools-dev qt6-tools-dev-tools qt6-webchannel-dev \
                 qt6-wayland qt6-svg-plugins qt6-image-formats-plugins \

@@ -1,6 +1,6 @@
 # Build verification
 
-## Windows: verified September 15, 2026
+## Integrated-tools baseline: September 15, 2026
 
 The complete GUI, CLI and integration test projects were built with Qt 6.10.1,
 MSVC x64 and Open CASCADE 8.0.0. Recorded results for the command panel and
@@ -92,3 +92,37 @@ python tests/test_distribution.py
 
 The standalone `tests/parts-performance.pro` suite does not require
 WebEngine; see the [filter documentation](filters.md) for its build steps.
+
+## Updater checks
+
+The updater suite uses temporary installations, an ephemeral test signing key,
+a localhost HTTP server and a short-lived fake GUI. It never reads the publisher
+key, contacts GitHub or touches real projects. Python requires `cryptography`.
+Build `zima-cad-parts-update.pro` with `CONFIG+=update_tests` into a separate
+build directory and build `tests/update-fixture.pro` separately. Never distribute
+the test helper. Set these variables to the resulting executable paths:
+
+```text
+PARTS_UPDATER_TEST_EXE=.../ZIMA-CAD-Parts-update[.exe]
+PARTS_UPDATE_FIXTURE_EXE=.../update-fixture[.exe]
+PARTS_UPDATE_TEST_RUNTIME=.../windows/YYYYMMDDNN
+```
+
+On Windows the last directory supplies Qt Core/Network and MSVC runtime DLLs to
+the fake runtime. Run `python tests/test_updates.py`. The production helper has
+no test key, HTTP endpoint or settings-directory override.
+
+The 18 updater regression cases cover signed discovery, date ordering, draft
+filtering, download/install/rollback, signature/hash failures, traversal,
+modified staging, interrupted import, failed startup recovery, retention,
+modified old versions, incompatible protocols, catalog replay/offline errors, restart without approval,
+case collisions, unsigned bootstrap rejection and source retention across platforms.
+Additional cases cover host-only installation, skipping newer releases for
+another platform, and independently finalizing Windows-only and Debian-only
+publisher fixtures. These fixtures do not execute a Debian binary.
+GUI integration also checks all five update-page languages, disabled installation
+for development copies, and opening Settings without starting a download.
+
+Windows GUI integration: 28 passing checks. CLI read commands: 4; built-in tools:
+9; the four translation catalogs contain 485 complete entries each. Debian
+execution remains pending; these Windows results do not establish Linux support.

@@ -1,4 +1,9 @@
 #include "commandpanel.h"
+#include "updatespage.h"
+#include "updateservice.h"
+#include "settingsdialog.h"
+#include <QTabWidget>
+#include <QToolButton>
 #include "core/partstools.h"
 #include "partstoolsdialog.h"
 #include <QTreeWidget>
@@ -75,6 +80,33 @@ private slots:
         QCoreApplication::setApplicationName("PartsIntegration");
         QSettings::setDefaultFormat(QSettings::IniFormat);
         QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsDir.path());
+        Settings::get()->UpdatesAutomatic = false;
+    }
+
+    void updateSettingsAreLocalizedAndDoNotStartDownload()
+    {
+        const QMap<QString, QString> expected{{"cs_CZ", "Nainstalovat aktualizaci"},
+            {"de_DE", "Update installieren"}, {"fr_FR", "Installer la mise à jour"},
+            {"ru_RU", "Установить обновление"}, {"en_US", "Install update"}};
+        SettingsDialog dialog(nullptr);
+        dialog.setSection(SettingsDialog::Updates);
+        dialog.resize(900, 620); dialog.show();
+        const auto tabs = dialog.findChild<QTabWidget *>("tabWidget");
+        QVERIFY(tabs); QCOMPARE(tabs->currentIndex(), int(SettingsDialog::Updates));
+        auto install = dialog.findChild<QPushButton *>("installUpdate");
+        QVERIFY(install); QVERIFY(!install->isEnabled());
+        QVERIFY(!UpdateService::get()->busy());
+        for (auto it = expected.begin(); it != expected.end(); ++it) {
+            applyApplicationLanguage(it.key()); QCoreApplication::processEvents();
+            QCOMPARE(install->text(), it.value());
+            if (it.key() == "cs_CZ" && qEnvironmentVariableIsSet("PARTS_UPDATE_SCREENSHOT"))
+                QVERIFY(dialog.grab().save(qEnvironmentVariable("PARTS_UPDATE_SCREENSHOT")));
+        }
+        applyApplicationLanguage("en_US");
+        QVERIFY(!UpdateService::get()->busy());
+        DirectoryWidget directory;
+        auto indicator = directory.findChild<QToolButton *>("updateAvailableIndicator");
+        QVERIFY(indicator); QVERIFY(indicator->isHidden());
     }
 
     void toolPlansRejectChangedFilesAndLocks()

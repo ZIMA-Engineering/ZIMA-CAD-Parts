@@ -13,3 +13,8 @@ HEADERS += src/core/partscommand.h
 
 SOURCES += src/core/partstools.cpp
 HEADERS += src/core/partstools.h
+
+SOURCES += src/core/partsupdatecommand.cpp
+HEADERS += src/core/partsupdatecommand.h
+SOURCES += src/update/installationclient.cpp
+HEADERS += src/update/installationclient.h

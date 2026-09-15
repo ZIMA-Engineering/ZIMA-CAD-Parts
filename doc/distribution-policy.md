@@ -22,10 +22,17 @@ later. This document does not modify their repositories.
 
 The final artifact is one shared `ZIMA-CAD-Parts-YYYYMMDDNN.zip` archive,
 without a platform in its name. It contains the `ZIMA-CAD-Parts` directory
-with sources and builds for both platforms. The Linux build can be added
-later and the same directory repackaged. Merging must preserve settings for
-an existing platform. Both runtimes must match their respective source
-version, and checksums must be regenerated after adding files.
+with matching sources and the available official platform builds: Windows,
+Debian, or both. A release must not wait for the other platform to be ready.
+Each client offers the newest verified release available for its own platform.
+A newer release for the other platform does not hide an applicable update.
+
+Before publication, another platform can be added to the draft package and
+the shared directory repackaged. Merging must preserve settings for an existing
+platform. Every included runtime must match the release's source version and
+commit; checksums and signatures must be regenerated after adding files.
+Published assets are immutable. Adding a platform after publication requires
+a new release number; it does not replace the published ZIP or manifest.
 
 Local `.dist-output/` directly contains `ZIMA-CAD-Parts/` and the final ZIP,
 without a permanent intermediate `windows-native-final` directory. Platform
@@ -88,6 +95,11 @@ Official packages are published as GitHub release assets matching a Git tag.
 Updates download a ready-made package; binaries are not stored in the source
 repository's regular history.
 
+Windows and Debian updates are independent. Only the current platform must
+be present in the signed manifest and archive. The other platform may be absent
+and its installed version remains unchanged. Existing signature, source,
+compatibility and explicit installation-confirmation requirements still apply.
+
 A new version is prepared in a separate directory, verified and activated
 after the application exits. A running installation is not overwritten.
 The previous version provides a rollback option. At most two official
@@ -108,8 +120,12 @@ Official ZIMA-Engineering builds and custom builds are distinguished in
 version information, diagnostics and About. This information includes the
 release number, commit and build origin. Official package authenticity must
 be verified by a signature; text in editable sources does not prove origin.
-The signing technology and key management will be defined during
-implementation.
+The [GitHub update guide](github-updates.md) describes signing, discovery
+and recovery details. It also records the owner's choice of automatic
+silent startup checks with an unobtrusive tab-row indicator and installation
+initiated from Settings. After confirmation the program downloads, verifies,
+installs and restarts automatically. The key is provisioned and the Windows
+implementation is available; Debian runtime verification remains required.
 
 Testing and support apply to official, unmodified packages. Custom builds
 are not verified by the publisher. This support policy adds no license
