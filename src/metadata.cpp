@@ -1,3 +1,4 @@
+#include "core/partsread.h"
 /*
   ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
@@ -490,83 +491,16 @@ void Metadata::removeParameter(const QString &handle)
 
 QString Metadata::partParam(const QString &partName, const QString &param)
 {
-    const auto readValue = [&](const QString &partGroup)
-    {
-        QString anyValue;
-        QString localizedValue;
-        m_settings->beginGroup("Parts");
-        m_settings->beginGroup(partGroup);
-        m_settings->beginGroup(param);
-        {
-            foreach (const QString &lang, m_settings->childKeys())
-            {
-                const QString value = m_settings->value(lang).toString();
-
-                if (!value.isEmpty() && lang == Settings::get()->LanguageMetadata)
-                {
-                    localizedValue = value;
-                    break;
-                }
-
-                if (anyValue.isEmpty())
-                    anyValue = value;
-            }
-        }
-        m_settings->endGroup();
-        m_settings->endGroup();
-        m_settings->endGroup();
-
-        if (!localizedValue.isEmpty())
-            return localizedValue;
-        if (!anyValue.isEmpty())
-            return anyValue;
-        return m_settings->value(QString("Parts/%1/%2").arg(partGroup, param)).toString();
-    };
-
-    QString ret = readValue(partName);
-    // An explicitly cleared value must not resurrect a legacy value.
-    const bool explicitlyStored = m_settings->contains(
-        QString("Parts/%1/%2/%3").arg(partName, param, Settings::get()->LanguageMetadata))
-        || m_settings->contains(QString("Parts/%1/%2").arg(partName, param));
-    if (ret.isEmpty() && explicitlyStored)
-        return ret;
-    if (ret.isEmpty()) {
-        if (!m_legacyPartGroupsLoaded) {
-            m_settings->beginGroup("Parts");
-            const auto groups = m_settings->childGroups();
-            m_settings->endGroup();
-            for (const auto &group : groups) {
-                const QFileInfo file(QDir(m_path).filePath(group));
-                if (file.isFile()) {
-                    const auto base = File::partBaseName(file);
-                    if (base != group)
-                        m_legacyPartGroups[base].append(group);
-                }
-            }
-            m_legacyPartGroupsLoaded = true;
-        }
-        for (const auto &group : m_legacyPartGroups.value(partName)) {
-            ret = readValue(group);
-            if (!ret.isEmpty())
-                break;
-        }
+    const auto local = PartsCore::localParameter(*m_settings, m_path, partName, param,
+        Settings::get()->LanguageMetadata, m_legacyPartGroups, m_legacyPartGroupsLoaded);
+    if (local.final)
+        return local.value;
+    foreach (Metadata *include, dataIncludes()) {
+        const auto value = include->partParam(partName, param);
+        if (!value.isEmpty())
+            return value;
     }
-    // Older releases stored dotted names under the text before the first dot.
-    if (ret.isEmpty() && partName.contains('.'))
-        ret = readValue(partName.section('.', 0, 0));
-
-    if (ret.isEmpty())
-    {
-        foreach(Metadata *include, dataIncludes())
-        {
-            QString tmp = include->partParam(partName, param);
-
-            if (!tmp.isEmpty())
-                return tmp;
-        }
-    }
-
-    return ret;
+    return QString();
 }
 
 QString Metadata::partParam(const QString &partName, int index)
@@ -765,12 +699,7 @@ void Metadata::pruneParts()
 
 QString Metadata::buildIncludePath(const QString &raw)
 {
-    if(raw.startsWith('/'))
-        return QDir::cleanPath(raw);
-    else
-    {
-        return QDir::cleanPath(m_path + "/" + raw);
-    }
+    return PartsCore::includePath(m_path, raw);
 }
 
 QStringList Metadata::buildIncludePaths(const QStringList &raw)

@@ -1,0 +1,9 @@
+QT = core
+CONFIG += console c++17
+CONFIG -= app_bundle
+TEMPLATE = app
+TARGET = ZIMA-CAD-Parts-cli
+SOURCES += src/cli/main.cpp src/core/partsread.cpp src/core/partsquery.cpp \
+    src/metadata/metadatamigration.cpp src/metadata/migrations/metadatav2migration.cpp
+HEADERS += src/core/partsread.h src/core/partsquery.h src/localfilters.h
+!versionAtLeast(QT_VERSION, 6.8.0): error(Qt 6.8 or newer is required.)

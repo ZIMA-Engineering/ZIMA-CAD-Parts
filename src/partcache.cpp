@@ -1,3 +1,4 @@
+#include "core/partsread.h"
 #include "partcache.h"
 #include "metadata.h"
 
@@ -110,15 +111,7 @@ PartCache::PartCache()
 
 QFileInfoList PartCache::listFiles(const QString &dir)
 {
-    QDir d(dir);
-    return d.entryInfoList(
-               QDir::Files
-               | QDir::Dirs
-               | QDir::Hidden
-               | QDir::System
-               | QDir::NoDotAndDotDot,
-               QDir::Name
-           );
+    return PartsCore::listEntries(dir);
 }
 
 void PartCache::processDiff(const QString &dir, const QFileInfoList &newFiles)

@@ -37,6 +37,7 @@ def dependencies(path):
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--exe', required=True, type=Path)
+    parser.add_argument('--cli', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--qmake', default='qmake6')
     args = parser.parse_args()
@@ -47,6 +48,9 @@ def main():
     exe = args.exe.resolve()
     if json.loads(run(str(exe), '--build-info')).get('version') != build:
         raise RuntimeError('Rebuild executable: version differs from source')
+    cli = args.cli.resolve()
+    if run(str(cli), '--version').strip() != build:
+        raise RuntimeError('CLI version differs from source')
     output = args.output.resolve()
     if output.exists():
         raise RuntimeError('Output must not exist')
@@ -58,6 +62,7 @@ def main():
     libraries.mkdir()
     query = lambda key: Path(run(args.qmake, '-query', key).strip())
     shutil.copy2(exe, binary / 'ZIMA-CAD-Parts')
+    shutil.copy2(cli, binary / 'ZIMA-CAD-Parts-cli')
     process = query('QT_INSTALL_LIBEXECS') / 'QtWebEngineProcess'
     shutil.copy2(process, binary / 'QtWebEngineProcess')
     plugin_root = query('QT_INSTALL_PLUGINS')
@@ -74,7 +79,7 @@ def main():
     if occt is None:
         raise RuntimeError('OCCT resources with Shaders not found')
     shutil.copytree(occt, runtime / 'occt', symlinks=False)
-    seeds = [exe, process] + list((runtime / 'plugins').rglob('*.so'))
+    seeds = [exe, cli, process] + list((runtime / 'plugins').rglob('*.so'))
     inspected = set()
     host = set()
     while seeds:

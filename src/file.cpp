@@ -1,3 +1,4 @@
+#include "core/partsread.h"
 /*
   ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
@@ -389,17 +390,7 @@ QString File::getRxFromStringList(const QStringList &extensions)
 
 QString File::partBaseName(const QFileInfo &fileInfo)
 {
-    if (fileInfo.isDir())
-        return fileInfo.fileName();
-
-    static const QRegularExpression cadName(
-                "^(.+)\\.(?:prt|asm|drw|frm|neu|prtz|asmz|drwz|frmz|tblz)(?:\\.\\d+)?$",
-                QRegularExpression::CaseInsensitiveOption);
-    const QRegularExpressionMatch match = cadName.match(fileInfo.fileName());
-    if (match.hasMatch())
-        return match.captured(1);
-
-    return fileInfo.completeBaseName();
+    return PartsCore::partBaseName(fileInfo);
 }
 
 bool File::isValidPartName(const QString &name, QString *errorMessage)

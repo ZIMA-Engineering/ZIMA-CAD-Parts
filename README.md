@@ -203,3 +203,9 @@ It does not yet implement automatic updates or signing.
 [Debian packaging](doc/debian-distribution.md) is prepared for Debian 13 CI;
 Linux runtime validation is still pending. Windows packages now use a native
 root EXE launcher without a PowerShell dependency.
+
+## Read-only command line
+
+The [CLI documentation](doc/cli.md) covers the Qt Core-only executable for
+listing/filtering parts and reading saved shared metadata as JSON.
+GUI and CLI reuse the same naming, enumeration and local parameter rules.

@@ -104,6 +104,21 @@ jobs:
         working-directory: .build-ci
         run: nmake release
 
+      - name: Build and test CLI
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force .build-cli | Out-Null
+          Push-Location .build-cli
+          qmake ../zima-cad-parts-cli.pro
+          if ($LASTEXITCODE -ne 0) { throw "CLI configure failed" }
+          nmake release
+          if ($LASTEXITCODE -ne 0) { throw "CLI build failed" }
+          Pop-Location
+          $env:PARTS_CLI_EXE = "$env:GITHUB_WORKSPACE/.build-cli/release/ZIMA-CAD-Parts-cli.exe"
+          windeployqt --release --compiler-runtime $env:PARTS_CLI_EXE
+          if ($LASTEXITCODE -ne 0) { throw "CLI deployment failed" }
+          python tests/test_cli.py
+
       - name: Test packaging contracts
         run: python tests/test_distribution.py
 
@@ -117,6 +132,7 @@ jobs:
           $packageArgs = @(
             "tools/distribution/package-windows.py",
             "--exe", ".build-ci/release/ZIMA-CAD-Parts.exe",
+            "--cli", ".build-cli/release/ZIMA-CAD-Parts-cli.exe",
             "--qt", $qtRoot,
             "--occt", $env:OCCT_ROOT,
             "--output", ".dist-output/package"

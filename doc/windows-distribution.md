@@ -16,7 +16,7 @@ mimo zdrojový adresář, se stejným Qt kitem a OCCT jako pro distribuci.
 Balení vyžaduje Python 3, Git, MSVC `dumpbin` a `windeployqt` tohoto kitu.
 
 ```powershell
-python tools/distribution/package-windows.py --exe .build-release/release/ZIMA-CAD-Parts.exe --qt C:/Qt/6.10.1/msvc2022_64 --occt C:/zb/i/x64-windows --output .dist-output/2026091501
+python tools/distribution/package-windows.py --exe .build-release/release/ZIMA-CAD-Parts.exe --cli .build-cli/release/ZIMA-CAD-Parts-cli.exe --qt C:/Qt/6.10.1/msvc2022_64 --occt C:/zb/i/x64-windows --output .dist-output/2026091501
 ```
 
 EXE musí pocházet z tohoto checkoutu. Pokud není schopné najít DLL v build

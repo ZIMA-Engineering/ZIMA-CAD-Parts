@@ -92,6 +92,7 @@ def copy_runtime(executable, destination, qt, occt):
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--exe', type=Path, required=True)
+    parser.add_argument('--cli', type=Path, required=True)
     parser.add_argument('--qt', type=Path, required=True)
     parser.add_argument('--occt', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True, help='New output directory, must not exist')
@@ -116,6 +117,9 @@ def main():
     binary_info = json.loads(run(str(exe), '--build-info'))
     if binary_info.get('version') != build:
         raise RuntimeError('Executable version differs from source VERSION; rebuild first')
+    cli = args.cli.resolve()
+    if cli.name != 'ZIMA-CAD-Parts-cli.exe' or run(str(cli), '--version').strip() != build:
+        raise RuntimeError('Missing CLI or CLI version differs from source')
     files = dict((relative, source) for source, relative in source_files())
     for name in args.include:
         source = (ROOT / name).resolve()
@@ -132,6 +136,7 @@ def main():
         target = sources / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
+    shutil.copy2(cli, runtime / cli.name)
     copy_runtime(exe, runtime, args.qt.resolve(), args.occt.resolve())
     shutil.copytree(ROOT / 'licenses', runtime / 'licenses')
     shutil.copy2(ROOT / 'LICENSE', runtime / 'licenses/Parts-LICENSE')

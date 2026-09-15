@@ -1,3 +1,7 @@
+#include <QProcess>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 #include <QtTest>
 #include <QAbstractItemModelTester>
 #include <QSignalSpy>
@@ -65,6 +69,51 @@ private slots:
         QCoreApplication::setApplicationName("PartsIntegration");
         QSettings::setDefaultFormat(QSettings::IniFormat);
         QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsDir.path());
+    }
+
+    void cliMatchesGuiReadResults()
+    {
+        const QString cli = qEnvironmentVariable("PARTS_CLI_EXE");
+        if (cli.isEmpty())
+            QSKIP("Set PARTS_CLI_EXE to run the real CLI parity test");
+        QTemporaryDir directory;
+        for (const auto &name : {"xxx.pdf", "xxx.prt.9", "xxx.prt.10", "xxx.prtz", "xxx.prtz.1", "hidden.log", ".directory"})
+            touch(directory.path(), name);
+        QDir().mkpath(directory.filePath("0000-index"));
+        {
+            QSettings metadata(directory.filePath("0000-index/metadata.ini"), QSettings::IniFormat);
+            metadata.setValue("Directory/Version", 2);
+            metadata.setValue("Directory/Parameters", QStringList{"description"});
+            metadata.setValue("Parameters/description/Label/en", "Description");
+            metadata.setValue("Parts/xxx/description/en", "Shared value");
+            QSettings filters(directory.filePath("0000-index/filters.ini"), QSettings::IniFormat);
+            filters.setValue("Filters/ShowVersions", false);
+            filters.setValue("Filters/ShowZimaVersions", false);
+            filters.setValue("Filters/Hide", QStringList{"*.log"});
+        }
+        Settings::get()->LanguageMetadata = "en";
+        FileModel model;
+        model.setDirectory(directory.path());
+        FileFilterModel proxy;
+        proxy.setSourceModel(&model);
+        QProcess process;
+        process.start(cli, {"list", directory.path(), "--language", "en", "--json"});
+        QVERIFY(process.waitForFinished(10000));
+        QCOMPARE(process.exitCode(), 0);
+        const auto rows = QJsonDocument::fromJson(process.readAllStandardOutput()).object().value("parts").toArray();
+        QCOMPARE(rows.size(), proxy.rowCount());
+        QMap<QString, QString> gui;
+        for (int row = 0; row < proxy.rowCount(); ++row)
+            gui.insert(proxy.index(row, 0).data().toString(), proxy.index(row, 2).data().toString());
+        for (const auto &row : rows) {
+            const auto item = row.toObject();
+            const auto name = item.value("name").toString();
+            QVERIFY(gui.contains(name));
+            QCOMPARE(item.value("parameters").toObject().value("description").toString(), gui.value(name));
+        }
+        QVERIFY(gui.contains("xxx.prt.10"));
+        QVERIFY(!gui.contains("xxx.prt.9"));
+        QVERIFY(!gui.contains("xxx.prtz.1"));
     }
 
     void languageSwitching()

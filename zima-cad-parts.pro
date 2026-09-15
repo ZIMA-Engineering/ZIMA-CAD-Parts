@@ -396,3 +396,6 @@ DISTFILES += \
     $${APP_ICON_FILES}
 
 HEADERS += src/localfilters.h src/applicationlanguage.h
+
+SOURCES += src/core/partsread.cpp
+HEADERS += src/core/partsread.h
