@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>gfx/navigation/terminal.svg</file>
         <file>gfx/navigation/lock.svg</file>
         <file>gfx/navigation/folder.svg</file>
         <file>gfx/navigation/parts.svg</file>

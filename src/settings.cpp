@@ -1,6 +1,5 @@
 #include "settings.h"
 #include "applicationlanguage.h"
-#include "zimautils.h"
 #include "filefilters/extensionfilter.h"
 #include "filefilters/versionfilter.h"
 #include "zima-cad-parts.h"
@@ -42,17 +41,9 @@ void Settings::load()
     Language = s.value("Language", "detect").toString();
     LanguageMetadata = s.value("LanguageMetadata", "en").toString();
 
-    // zima utils
-    s.beginGroup("ExternalPrograms");
-    QString key;
-    for(int i = 0; i < ZimaUtils::ZimaUtilsCount; i++)
-    {
-        key = ZimaUtils::internalNameForUtility(i);
-        s.beginGroup(key);
-        ExternalPrograms[key] = s.value("Executable").toString();
-        s.endGroup();
-    }
-    s.endGroup();
+    ToolsRecursive = s.value("Tools/Recursive", false).toBool();
+    ToolsCleanOld = s.value("Tools/CleanOld", true).toBool();
+    ToolsCleanMasks = s.value("Tools/CleanMasks").toStringList();
 
     MainWindowState = s.value("state").toByteArray();
     MainWindowGeometry = s.value("geometry").toByteArray();
@@ -91,17 +82,9 @@ void Settings::save()
     s.setValue("Language", Language);
     s.setValue("LanguageMetadata", LanguageMetadata);
 
-    // zima utils
-    s.beginGroup("ExternalPrograms");
-    QHashIterator<QString,QString> it(ExternalPrograms);
-    while (it.hasNext())
-    {
-        it.next();
-        s.beginGroup(it.key());
-        s.setValue("Executable", it.value());
-        s.endGroup();
-    }
-    s.endGroup();
+    s.setValue("Tools/Recursive", ToolsRecursive);
+    s.setValue("Tools/CleanOld", ToolsCleanOld);
+    s.setValue("Tools/CleanMasks", ToolsCleanMasks);
 
     s.setValue("state", MainWindowState);
     s.setValue("geometry", MainWindowGeometry);

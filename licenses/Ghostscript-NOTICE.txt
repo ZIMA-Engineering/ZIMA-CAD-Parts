@@ -1,0 +1,8 @@
+Ghostscript 10.08.0 (Artifex Software), unmodified separate process.
+License: GNU Affero General Public License version 3 or later.
+Upstream: https://ghostscript.com/releases/
+Windows runtime: tools/ghostscript, including doc/COPYING and source archive.
+Source: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/tag/gs10080
+The corresponding source archive is shipped beside the runtime in source/.
+Parts invokes Ghostscript pdfwrite directly; no Ghostscript library is linked.
+Debian uses the ghostscript package and its /usr/share/doc/ghostscript/copyright.

@@ -30,6 +30,7 @@
 
 
 class QListWidgetItem;
+class QCheckBox;
 
 namespace Ui {
 class SettingsDialog;
@@ -65,7 +66,6 @@ private slots:
     void datasourceUpButton_clicked();
     void datasourceDownButton_clicked();
     void openSavedPasswordsDialog();
-    void setZimaUtilPath(int util);
     void proeButton_clicked();
     void textEditorButton_clicked();
     void terminalButton_clicked();
@@ -73,8 +73,8 @@ private slots:
 private:
     Ui::SettingsDialog  *m_ui;
     QTranslator **translator;
-    QSignalMapper *zimaUtilSignalMapper;
-    QList<QLineEdit*> zimaUtilLineEdits;
+    QCheckBox *m_toolsRecursive, *m_toolsCleanOld;
+    QLineEdit *m_toolsMasks;
     DataSourceList m_editedDS;
 
     void setupDatasourceList();

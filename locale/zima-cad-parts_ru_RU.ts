@@ -73,6 +73,45 @@
     </message>
 </context>
 <context>
+    <name>CommandPanel</name>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="61"/>
+        <source>Commands: help, list, params, ps2pdf, ptc-clean, step-edit. Tools preview first; --apply executes. History: Up / Down.</source>
+        <translation>Команды: help, list, params, ps2pdf, ptc-clean, step-edit. По умолчанию — просмотр; --apply выполняет изменения. История: вверх / вниз.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="62"/>
+        <source>Enter a command, e.g. list or params &quot;part.pdf&quot;</source>
+        <translation>Введите команду, например list или params &quot;part.pdf&quot;</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="63"/>
+        <source>Reading...</source>
+        <translation>Чтение…</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="63"/>
+        <source>Run</source>
+        <translation>Выполнить</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="64"/>
+        <source>Clear output</source>
+        <translation>Очистить вывод</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="105"/>
+        <location filename="../src/commandpanel.cpp" line="120"/>
+        <source>Error: %1</source>
+        <translation>Ошибка: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="124"/>
+        <source>Output was truncated. Use the CLI for complete JSON.</source>
+        <translation>Вывод сокращён. Полный JSON доступен через CLI.</translation>
+    </message>
+</context>
+<context>
     <name>CreateDirectoryDialog</name>
     <message>
         <location filename="../src/createdirectorydialog.ui" line="14"/>
@@ -103,119 +142,83 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="273"/>
+        <location filename="../src/datasourceview.cpp" line="269"/>
         <source>Scripts...</source>
         <translation>Скрипты...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="299"/>
+        <location filename="../src/datasourceview.cpp" line="295"/>
         <source>Open</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="300"/>
+        <location filename="../src/datasourceview.cpp" line="296"/>
         <source>Open in a new tab</source>
         <translation>Открыть в новой вкладке</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="301"/>
+        <location filename="../src/datasourceview.cpp" line="297"/>
         <source>Set as working directory</source>
         <translation>Сделать рабочей папкой</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="302"/>
+        <location filename="../src/datasourceview.cpp" line="298"/>
         <source>Create directory</source>
         <translation>Создать папку</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="306"/>
+        <location filename="../src/datasourceview.cpp" line="302"/>
         <source>Directory properties</source>
         <translation>Свойства папки</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="307"/>
+        <location filename="../src/datasourceview.cpp" line="303"/>
         <source>Copy as...</source>
         <translation>Копировать как...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="308"/>
+        <location filename="../src/datasourceview.cpp" line="304"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="320"/>
-        <source>Clean with ZIMA-PTC-Cleaner</source>
-        <translation>Очистить с помощью ZIMA-PTC-Cleaner</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="322"/>
-        <source>Sync with ZIMA-CAD-Sync</source>
-        <translation>Синхронизировать с помощью ZIMA-CAD-Sync</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="324"/>
-        <source>Convert postscript to PDF with ZIMA-PS2PDF</source>
-        <translation>Преобразовать PostScript в PDF с помощью ZIMA-PS2PDF</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="326"/>
-        <source>Edit step files with ZIMA-STEP-Edit</source>
-        <translation>Редактировать файлы STEP с помощью ZIMA-STEP-Edit</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="349"/>
-        <location filename="../src/datasourceview.cpp" line="356"/>
-        <source>Configure %1</source>
-        <translation>Настроить %1</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="349"/>
-        <source>Please first configure path to %1 executable.</source>
-        <translation>Сначала укажите путь к исполняемому файлу %1.</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="356"/>
-        <source>Path &apos;%1&apos; to %2 executable does not exists!</source>
-        <translation>Путь &apos;%1&apos; к исполняемому файлу %2 не существует!</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="384"/>
-        <location filename="../src/datasourceview.cpp" line="427"/>
+        <location filename="../src/datasourceview.cpp" line="359"/>
+        <location filename="../src/datasourceview.cpp" line="402"/>
         <source>Directory exists</source>
         <translation>Папка существует</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="385"/>
+        <location filename="../src/datasourceview.cpp" line="360"/>
         <source>Directory %1 already exists.</source>
         <translation>Папка %1 уже существует.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="427"/>
+        <location filename="../src/datasourceview.cpp" line="402"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Папка &apos;%1&apos; уже существует.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="434"/>
+        <location filename="../src/datasourceview.cpp" line="409"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Подождите, выполняется копирование папки...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="448"/>
+        <location filename="../src/datasourceview.cpp" line="423"/>
         <source>Directory locked</source>
         <translation>Папка заблокирована</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="453"/>
+        <location filename="../src/datasourceview.cpp" line="428"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Вы действительно хотите удалить выбранную папку?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="454"/>
+        <location filename="../src/datasourceview.cpp" line="429"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Вы действительно хотите удалить папку &apos;%1&apos;? Это действие нельзя отменить.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="461"/>
+        <location filename="../src/datasourceview.cpp" line="436"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Подождите, выполняется удаление папки...</translation>
     </message>
@@ -1132,6 +1135,15 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
     </message>
 </context>
 <context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="97"/>
+        <location filename="../src/mainwindow.cpp" line="188"/>
+        <source>Command panel</source>
+        <translation>Панель команд</translation>
+    </message>
+</context>
+<context>
     <name>MainWindowClass</name>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
@@ -1386,6 +1398,197 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
         <location filename="../src/partsdeletedialog.ui" line="36"/>
         <source>No parts selected.</source>
         <translation>Детали не выбраны.</translation>
+    </message>
+</context>
+<context>
+    <name>PartsToolsDialog</name>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="18"/>
+        <source>PostScript to PDF</source>
+        <translation>PostScript в PDF</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="19"/>
+        <source>Clean PTC files</source>
+        <translation>Очистка файлов PTC</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="20"/>
+        <source>Edit STEP header</source>
+        <translation>Изменить заголовок STEP</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="35"/>
+        <source>File...</source>
+        <translation>Файл…</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="36"/>
+        <location filename="../src/partstoolsdialog.cpp" line="56"/>
+        <source>Directory...</source>
+        <translation>Каталог…</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="38"/>
+        <source>Source</source>
+        <translation>Источник</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="48"/>
+        <source>Include subdirectories</source>
+        <translation>Включить подкаталоги</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="53"/>
+        <source>Beside each source file</source>
+        <translation>Рядом с каждым исходным файлом</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="58"/>
+        <location filename="../src/partstoolsdialog.cpp" line="61"/>
+        <source>Output directory</source>
+        <translation>Выходной каталог</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="62"/>
+        <source>Existing PDFs are kept. PLT input must contain PostScript.</source>
+        <translation>Существующие PDF сохраняются. Файлы PLT должны содержать PostScript.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="64"/>
+        <source>Ghostscript is missing. Repair the Parts runtime package.</source>
+        <translation>Ghostscript отсутствует. Восстановите пакет Parts.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="66"/>
+        <source>Remove old numbered versions; keep the highest number</source>
+        <translation>Удалить старые версии; оставить версию с наибольшим номером</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="71"/>
+        <source>Additional removal masks (semicolon separated)</source>
+        <translation>Дополнительные маски удаления (через точку с запятой)</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="72"/>
+        <source>Selected files go to the trash. Directory locks are respected.</source>
+        <translation>Выбранные файлы перемещаются в корзину. Блокировки каталогов учитываются.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <source>File name</source>
+        <translation>Имя файла</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <source>Date</source>
+        <translation>Дата</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <source>Author</source>
+        <translation>Автор</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <source>Organization</source>
+        <translation>Организация</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="76"/>
+        <source>Preprocessor</source>
+        <translation>Препроцессор</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="76"/>
+        <source>Originating system</source>
+        <translation>Исходная система</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="76"/>
+        <source>Authorization</source>
+        <translation>Авторизация</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="85"/>
+        <source>Check only fields to change. Originals are backed up in 0000-index/tool-backups.</source>
+        <translation>Отметьте только изменяемые поля. Оригиналы сохраняются в 0000-index/tool-backups.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="90"/>
+        <source>File</source>
+        <translation>Файл</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="90"/>
+        <source>Result / reason</source>
+        <translation>Результат / причина</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="94"/>
+        <source>Preview the operation, then choose files to apply.</source>
+        <translation>Просмотрите операцию и выберите файлы для обработки.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="98"/>
+        <source>Select all</source>
+        <translation>Выбрать всё</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="99"/>
+        <source>Select none</source>
+        <translation>Снять выделение</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="101"/>
+        <source>Preview</source>
+        <translation>Предпросмотр</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="103"/>
+        <source>Apply selected</source>
+        <translation>Применить к выбранным</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="105"/>
+        <location filename="../src/partstoolsdialog.cpp" line="170"/>
+        <source>Close</source>
+        <translation>Закрыть</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="126"/>
+        <source>Cancelling...</source>
+        <translation>Отмена…</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="157"/>
+        <source>Apply this operation to %1 selected files?</source>
+        <translation>Применить эту операцию к выбранным файлам (%1)?</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <source>Working...</source>
+        <translation>Выполнение…</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="179"/>
+        <source>Completed: %1. Failed: %2. Skipped: %3.</source>
+        <translation>Выполнено: %1. Ошибки: %2. Пропущено: %3.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="185"/>
+        <source>Keep: %1</source>
+        <translation>Оставить: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="195"/>
+        <source>Ready: %1. Skipped: %2.</source>
+        <translation>Готово: %1. Пропущено: %2.</translation>
     </message>
 </context>
 <context>
@@ -1667,57 +1870,57 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/file.cpp" line="216"/>
+        <location filename="../src/file.cpp" line="217"/>
         <source>Office document</source>
         <translation>Текстовый документ</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="218"/>
+        <location filename="../src/file.cpp" line="219"/>
         <source>Office spreadsheet</source>
         <translation>Электронная таблица</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="220"/>
+        <location filename="../src/file.cpp" line="221"/>
         <source>Office presentation</source>
         <translation>Презентация</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="222"/>
+        <location filename="../src/file.cpp" line="223"/>
         <source>Office drawing</source>
         <translation>Рисунок</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="224"/>
+        <location filename="../src/file.cpp" line="225"/>
         <source>Office project</source>
         <translation>Проект</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="226"/>
+        <location filename="../src/file.cpp" line="227"/>
         <source>Office database</source>
         <translation>База данных</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="240"/>
+        <location filename="../src/file.cpp" line="241"/>
         <source>Image/Picture</source>
         <translation>Изображение</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="242"/>
+        <location filename="../src/file.cpp" line="243"/>
         <source>Audio/Music</source>
         <translation>Аудио/музыка</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="410"/>
+        <location filename="../src/file.cpp" line="401"/>
         <source>The name cannot be empty or begin or end with a space.</source>
         <translation>Имя не может быть пустым, начинаться или заканчиваться пробелом.</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="416"/>
+        <location filename="../src/file.cpp" line="407"/>
         <source>The name cannot end with a dot.</source>
         <translation>Имя не может заканчиваться точкой.</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="423"/>
+        <location filename="../src/file.cpp" line="414"/>
         <source>The name contains a character that is not valid on Windows.</source>
         <translation>Имя содержит символ, недопустимый в Windows.</translation>
     </message>
@@ -2138,8 +2341,13 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="346"/>
-        <source>External programs</source>
-        <translation>Внешние программы</translation>
+        <source>Tools and programs</source>
+        <translation>Инструменты и программы</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="375"/>
+        <source>Built-in tools</source>
+        <translation>Встроенные инструменты</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="355"/>
@@ -2152,11 +2360,6 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
         <location filename="../src/settingsdialog.ui" line="368"/>
         <source>ProE executable:</source>
         <translation>Исполняемый файл Pro/E:</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="375"/>
-        <source>ZIMA utilities</source>
-        <translation>Утилиты ZIMA</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="383"/>
@@ -2174,27 +2377,42 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
         <translation>Панель инструментов технических спецификаций</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="335"/>
-        <source>ZIMA-CAD-Parts - set %1 path</source>
-        <translation>ZIMA-CAD-Parts — указать путь к %1</translation>
+        <location filename="../src/settingsdialog.cpp" line="99"/>
+        <source>Include subdirectories by default</source>
+        <translation>По умолчанию включать подкаталоги</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="343"/>
+        <location filename="../src/settingsdialog.cpp" line="101"/>
+        <source>Cleaner: remove old numbered versions</source>
+        <translation>Очистка: удалять старые версии</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="106"/>
+        <source>Cleaner: additional masks (semicolon separated)</source>
+        <translation>Очистка: дополнительные маски (через точку с запятой)</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="110"/>
+        <source>Ghostscript runtime is missing</source>
+        <translation>Отсутствует среда Ghostscript</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="324"/>
         <source>Locate ProE launcher</source>
         <translation>Найти программу запуска Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="345"/>
+        <location filename="../src/settingsdialog.cpp" line="326"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Исполняемый файл Pro/E (proe.exe);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="353"/>
+        <location filename="../src/settingsdialog.cpp" line="334"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts — выбрать текстовый редактор</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="361"/>
+        <location filename="../src/settingsdialog.cpp" line="342"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts — выбрать терминал</translation>
     </message>

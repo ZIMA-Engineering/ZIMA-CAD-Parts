@@ -11,6 +11,7 @@ mkdir -p .build-cli
 (cd .build-cli && qmake6 ../zima-cad-parts-cli.pro && make -j"$(nproc)")
 export PARTS_CLI_EXE="$PWD/.build-cli/ZIMA-CAD-Parts-cli"
 python3 tests/test_cli.py
+python3 tests/test_tools.py
 python3 tests/check_translations.py
 python3 tests/test_distribution.py
 python3 tools/distribution/package-debian.py --exe .build-debian/ZIMA-CAD-Parts --cli "$PARTS_CLI_EXE" --output .dist-output/debian

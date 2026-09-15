@@ -36,3 +36,6 @@ ui_*.h
 /.dist-output/
 
 __pycache__/
+
+# Downloaded Ghostscript runtime and corresponding source archive
+/tools/ghostscript/

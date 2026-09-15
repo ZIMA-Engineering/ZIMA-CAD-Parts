@@ -73,6 +73,45 @@
     </message>
 </context>
 <context>
+    <name>CommandPanel</name>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="61"/>
+        <source>Commands: help, list, params, ps2pdf, ptc-clean, step-edit. Tools preview first; --apply executes. History: Up / Down.</source>
+        <translation>Befehle: help, list, params, ps2pdf, ptc-clean, step-edit. Werkzeuge zeigen zuerst eine Vorschau; --apply führt sie aus. Verlauf: Auf / Ab.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="62"/>
+        <source>Enter a command, e.g. list or params &quot;part.pdf&quot;</source>
+        <translation>Befehl eingeben, z. B. list oder params &quot;teil.pdf&quot;</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="63"/>
+        <source>Reading...</source>
+        <translation>Wird gelesen…</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="63"/>
+        <source>Run</source>
+        <translation>Ausführen</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="64"/>
+        <source>Clear output</source>
+        <translation>Ausgabe leeren</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="105"/>
+        <location filename="../src/commandpanel.cpp" line="120"/>
+        <source>Error: %1</source>
+        <translation>Fehler: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="124"/>
+        <source>Output was truncated. Use the CLI for complete JSON.</source>
+        <translation>Die Ausgabe wurde gekürzt. Vollständiges JSON erhalten Sie über die CLI.</translation>
+    </message>
+</context>
+<context>
     <name>CreateDirectoryDialog</name>
     <message>
         <location filename="../src/createdirectorydialog.ui" line="14"/>
@@ -103,119 +142,83 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="273"/>
+        <location filename="../src/datasourceview.cpp" line="269"/>
         <source>Scripts...</source>
         <translation>Skripte...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="299"/>
+        <location filename="../src/datasourceview.cpp" line="295"/>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="300"/>
+        <location filename="../src/datasourceview.cpp" line="296"/>
         <source>Open in a new tab</source>
         <translation>In neuem Tab öffnen</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="301"/>
+        <location filename="../src/datasourceview.cpp" line="297"/>
         <source>Set as working directory</source>
         <translation>Als Arbeitsverzeichnis festlegen</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="302"/>
+        <location filename="../src/datasourceview.cpp" line="298"/>
         <source>Create directory</source>
         <translation>Verzeichnis erstellen</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="306"/>
+        <location filename="../src/datasourceview.cpp" line="302"/>
         <source>Directory properties</source>
         <translation>Ordnereigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="307"/>
+        <location filename="../src/datasourceview.cpp" line="303"/>
         <source>Copy as...</source>
         <translation>Kopieren als...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="308"/>
+        <location filename="../src/datasourceview.cpp" line="304"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="320"/>
-        <source>Clean with ZIMA-PTC-Cleaner</source>
-        <translation>Mit ZIMA-PTC-Cleaner bereinigen</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="322"/>
-        <source>Sync with ZIMA-CAD-Sync</source>
-        <translation>Mit ZIMA-CAD-Sync synchronisieren</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="324"/>
-        <source>Convert postscript to PDF with ZIMA-PS2PDF</source>
-        <translation>PostScript mit ZIMA-PS2PDF in PDF umwandeln</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="326"/>
-        <source>Edit step files with ZIMA-STEP-Edit</source>
-        <translation>STEP-Dateien mit ZIMA-STEP-Edit bearbeiten</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="349"/>
-        <location filename="../src/datasourceview.cpp" line="356"/>
-        <source>Configure %1</source>
-        <translation>%1 konfigurieren</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="349"/>
-        <source>Please first configure path to %1 executable.</source>
-        <translation>Bitte zuerst den Pfad zur ausführbaren Datei von %1 festlegen.</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="356"/>
-        <source>Path &apos;%1&apos; to %2 executable does not exists!</source>
-        <translation>Der Pfad &apos;%1&apos; zur ausführbaren Datei von %2 existiert nicht!</translation>
-    </message>
-    <message>
-        <location filename="../src/datasourceview.cpp" line="384"/>
-        <location filename="../src/datasourceview.cpp" line="427"/>
+        <location filename="../src/datasourceview.cpp" line="359"/>
+        <location filename="../src/datasourceview.cpp" line="402"/>
         <source>Directory exists</source>
         <translation>Verzeichnis existiert</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="385"/>
+        <location filename="../src/datasourceview.cpp" line="360"/>
         <source>Directory %1 already exists.</source>
         <translation>Das Verzeichnis %1 existiert bereits.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="427"/>
+        <location filename="../src/datasourceview.cpp" line="402"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Das Verzeichnis &apos;%1&apos; existiert bereits.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="434"/>
+        <location filename="../src/datasourceview.cpp" line="409"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Bitte warten, das Verzeichnis wird kopiert...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="448"/>
+        <location filename="../src/datasourceview.cpp" line="423"/>
         <source>Directory locked</source>
         <translation>Ordner gesperrt</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="453"/>
+        <location filename="../src/datasourceview.cpp" line="428"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Möchten Sie das ausgewählte Verzeichnis wirklich löschen?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="454"/>
+        <location filename="../src/datasourceview.cpp" line="429"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Möchten Sie das Verzeichnis &apos;%1&apos; wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="461"/>
+        <location filename="../src/datasourceview.cpp" line="436"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Bitte warten, das Verzeichnis wird gelöscht...</translation>
     </message>
@@ -1132,6 +1135,15 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
     </message>
 </context>
 <context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="97"/>
+        <location filename="../src/mainwindow.cpp" line="188"/>
+        <source>Command panel</source>
+        <translation>Befehlsbereich</translation>
+    </message>
+</context>
+<context>
     <name>MainWindowClass</name>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
@@ -1386,6 +1398,197 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
         <location filename="../src/partsdeletedialog.ui" line="36"/>
         <source>No parts selected.</source>
         <translation>Keine Teile ausgewählt.</translation>
+    </message>
+</context>
+<context>
+    <name>PartsToolsDialog</name>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="18"/>
+        <source>PostScript to PDF</source>
+        <translation>PostScript nach PDF</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="19"/>
+        <source>Clean PTC files</source>
+        <translation>PTC-Dateien bereinigen</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="20"/>
+        <source>Edit STEP header</source>
+        <translation>STEP-Kopf bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="35"/>
+        <source>File...</source>
+        <translation>Datei…</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="36"/>
+        <location filename="../src/partstoolsdialog.cpp" line="56"/>
+        <source>Directory...</source>
+        <translation>Verzeichnis…</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="38"/>
+        <source>Source</source>
+        <translation>Quelle</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="48"/>
+        <source>Include subdirectories</source>
+        <translation>Unterverzeichnisse einbeziehen</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="53"/>
+        <source>Beside each source file</source>
+        <translation>Neben jeder Quelldatei</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="58"/>
+        <location filename="../src/partstoolsdialog.cpp" line="61"/>
+        <source>Output directory</source>
+        <translation>Ausgabeverzeichnis</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="62"/>
+        <source>Existing PDFs are kept. PLT input must contain PostScript.</source>
+        <translation>Vorhandene PDFs bleiben erhalten. PLT-Dateien müssen PostScript enthalten.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="64"/>
+        <source>Ghostscript is missing. Repair the Parts runtime package.</source>
+        <translation>Ghostscript fehlt. Reparieren Sie das Parts-Laufzeitpaket.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="66"/>
+        <source>Remove old numbered versions; keep the highest number</source>
+        <translation>Alte nummerierte Versionen entfernen; höchste Nummer behalten</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="71"/>
+        <source>Additional removal masks (semicolon separated)</source>
+        <translation>Weitere Löschmuster (durch Semikolon getrennt)</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="72"/>
+        <source>Selected files go to the trash. Directory locks are respected.</source>
+        <translation>Ausgewählte Dateien werden in den Papierkorb verschoben. Verzeichnissperren werden beachtet.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <source>File name</source>
+        <translation>Dateiname</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <source>Date</source>
+        <translation>Datum</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <source>Author</source>
+        <translation>Autor</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <source>Organization</source>
+        <translation>Organisation</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="76"/>
+        <source>Preprocessor</source>
+        <translation>Präprozessor</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="76"/>
+        <source>Originating system</source>
+        <translation>Ursprungssystem</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="76"/>
+        <source>Authorization</source>
+        <translation>Autorisierung</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="85"/>
+        <source>Check only fields to change. Originals are backed up in 0000-index/tool-backups.</source>
+        <translation>Nur zu ändernde Felder markieren. Originale werden in 0000-index/tool-backups gesichert.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="90"/>
+        <source>File</source>
+        <translation>Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="90"/>
+        <source>Result / reason</source>
+        <translation>Ergebnis / Grund</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="94"/>
+        <source>Preview the operation, then choose files to apply.</source>
+        <translation>Vorschau anzeigen und die zu verarbeitenden Dateien auswählen.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="98"/>
+        <source>Select all</source>
+        <translation>Alle auswählen</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="99"/>
+        <source>Select none</source>
+        <translation>Auswahl aufheben</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="101"/>
+        <source>Preview</source>
+        <translation>Vorschau</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="103"/>
+        <source>Apply selected</source>
+        <translation>Auswahl anwenden</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="105"/>
+        <location filename="../src/partstoolsdialog.cpp" line="170"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="126"/>
+        <source>Cancelling...</source>
+        <translation>Abbruch…</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="157"/>
+        <source>Apply this operation to %1 selected files?</source>
+        <translation>Diese Operation auf %1 ausgewählte Dateien anwenden?</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <source>Working...</source>
+        <translation>Verarbeitung…</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="179"/>
+        <source>Completed: %1. Failed: %2. Skipped: %3.</source>
+        <translation>Abgeschlossen: %1. Fehler: %2. Übersprungen: %3.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="185"/>
+        <source>Keep: %1</source>
+        <translation>Behalten: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="195"/>
+        <source>Ready: %1. Skipped: %2.</source>
+        <translation>Bereit: %1. Übersprungen: %2.</translation>
     </message>
 </context>
 <context>
@@ -1667,57 +1870,57 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/file.cpp" line="216"/>
+        <location filename="../src/file.cpp" line="217"/>
         <source>Office document</source>
         <translation>Textdokument</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="218"/>
+        <location filename="../src/file.cpp" line="219"/>
         <source>Office spreadsheet</source>
         <translation>Tabellendokument</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="220"/>
+        <location filename="../src/file.cpp" line="221"/>
         <source>Office presentation</source>
         <translation>Präsentation</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="222"/>
+        <location filename="../src/file.cpp" line="223"/>
         <source>Office drawing</source>
         <translation>Zeichnung</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="224"/>
+        <location filename="../src/file.cpp" line="225"/>
         <source>Office project</source>
         <translation>Projekt</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="226"/>
+        <location filename="../src/file.cpp" line="227"/>
         <source>Office database</source>
         <translation>Datenbank</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="240"/>
+        <location filename="../src/file.cpp" line="241"/>
         <source>Image/Picture</source>
         <translation>Bild</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="242"/>
+        <location filename="../src/file.cpp" line="243"/>
         <source>Audio/Music</source>
         <translation>Audio/Musik</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="410"/>
+        <location filename="../src/file.cpp" line="401"/>
         <source>The name cannot be empty or begin or end with a space.</source>
         <translation>Der Name darf nicht leer sein oder mit einem Leerzeichen beginnen oder enden.</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="416"/>
+        <location filename="../src/file.cpp" line="407"/>
         <source>The name cannot end with a dot.</source>
         <translation>Der Name darf nicht mit einem Punkt enden.</translation>
     </message>
     <message>
-        <location filename="../src/file.cpp" line="423"/>
+        <location filename="../src/file.cpp" line="414"/>
         <source>The name contains a character that is not valid on Windows.</source>
         <translation>Der Name enthält ein unter Windows ungültiges Zeichen.</translation>
     </message>
@@ -2138,8 +2341,13 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="346"/>
-        <source>External programs</source>
-        <translation>Externe Programme</translation>
+        <source>Tools and programs</source>
+        <translation>Werkzeuge und Programme</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="375"/>
+        <source>Built-in tools</source>
+        <translation>Integrierte Werkzeuge</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="355"/>
@@ -2152,11 +2360,6 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
         <location filename="../src/settingsdialog.ui" line="368"/>
         <source>ProE executable:</source>
         <translation>Ausführbare Pro/E-Datei:</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="375"/>
-        <source>ZIMA utilities</source>
-        <translation>ZIMA-Werkzeuge</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="383"/>
@@ -2174,27 +2377,42 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
         <translation>Werkzeugleiste für technische Spezifikationen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="335"/>
-        <source>ZIMA-CAD-Parts - set %1 path</source>
-        <translation>ZIMA-CAD-Parts – Pfad für %1 festlegen</translation>
+        <location filename="../src/settingsdialog.cpp" line="99"/>
+        <source>Include subdirectories by default</source>
+        <translation>Unterverzeichnisse standardmäßig einbeziehen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="343"/>
+        <location filename="../src/settingsdialog.cpp" line="101"/>
+        <source>Cleaner: remove old numbered versions</source>
+        <translation>Bereinigung: alte nummerierte Versionen entfernen</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="106"/>
+        <source>Cleaner: additional masks (semicolon separated)</source>
+        <translation>Bereinigung: weitere Muster (durch Semikolon getrennt)</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="110"/>
+        <source>Ghostscript runtime is missing</source>
+        <translation>Ghostscript-Laufzeit fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="324"/>
         <source>Locate ProE launcher</source>
         <translation>Pro/E-Startprogramm auswählen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="345"/>
+        <location filename="../src/settingsdialog.cpp" line="326"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Ausführbare Pro/E-Datei (proe.exe);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="353"/>
+        <location filename="../src/settingsdialog.cpp" line="334"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts – Texteditor auswählen</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="361"/>
+        <location filename="../src/settingsdialog.cpp" line="342"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts – Terminal auswählen</translation>
     </message>

@@ -63,7 +63,6 @@ SOURCES += src/directoryprotection.cpp \
     src/extensions/productview/productview.cpp \
     src/filtersdialog.cpp \
     src/metadata.cpp \
-    src/zimautils.cpp \
     src/errordialog.cpp \
     src/filefiltermodel.cpp \
     src/filefilters/filefilter.cpp \
@@ -175,7 +174,6 @@ HEADERS += src/directoryprotection.h \
     src/filtersdialog.h \
     src/metadata.h \
     src/zima-cad-parts.h \
-    src/zimautils.h \
     src/errordialog.h \
     src/filefiltermodel.h \
     src/filefilters/filefilter.h \
@@ -399,3 +397,12 @@ HEADERS += src/localfilters.h src/applicationlanguage.h
 
 SOURCES += src/core/partsread.cpp
 HEADERS += src/core/partsread.h
+
+SOURCES += src/commandpanel.cpp src/core/partsquery.cpp src/core/partscommand.cpp
+HEADERS += src/commandpanel.h src/core/partsquery.h src/core/partscommand.h
+
+SOURCES += src/core/partstools.cpp
+HEADERS += src/core/partstools.h
+
+SOURCES += src/partstoolsdialog.cpp
+HEADERS += src/partstoolsdialog.h

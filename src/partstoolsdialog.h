@@ -1,0 +1,37 @@
+#ifndef PARTSTOOLSDIALOG_H
+#define PARTSTOOLSDIALOG_H
+#include <QDialog>
+#include <QPointer>
+#include <QThread>
+#include <QMap>
+#include "core/partstools.h"
+class QLineEdit;
+class QCheckBox;
+class QTreeWidget;
+class QPushButton;
+class QLabel;
+class PartsToolsDialog : public QDialog {
+    Q_OBJECT
+public:
+    PartsToolsDialog(const QString &tool, const QString &path, QWidget *parent = nullptr);
+    ~PartsToolsDialog() override;
+    static QString title(const QString &tool);
+signals:
+    void filesChanged();
+protected:
+    void reject() override;
+private:
+    void start(bool apply);
+    void invalidate();
+    QString m_tool;
+    QLineEdit *m_path, *m_output = nullptr, *m_masks = nullptr;
+    QCheckBox *m_recursive, *m_old = nullptr;
+    QMap<QString, QPair<QCheckBox *, QLineEdit *>> m_fields;
+    QTreeWidget *m_files;
+    QLabel *m_status;
+    QPushButton *m_preview, *m_apply, *m_cancel;
+    QWidget *m_options;
+    QPointer<QThread> m_worker;
+    PartsCore::ToolPlan m_plan;
+};
+#endif

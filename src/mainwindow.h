@@ -41,6 +41,8 @@
 #include "filefiltermodel.h"
 #include "webdownloaderdialog.h"
 
+class QDockWidget;
+class CommandPanel;
 class WorkingDirWidget;
 class QMenu;
 
@@ -71,6 +73,8 @@ private:
     QTranslator *translator;// app ui
     WorkingDirWidget *m_wdirWidget;
     WebDownloaderDialog *m_downloader;
+    QDockWidget *m_commandDock = nullptr;
+    CommandPanel *m_commandPanel = nullptr;
 
     QModelIndex lastFoundIndex;
 

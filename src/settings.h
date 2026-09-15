@@ -92,7 +92,9 @@ public:
     //! WorkingDir is handled by a method because of it should be saved immediatelly
     void setWorkingDir(const QString &wd);
 
-    QHash<QString,QString> ExternalPrograms;
+    bool ToolsRecursive = false;
+    bool ToolsCleanOld = true;
+    QStringList ToolsCleanMasks;
     //! State of the MainWindow
     QByteArray MainWindowState;
     //! Geometry of the MainWindow

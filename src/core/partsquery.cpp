@@ -2,11 +2,13 @@
 #include "../localfilters.h"
 #include "../metadata/migrations/metadatav2migration.h"
 #include <QDir>
+#include <QThread>
 #include <QFile>
 
 PartsCore::DirectorySnapshot::DirectorySnapshot(const QString &path, QSet<QString> ancestors)
     : m_path(QFileInfo(path).absoluteFilePath())
 {
+    if (QThread::currentThread()->isInterruptionRequested()) throw QString("Cancelled");
     QFileInfo directory(m_path);
     if (!directory.isDir() || !directory.isReadable())
         throw QString("Directory is missing or unreadable: %1").arg(m_path);
@@ -112,6 +114,7 @@ QJsonObject PartsCore::listParts(const QString &directory, const QString &langua
     const auto accepted = filters.accepted(files, metadata.showDirectories());
     QJsonArray parts;
     for (int i = 0; i < files.size(); ++i) {
+        if (QThread::currentThread()->isInterruptionRequested()) throw QString("Cancelled");
         if (accepted.testBit(i) && files[i].fileName().contains(nameFilter, Qt::CaseInsensitive))
             parts.append(metadata.part(files[i], language));
     }

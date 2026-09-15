@@ -1,3 +1,9 @@
+#include "commandpanel.h"
+#include "core/partstools.h"
+#include "partstoolsdialog.h"
+#include <QTreeWidget>
+#include <QPlainTextEdit>
+#include <QDockWidget>
 #include <QProcess>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -69,6 +75,111 @@ private slots:
         QCoreApplication::setApplicationName("PartsIntegration");
         QSettings::setDefaultFormat(QSettings::IniFormat);
         QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsDir.path());
+    }
+
+    void toolPlansRejectChangedFilesAndLocks()
+    {
+        QTemporaryDir dir;
+        touch(dir.path(), "part.prt.1"); touch(dir.path(), "part.prt.10");
+        PartsCore::ToolRequest request; request.tool = "ptc-clean"; request.path = dir.path();
+        auto plan = PartsCore::planTool(request);
+        QCOMPARE(plan.items.size(), 1);
+        QFile changed(dir.filePath("part.prt.1")); QVERIFY(changed.open(QIODevice::Append)); changed.write("changed"); changed.close();
+        auto result = PartsCore::applyTool(plan);
+        QCOMPARE(result["failed"].toArray().size(), 1);
+        QVERIFY(QFileInfo::exists(dir.filePath("part.prt.1")));
+        plan = PartsCore::planTool(request);
+        QVERIFY(QFile::remove(dir.filePath("part.prt.10")));
+        result = PartsCore::applyTool(plan);
+        QCOMPARE(result["failed"].toArray().size(), 1);
+        QVERIFY(QFileInfo::exists(dir.filePath("part.prt.1")));
+        touch(dir.path(), "part.prt.10");
+        plan = PartsCore::planTool(request);
+        QDir().mkpath(dir.filePath("0000-index"));
+        QSettings lock(dir.filePath("0000-index/metadata.ini"), QSettings::IniFormat);
+        lock.setValue("Directory/PreventRemoval", true); lock.sync();
+        result = PartsCore::applyTool(plan);
+        QCOMPARE(result["failed"].toArray().size(), 1);
+        QVERIFY(QFileInfo::exists(dir.filePath("part.prt.1")));
+    }
+
+    void toolDialogInvalidatesChangedPreview()
+    {
+        QTemporaryDir dir;
+        touch(dir.path(), "part.prt.1"); touch(dir.path(), "part.prt.10");
+        PartsToolsDialog dialog("ptc-clean", dir.path());
+        dialog.show();
+        auto apply = dialog.findChild<QPushButton *>("toolApply");
+        QVERIFY(!apply->isEnabled());
+        QTest::mouseClick(dialog.findChild<QPushButton *>("toolPreview"), Qt::LeftButton);
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(dialog.findChild<QTreeWidget *>("toolFiles")->topLevelItemCount(), 1);
+        dialog.findChild<QLineEdit *>("toolPath")->setText(dir.path() + "/other");
+        QVERIFY(!apply->isEnabled());
+        QCOMPARE(dialog.findChild<QTreeWidget *>("toolFiles")->topLevelItemCount(), 0);
+    }
+
+    void commandPanelUsesCapturedContextAndHistory()
+    {
+        QTemporaryDir first;
+        QTemporaryDir second;
+        touch(first.path(), "first.pdf");
+        touch(second.path(), "second.pdf");
+        PartsCore::CommandContext context;
+        context.directory = first.path();
+        CommandPanel panel([&context] { return context; });
+        panel.show();
+        auto input = panel.findChild<QLineEdit *>("commandPanelInput");
+        auto output = panel.findChild<QPlainTextEdit *>("commandPanelOutput");
+        QSignalSpy finished(&panel, &CommandPanel::commandFinished);
+        input->setText("list");
+        QTest::keyClick(input, Qt::Key_Return);
+        context.directory = second.path();
+        QTRY_COMPARE(finished.count(), 1);
+        QCOMPARE(finished.last().first().toInt(), 0);
+        QVERIFY(output->toPlainText().contains("first.pdf"));
+        QVERIFY(!output->toPlainText().contains("second.pdf"));
+        input->setText("draft");
+        QTest::keyClick(input, Qt::Key_Up);
+        QCOMPARE(input->text(), QString("list"));
+        QTest::keyClick(input, Qt::Key_Down);
+        QCOMPARE(input->text(), QString("draft"));
+        input->setText("list");
+        QTest::keyClick(input, Qt::Key_Return);
+        QTRY_COMPARE(finished.count(), 2);
+        QVERIFY(output->toPlainText().contains("second.pdf"));
+        input->setText("params \"second.pdf\"");
+        QTest::keyClick(input, Qt::Key_Return);
+        QTRY_COMPARE(finished.count(), 3);
+        QCOMPARE(finished.last().first().toInt(), 0);
+        input->setText("params \"unfinished");
+        QTest::keyClick(input, Qt::Key_Return);
+        QTRY_COMPARE(finished.count(), 4);
+        QCOMPARE(finished.last().first().toInt(), 2);
+        input->setText("help");
+        QTest::keyClick(input, Qt::Key_Return);
+        QTRY_COMPARE(finished.count(), 5);
+        QVERIFY(output->toPlainText().contains("--language"));
+        QTest::mouseClick(panel.findChild<QPushButton *>("commandPanelClear"), Qt::LeftButton);
+        QVERIFY(output->toPlainText().isEmpty());
+        QVERIFY(!QFileInfo::exists(first.filePath("0000-index")));
+        QVERIFY(!QFileInfo::exists(second.filePath("0000-index")));
+    }
+
+    void commandPanelCanBeHiddenAndRestored()
+    {
+        MainWindow window(nullptr);
+        window.show();
+        auto dock = window.findChild<QDockWidget *>("commandPanelDock");
+        auto toggle = window.findChild<QAction *>("toggleCommandPanel");
+        QVERIFY(dock);
+        QVERIFY(toggle);
+        QCOMPARE(toggle->shortcut(), QKeySequence("Ctrl+Shift+P"));
+        dock->show();
+        toggle->trigger();
+        QVERIFY(dock->isHidden());
+        toggle->trigger();
+        QVERIFY(!dock->isHidden());
     }
 
     void cliMatchesGuiReadResults()

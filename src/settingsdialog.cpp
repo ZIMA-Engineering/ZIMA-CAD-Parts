@@ -32,7 +32,8 @@
 
 #include "addeditdatasource.h"
 #include "savedpasswordsdialog.h"
-#include "zimautils.h"
+#include <QCheckBox>
+#include "core/partstools.h"
 
 //! A helpter template class to convert any pointer to QVariant and vice versa
 template <class T> class PtrVariant
@@ -95,30 +96,20 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
     connect(m_ui->proeButton, SIGNAL(clicked()),
             this, SLOT(proeButton_clicked()));
 
-    zimaUtilSignalMapper = new QSignalMapper(this);
-
-    connect(zimaUtilSignalMapper, SIGNAL(mappedInt(int)), this, SLOT(setZimaUtilPath(int)));
-
-    QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
-    int i = 0;
-    while (it.hasNext())
-    {
-        it.next();
-
-        QToolButton *t = new QToolButton(this);
-        t->setText("...");
-
-        connect(t, SIGNAL(clicked()), zimaUtilSignalMapper, SLOT(map()));
-
-        zimaUtilLineEdits << new QLineEdit(it.value(), this);
-
-        m_ui->gridLayout->addWidget(new QLabel(it.key(), this), i, 0);
-        m_ui->gridLayout->addWidget(zimaUtilLineEdits.last(), i, 1);
-        m_ui->gridLayout->addWidget(t, i, 2);
-
-        zimaUtilSignalMapper->setMapping(t, i);
-        ++i;
-    }
+    m_toolsRecursive = new QCheckBox(tr("Include subdirectories by default"), this);
+    m_toolsRecursive->setChecked(Settings::get()->ToolsRecursive);
+    m_toolsCleanOld = new QCheckBox(tr("Cleaner: remove old numbered versions"), this);
+    m_toolsCleanOld->setChecked(Settings::get()->ToolsCleanOld);
+    m_toolsMasks = new QLineEdit(Settings::get()->ToolsCleanMasks.join(';'), this);
+    m_ui->gridLayout->addWidget(m_toolsRecursive, 0, 0, 1, 2);
+    m_ui->gridLayout->addWidget(m_toolsCleanOld, 1, 0, 1, 2);
+    m_ui->gridLayout->addWidget(new QLabel(tr("Cleaner: additional masks (semicolon separated)"), this), 2, 0);
+    m_ui->gridLayout->addWidget(m_toolsMasks, 2, 1);
+    auto runtime = new QLineEdit(PartsCore::ghostscriptExecutable(), this);
+    runtime->setReadOnly(true);
+    runtime->setPlaceholderText(tr("Ghostscript runtime is missing"));
+    m_ui->gridLayout->addWidget(new QLabel("Ghostscript", this), 3, 0);
+    m_ui->gridLayout->addWidget(runtime, 3, 1);
 
     m_ui->proeEdit->setText(Settings::get()->ProeExecutable);
 
@@ -192,14 +183,11 @@ void SettingsDialog::accept()
     Settings::get()->setCurrentLanguageCode(lang);
     MetadataCache::get()->clear();
 
-    QHashIterator<QString,QString> it(Settings::get()->ExternalPrograms);
-    int i = 0;
-    while (it.hasNext())
-    {
-        it.next();
-        Settings::get()->ExternalPrograms[it.key()] = zimaUtilLineEdits[i]->text();
-        ++i;
-    }
+    Settings::get()->ToolsRecursive = m_toolsRecursive->isChecked();
+    Settings::get()->ToolsCleanOld = m_toolsCleanOld->isChecked();
+    Settings::get()->ToolsCleanMasks.clear();
+    for (const auto &mask : m_toolsMasks->text().split(';', Qt::SkipEmptyParts))
+        if (!mask.trimmed().isEmpty()) Settings::get()->ToolsCleanMasks.append(mask.trimmed());
 
     Settings::get()->ProeExecutable = m_ui->proeEdit->text();
 
@@ -330,13 +318,6 @@ void SettingsDialog::setupDatasourceList()
     m_ui->datasourceList->setFocus();
 }
 
-void SettingsDialog::setZimaUtilPath(int util)
-{
-    QString path = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - set %1 path").arg(ZimaUtils::labelForUtility(util)), zimaUtilLineEdits[util]->text());
-
-    if (!path.isEmpty())
-        zimaUtilLineEdits[util]->setText(path);
-}
 
 void SettingsDialog::proeButton_clicked()
 {

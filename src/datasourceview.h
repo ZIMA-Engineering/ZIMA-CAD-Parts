@@ -9,7 +9,6 @@
 class DataSourceModel;
 class DataSourceProxyModel;
 class ScriptRunner;
-class QSignalMapper;
 class QFileInfo;
 
 /*! Main class for "directory tree" widget. Every datasource has one
@@ -41,7 +40,6 @@ private:
     QString m_path;
     DataSourceModel *m_model;
     DataSourceProxyModel *m_proxy;
-    QSignalMapper *m_signalMapper;
     ScriptRunner *m_scriptRunner;
     QStringList m_expandedPathsBeforeReset;
     QString m_currentPathBeforeReset;
@@ -62,7 +60,6 @@ private slots:
     void refreshModel();
     void modelClicked(const QModelIndex &index);
     void showContextMenu(const QPoint &point);
-    void spawnZimaUtilityOnDir(const QString &label);
     void indexOpenPath();
     void openInANewTab();
     void setWorkingDirectory();

@@ -104,6 +104,10 @@ jobs:
         working-directory: .build-ci
         run: nmake release
 
+      - name: Prepare Ghostscript runtime and corresponding source
+        shell: pwsh
+        run: python tools/distribution/prepare-ghostscript.py --sevenzip "C:/Program Files/7-Zip/7z.exe"
+
       - name: Build and test CLI
         shell: pwsh
         run: |
@@ -118,6 +122,11 @@ jobs:
           windeployqt --release --compiler-runtime $env:PARTS_CLI_EXE
           if ($LASTEXITCODE -ne 0) { throw "CLI deployment failed" }
           python tests/test_cli.py
+          if ($LASTEXITCODE -ne 0) { throw "CLI tests failed" }
+          New-Item -ItemType Directory -Force .build-cli/release/tools | Out-Null
+          Copy-Item tools/ghostscript .build-cli/release/tools/ghostscript -Recurse
+          python tests/test_tools.py
+          if ($LASTEXITCODE -ne 0) { throw "Integrated tools tests failed" }
 
       - name: Test packaging contracts
         run: python tests/test_distribution.py

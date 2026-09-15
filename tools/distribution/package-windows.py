@@ -44,7 +44,7 @@ def source_files(repository=ROOT, prefix=Path()):
             if not (path / '.git').exists():
                 raise RuntimeError(f'Uninitialized submodule: {name}')
             yield from source_files(path, prefix / name)
-        else:
+        elif path.is_file():
             yield path, prefix / name
 
 
@@ -138,8 +138,19 @@ def main():
         shutil.copy2(source, target)
     shutil.copy2(cli, runtime / cli.name)
     copy_runtime(exe, runtime, args.qt.resolve(), args.occt.resolve())
+    ghostscript = ROOT / 'tools/ghostscript'
+    manifest = json.loads((ghostscript / 'manifest.json').read_text(encoding='utf-8'))
+    if not (ghostscript / 'bin/gswin64c.exe').is_file() or not list((ghostscript / 'source').glob('*.tar.xz')):
+        raise RuntimeError('Prepare the Ghostscript runtime and corresponding source before packaging')
+    for name, expected in manifest['files'].items():
+        path = (ghostscript / name).resolve()
+        path.relative_to(ghostscript.resolve())
+        if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+            raise RuntimeError('Ghostscript checksum mismatch: ' + name)
+    shutil.copytree(ghostscript, runtime / 'tools/ghostscript')
     shutil.copytree(ROOT / 'licenses', runtime / 'licenses')
     shutil.copy2(ROOT / 'LICENSE', runtime / 'licenses/Parts-LICENSE')
+    shutil.copy2(ROOT / 'LICENSE', package / 'LICENSE')
     launcher_build = output / 'launcher-build'
     launcher_build.mkdir()
     subprocess.run(['cl', '/nologo', '/std:c++17', '/EHsc', '/O2', '/MT',
@@ -163,7 +174,9 @@ def main():
         'Select a retained build in launcher.ini or pass -Version YYYYMMDDNN.\n'
         'Custom builds: custom/windows/NAME; launch with -Custom -Version NAME.\n'
         'This package is not signed. Automatic updates/cleanup are not implemented.\n'
-        'Source snapshot and build documentation are in source/.\n', encoding='utf-8')
+        'Source snapshot and English build documentation are in source/.\n'
+        'Parts is GPL-3.0-or-later; see LICENSE beside these launchers.\n'
+        'Third-party license notices are included with each runtime.\n', encoding='utf-8')
     hashes = {p.relative_to(package).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
               for p in sorted(package.rglob('*')) if p.is_file()}
     (package / 'checksums.json').write_text(json.dumps(hashes, indent=2) + '\n', encoding='utf-8')

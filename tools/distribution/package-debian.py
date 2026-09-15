@@ -44,6 +44,8 @@ def main():
     distro = platform.freedesktop_os_release()
     if distro.get('ID') != 'debian' or distro.get('VERSION_ID') != '13' or platform.machine() != 'x86_64':
         raise RuntimeError('Build/package only on Debian 13 amd64')
+    if not shutil.which('gs'):
+        raise RuntimeError('Install Debian ghostscript for the integrated ps2pdf function')
     build = version()
     exe = args.exe.resolve()
     if json.loads(run(str(exe), '--build-info')).get('version') != build:
@@ -112,10 +114,12 @@ def main():
         shutil.copy2(source, target)
     shutil.copytree(ROOT / 'licenses', runtime / 'licenses')
     shutil.copy2(ROOT / 'LICENSE', runtime / 'licenses/Parts-LICENSE')
+    shutil.copy2(ROOT / 'LICENSE', package / 'LICENSE')
     (runtime / 'build.ini').write_text(f'[build]\nversion={build}\nplatform=debian-13-x86_64\n')
     metadata = dict(version=build, platform='debian-13-x86_64', commit=run('git', 'rev-parse', 'HEAD').strip(),
                     origin='experimental', signed=False, host_libraries=sorted(host),
                     qt=run(args.qmake, '-query', 'QT_VERSION').strip())
+    metadata['system_packages'] = ['ghostscript']
     (runtime / 'version.json').write_text(json.dumps(metadata, indent=2) + '\n')
     checksums = {p.relative_to(package).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                  for p in sorted(package.rglob('*')) if p.is_file()}

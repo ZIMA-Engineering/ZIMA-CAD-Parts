@@ -1,3 +1,5 @@
+#include "commandpanel.h"
+#include <QDockWidget>
 /*
   ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
@@ -34,7 +36,6 @@
 #include "browserprofilemanager.h"
 #include "datasourcemodel.h"
 #include "filtersdialog.h"
-#include "zimautils.h"
 #include "settings.h"
 #include "datasourcewidget.h"
 #include "thumbnailcleaner.h"
@@ -93,6 +94,29 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
     ui->toolBar->setupHistory(ui->tabWidget->currentDataSource()->history());
 
+    m_commandDock = new QDockWidget(tr("Command panel"), this);
+    m_commandDock->setObjectName("commandPanelDock");
+    m_commandDock->setAllowedAreas(Qt::BottomDockWidgetArea);
+    m_commandDock->setFeatures(QDockWidget::DockWidgetClosable);
+    m_commandPanel = new CommandPanel([this] {
+        PartsCore::CommandContext context;
+        const auto dataSource = ui->tabWidget->currentDataSource();
+        if (dataSource) context.directory = dataSource->currentDir();
+        context.language = Settings::get()->LanguageMetadata;
+        context.showVersions = Settings::get()->ShowProeVersions;
+        return context;
+    }, m_commandDock);
+    m_commandDock->setWidget(m_commandPanel);
+    addDockWidget(Qt::BottomDockWidgetArea, m_commandDock);
+    auto commandAction = m_commandDock->toggleViewAction();
+    commandAction->setObjectName("toggleCommandPanel");
+    commandAction->setIcon(QIcon(":/gfx/navigation/terminal.svg"));
+    commandAction->setShortcut(QKeySequence("Ctrl+Shift+P"));
+    ui->toolBar->addAction(commandAction);
+    connect(commandAction, &QAction::triggered, this, [this](bool visible) {
+        if (visible) m_commandPanel->focusInput();
+    });
+    resizeDocks({m_commandDock}, {180}, Qt::Vertical);
     restoreState(Settings::get()->MainWindowState);
     ui->toolBar->setVisible(true);
 
@@ -161,6 +185,7 @@ void MainWindow::changeEvent(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange) {
         ui->retranslateUi(this);
+        if (m_commandDock) m_commandDock->setWindowTitle(tr("Command panel"));
     }
     else
         QMainWindow::changeEvent(event);
@@ -168,11 +193,8 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    if (!e->spontaneous())
-    {
-        Settings::get()->MainWindowState = saveState();
-        Settings::get()->MainWindowGeometry = saveGeometry();
-    }
+    Settings::get()->MainWindowState = saveState();
+    Settings::get()->MainWindowGeometry = saveGeometry();
 
     QMainWindow::closeEvent(e);
 }

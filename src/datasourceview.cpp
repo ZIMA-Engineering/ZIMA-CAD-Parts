@@ -1,7 +1,7 @@
 #include "directoryprotection.h"
 #include "datasourceview.h"
 #include "datasourcemodel.h"
-#include "zimautils.h"
+#include "partstoolsdialog.h"
 #include "settings.h"
 #include "settingsdialog.h"
 #include "createdirectorydialog.h"
@@ -19,7 +19,6 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileInfo>
-#include <QSignalMapper>
 #include <QMenu>
 #include <QMessageBox>
 #include <QProcess>
@@ -47,11 +46,8 @@ DataSourceView::DataSourceView(const QString &rootPath, QWidget *parent) :
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    m_signalMapper = new QSignalMapper(this);
     m_scriptRunner = new ScriptRunner(m_path, this);
 
-    connect(m_signalMapper, SIGNAL(mappedString(QString)),
-            this, SLOT(spawnZimaUtilityOnDir(QString)));
     connect(this, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(showContextMenu(QPoint)));
     connect(this, SIGNAL(clicked(QModelIndex)),
@@ -317,14 +313,16 @@ void DataSourceView::showContextMenu(const QPoint &point)
 
     addScriptsToContextMenu(menu);
 
-    m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PTC-Cleaner.png"), tr("Clean with ZIMA-PTC-Cleaner"), m_signalMapper, SLOT(map())),
-                               ZimaUtils::internalNameForUtility(ZimaUtils::ZimaPtcCleaner));
-    m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-CAD-Sync.png"), tr("Sync with ZIMA-CAD-Sync"), m_signalMapper, SLOT(map())),
-                               ZimaUtils::internalNameForUtility(ZimaUtils::ZimaCadSync));
-    m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-PS2PDF.png"), tr("Convert postscript to PDF with ZIMA-PS2PDF"), m_signalMapper, SLOT(map())),
-                               ZimaUtils::internalNameForUtility(ZimaUtils::ZimaPs2Pdf));
-    m_signalMapper->setMapping(menu->addAction(QIcon(":/gfx/external_programs/ZIMA-STEP-Edit.png"), tr("Edit step files with ZIMA-STEP-Edit"), m_signalMapper, SLOT(map())),
-                               ZimaUtils::internalNameForUtility(ZimaUtils::ZimaStepEdit));
+    for (const auto &tool : {QString("ptc-clean"), QString("ps2pdf"), QString("step-edit")}) {
+        const QString icon = tool == "ptc-clean" ? "ZIMA-PTC-Cleaner" : tool == "ps2pdf" ? "ZIMA-PS2PDF" : "ZIMA-STEP-Edit";
+        auto action = menu->addAction(QIcon(":/gfx/external_programs/" + icon + ".png"), PartsToolsDialog::title(tool));
+        const auto directory = currentFileInfo().absoluteFilePath();
+        connect(action, &QAction::triggered, this, [this, tool, directory] {
+            PartsToolsDialog dialog(tool, directory, this);
+            connect(&dialog, &PartsToolsDialog::filesChanged, this, [this, directory] { emit directoryChanged(directory); });
+            dialog.exec();
+        });
+    }
 
     menu->exec(mapToGlobal(point));
     menu->deleteLater();
@@ -338,29 +336,6 @@ void DataSourceView::indexOpenPath()
 void DataSourceView::openInANewTab()
 {
     emit openInANewTabRequested(currentFileInfo().absoluteFilePath());
-}
-
-void DataSourceView::spawnZimaUtilityOnDir(const QString &label)
-{
-    QString executable = Settings::get()->ExternalPrograms[label];
-
-    if (executable.isEmpty())
-    {
-        QMessageBox::warning(this, tr("Configure %1").arg(label), tr("Please first configure path to %1 executable.").arg(label));
-        emit showSettings(SettingsDialog::ExternalPrograms);
-        return;
-    }
-
-    if (!QFile::exists(executable))
-    {
-        QMessageBox::warning(this, tr("Configure %1").arg(label), tr("Path '%1' to %2 executable does not exists!").arg(executable).arg(label));
-        emit showSettings(SettingsDialog::ExternalPrograms);
-        return;
-    }
-
-    QStringList args;
-    args << currentFileInfo().absoluteFilePath();
-    QProcess::startDetached(executable, args);
 }
 
 void DataSourceView::setWorkingDirectory()
