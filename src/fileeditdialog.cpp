@@ -74,6 +74,8 @@ void FileEditDialog::save()
         meta->setPartParam(m_fileName, paramHandles[i], m_edits[i]->text());
     }
 
+    m_fileModel->updatePartParameters(m_fileName);
+
     if (m_thumbnailPath != m_origThumbnailPath) {
         if (m_thumbnailPath.isEmpty()) {
             uninstallThumbnail();

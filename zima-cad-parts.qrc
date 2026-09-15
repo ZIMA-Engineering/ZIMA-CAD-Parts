@@ -1,5 +1,15 @@
 <RCC>
     <qresource prefix="/">
+        <file>gfx/navigation/lock.svg</file>
+        <file>gfx/navigation/folder.svg</file>
+        <file>gfx/navigation/parts.svg</file>
+        <file>gfx/navigation/filter.svg</file>
+        <file>gfx/navigation/refresh.svg</file>
+        <file>gfx/navigation/delete.svg</file>
+        <file>gfx/navigation/move.svg</file>
+        <file>gfx/navigation/copy.svg</file>
+        <file>gfx/navigation/tabs.css</file>
+
         <file>gfx/icons/zima-cad/part.svg</file>
         <file>gfx/icons/zima-cad/assembly.svg</file>
         <file>gfx/icons/zima-cad/drawing.svg</file>

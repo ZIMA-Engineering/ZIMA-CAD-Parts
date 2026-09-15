@@ -19,6 +19,7 @@ void PartSelector::select(const QString &dir, const QString &partPath)
         m_selected[dir] << partPath;
     else
         m_selected.insert(dir, QStringList() << partPath);
+    emit changed();
 }
 
 bool PartSelector::isSelected(const QString &dir, const QString &partPath) const
@@ -31,17 +32,22 @@ bool PartSelector::isSelected(const QString &dir, const QString &partPath) const
 
 void PartSelector::clear()
 {
+    if (m_selected.isEmpty())
+        return;
     m_selected.clear();
+    emit changed();
 }
 
 void PartSelector::clear(const QString &dir)
 {
-    m_selected.remove(dir);
+    if (m_selected.remove(dir))
+        emit changed();
 }
 
 void PartSelector::clear(const QString &dir, const QString &partPath)
 {
-    m_selected[dir].removeOne(partPath);
+    if (m_selected[dir].removeOne(partPath))
+        emit changed();
 }
 
 bool PartSelector::toggle(const QString &dir, const QString &partPath)

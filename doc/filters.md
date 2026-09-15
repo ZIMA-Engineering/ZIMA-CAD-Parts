@@ -87,7 +87,7 @@ a Open CASCADE 8.0.0. Integrační testy přebírají stejné OCCT_ROOT jako apl
 Typy dokumentů: .prtz díl, .asmz sestava, .drwz výkres, .frmz rámeček, .tblz razítko.
 Aktuální dokument nemá číselnou příponu. Soubory .1, .2, ... jsou archivní kopie
 předchozích uložení. ShowZimaVersions=false skryje všechny takové archivy, i když
-aktuální dokument chybí; nikdy je nevydává za aktuální verzi. Výchozí hodnota je true: v dialogu je volba „Skrýt archivní verze ZIMA-CAD“ vypnutá a číslované verze zůstávají viditelné.
+aktuální dokument chybí; nikdy je nevydává za aktuální verzi. Výchozí hodnota je true: v dialogu je volba „Zobrazit archivní verze ZIMA-CAD“ zaškrtnutá a číslované verze zůstávají viditelné.
 Přepínač je nezávislý na Pro/E a platí pouze pro aktuální složku.
 Ikony jsou kopie původních SVG ze ZIMA-CAD/resources/icons, uložené přímo v Parts.
 
@@ -101,3 +101,52 @@ Neaktivní záložky načítají obsah při prvním zobrazení. Úvodní obrazov
 checkbox a nastavenou dobu zobrazení, ale používá časovač a neblokuje hlavní vlákno.
 Po úspěšném smazání složky strom přejde na jejího rodiče; QFileSystemModel aktualizuje
 jen změněnou větev. Ostatní rozbalené větve se neresetují.
+
+## Sdílené parametry dílu
+
+Soubory stejného dílu (například `xxx.pdf`, `xxx.prt.1`, `xxx.prt.10`
+a `xxx.prtz`) používají společné parametry pod názvem `xxx`. Editace
+v tabulce i dialogu pracuje se stejným záznamem a aktualizuje všechny
+odpovídající řádky. Názvy obsahující tečky zachovávají společný základ.
+
+Běžné obnovení seznamu nemaže záznamy v metadata.ini. Dříve chybně uložené
+hodnoty pod celým názvem existujícího souboru zůstávají zachované a slouží
+jako náhradní hodnoty, pokud společný záznam ještě není vyplněný.
+
+Parametry Pro/E se načítají pouze z nejvyšší číselné verze každého CAD
+souboru, nezávisle na nastavení viditelnosti verzí. Prázdná načtená hodnota
+nepřepisuje vyplněný parametr.
+
+## Ochrana knihovny před smazáním a přesunutím
+
+Ve **Vlastnostech adresáře** lze zaškrtnout **Chránit před smazáním a
+přesunutím**. Volba se ukládá do místního `0000-index/metadata.ini`:
+
+```ini
+[Directory]
+PreventRemoval=true
+```
+
+Výchozí hodnota je `false`. Zámeček se nedědí: chrání pouze soubory přímo
+v tomto adresáři. Podadresáře lze zamknout samostatně. Odemčené podadresáře
+zůstávají použitelné i uvnitř zamčené knihovny.
+
+Parts odmítne také odstranění nebo přesun celé složky obsahující zamčený
+adresář. Kopírování z knihovny je povolené; přepsání zamčeného souboru
+kopírováním nebo přesunem je zablokované. Parametry lze nadále upravovat.
+Jde o ochranu před omylem uvnitř Parts, nikoliv o oprávnění operačního systému.
+
+Zamčené soubory mají tlačítka **Smazat** a **Přesunout** neaktivní a zašedlá.
+Vysvětlení je dostupné v bublinové nápovědě. Stav se mění při přepnutí adresáře,
+změně výběru i po zamčení nebo odemčení ve Vlastnostech adresáře.
+
+Tlačítko **Aplikovat na podadresáře** napravo od zámečku okamžitě zapíše
+aktuální stav zaškrtávátka do všech existujících podadresářů, i v dalších
+úrovních. Zaškrtnuto zamyká, nezaškrtnuto odemyká. Ostatní metadata zůstávají
+zachována. Systémové adresáře `0000-index` a odkazy na adresáře se neprocházejí.
+Nově vytvořené podadresáře nastavení automaticky nepřebírají.
+
+Operaci lze zastavit; již provedené změny zůstávají uložené. Výsledek uvádí
+počet aktualizovaných adresářů a případné chyby. Zrušení okna Vlastností
+nevrací hromadnou změnu zpět. Nastavení samotného otevřeného adresáře se
+nadále potvrzuje tlačítkem OK.

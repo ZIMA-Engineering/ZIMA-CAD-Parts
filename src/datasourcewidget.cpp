@@ -211,7 +211,7 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
     QMenu menu(this);
     QAction *editAction = menu.addAction(
         QIcon(":/gfx/document-edit.png"),
-        tr("Edit")
+        tr("Data source properties")
     );
     editAction->setEnabled(QFileInfo(dataSource->rootPath).isDir());
 

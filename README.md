@@ -174,3 +174,17 @@ When copying OCCT runtime dependencies from vcpkg, exclude Qt6*.dll: that
 installation can contain a different Qt version. Mixing Qt DLL versions
 can prevent the executable from starting. Verify the deployed executable
 starts using DLLs beside it, without adding the development Qt kit to PATH.
+
+## Library protection, shared parameters and navigation
+
+[Directory properties and library protection](doc/filters.md) describe the local
+metadata lock, disabled Delete/Move controls and the immediate recursive action.
+The lock does not inherit into new subdirectories. Copying out remains available.
+
+Files such as `xxx.pdf`, `xxx.prt.1` and `xxx.prtz` share the `xxx` parameters.
+Refreshing the listing preserves stored metadata; Pro/E imports use the highest
+numeric revision. [Interface notes](doc/interface.md) cover the green active tabs,
+navigation icons and the renamed Properties actions.
+
+See [verification](doc/verification.md) for the build and test requirements and
+the validation of the current Windows release.

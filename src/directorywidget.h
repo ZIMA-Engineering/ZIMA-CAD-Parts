@@ -79,6 +79,7 @@ private:
     void reloadDirectoryIndex();
 
 private slots:
+    void updateProtectionControls();
     void dirWebViewUrlLineEdit_returnPressed();
     void dirWebViewGoButton_clicked();
     void dirWebViewReloadButton_clicked();

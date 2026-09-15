@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Edit directory</string>
+   <string>Directory properties</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../zima-cad-parts.qrc">
@@ -102,6 +102,24 @@
          <string/>
         </property>
        </widget>
+      </item>
+      <item row="6" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="removalLockLayout">
+        <item>
+         <widget class="QCheckBox" name="removalLockCheckBox">
+          <property name="text"><string>Protect against deletion and moving</string></property>
+          <property name="toolTip"><string>Protect files directly in this directory. Subdirectories have their own lock.</string></property>
+         </widget>
+        </item>
+        <item><spacer name="removalLockSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property></spacer></item>
+        <item>
+         <widget class="QPushButton" name="applyLockToSubdirectoriesButton">
+          <property name="text"><string>Apply to subdirectories</string></property>
+          <property name="toolTip"><string>Immediately apply the current checkbox state to all subdirectories. Canceling this dialog will not undo these changes.</string></property>
+          <property name="autoDefault"><bool>false</bool></property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="languageComboBox"/>

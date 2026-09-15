@@ -1,0 +1,22 @@
+QTabBar::tab {
+    padding: 7px 16px;
+    margin-right: 3px;
+    border: 1px solid palette(mid);
+    border-bottom: none;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background: palette(button);
+    color: palette(button-text);
+}
+QTabBar::tab:selected {
+    background: #4DD811;
+    color: #143009;
+    border-color: #3bad0d;
+}
+QTabBar::tab:hover:!selected:enabled {
+    background: #daf2d2;
+    color: #143009;
+    border-color: #70b755;
+}
+QTabBar[wideTabs="true"]::tab { min-width: 130px; }
+QTabBar::tab:disabled { padding: 7px 6px; color: palette(mid); }

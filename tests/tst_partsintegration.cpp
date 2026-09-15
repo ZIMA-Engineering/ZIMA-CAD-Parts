@@ -31,6 +31,13 @@
 #include "languageflagswidget.h"
 #include "maintoolbar.h"
 #include "filtersdialog.h"
+#include "fileeditdialog.h"
+#include "partcache.h"
+#include "prtreader.h"
+#include "directoryprotection.h"
+#include "partselector.h"
+#include "directoryremover.h"
+#include "filecopier.h"
 #ifdef HAVE_OCCT
 #include "extensions/productview/occtimportworker.h"
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -222,9 +229,9 @@ private slots:
     {
         QTemporaryDir directory;
         FiltersDialog dialog(directory.path());
-        auto hideArchives = dialog.findChild<QCheckBox *>("hideZimaVersions");
-        QVERIFY(hideArchives);
-        QVERIFY(!hideArchives->isChecked());
+        auto showArchives = dialog.findChild<QCheckBox *>("showZimaVersions");
+        QVERIFY(showArchives);
+        QVERIFY(showArchives->isChecked());
         dialog.accept();
         LocalFilters filters;
         filters.load(directory.path(), true);
@@ -232,13 +239,321 @@ private slots:
         const QFileInfoList files{QFileInfo(directory.filePath("part.prtz")),
                                  QFileInfo(directory.filePath("part.prtz.1"))};
         QCOMPARE(filters.accepted(files, true).count(true), 2);
-        hideArchives->setChecked(true);
+        showArchives->setChecked(false);
         dialog.accept();
         filters.load(directory.path(), true);
         QVERIFY(!filters.showZimaVersions);
         QCOMPARE(filters.accepted(files, true).count(true), 1);
         FiltersDialog reopened(directory.path());
-        QVERIFY(reopened.findChild<QCheckBox *>("hideZimaVersions")->isChecked());
+        QVERIFY(!reopened.findChild<QCheckBox *>("showZimaVersions")->isChecked());
+    }
+
+    void applyLockToAllSubdirectoriesIsExplicitAndPreservesMetadata()
+    {
+        QTemporaryDir directory;
+        QDir(directory.path()).mkpath("a/nested");
+        QDir(directory.path()).mkpath("b");
+        QDir(directory.path()).mkpath("0000-index/internal");
+        const QString a = directory.filePath("a");
+        auto meta = MetadataCache::get()->metadata(a);
+        meta->setParameterHandles({"description"});
+        meta->setPartParam("part", "description", "Keep this value");
+        auto result = DirectoryProtection::applyToSubdirectories(directory.path(), true);
+        QCOMPARE(result.updated, 3);
+        QVERIFY(result.failed.isEmpty());
+        QVERIFY(!result.canceled);
+        QVERIFY(DirectoryProtection::isLocked(a));
+        QVERIFY(DirectoryProtection::isLocked(a + "/nested"));
+        QVERIFY(DirectoryProtection::isLocked(directory.filePath("b")));
+        QVERIFY(!DirectoryProtection::isLocked(directory.path()));
+        QVERIFY(!QFileInfo::exists(directory.filePath("0000-index/internal/0000-index")));
+        QVERIFY(meta->removalLocked());
+        QCOMPARE(meta->partParam("part", "description"), QString("Keep this value"));
+        QDir(directory.path()).mkpath("created-later");
+        QVERIFY(!DirectoryProtection::isLocked(directory.filePath("created-later")));
+        result = DirectoryProtection::applyToSubdirectories(directory.path(), false);
+        QCOMPARE(result.updated, 4);
+        QVERIFY(result.failed.isEmpty());
+        QVERIFY(!DirectoryProtection::isLocked(a + "/nested"));
+        QVERIFY(!meta->removalLocked());
+        QCOMPARE(meta->partParam("part", "description"), QString("Keep this value"));
+        DirectoryEditorDialog dialog{QFileInfo(directory.path())};
+        auto button = dialog.findChild<QPushButton *>("applyLockToSubdirectoriesButton");
+        QVERIFY(button);
+        QVERIFY(!button->autoDefault());
+        auto lock = dialog.findChild<QCheckBox *>("removalLockCheckBox");
+        QVERIFY(lock);
+        lock->setChecked(true);
+        QTimer closeReport;
+        closeReport.setInterval(10);
+        connect(&closeReport, &QTimer::timeout, [] {
+            for (auto widget : QApplication::topLevelWidgets())
+                if (auto message = qobject_cast<QMessageBox *>(widget))
+                    message->accept();
+        });
+        closeReport.start();
+        button->click();
+        closeReport.stop();
+        dialog.reject();
+        QVERIFY(DirectoryProtection::isLocked(a));
+        QVERIFY(DirectoryProtection::isLocked(a + "/nested"));
+        QVERIFY(!DirectoryProtection::isLocked(directory.path()));
+    }
+
+    void applyingDirectoryLocksReportsFailuresAndCancellation()
+    {
+        QTemporaryDir directory;
+        QDir(directory.path()).mkpath("blocked");
+        QDir(directory.path()).mkpath("valid");
+        touch(directory.filePath("blocked"), "0000-index");
+        auto result = DirectoryProtection::applyToSubdirectories(directory.path(), true);
+        QCOMPARE(result.updated, 1);
+        QCOMPARE(result.failed, QStringList{directory.filePath("blocked")});
+        QVERIFY(DirectoryProtection::isLocked(directory.filePath("valid")));
+        result = DirectoryProtection::applyToSubdirectories(directory.path(), false,
+                                                            [](const QString &) { return false; });
+        QVERIFY(result.canceled);
+        QCOMPARE(result.updated, 0);
+        QVERIFY(DirectoryProtection::isLocked(directory.filePath("valid")));
+    }
+
+    void lockDisablesButtonsAndUpdatesAfterUnlock()
+    {
+        QTemporaryDir directory;
+        QDir(directory.path()).mkpath("library/child");
+        const QString library = directory.filePath("library");
+        const QString child = library + "/child";
+        touch(library, "locked.pdf");
+        touch(child, "free.pdf");
+        auto selector = PartSelector::get();
+        selector->clear();
+        DirectoryWidget widget;
+        widget.setDirectory(library);
+        auto remove = widget.findChild<QPushButton *>("btnDelete");
+        auto move = widget.findChild<QPushButton *>("moveButton");
+        auto copy = widget.findChild<QPushButton *>("copyToWorkingDirButton");
+        QVERIFY(remove && move && copy);
+        QVERIFY(remove->isEnabled());
+        auto meta = MetadataCache::get()->metadata(library);
+        meta->setRemovalLocked(true);
+        QTRY_VERIFY(!remove->isEnabled());
+        QVERIFY(!move->isEnabled());
+        QVERIFY(copy->isEnabled());
+        QVERIFY(!remove->toolTip().isEmpty());
+        widget.setDirectory(child);
+        QVERIFY(remove->isEnabled());
+        selector->select(library, library + "/locked.pdf");
+        QTRY_VERIFY(!remove->isEnabled());
+        QVERIFY(!move->isEnabled());
+        selector->clear();
+        QTRY_VERIFY(remove->isEnabled());
+        widget.setDirectory(library);
+        QVERIFY(!remove->isEnabled());
+        meta->setRemovalLocked(false);
+        QTRY_VERIFY(remove->isEnabled());
+        QVERIFY(move->isEnabled());
+        QVERIFY(remove->toolTip().isEmpty());
+    }
+
+    void directoryLockIsLocalAndPersists()
+    {
+        QTemporaryDir directory;
+        QDir(directory.path()).mkpath("library/child");
+        const QString library = directory.filePath("library");
+        touch(library, "part.pdf");
+        touch(library + "/child", "free.pdf");
+        QVERIFY(!DirectoryProtection::isLocked(library));
+        {
+            DirectoryEditorDialog dialog{QFileInfo(library)};
+            auto lock = dialog.findChild<QCheckBox *>("removalLockCheckBox");
+            QVERIFY(lock);
+            QVERIFY(!lock->isChecked());
+            lock->setChecked(true);
+            dialog.apply();
+        }
+        QVERIFY(DirectoryProtection::isLocked(library));
+        QCOMPARE(DirectoryProtection::removalLock(QFileInfo(library + "/part.pdf")), library);
+        QVERIFY(DirectoryProtection::removalLock(QFileInfo(library + "/child/free.pdf")).isEmpty());
+        QVERIFY(DirectoryProtection::removalLock(QFileInfo(library + "/child")).isEmpty());
+        QCOMPARE(DirectoryProtection::removalLock(QFileInfo(directory.path())), library);
+        MetadataCache::get()->clear(library);
+        DirectoryEditorDialog reopened{QFileInfo(library)};
+        auto lock = reopened.findChild<QCheckBox *>("removalLockCheckBox");
+        QVERIFY(lock->isChecked());
+        lock->setChecked(false);
+        reopened.apply();
+        QVERIFY(!DirectoryProtection::isLocked(library));
+    }
+
+    void lockedDeletionPreflightsWholeBatch()
+    {
+        QTemporaryDir directory;
+        QDir(directory.path()).mkpath("library/child");
+        const QString library = directory.filePath("library");
+        touch(directory.path(), "unlocked.pdf");
+        touch(library, "part.pdf");
+        touch(library + "/child", "free.pdf");
+        MetadataCache::get()->metadata(library)->setRemovalLocked(true);
+        DirectoryRemoverWorker worker;
+        worker.setStopOnError(true);
+        worker.setFileInfos({QFileInfo(directory.filePath("unlocked.pdf")), QFileInfo(library + "/part.pdf")});
+        QSignalSpy errors(&worker, &ThreadWorker::errorOccured);
+        worker.run();
+        QCOMPARE(errors.count(), 1);
+        QVERIFY(QFileInfo::exists(directory.filePath("unlocked.pdf")));
+        QVERIFY(QFileInfo::exists(library + "/part.pdf"));
+        DirectoryRemoverWorker parentRemoval;
+        parentRemoval.setStopOnError(true);
+        parentRemoval.setFileInfos({QFileInfo(directory.path())});
+        QSignalSpy parentErrors(&parentRemoval, &ThreadWorker::errorOccured);
+        parentRemoval.run();
+        QCOMPARE(parentErrors.count(), 1);
+        QVERIFY(DirectoryProtection::isLocked(library));
+        DirectoryRemoverWorker childRemoval;
+        childRemoval.setStopOnError(true);
+        childRemoval.setFileInfos({QFileInfo(library + "/child/free.pdf")});
+        childRemoval.run();
+        QVERIFY(!QFileInfo::exists(library + "/child/free.pdf"));
+        MetadataCache::get()->metadata(library)->setRemovalLocked(false);
+        DirectoryRemoverWorker unlocked;
+        unlocked.setStopOnError(true);
+        unlocked.setFileInfos({QFileInfo(library + "/part.pdf")});
+        unlocked.run();
+        QVERIFY(!QFileInfo::exists(library + "/part.pdf"));
+    }
+
+    void lockBlocksMovesAndReplacementButAllowsCopyOut()
+    {
+        QTemporaryDir directory;
+        for (const auto &name : {"library", "destination", "source"})
+            QDir(directory.path()).mkpath(name);
+        const QString library = directory.filePath("library");
+        const QString destination = directory.filePath("destination");
+        touch(library, "part.pdf");
+        MetadataCache::get()->metadata(library)->setRemovalLocked(true);
+        FileMoverWorker move;
+        move.setSourceFiles({qMakePair(QFileInfo(library + "/part.pdf"), QString())}, destination);
+        QSignalSpy errors(&move, &ThreadWorker::errorOccured);
+        move.run();
+        QCOMPARE(errors.count(), 1);
+        QVERIFY(QFileInfo::exists(library + "/part.pdf"));
+        QVERIFY(!QFileInfo::exists(destination + "/part.pdf"));
+        FileMoverWorker moveFolder;
+        moveFolder.setSourceFiles({qMakePair(QFileInfo(library), QString())}, destination);
+        QSignalSpy folderErrors(&moveFolder, &ThreadWorker::errorOccured);
+        moveFolder.run();
+        QCOMPARE(folderErrors.count(), 1);
+        FileCopierWorker copy;
+        copy.setStopOnError(true);
+        copy.setSourceFiles({FileCopyIntent(QFileInfo(library + "/part.pdf"))}, destination);
+        copy.run();
+        QVERIFY(QFileInfo::exists(destination + "/part.pdf"));
+        touch(directory.filePath("source"), "part.pdf");
+        FileMoverWorker replace;
+        replace.setSourceFiles({qMakePair(QFileInfo(directory.filePath("source/part.pdf")), QString())}, library);
+        QSignalSpy replaceErrors(&replace, &ThreadWorker::errorOccured);
+        replace.run();
+        QCOMPARE(replaceErrors.count(), 1);
+        QVERIFY(QFileInfo::exists(directory.filePath("source/part.pdf")));
+        FileCopierWorker overwrite;
+        overwrite.setStopOnError(true);
+        overwrite.setSourceFiles({FileCopyIntent(QFileInfo(directory.filePath("source/part.pdf")))}, library);
+        QSignalSpy overwriteErrors(&overwrite, &ThreadWorker::errorOccured);
+        overwrite.run();
+        QCOMPARE(overwriteErrors.count(), 1);
+        QVERIFY(QFileInfo::exists(library + "/part.pdf"));
+    }
+
+    void sharedPartParametersSurviveRefresh()
+    {
+        QTemporaryDir directory;
+        for (const auto &name : {"xxx.pdf", "xxx.prt.1", "xxx.prt.10", "xxx.prtz",
+                                 "xxx.prtz.2", "xxx.revA.pdf", "xxx.revA.prt.1"})
+            touch(directory.path(), name);
+        auto meta = MetadataCache::get()->metadata(directory.path());
+        meta->setParameterHandles({"description"});
+        meta->setParameterLabel("description", Settings::get()->LanguageMetadata, "Description");
+        FileModel model;
+        model.setDirectory(directory.path());
+        auto cell = [&](const QString &name) {
+            for (int row = 0; row < model.rowCount(); ++row)
+                if (model.fileInfo(model.index(row, 0)).fileName() == name)
+                    return model.index(row, 2);
+            return QModelIndex();
+        };
+        QVERIFY(cell("xxx.prt.1").isValid());
+        QSignalSpy changes(&model, &QAbstractItemModel::dataChanged);
+        QVERIFY(model.setData(cell("xxx.prt.1"), "Shared value"));
+        QCOMPARE(changes.count(), 5);
+        for (const auto &name : {"xxx.pdf", "xxx.prt.1", "xxx.prt.10", "xxx.prtz", "xxx.prtz.2"})
+            QCOMPARE(model.data(cell(name), Qt::DisplayRole).toString(), QString("Shared value"));
+        QVERIFY(model.setData(cell("xxx.revA.pdf"), "Dotted name"));
+        QCOMPARE(model.data(cell("xxx.revA.prt.1"), Qt::DisplayRole).toString(), QString("Dotted name"));
+        {
+            FileEditDialog dialog(QFileInfo(directory.filePath("xxx.pdf")), &model);
+            const auto edits = dialog.findChildren<QLineEdit *>();
+            QCOMPARE(edits.size(), 1);
+            QCOMPARE(edits.first()->text(), QString("Shared value"));
+            edits.first()->setText("Dialog value");
+            dialog.save();
+        }
+        model.reloadParts();
+        MetadataCache::get()->clear();
+        model.refreshModel();
+        QCOMPARE(model.data(cell("xxx.prt.10"), Qt::DisplayRole).toString(), QString("Dialog value"));
+        QCOMPARE(model.data(cell("xxx.revA.pdf"), Qt::DisplayRole).toString(), QString("Dotted name"));
+    }
+
+    void legacyFileParametersSurviveRefresh()
+    {
+        QTemporaryDir directory;
+        touch(directory.path(), "xxx.pdf");
+        touch(directory.path(), "xxx.prt.1");
+        auto meta = MetadataCache::get()->metadata(directory.path());
+        meta->setParameterHandles({"description"});
+        // Reproduce records written by the broken inline editor.
+        meta->setPartParam("xxx.prt.1", "description", "Existing value");
+        PartCache::get()->parts(directory.path());
+        PartCache::get()->refresh(directory.path());
+        MetadataCache::get()->clear(directory.path());
+        meta = MetadataCache::get()->metadata(directory.path());
+        QCOMPARE(meta->partParam("xxx", "description"), QString("Existing value"));
+        meta->setPartParam("xxx", "description", "");
+        QCOMPARE(meta->partParam("xxx", "description"), QString());
+        MetadataCache::get()->clear(directory.path());
+        meta = MetadataCache::get()->metadata(directory.path());
+        QCOMPARE(meta->partParam("xxx", "description"), QString());
+        QCOMPARE(meta->partParam("xxx.prt.1", "description"), QString("Existing value"));
+    }
+
+    void proeParametersComeFromHighestNumericRevision()
+    {
+        QTemporaryDir directory;
+        QFileInfoList files;
+        for (const auto &entry : QList<QPair<QString, QString>>{
+                {"xxx.prt.10", "Newest"}, {"xxx.prt.9", "Older"}, {"xxx.prt.1", "Oldest"}}) {
+            QFile file(directory.filePath(entry.first));
+            QVERIFY(file.open(QIODevice::WriteOnly));
+            file.write(QByteArray("description\x15") + "DESCRIPTION'xx"
+                       + entry.second.toUtf8() + "x\x14\n");
+            file.close();
+            files.append(QFileInfo(file.fileName()));
+        }
+        touch(directory.path(), "xxx.pdf");
+        PtrReaderThread worker(files);
+        QSignalSpy values(&worker, &PtrReaderThread::partParam);
+        worker.start();
+        QVERIFY(worker.wait(5000));
+        QTRY_COMPARE(values.count(), 1);
+        QCOMPARE(values.first().at(0).toString(), QString("xxx.prt.10"));
+        QCOMPARE(values.first().at(2).toString(), QString("Newest"));
+        auto meta = MetadataCache::get()->metadata(directory.path());
+        meta->setParameterHandles({"description"});
+        PrtReader reader;
+        QSignalSpy loaded(&reader, &PrtReader::loaded);
+        reader.load(directory.path(), files);
+        QTRY_COMPARE(loaded.count(), 1);
+        QCOMPARE(meta->partParam("xxx", "description"), QString("Newest"));
     }
 
     void modelRejectsStaleColumnsAfterMetadataChange()

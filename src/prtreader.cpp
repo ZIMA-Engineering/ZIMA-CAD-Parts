@@ -1,6 +1,7 @@
 #include "prtreader.h"
 #include "file.h"
 #include "metadata.h"
+#include "localfilters.h"
 
 #include <QRegularExpression>
 #include <QDebug>
@@ -18,8 +19,15 @@ void PtrReaderThread::run()
               << FileType::PROE_DRW
               << FileType::PROE_PRT;
 
-    foreach (const QFileInfo &fi, m_partList)
+    // Read the highest numeric revision independently of visible filters.
+    LocalFilters versions;
+    versions.showVersions = false;
+    const auto accepted = versions.accepted(m_partList, false);
+    for (int row = 0; row < m_partList.size(); ++row)
     {
+        if (!accepted.testBit(row))
+            continue;
+        const QFileInfo &fi = m_partList.at(row);
         if (isInterruptionRequested())
             return;
 
@@ -87,7 +95,8 @@ void PtrReaderThread::parseFile(const QFileInfo &fi)
             QString fname = fi.fileName();
             QString key1 = key.toLower();
 
-            emit partParam(fname, key1, val);
+            if (!val.isEmpty())
+                emit partParam(fname, key1, val);
         }
 
         break;
@@ -142,6 +151,9 @@ void PrtReader::setPartParam(const QString &part, const QString &param, const QS
 {
     Metadata *m = MetadataCache::get()->metadata(m_dir);
 
-    if (m->parameterHandles().contains(param))
-        m->setPartParam(part, param, value);
+    if (m->parameterHandles().contains(param) && !value.isEmpty()) {
+        const QFileInfo file(QDir(m_dir).filePath(part));
+        m->setPartParam(File::partBaseName(file), param, value);
+        emit loaded(file);
+    }
 }

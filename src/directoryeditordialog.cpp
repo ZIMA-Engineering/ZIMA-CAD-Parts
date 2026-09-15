@@ -9,6 +9,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDebug>
+#include <QApplication>
+#include <QProgressDialog>
+#include "directoryprotection.h"
 
 DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *parent, Target target) :
     QDialog(parent),
@@ -28,7 +31,7 @@ DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *paren
 
     if (m_target == DataSourceRoot)
     {
-        setWindowTitle(tr("Edit data source"));
+        setWindowTitle(tr("Data source properties"));
         ui->nameLabel->hide();
         ui->nameLineEdit->hide();
     }
@@ -50,6 +53,10 @@ DirectoryEditorDialog::DirectoryEditorDialog(const QFileInfo &fi, QWidget *paren
     ui->sortOrderComboBox->setCurrentIndex(sortOrderToIndex(m_meta->sortOrder()));
     ui->subdirPartsCheckBox->setChecked(m_meta->showDirectoriesAsParts());
     ui->autoIndexCheckBox->setChecked(m_meta->autoIndexEnabled());
+    ui->removalLockCheckBox->setChecked(m_meta->removalLocked());
+    ui->removalLockCheckBox->setIcon(QIcon(":/gfx/navigation/lock.svg"));
+    connect(ui->applyLockToSubdirectoriesButton, &QPushButton::clicked,
+            this, &DirectoryEditorDialog::applyLockToSubdirectories);
 }
 
 DirectoryEditorDialog::~DirectoryEditorDialog()
@@ -104,6 +111,8 @@ void DirectoryEditorDialog::apply()
     }
 
     auto metadata = MetadataCache::get()->metadata(m_dirPath);
+
+    metadata->setRemovalLocked(ui->removalLockCheckBox->isChecked());
 
     // Sort order
     metadata->setSortOrder(
@@ -398,4 +407,31 @@ void DirectoryEditorDialog::renameError(const QFileInfo &oldFile, const QFileInf
         tr("Unable to rename file"),
         tr("Unable to rename file '%1' to '%2': %3").arg(oldFile.absoluteFilePath()).arg(newFile.absoluteFilePath()).arg(error)
     );
+}
+
+void DirectoryEditorDialog::applyLockToSubdirectories()
+{
+    const bool locked = ui->removalLockCheckBox->isChecked();
+    QProgressDialog progress(tr("Applying directory locks..."), tr("Cancel"), 0, 0, this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.setMinimumDuration(0);
+    progress.show();
+    ui->applyLockToSubdirectoriesButton->setEnabled(false);
+    const auto result = DirectoryProtection::applyToSubdirectories(m_dirPath, locked,
+        [&](const QString &path) {
+            progress.setLabelText(tr("Applying directory locks...") + "\n" + path);
+            QApplication::processEvents();
+            return !progress.wasCanceled();
+        });
+    progress.close();
+    ui->applyLockToSubdirectoriesButton->setEnabled(true);
+    QString summary = tr("Updated directories: %1\nFailed directories: %2")
+            .arg(result.updated).arg(result.failed.size());
+    if (result.canceled)
+        summary += "\n" + tr("The operation was canceled. Completed changes were kept.");
+    QMessageBox report(result.failed.isEmpty() ? QMessageBox::Information : QMessageBox::Warning,
+                       tr("Apply to subdirectories"), summary, QMessageBox::Ok, this);
+    if (!result.failed.isEmpty())
+        report.setDetailedText(result.failed.join('\n'));
+    report.exec();
 }

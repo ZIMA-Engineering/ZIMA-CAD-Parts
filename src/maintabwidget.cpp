@@ -1,4 +1,5 @@
 #include <QEvent>
+#include <QFile>
 #include "maintabwidget.h"
 #include "ui_maintabwidget.h"
 #include "datasourcewidget.h"
@@ -13,6 +14,11 @@ MainTabWidget::MainTabWidget(QWidget *parent) :
     m_loading(true)
 {
     ui->setupUi(this);
+    QFile tabStyle(":/gfx/navigation/tabs.css");
+    if (tabStyle.open(QIODevice::ReadOnly))
+        tabBar()->setStyleSheet(QString::fromUtf8(tabStyle.readAll()));
+    tabBar()->setIconSize(QSize(20, 20));
+    tabBar()->setUsesScrollButtons(true);
 
     auto addTabBtn = new QToolButton(this);
     addTabBtn->setIcon(QIcon(":/gfx/list-add.png"));

@@ -19,6 +19,9 @@ public:
     QStringList allSelected() const;
     QHashIterator<QString, QStringList> allSelectedIterator() const;
 
+signals:
+    void changed();
+
 private:
     static PartSelector *m_instance;
     QHash<QString, QStringList> m_selected;

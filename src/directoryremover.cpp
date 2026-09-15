@@ -1,3 +1,4 @@
+#include "directoryprotection.h"
 #include "directoryremover.h"
 #include "progressdialog.h"
 #include "partcache.h"
@@ -128,6 +129,15 @@ void DirectoryRemoverWorker::setStopOnError(bool stop)
 
 void DirectoryRemoverWorker::run()
 {
+    // Preflight the whole request before deleting even one unprotected file.
+    for (const auto &fi : m_fileInfos) {
+        const auto locked = DirectoryProtection::removalLock(fi);
+        if (!locked.isEmpty()) {
+            emit errorOccured(DirectoryProtection::message(locked));
+            emit finished();
+            return;
+        }
+    }
     foreach (const QFileInfo &fi, m_fileInfos)
         recurse(fi);
 
@@ -180,7 +190,7 @@ void DirectoryRemoverWorker::run()
 
 void DirectoryRemoverWorker::recurse(const QFileInfo &fi)
 {
-    if (!fi.isDir())
+    if (!fi.isDir() || fi.isSymLink())
     {
         m_files << fi;
         return;

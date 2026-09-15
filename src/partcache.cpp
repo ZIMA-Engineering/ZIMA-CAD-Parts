@@ -48,7 +48,7 @@ void PartCache::refresh(const QString &dir)
         return;
 
     m_parts.remove(dir);
-    MetadataCache::get()->pruneParts(dir);
+    // Refresh must not delete user metadata, including legacy file-name keys.
     MetadataCache::get()->clearPartVersions(dir);
 }
 

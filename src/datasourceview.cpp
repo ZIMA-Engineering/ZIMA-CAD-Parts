@@ -1,3 +1,4 @@
+#include "directoryprotection.h"
 #include "datasourceview.h"
 #include "datasourcemodel.h"
 #include "zimautils.h"
@@ -302,9 +303,15 @@ void DataSourceView::showContextMenu(const QPoint &point)
 
     menu->addSeparator();
 
-    menu->addAction(QIcon(":/gfx/document-edit.png"), tr("Edit"), this, SLOT(editDirectory()));
+    menu->addAction(QIcon(":/gfx/document-edit.png"), tr("Directory properties"), this, SLOT(editDirectory()));
     menu->addAction(QIcon(":/gfx/edit-copy.png"), tr("Copy as..."), this, SLOT(copyDirectoryAs()));
-    menu->addAction(QIcon(":/gfx/list-remove.png"), tr("Delete"), this, SLOT(deleteDirectory()));
+    auto deleteAction = menu->addAction(QIcon(":/gfx/list-remove.png"), tr("Delete"), this, SLOT(deleteDirectory()));
+    const auto locked = DirectoryProtection::removalLock(currentFileInfo());
+    deleteAction->setEnabled(locked.isEmpty());
+    if (!locked.isEmpty()) {
+        deleteAction->setToolTip(DirectoryProtection::message(locked));
+        menu->setToolTipsVisible(true);
+    }
 
     menu->addSeparator();
 
@@ -436,6 +443,11 @@ void DataSourceView::copyDirectoryAs()
 void DataSourceView::deleteDirectory()
 {
     QFileInfo fi = currentFileInfo();
+    const auto locked = DirectoryProtection::removalLock(fi);
+    if (!locked.isEmpty()) {
+        QMessageBox::warning(this, tr("Directory locked"), DirectoryProtection::message(locked));
+        return;
+    }
 
     if( QMessageBox::question(this,
                               tr("Do you really want to delete selected directory?"),

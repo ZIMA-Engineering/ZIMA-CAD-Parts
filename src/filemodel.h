@@ -64,6 +64,7 @@ public:
     void reloadParts();
 
     void reloadThumbnails();
+    void updatePartParameters(const QString &partName);
     void cancelThumbnails();
 
     Qt::ItemFlags flags(const QModelIndex &index) const;

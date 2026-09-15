@@ -1,3 +1,4 @@
+#include "directoryprotection.h"
 #include "filecopier.h"
 #include "progressdialog.h"
 
@@ -211,6 +212,12 @@ void FileCopierWorker::continueWork(FileCopierWorker::Overwrite overwrite)
         } else {
             if (QFile::exists(dst))
             {
+                const auto locked = DirectoryProtection::removalLock(QFileInfo(dst));
+                if (!locked.isEmpty()) {
+                    emit errorOccured(DirectoryProtection::message(locked));
+                    emit finished();
+                    return;
+                }
                 switch (overwrite)
                 {
                 case FileCopierWorker::ASK:

@@ -71,6 +71,9 @@ public:
     bool showDirectoriesAsParts() const;
     void setShowDirectoriesAsParts(bool enabled);
 
+    bool removalLocked() const;
+    void setRemovalLocked(bool locked);
+
     bool autoIndexEnabled() const;
     void setAutoIndexEnabled(bool enabled);
 
@@ -123,6 +126,8 @@ private:
 
     MetadataVersionsMap m_versionsCache;
     QHash<QString, int> m_versionNumbersCache;
+    QHash<QString, QStringList> m_legacyPartGroups;
+    bool m_legacyPartGroupsLoaded = false;
 
     void setup();
     int version();
@@ -170,6 +175,7 @@ public:
 signals:
     //! Emitted when is the cache content invalidated. All dependent objects should reset themself.
     void cleared();
+    void removalLockChanged(const QString &directory);
 
 public slots:
     void clear();

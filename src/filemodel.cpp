@@ -1,3 +1,4 @@
+#include "directoryprotection.h"
 /*
   ZIMA-CAD-Parts
   http://www.zima-construction.cz/software/ZIMA-Parts
@@ -53,6 +54,9 @@ FileModel::FileModel(QObject *parent) :
     m_iconProvider = new FileIconProvider();
     m_thumb = new ThumbnailManager(this);
     m_prtReader = new PrtReader(this);
+    connect(m_prtReader, &PrtReader::loaded, this, [this](const QFileInfo &part) {
+        updatePartParameters(File::partBaseName(part));
+    });
     connect(m_thumb, &ThumbnailManager::thumbnailReady, this, [this](const QString &file) {
         const auto row = m_thumbnailRows.constFind(file);
         if (row != m_thumbnailRows.cend())
@@ -152,12 +156,24 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
     {
         return MetadataCache::get()->partParam(
                    m_path,
-                   part.fileName(),
+                   File::partBaseName(part),
                    m_parameterHandles[col - 2]
                );
     }
 
     return QVariant();
+}
+
+void FileModel::updatePartParameters(const QString &partName)
+{
+    if (columnCount() <= 2)
+        return;
+    const auto files = fileInfoList();
+    for (int row = 0; row < files.size(); ++row) {
+        if (File::partBaseName(files.at(row)) == partName)
+            emit dataChanged(index(row, 2), index(row, columnCount() - 1),
+                             {Qt::DisplayRole, Qt::EditRole});
+    }
 }
 
 void FileModel::updateThumbnails()
@@ -305,12 +321,12 @@ bool FileModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
     } else if (role == Qt::EditRole && index.column() > 1) {
         MetadataCache::get()->metadata(m_path)->setPartParam(
-            part.fileName(),
+            File::partBaseName(part),
             m_parameterHandles[ index.column() - 2 ],
             value.toString()
         );
 
-        emit dataChanged(index, index);
+        updatePartParameters(File::partBaseName(part));
         return true;
     }
 
@@ -392,7 +408,25 @@ void FileModel::settingsChanged()
 }
 void FileModel::moveParts(FileMover *mv)
 {
+    auto protectionSelection = PartSelector::get()->allSelectedIterator();
+    while (protectionSelection.hasNext()) {
+        protectionSelection.next();
+        for (const auto &name : protectionSelection.value()) {
+            const QFileInfo source(name);
+            QString locked = DirectoryProtection::removalLock(source);
+            const QFileInfo destination(QDir(Settings::get()->getWorkingDir()).filePath(source.fileName()));
+            if (locked.isEmpty() && destination.exists())
+                locked = DirectoryProtection::removalLock(destination);
+            if (!locked.isEmpty()) {
+                QMessageBox::warning(qobject_cast<QWidget *>(QObject::parent()),
+                                     tr("Directory locked"), DirectoryProtection::message(locked));
+                return;
+            }
+        }
+    }
+
     QStringList clearList;
+    QFileInfoList movedParts;
     auto selector = PartSelector::get();
     auto pc = PartCache::get();
     auto it = selector->allSelectedIterator();
@@ -433,7 +467,7 @@ void FileModel::moveParts(FileMover *mv)
                 pc->clearBelow(fname);
             }
 
-            metaCache->movePart(dir, File::partBaseName(fi), dstDir);
+            movedParts.append(fi);
         }
 
         clearList << dir;
@@ -441,6 +475,11 @@ void FileModel::moveParts(FileMover *mv)
 
     mv->setDestination(dstDir);
     mv->work();
+    for (const auto &source : movedParts) {
+        const QFileInfo destination(QDir(dstDir).filePath(source.fileName()));
+        if (!QFileInfo::exists(source.absoluteFilePath()) && destination.exists())
+            metaCache->movePart(source.absolutePath(), File::partBaseName(source), dstDir);
+    }
 
     selector->clear();
 
@@ -453,12 +492,22 @@ void FileModel::moveParts(FileMover *mv)
 
 void FileModel::deleteParts(DirectoryRemover *rm)
 {
-    // TODO: this code basically ignores all errors, so we delete metadata
-    // of parts that are still on disk, e.g. because ZCP does not have permissions
-    // to delete them. Undeleted parts are also unchecked. Errors are reported to
-    // the user though via QMessageBox.
+    auto protectionSelection = PartSelector::get()->allSelectedIterator();
+    while (protectionSelection.hasNext()) {
+        protectionSelection.next();
+        for (const auto &name : protectionSelection.value()) {
+            const QFileInfo source(name);
+            QString locked = DirectoryProtection::removalLock(source);
+            if (!locked.isEmpty()) {
+                QMessageBox::warning(qobject_cast<QWidget *>(QObject::parent()),
+                                     tr("Directory locked"), DirectoryProtection::message(locked));
+                return;
+            }
+        }
+    }
 
     QFileInfoList deleteList;
+    QFileInfoList deletedParts;
     QStringList clearList;
     auto selector = PartSelector::get();
     auto pc = PartCache::get();
@@ -493,7 +542,7 @@ void FileModel::deleteParts(DirectoryRemover *rm)
                 pc->clearBelow(fname);
             }
 
-            MetadataCache::get()->deletePart(dir, File::partBaseName(fi));
+            deletedParts.append(fi);
         }
 
         clearList << dir;
@@ -502,6 +551,10 @@ void FileModel::deleteParts(DirectoryRemover *rm)
     rm->addFiles(deleteList);
     rm->setStopOnError(false);
     rm->work();
+    for (const auto &source : deletedParts) {
+        if (!QFileInfo::exists(source.absoluteFilePath()))
+            MetadataCache::get()->deletePart(source.absolutePath(), File::partBaseName(source));
+    }
 
     selector->clear();
 

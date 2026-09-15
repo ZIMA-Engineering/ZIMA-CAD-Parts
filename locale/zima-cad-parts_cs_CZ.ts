@@ -103,114 +103,119 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="272"/>
+        <location filename="../src/datasourceview.cpp" line="273"/>
         <source>Scripts...</source>
         <translation>Skripty...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="298"/>
+        <location filename="../src/datasourceview.cpp" line="299"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="299"/>
+        <location filename="../src/datasourceview.cpp" line="300"/>
         <source>Open in a new tab</source>
         <translation>Otevřít v nové kartě</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="300"/>
+        <location filename="../src/datasourceview.cpp" line="301"/>
         <source>Set as working directory</source>
         <translation>Nastavit jako pracovní adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="301"/>
+        <location filename="../src/datasourceview.cpp" line="302"/>
         <source>Create directory</source>
         <translation>Vytvořit adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="305"/>
-        <source>Edit</source>
-        <translation>Upravit</translation>
+        <location filename="../src/datasourceview.cpp" line="306"/>
+        <source>Directory properties</source>
+        <translation>Vlastnosti adresáře</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="306"/>
+        <location filename="../src/datasourceview.cpp" line="307"/>
         <source>Copy as...</source>
         <translation>Kopírovat jako...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="307"/>
+        <location filename="../src/datasourceview.cpp" line="308"/>
         <source>Delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="313"/>
+        <location filename="../src/datasourceview.cpp" line="320"/>
         <source>Clean with ZIMA-PTC-Cleaner</source>
         <translation>Vyčistit pomocí ZIMA-PTC-Cleaner</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="315"/>
+        <location filename="../src/datasourceview.cpp" line="322"/>
         <source>Sync with ZIMA-CAD-Sync</source>
         <translation>Synchronizovat pomocí ZIMA-CAD-Sync</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="317"/>
+        <location filename="../src/datasourceview.cpp" line="324"/>
         <source>Convert postscript to PDF with ZIMA-PS2PDF</source>
         <translation>Převést PostScript do PDF pomocí ZIMA-PS2PDF</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="319"/>
+        <location filename="../src/datasourceview.cpp" line="326"/>
         <source>Edit step files with ZIMA-STEP-Edit</source>
         <translation>Upravit soubory STEP pomocí ZIMA-STEP-Edit</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="342"/>
         <location filename="../src/datasourceview.cpp" line="349"/>
+        <location filename="../src/datasourceview.cpp" line="356"/>
         <source>Configure %1</source>
         <translation>Nastavit %1</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="342"/>
+        <location filename="../src/datasourceview.cpp" line="349"/>
         <source>Please first configure path to %1 executable.</source>
         <translation>Nejprve nastavte cestu ke spustitelnému souboru %1.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="349"/>
+        <location filename="../src/datasourceview.cpp" line="356"/>
         <source>Path &apos;%1&apos; to %2 executable does not exists!</source>
         <translation>Cesta &apos;%1&apos; ke spustitelnému souboru %2 neexistuje!</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="377"/>
-        <location filename="../src/datasourceview.cpp" line="420"/>
+        <location filename="../src/datasourceview.cpp" line="384"/>
+        <location filename="../src/datasourceview.cpp" line="427"/>
         <source>Directory exists</source>
         <translation>Adresář existuje</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="378"/>
+        <location filename="../src/datasourceview.cpp" line="385"/>
         <source>Directory %1 already exists.</source>
         <translation>Adresář %1 již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="420"/>
+        <location filename="../src/datasourceview.cpp" line="427"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Adresář &apos;%1&apos; již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="427"/>
+        <location filename="../src/datasourceview.cpp" line="434"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Počkejte prosím na zkopírování adresáře...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="441"/>
+        <location filename="../src/datasourceview.cpp" line="448"/>
+        <source>Directory locked</source>
+        <translation>Adresář je zamčený</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourceview.cpp" line="453"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Opravdu chcete smazat vybraný adresář?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="442"/>
+        <location filename="../src/datasourceview.cpp" line="454"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Opravdu chcete smazat adresář &apos;%1&apos;? Tuto akci nelze vrátit zpět.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="449"/>
+        <location filename="../src/datasourceview.cpp" line="461"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Počkejte prosím na odstranění adresáře...</translation>
     </message>
@@ -219,8 +224,8 @@
     <name>DataSourceWidget</name>
     <message>
         <location filename="../src/datasourcewidget.cpp" line="214"/>
-        <source>Edit</source>
-        <translation>Upravit</translation>
+        <source>Data source properties</source>
+        <translation>Vlastnosti datového zdroje</translation>
     </message>
     <message>
         <location filename="../src/datasourcewidget.cpp" line="220"/>
@@ -275,11 +280,6 @@
 <context>
     <name>DirectoryEditorDialog</name>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="14"/>
-        <source>Edit directory</source>
-        <translation>Upravit adresář</translation>
-    </message>
-    <message>
         <location filename="../src/directoryeditordialog.ui" line="24"/>
         <source>General</source>
         <translation>Obecné</translation>
@@ -300,12 +300,12 @@
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="112"/>
+        <location filename="../src/directoryeditordialog.ui" line="130"/>
         <source>Add icon</source>
         <translation>Přidat ikonu</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="115"/>
+        <location filename="../src/directoryeditordialog.ui" line="133"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -313,6 +313,11 @@
         <location filename="../src/directoryeditordialog.ui" line="81"/>
         <source>Icon</source>
         <translation>Ikona</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="14"/>
+        <source>Directory properties</source>
+        <translation>Vlastnosti adresáře</translation>
     </message>
     <message>
         <location filename="../src/directoryeditordialog.ui" line="88"/>
@@ -325,79 +330,123 @@
         <translation>Automaticky vytvořený index</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="122"/>
+        <location filename="../src/directoryeditordialog.ui" line="110"/>
+        <source>Protect against deletion and moving</source>
+        <translation>Chránit před smazáním a přesunutím</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="111"/>
+        <source>Protect files directly in this directory. Subdirectories have their own lock.</source>
+        <translation>Chrání soubory přímo v tomto adresáři. Podadresáře mají vlastní zámeček.</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="117"/>
+        <location filename="../src/directoryeditordialog.cpp" line="433"/>
+        <source>Apply to subdirectories</source>
+        <translation>Aplikovat na podadresáře</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="118"/>
+        <source>Immediately apply the current checkbox state to all subdirectories. Canceling this dialog will not undo these changes.</source>
+        <translation>Okamžitě použije aktuální stav zámečku na všechny podadresáře. Zrušení tohoto okna tyto změny nevrátí.</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="140"/>
         <source>Sort order</source>
         <translation>Pořadí řazení</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="130"/>
+        <location filename="../src/directoryeditordialog.ui" line="148"/>
         <source>Ascending</source>
         <translation>Vzestupně</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="135"/>
+        <location filename="../src/directoryeditordialog.ui" line="153"/>
         <source>Descending</source>
         <translation>Sestupně</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="146"/>
+        <location filename="../src/directoryeditordialog.ui" line="164"/>
         <source>Localized</source>
         <translation>Lokalizované</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="31"/>
-        <source>Edit data source</source>
-        <translation>Upravit zdroj dat</translation>
+        <location filename="../src/directoryeditordialog.cpp" line="34"/>
+        <source>Data source properties</source>
+        <translation>Vlastnosti datového zdroje</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="84"/>
+        <location filename="../src/directoryeditordialog.cpp" line="91"/>
         <source>Failed to rename directory</source>
         <translation>Přejmenování adresáře selhalo</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="85"/>
+        <location filename="../src/directoryeditordialog.cpp" line="92"/>
         <source>Failed to rename directory &apos;%1&apos;</source>
         <translation>Nepodařilo se přejmenovat adresář &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="225"/>
+        <location filename="../src/directoryeditordialog.cpp" line="234"/>
         <source>No icon</source>
         <translation>Bez ikony</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="260"/>
+        <location filename="../src/directoryeditordialog.cpp" line="269"/>
         <source>Unable to copy icon</source>
         <translation>Ikonu nelze zkopírovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="261"/>
+        <location filename="../src/directoryeditordialog.cpp" line="270"/>
         <source>Unable to copy &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Nelze zkopírovat &apos;%1&apos; do &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="272"/>
+        <location filename="../src/directoryeditordialog.cpp" line="281"/>
         <source>Unable to remove icon</source>
         <translation>Ikonu nelze odstranit</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="273"/>
+        <location filename="../src/directoryeditordialog.cpp" line="282"/>
         <source>Unable to remove icon &apos;%1&apos;</source>
         <translation>Nelze odstranit ikonu &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="332"/>
+        <location filename="../src/directoryeditordialog.cpp" line="341"/>
         <source>Select icon</source>
         <translation>Vybrat ikonu</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="398"/>
+        <location filename="../src/directoryeditordialog.cpp" line="407"/>
         <source>Unable to rename file</source>
         <translation>Soubor nelze přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="399"/>
+        <location filename="../src/directoryeditordialog.cpp" line="408"/>
         <source>Unable to rename file &apos;%1&apos; to &apos;%2&apos;: %3</source>
         <translation>Nelze přejmenovat soubor &apos;%1&apos; na &apos;%2&apos;: %3</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="415"/>
+        <location filename="../src/directoryeditordialog.cpp" line="422"/>
+        <source>Applying directory locks...</source>
+        <translation>Nastavuji zámečky adresářů…</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="415"/>
+        <source>Cancel</source>
+        <translation>Zrušit</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="428"/>
+        <source>Updated directories: %1
+Failed directories: %2</source>
+        <translation>Aktualizované adresáře: %1
+Adresáře s chybou: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="431"/>
+        <source>The operation was canceled. Completed changes were kept.</source>
+        <translation>Operace byla zastavena. Provedené změny zůstaly uložené.</translation>
     </message>
 </context>
 <context>
@@ -419,14 +468,22 @@
     </message>
 </context>
 <context>
+    <name>DirectoryProtection</name>
+    <message>
+        <location filename="../src/directoryprotection.cpp" line="42"/>
+        <source>Directory &apos;%1&apos; is locked. Unlock it in Directory properties before deleting or moving its files.</source>
+        <translation>Adresář &apos;%1&apos; je zamčený. Před smazáním nebo přesunutím jeho souborů jej odemkněte ve Vlastnostech adresáře.</translation>
+    </message>
+</context>
+<context>
     <name>DirectoryRemover</name>
     <message>
-        <location filename="../src/directoryremover.cpp" line="70"/>
+        <location filename="../src/directoryremover.cpp" line="71"/>
         <source>Please wait while the files are being removed...</source>
         <translation>Počkejte prosím na odstranění souborů...</translation>
     </message>
     <message>
-        <location filename="../src/directoryremover.cpp" line="107"/>
+        <location filename="../src/directoryremover.cpp" line="108"/>
         <source>Directory deletion failed</source>
         <translation>Odstranění adresáře selhalo</translation>
     </message>
@@ -434,7 +491,7 @@
 <context>
     <name>DirectoryRemoverWorker</name>
     <message>
-        <location filename="../src/directoryremover.cpp" line="160"/>
+        <location filename="../src/directoryremover.cpp" line="170"/>
         <source>Unable to delete &apos;%1&apos;</source>
         <translation>Nelze smazat &apos;%1&apos;</translation>
     </message>
@@ -526,17 +583,17 @@
         <translation>Kopírovat</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="284"/>
+        <location filename="../src/directorywidget.cpp" line="336"/>
         <source>Delete index</source>
         <translation>Smazat index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="294"/>
+        <location filename="../src/directorywidget.cpp" line="346"/>
         <source>Delete all indexes</source>
         <translation>Smazat všechny indexy</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="349"/>
+        <location filename="../src/directorywidget.cpp" line="401"/>
         <source>The following index file will be deleted:
 
 %1
@@ -549,7 +606,7 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="350"/>
+        <location filename="../src/directorywidget.cpp" line="402"/>
         <source>The following index files will be deleted:
 
 %1
@@ -562,22 +619,22 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="351"/>
+        <location filename="../src/directorywidget.cpp" line="403"/>
         <source>Delete all indexes?</source>
         <translation>Smazat všechny indexy?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="351"/>
+        <location filename="../src/directorywidget.cpp" line="403"/>
         <source>Delete index?</source>
         <translation>Smazat index?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="376"/>
+        <location filename="../src/directorywidget.cpp" line="428"/>
         <source>Index deletion failed</source>
         <translation>Smazání indexu selhalo</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="377"/>
+        <location filename="../src/directorywidget.cpp" line="429"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -586,8 +643,8 @@ Pokračovat?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="663"/>
-        <location filename="../src/directorywidget.cpp" line="664"/>
+        <location filename="../src/directorywidget.cpp" line="716"/>
+        <location filename="../src/directorywidget.cpp" line="717"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>
@@ -649,22 +706,22 @@ Pokračovat?</translation>
 <context>
     <name>FileCopier</name>
     <message>
-        <location filename="../src/filecopier.cpp" line="81"/>
+        <location filename="../src/filecopier.cpp" line="82"/>
         <source>Please wait while the files are being copied...</source>
         <translation>Počkejte prosím na zkopírování souborů...</translation>
     </message>
     <message>
-        <location filename="../src/filecopier.cpp" line="116"/>
+        <location filename="../src/filecopier.cpp" line="117"/>
         <source>Directory deletion failed</source>
         <translation>Odstranění adresáře selhalo</translation>
     </message>
     <message>
-        <location filename="../src/filecopier.cpp" line="127"/>
+        <location filename="../src/filecopier.cpp" line="128"/>
         <source>Overwrite file?</source>
         <translation>Přepsat soubor?</translation>
     </message>
     <message>
-        <location filename="../src/filecopier.cpp" line="128"/>
+        <location filename="../src/filecopier.cpp" line="129"/>
         <source>File %1 already exists. Overwrite?</source>
         <translation>Soubor %1 již existuje. Přepsat?</translation>
     </message>
@@ -672,7 +729,7 @@ Pokračovat?</translation>
 <context>
     <name>FileCopierWorker</name>
     <message>
-        <location filename="../src/filecopier.cpp" line="253"/>
+        <location filename="../src/filecopier.cpp" line="260"/>
         <source>Unable to copy &apos;%1&apos;: %2</source>
         <translation>Nelze zkopírovat &apos;%1&apos;: %2</translation>
     </message>
@@ -720,32 +777,32 @@ Pokračovat?</translation>
         <translation>Upravit %1</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="91"/>
+        <location filename="../src/fileeditdialog.cpp" line="93"/>
         <source>No thumbnail</source>
         <translation>Bez náhledu</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="115"/>
+        <location filename="../src/fileeditdialog.cpp" line="117"/>
         <source>Unable to copy icon</source>
         <translation>Ikonu nelze zkopírovat</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="116"/>
+        <location filename="../src/fileeditdialog.cpp" line="118"/>
         <source>Unable to copy &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Nelze zkopírovat &apos;%1&apos; do &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="129"/>
+        <location filename="../src/fileeditdialog.cpp" line="131"/>
         <source>Unable to remove thumbnail</source>
         <translation>Náhled nelze odstranit</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="130"/>
+        <location filename="../src/fileeditdialog.cpp" line="132"/>
         <source>Unable to remove thumbnail &apos;%1&apos;</source>
         <translation>Nelze odstranit náhled &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="152"/>
+        <location filename="../src/fileeditdialog.cpp" line="154"/>
         <source>Select thumbnail</source>
         <translation>Vybrat náhled</translation>
     </message>
@@ -753,45 +810,51 @@ Pokračovat?</translation>
 <context>
     <name>FileModel</name>
     <message>
-        <location filename="../src/filemodel.cpp" line="188"/>
+        <location filename="../src/filemodel.cpp" line="204"/>
         <source>Part name</source>
         <translation>Název dílu</translation>
     </message>
     <message>
-        <location filename="../src/filemodel.cpp" line="188"/>
+        <location filename="../src/filemodel.cpp" line="204"/>
         <source>Thumbnail</source>
         <translation>Náhled</translation>
+    </message>
+    <message>
+        <location filename="../src/filemodel.cpp" line="422"/>
+        <location filename="../src/filemodel.cpp" line="503"/>
+        <source>Directory locked</source>
+        <translation>Adresář je zamčený</translation>
     </message>
 </context>
 <context>
     <name>FileMover</name>
     <message>
-        <location filename="../src/filemover.cpp" line="94"/>
+        <location filename="../src/filemover.cpp" line="95"/>
         <source>Please wait while the files are being moved...</source>
         <translation>Počkejte prosím na přesunutí souborů...</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="134"/>
+        <location filename="../src/filemover.cpp" line="135"/>
         <source>File move failed</source>
         <translation>Přesunutí souboru selhalo</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="145"/>
+        <location filename="../src/filemover.cpp" line="146"/>
         <source>Overwrite file?</source>
         <translation>Přepsat soubor?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="146"/>
+        <location filename="../src/filemover.cpp" line="147"/>
         <source>File %1 already exists. Overwrite?</source>
         <translation>Soubor %1 již existuje. Přepsat?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="182"/>
+        <location filename="../src/filemover.cpp" line="183"/>
         <source>Replace directory?</source>
         <translation>Nahradit adresář?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="183"/>
+        <location filename="../src/filemover.cpp" line="184"/>
         <source>Directory %1 already exists. Replace it?</source>
         <translation>Adresář %1 již existuje. Nahradit jej?</translation>
     </message>
@@ -799,19 +862,19 @@ Pokračovat?</translation>
 <context>
     <name>FileMoverWorker</name>
     <message>
-        <location filename="../src/filemover.cpp" line="308"/>
+        <location filename="../src/filemover.cpp" line="327"/>
         <source>Unable to move &apos;%1&apos;: %2</source>
         <translation>Nelze přesunout &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="344"/>
+        <location filename="../src/filemover.cpp" line="363"/>
         <source>directory rename failed</source>
         <translation>přejmenování adresáře selhalo</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="371"/>
-        <location filename="../src/filemover.cpp" line="382"/>
-        <location filename="../src/filemover.cpp" line="397"/>
+        <location filename="../src/filemover.cpp" line="390"/>
+        <location filename="../src/filemover.cpp" line="401"/>
+        <location filename="../src/filemover.cpp" line="416"/>
         <source>Unable to remove &apos;%1&apos;</source>
         <translation>Nelze odstranit &apos;%1&apos;</translation>
     </message>
@@ -977,8 +1040,8 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
     </message>
     <message>
         <location filename="../src/filtersdialog.cpp" line="30"/>
-        <source>Hide ZIMA-CAD archive versions (.1, .2, ...)</source>
-        <translation>Skrýt archivní verze ZIMA-CAD (.1, .2, ...)</translation>
+        <source>Show ZIMA-CAD archive versions (.1, .2, ...)</source>
+        <translation>Zobrazit archivní verze ZIMA-CAD (.1, .2, ...)</translation>
     </message>
 </context>
 <context>
@@ -1012,14 +1075,14 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
         <translation>Karty</translation>
     </message>
     <message>
-        <location filename="../src/maintabwidget.cpp" line="19"/>
-        <location filename="../src/maintabwidget.cpp" line="216"/>
+        <location filename="../src/maintabwidget.cpp" line="25"/>
+        <location filename="../src/maintabwidget.cpp" line="222"/>
         <source>Open a new tab</source>
         <translation>Otevřít novou kartu</translation>
     </message>
     <message>
-        <location filename="../src/maintabwidget.cpp" line="22"/>
-        <location filename="../src/maintabwidget.cpp" line="214"/>
+        <location filename="../src/maintabwidget.cpp" line="28"/>
+        <location filename="../src/maintabwidget.cpp" line="220"/>
         <source>Add tabs by pressing &quot;+&quot;</source>
         <translation>Přidejte karty tlačítkem &quot;+&quot;</translation>
     </message>

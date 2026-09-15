@@ -41,7 +41,8 @@ win32:contains(DEFINES, USE_CREDENTIAL_STORE):LIBS += -lcrypt32
 #        PKGCONFIG += poppler-qt5
 #    }
 
-SOURCES += src/zima-cad-parts.cpp \
+SOURCES += src/directoryprotection.cpp \
+    src/zima-cad-parts.cpp \
     src/browserpage.cpp \
     src/browserprofilemanager.cpp \
     src/directorycopyasdialog.cpp \
@@ -151,7 +152,8 @@ equals(OCCT_AVAILABLE, 1) {
         src/extensions/productview/occtgltools.cpp
 }
 
-HEADERS += src/mainwindow.h \
+HEADERS += src/directoryprotection.h \
+     src/mainwindow.h \
     src/browserpage.h \
     src/browserprofilemanager.h \
     src/passwordmanager.h \

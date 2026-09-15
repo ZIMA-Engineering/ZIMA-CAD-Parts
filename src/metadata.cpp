@@ -330,6 +330,21 @@ void Metadata::setShowDirectoriesAsParts(bool enabled)
     m_settings->setValue("Directory/SubdirectoriesAsParts", enabled);
 }
 
+bool Metadata::removalLocked() const
+{
+    return m_settings->value("Directory/PreventRemoval", false).toBool();
+}
+
+void Metadata::setRemovalLocked(bool locked)
+{
+    if (removalLocked() == locked)
+        return;
+    m_settings->setValue("Directory/PreventRemoval", locked);
+    // File operation workers read their own QSettings instance.
+    m_settings->sync();
+    emit MetadataCache::get()->removalLockChanged(m_path);
+}
+
 bool Metadata::autoIndexEnabled() const
 {
     return m_settings->value("Directory/AutoIndex", true).toBool();
@@ -509,6 +524,33 @@ QString Metadata::partParam(const QString &partName, const QString &param)
     };
 
     QString ret = readValue(partName);
+    // An explicitly cleared value must not resurrect a legacy value.
+    const bool explicitlyStored = m_settings->contains(
+        QString("Parts/%1/%2/%3").arg(partName, param, Settings::get()->LanguageMetadata))
+        || m_settings->contains(QString("Parts/%1/%2").arg(partName, param));
+    if (ret.isEmpty() && explicitlyStored)
+        return ret;
+    if (ret.isEmpty()) {
+        if (!m_legacyPartGroupsLoaded) {
+            m_settings->beginGroup("Parts");
+            const auto groups = m_settings->childGroups();
+            m_settings->endGroup();
+            for (const auto &group : groups) {
+                const QFileInfo file(QDir(m_path).filePath(group));
+                if (file.isFile()) {
+                    const auto base = File::partBaseName(file);
+                    if (base != group)
+                        m_legacyPartGroups[base].append(group);
+                }
+            }
+            m_legacyPartGroupsLoaded = true;
+        }
+        for (const auto &group : m_legacyPartGroups.value(partName)) {
+            ret = readValue(group);
+            if (!ret.isEmpty())
+                break;
+        }
+    }
     // Older releases stored dotted names under the text before the first dot.
     if (ret.isEmpty() && partName.contains('.'))
         ret = readValue(partName.section('.', 0, 0));

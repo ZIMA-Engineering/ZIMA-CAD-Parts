@@ -1,3 +1,4 @@
+#include "directoryprotection.h"
 #include "filemover.h"
 #include "progressdialog.h"
 #include "partcache.h"
@@ -238,6 +239,16 @@ void FileMoverWorker::run()
                 );
     }
 
+    for (const auto &file : m_files) {
+        QString locked = DirectoryProtection::removalLock(file.first);
+        if (locked.isEmpty() && QFileInfo::exists(file.second))
+            locked = DirectoryProtection::removalLock(QFileInfo(file.second));
+        if (!locked.isEmpty()) {
+            emit errorOccured(DirectoryProtection::message(locked));
+            emit finished();
+            return;
+        }
+    }
     continueWork();
 }
 
@@ -262,12 +273,20 @@ void FileMoverWorker::continueWork(FileMoverWorker::Overwrite overwrite)
             return;
         }
 
+        QString locked = DirectoryProtection::removalLock(src);
+        if (locked.isEmpty() && QFileInfo::exists(dst))
+            locked = DirectoryProtection::removalLock(QFileInfo(dst));
+        if (!locked.isEmpty()) {
+            emit errorOccured(DirectoryProtection::message(locked));
+            emit finished();
+            return;
+        }
         if (QFile::exists(dst))
         {
             switch (overwrite)
             {
             case FileMoverWorker::ASK:
-                if (fi.isDir())
+                if (fi.isDir() && !fi.isSymLink())
                     emit directoryExists(src, dst);
                 else
                     emit fileExists(src, dst);
@@ -363,7 +382,7 @@ bool FileMoverWorker::removeAll(const QString &path)
 
     qDebug() << "Removing directory" << path;
 
-    if (fi.isDir())
+    if (fi.isDir() && !fi.isSymLink())
     {
         if (!removeRecursively(fi))
         {
@@ -414,7 +433,7 @@ bool FileMoverWorker::removeRecursively(const QFileInfo &fi)
 
     foreach (const QFileInfo &fi, entries)
     {
-        if (fi.isDir())
+        if (fi.isDir() && !fi.isSymLink())
         {
             if (!removeRecursively(fi))
                 return false;

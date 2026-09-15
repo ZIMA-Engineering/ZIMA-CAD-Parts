@@ -58,6 +58,7 @@ private:
     Qt::SortOrder sortOrderFromIndex(int i);
 
 private slots:
+    void applyLockToSubdirectories();
     void removeIcon();
     void openIconDialog();
     void parameterAddition(const QString &handle);

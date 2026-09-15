@@ -8,6 +8,10 @@
 #include <QMenu>
 #include <QProcess>
 #include <QToolButton>
+#include <QTabBar>
+#include <QTimer>
+#include "directoryprotection.h"
+#include "partselector.h"
 
 #include "directorywidget.h"
 #include "ui_directorywidget.h"
@@ -27,6 +31,21 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui(new Ui::DirectoryWidget)
 {
     ui->setupUi(this);
+    ui->tabWidget->tabBar()->setProperty("wideTabs", true);
+    QFile tabStyle(":/gfx/navigation/tabs.css");
+    if (tabStyle.open(QIODevice::ReadOnly))
+        ui->tabWidget->tabBar()->setStyleSheet(QString::fromUtf8(tabStyle.readAll()));
+    ui->tabWidget->setIconSize(QSize(20, 20));
+    ui->tabWidget->setTabIcon(0, QIcon(":/gfx/navigation/folder.svg"));
+    ui->tabWidget->setTabIcon(1, QIcon(":/gfx/navigation/parts.svg"));
+    ui->filterButton->setIcon(QIcon(":/gfx/navigation/filter.svg"));
+    ui->refreshButton->setIcon(QIcon(":/gfx/navigation/refresh.svg"));
+    ui->btnDelete->setIcon(QIcon(":/gfx/navigation/delete.svg"));
+    ui->moveButton->setIcon(QIcon(":/gfx/navigation/move.svg"));
+    ui->copyToWorkingDirButton->setIcon(QIcon(":/gfx/navigation/copy.svg"));
+    for (auto button : {ui->filterButton, ui->refreshButton, ui->btnDelete,
+                        ui->moveButton, ui->copyToWorkingDirButton})
+        button->setIconSize(QSize(18, 18));
     ui->partsWebView->setPage(new BrowserPage(ui->partsWebView));
 
     m_productView = new ProductView(this);
@@ -126,7 +145,37 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     connect(ui->filterButton, SIGNAL(clicked()),
             this, SLOT(setFiltersDialog()));
 
+    auto protectionTimer = new QTimer(this);
+    protectionTimer->setSingleShot(true);
+    protectionTimer->setInterval(0);
+    connect(protectionTimer, &QTimer::timeout, this, &DirectoryWidget::updateProtectionControls);
+    const auto scheduleProtectionUpdate = [protectionTimer] { protectionTimer->start(); };
+    connect(PartSelector::get(), &PartSelector::changed, this, scheduleProtectionUpdate);
+    connect(MetadataCache::get(), &MetadataCache::removalLockChanged, this, scheduleProtectionUpdate);
+    connect(MetadataCache::get(), &MetadataCache::cleared, this, scheduleProtectionUpdate);
+    updateProtectionControls();
     ui->dirWebView->loadAboutPage();
+}
+
+void DirectoryWidget::updateProtectionControls()
+{
+    QString locked;
+    const auto selected = PartSelector::get()->allSelected();
+    if (selected.isEmpty()) {
+        if (!m_currentRootPath.isEmpty() && DirectoryProtection::isLocked(m_currentRootPath))
+            locked = m_currentRootPath;
+    } else {
+        for (const auto &path : selected) {
+            locked = DirectoryProtection::removalLock(QFileInfo(path));
+            if (!locked.isEmpty())
+                break;
+        }
+    }
+    const QString reason = locked.isEmpty() ? QString() : DirectoryProtection::message(locked);
+    for (auto button : {ui->btnDelete, ui->moveButton}) {
+        button->setEnabled(locked.isEmpty());
+        button->setToolTip(reason);
+    }
 }
 
 DirectoryWidget::~DirectoryWidget()
@@ -139,6 +188,7 @@ void DirectoryWidget::setDirectory(const QString &rootPath)
     if (rootPath.trimmed().isEmpty())
     {
         m_currentRootPath.clear();
+        updateProtectionControls();
         watchAutoIndexDirectory(QString());
         ui->partsWebView->hide();
         ui->dirWebView->loadAboutPage();
@@ -159,10 +209,12 @@ void DirectoryWidget::setDirectory(const QString &rootPath)
     updateIndexMenus();
 
     setEnabled(true);
+    updateProtectionControls();
 }
 
 void DirectoryWidget::updateDirectory(const QString &rootPath)
 {
+    updateProtectionControls();
     if (m_currentRootPath.compare(rootPath) == 0)
         reloadDirectoryIndex();
 
@@ -442,6 +494,7 @@ void DirectoryWidget::changeEvent(QEvent *e)
     switch (e->type()) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
+        updateProtectionControls();
         updateIndexMenus();
         if (ui->dirWebView->url().path().startsWith("/data/zima-cad-parts") )
             ui->dirWebView->loadAboutPage();

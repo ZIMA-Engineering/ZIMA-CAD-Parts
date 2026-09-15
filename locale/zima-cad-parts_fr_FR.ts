@@ -103,114 +103,119 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="272"/>
+        <location filename="../src/datasourceview.cpp" line="273"/>
         <source>Scripts...</source>
         <translation>Scripts...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="298"/>
+        <location filename="../src/datasourceview.cpp" line="299"/>
         <source>Open</source>
         <translation>Ouvrir</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="299"/>
+        <location filename="../src/datasourceview.cpp" line="300"/>
         <source>Open in a new tab</source>
         <translation>Ouvrir dans un nouvel onglet</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="300"/>
+        <location filename="../src/datasourceview.cpp" line="301"/>
         <source>Set as working directory</source>
         <translation>Définir comme dossier de travail</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="301"/>
+        <location filename="../src/datasourceview.cpp" line="302"/>
         <source>Create directory</source>
         <translation>Créer un dossier</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="305"/>
-        <source>Edit</source>
-        <translation>Modifier</translation>
+        <location filename="../src/datasourceview.cpp" line="306"/>
+        <source>Directory properties</source>
+        <translation>Propriétés du dossier</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="306"/>
+        <location filename="../src/datasourceview.cpp" line="307"/>
         <source>Copy as...</source>
         <translation>Copier sous...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="307"/>
+        <location filename="../src/datasourceview.cpp" line="308"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="313"/>
+        <location filename="../src/datasourceview.cpp" line="320"/>
         <source>Clean with ZIMA-PTC-Cleaner</source>
         <translation>Nettoyer avec ZIMA-PTC-Cleaner</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="315"/>
+        <location filename="../src/datasourceview.cpp" line="322"/>
         <source>Sync with ZIMA-CAD-Sync</source>
         <translation>Synchroniser avec ZIMA-CAD-Sync</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="317"/>
+        <location filename="../src/datasourceview.cpp" line="324"/>
         <source>Convert postscript to PDF with ZIMA-PS2PDF</source>
         <translation>Convertir PostScript en PDF avec ZIMA-PS2PDF</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="319"/>
+        <location filename="../src/datasourceview.cpp" line="326"/>
         <source>Edit step files with ZIMA-STEP-Edit</source>
         <translation>Modifier les fichiers STEP avec ZIMA-STEP-Edit</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="342"/>
         <location filename="../src/datasourceview.cpp" line="349"/>
+        <location filename="../src/datasourceview.cpp" line="356"/>
         <source>Configure %1</source>
         <translation>Configurer %1</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="342"/>
+        <location filename="../src/datasourceview.cpp" line="349"/>
         <source>Please first configure path to %1 executable.</source>
         <translation>Veuillez d’abord définir le chemin de l’exécutable %1.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="349"/>
+        <location filename="../src/datasourceview.cpp" line="356"/>
         <source>Path &apos;%1&apos; to %2 executable does not exists!</source>
         <translation>Le chemin &apos;%1&apos; de l’exécutable %2 n’existe pas !</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="377"/>
-        <location filename="../src/datasourceview.cpp" line="420"/>
+        <location filename="../src/datasourceview.cpp" line="384"/>
+        <location filename="../src/datasourceview.cpp" line="427"/>
         <source>Directory exists</source>
         <translation>Le dossier existe</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="378"/>
+        <location filename="../src/datasourceview.cpp" line="385"/>
         <source>Directory %1 already exists.</source>
         <translation>Le dossier %1 existe déjà.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="420"/>
+        <location filename="../src/datasourceview.cpp" line="427"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Le dossier &apos;%1&apos; existe déjà.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="427"/>
+        <location filename="../src/datasourceview.cpp" line="434"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Veuillez patienter pendant la copie du dossier...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="441"/>
+        <location filename="../src/datasourceview.cpp" line="448"/>
+        <source>Directory locked</source>
+        <translation>Dossier verrouillé</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourceview.cpp" line="453"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Voulez-vous vraiment supprimer le dossier sélectionné ?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="442"/>
+        <location filename="../src/datasourceview.cpp" line="454"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Voulez-vous vraiment supprimer le dossier &apos;%1&apos; ? Cette action est irréversible.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="449"/>
+        <location filename="../src/datasourceview.cpp" line="461"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Veuillez patienter pendant la suppression du dossier...</translation>
     </message>
@@ -219,8 +224,8 @@
     <name>DataSourceWidget</name>
     <message>
         <location filename="../src/datasourcewidget.cpp" line="214"/>
-        <source>Edit</source>
-        <translation>Modifier</translation>
+        <source>Data source properties</source>
+        <translation>Propriétés de la source de données</translation>
     </message>
     <message>
         <location filename="../src/datasourcewidget.cpp" line="220"/>
@@ -276,8 +281,8 @@
     <name>DirectoryEditorDialog</name>
     <message>
         <location filename="../src/directoryeditordialog.ui" line="14"/>
-        <source>Edit directory</source>
-        <translation>Modifier le dossier</translation>
+        <source>Directory properties</source>
+        <translation>Propriétés du dossier</translation>
     </message>
     <message>
         <location filename="../src/directoryeditordialog.ui" line="24"/>
@@ -315,89 +320,133 @@
         <translation>Index généré automatiquement</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="112"/>
+        <location filename="../src/directoryeditordialog.ui" line="110"/>
+        <source>Protect against deletion and moving</source>
+        <translation>Protéger contre la suppression et le déplacement</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="111"/>
+        <source>Protect files directly in this directory. Subdirectories have their own lock.</source>
+        <translation>Protège les fichiers directement dans ce dossier. Les sous-dossiers ont leur propre verrou.</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="117"/>
+        <location filename="../src/directoryeditordialog.cpp" line="433"/>
+        <source>Apply to subdirectories</source>
+        <translation>Appliquer aux sous-dossiers</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="118"/>
+        <source>Immediately apply the current checkbox state to all subdirectories. Canceling this dialog will not undo these changes.</source>
+        <translation>Applique immédiatement l’état actuel de la case à tous les sous-dossiers. L’annulation de cette fenêtre ne rétablit pas ces modifications.</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.ui" line="130"/>
         <source>Add icon</source>
         <translation>Ajouter une icône</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="115"/>
+        <location filename="../src/directoryeditordialog.ui" line="133"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="122"/>
+        <location filename="../src/directoryeditordialog.ui" line="140"/>
         <source>Sort order</source>
         <translation>Ordre de tri</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="130"/>
+        <location filename="../src/directoryeditordialog.ui" line="148"/>
         <source>Ascending</source>
         <translation>Croissant</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="135"/>
+        <location filename="../src/directoryeditordialog.ui" line="153"/>
         <source>Descending</source>
         <translation>Décroissant</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.ui" line="146"/>
+        <location filename="../src/directoryeditordialog.ui" line="164"/>
         <source>Localized</source>
         <translation>Localisé</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="31"/>
-        <source>Edit data source</source>
-        <translation>Modifier la source de données</translation>
+        <location filename="../src/directoryeditordialog.cpp" line="34"/>
+        <source>Data source properties</source>
+        <translation>Propriétés de la source de données</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="84"/>
+        <location filename="../src/directoryeditordialog.cpp" line="91"/>
         <source>Failed to rename directory</source>
         <translation>Échec du renommage du dossier</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="85"/>
+        <location filename="../src/directoryeditordialog.cpp" line="92"/>
         <source>Failed to rename directory &apos;%1&apos;</source>
         <translation>Impossible de renommer le dossier &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="225"/>
+        <location filename="../src/directoryeditordialog.cpp" line="234"/>
         <source>No icon</source>
         <translation>Aucune icône</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="260"/>
+        <location filename="../src/directoryeditordialog.cpp" line="269"/>
         <source>Unable to copy icon</source>
         <translation>Impossible de copier l’icône</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="261"/>
+        <location filename="../src/directoryeditordialog.cpp" line="270"/>
         <source>Unable to copy &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Impossible de copier &apos;%1&apos; vers &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="272"/>
+        <location filename="../src/directoryeditordialog.cpp" line="281"/>
         <source>Unable to remove icon</source>
         <translation>Impossible de supprimer l’icône</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="273"/>
+        <location filename="../src/directoryeditordialog.cpp" line="282"/>
         <source>Unable to remove icon &apos;%1&apos;</source>
         <translation>Impossible de supprimer l’icône &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="332"/>
+        <location filename="../src/directoryeditordialog.cpp" line="341"/>
         <source>Select icon</source>
         <translation>Sélectionner une icône</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="398"/>
+        <location filename="../src/directoryeditordialog.cpp" line="407"/>
         <source>Unable to rename file</source>
         <translation>Impossible de renommer le fichier</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditordialog.cpp" line="399"/>
+        <location filename="../src/directoryeditordialog.cpp" line="408"/>
         <source>Unable to rename file &apos;%1&apos; to &apos;%2&apos;: %3</source>
         <translation>Impossible de renommer le fichier &apos;%1&apos; en &apos;%2&apos; : %3</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="415"/>
+        <location filename="../src/directoryeditordialog.cpp" line="422"/>
+        <source>Applying directory locks...</source>
+        <translation>Application des verrous des dossiers…</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="415"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="428"/>
+        <source>Updated directories: %1
+Failed directories: %2</source>
+        <translation>Dossiers mis à jour : %1
+Dossiers en échec : %2</translation>
+    </message>
+    <message>
+        <location filename="../src/directoryeditordialog.cpp" line="431"/>
+        <source>The operation was canceled. Completed changes were kept.</source>
+        <translation>L’opération a été annulée. Les modifications déjà effectuées ont été conservées.</translation>
     </message>
 </context>
 <context>
@@ -419,14 +468,22 @@
     </message>
 </context>
 <context>
+    <name>DirectoryProtection</name>
+    <message>
+        <location filename="../src/directoryprotection.cpp" line="42"/>
+        <source>Directory &apos;%1&apos; is locked. Unlock it in Directory properties before deleting or moving its files.</source>
+        <translation>Le dossier &apos;%1&apos; est verrouillé. Déverrouillez-le dans les propriétés du dossier avant de supprimer ou déplacer ses fichiers.</translation>
+    </message>
+</context>
+<context>
     <name>DirectoryRemover</name>
     <message>
-        <location filename="../src/directoryremover.cpp" line="70"/>
+        <location filename="../src/directoryremover.cpp" line="71"/>
         <source>Please wait while the files are being removed...</source>
         <translation>Veuillez patienter pendant la suppression des fichiers...</translation>
     </message>
     <message>
-        <location filename="../src/directoryremover.cpp" line="107"/>
+        <location filename="../src/directoryremover.cpp" line="108"/>
         <source>Directory deletion failed</source>
         <translation>Échec de la suppression du dossier</translation>
     </message>
@@ -434,7 +491,7 @@
 <context>
     <name>DirectoryRemoverWorker</name>
     <message>
-        <location filename="../src/directoryremover.cpp" line="160"/>
+        <location filename="../src/directoryremover.cpp" line="170"/>
         <source>Unable to delete &apos;%1&apos;</source>
         <translation>Impossible de supprimer &apos;%1&apos;</translation>
     </message>
@@ -526,17 +583,17 @@
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="284"/>
+        <location filename="../src/directorywidget.cpp" line="336"/>
         <source>Delete index</source>
         <translation>Supprimer l’index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="294"/>
+        <location filename="../src/directorywidget.cpp" line="346"/>
         <source>Delete all indexes</source>
         <translation>Supprimer tous les index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="349"/>
+        <location filename="../src/directorywidget.cpp" line="401"/>
         <source>The following index file will be deleted:
 
 %1
@@ -549,7 +606,7 @@ Continue?</source>
 Continuer ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="350"/>
+        <location filename="../src/directorywidget.cpp" line="402"/>
         <source>The following index files will be deleted:
 
 %1
@@ -562,22 +619,22 @@ Continue?</source>
 Continuer ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="351"/>
+        <location filename="../src/directorywidget.cpp" line="403"/>
         <source>Delete all indexes?</source>
         <translation>Supprimer tous les index ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="351"/>
+        <location filename="../src/directorywidget.cpp" line="403"/>
         <source>Delete index?</source>
         <translation>Supprimer l’index ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="376"/>
+        <location filename="../src/directorywidget.cpp" line="428"/>
         <source>Index deletion failed</source>
         <translation>Échec de la suppression de l’index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="377"/>
+        <location filename="../src/directorywidget.cpp" line="429"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -586,8 +643,8 @@ Continuer ?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="663"/>
-        <location filename="../src/directorywidget.cpp" line="664"/>
+        <location filename="../src/directorywidget.cpp" line="716"/>
+        <location filename="../src/directorywidget.cpp" line="717"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Voulez-vous vraiment déplacer les pièces sélectionnées ?</translation>
     </message>
@@ -649,22 +706,22 @@ Continuer ?</translation>
 <context>
     <name>FileCopier</name>
     <message>
-        <location filename="../src/filecopier.cpp" line="81"/>
+        <location filename="../src/filecopier.cpp" line="82"/>
         <source>Please wait while the files are being copied...</source>
         <translation>Veuillez patienter pendant la copie des fichiers...</translation>
     </message>
     <message>
-        <location filename="../src/filecopier.cpp" line="116"/>
+        <location filename="../src/filecopier.cpp" line="117"/>
         <source>Directory deletion failed</source>
         <translation>Échec de la suppression du dossier</translation>
     </message>
     <message>
-        <location filename="../src/filecopier.cpp" line="127"/>
+        <location filename="../src/filecopier.cpp" line="128"/>
         <source>Overwrite file?</source>
         <translation>Écraser le fichier ?</translation>
     </message>
     <message>
-        <location filename="../src/filecopier.cpp" line="128"/>
+        <location filename="../src/filecopier.cpp" line="129"/>
         <source>File %1 already exists. Overwrite?</source>
         <translation>Le fichier %1 existe déjà. L’écraser ?</translation>
     </message>
@@ -672,7 +729,7 @@ Continuer ?</translation>
 <context>
     <name>FileCopierWorker</name>
     <message>
-        <location filename="../src/filecopier.cpp" line="253"/>
+        <location filename="../src/filecopier.cpp" line="260"/>
         <source>Unable to copy &apos;%1&apos;: %2</source>
         <translation>Impossible de copier &apos;%1&apos; : %2</translation>
     </message>
@@ -720,32 +777,32 @@ Continuer ?</translation>
         <translation>Modifier %1</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="91"/>
+        <location filename="../src/fileeditdialog.cpp" line="93"/>
         <source>No thumbnail</source>
         <translation>Aucune miniature</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="115"/>
+        <location filename="../src/fileeditdialog.cpp" line="117"/>
         <source>Unable to copy icon</source>
         <translation>Impossible de copier l’icône</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="116"/>
+        <location filename="../src/fileeditdialog.cpp" line="118"/>
         <source>Unable to copy &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Impossible de copier &apos;%1&apos; vers &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="129"/>
+        <location filename="../src/fileeditdialog.cpp" line="131"/>
         <source>Unable to remove thumbnail</source>
         <translation>Impossible de supprimer la miniature</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="130"/>
+        <location filename="../src/fileeditdialog.cpp" line="132"/>
         <source>Unable to remove thumbnail &apos;%1&apos;</source>
         <translation>Impossible de supprimer la miniature &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/fileeditdialog.cpp" line="152"/>
+        <location filename="../src/fileeditdialog.cpp" line="154"/>
         <source>Select thumbnail</source>
         <translation>Sélectionner une miniature</translation>
     </message>
@@ -753,45 +810,51 @@ Continuer ?</translation>
 <context>
     <name>FileModel</name>
     <message>
-        <location filename="../src/filemodel.cpp" line="188"/>
+        <location filename="../src/filemodel.cpp" line="204"/>
         <source>Part name</source>
         <translation>Nom de la pièce</translation>
     </message>
     <message>
-        <location filename="../src/filemodel.cpp" line="188"/>
+        <location filename="../src/filemodel.cpp" line="204"/>
         <source>Thumbnail</source>
         <translation>Miniature</translation>
+    </message>
+    <message>
+        <location filename="../src/filemodel.cpp" line="422"/>
+        <location filename="../src/filemodel.cpp" line="503"/>
+        <source>Directory locked</source>
+        <translation>Dossier verrouillé</translation>
     </message>
 </context>
 <context>
     <name>FileMover</name>
     <message>
-        <location filename="../src/filemover.cpp" line="94"/>
+        <location filename="../src/filemover.cpp" line="95"/>
         <source>Please wait while the files are being moved...</source>
         <translation>Veuillez patienter pendant le déplacement des fichiers...</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="134"/>
+        <location filename="../src/filemover.cpp" line="135"/>
         <source>File move failed</source>
         <translation>Échec du déplacement du fichier</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="145"/>
+        <location filename="../src/filemover.cpp" line="146"/>
         <source>Overwrite file?</source>
         <translation>Écraser le fichier ?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="146"/>
+        <location filename="../src/filemover.cpp" line="147"/>
         <source>File %1 already exists. Overwrite?</source>
         <translation>Le fichier %1 existe déjà. L’écraser ?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="182"/>
+        <location filename="../src/filemover.cpp" line="183"/>
         <source>Replace directory?</source>
         <translation>Remplacer le dossier ?</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="183"/>
+        <location filename="../src/filemover.cpp" line="184"/>
         <source>Directory %1 already exists. Replace it?</source>
         <translation>Le dossier %1 existe déjà. Le remplacer ?</translation>
     </message>
@@ -799,19 +862,19 @@ Continuer ?</translation>
 <context>
     <name>FileMoverWorker</name>
     <message>
-        <location filename="../src/filemover.cpp" line="308"/>
+        <location filename="../src/filemover.cpp" line="327"/>
         <source>Unable to move &apos;%1&apos;: %2</source>
         <translation>Impossible de déplacer &apos;%1&apos; : %2</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="344"/>
+        <location filename="../src/filemover.cpp" line="363"/>
         <source>directory rename failed</source>
         <translation>échec du renommage du dossier</translation>
     </message>
     <message>
-        <location filename="../src/filemover.cpp" line="371"/>
-        <location filename="../src/filemover.cpp" line="382"/>
-        <location filename="../src/filemover.cpp" line="397"/>
+        <location filename="../src/filemover.cpp" line="390"/>
+        <location filename="../src/filemover.cpp" line="401"/>
+        <location filename="../src/filemover.cpp" line="416"/>
         <source>Unable to remove &apos;%1&apos;</source>
         <translation>Impossible de supprimer &apos;%1&apos;</translation>
     </message>
@@ -967,8 +1030,8 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
     </message>
     <message>
         <location filename="../src/filtersdialog.cpp" line="30"/>
-        <source>Hide ZIMA-CAD archive versions (.1, .2, ...)</source>
-        <translation>Masquer les versions archivées ZIMA-CAD (.1, .2, ...)</translation>
+        <source>Show ZIMA-CAD archive versions (.1, .2, ...)</source>
+        <translation>Afficher les versions archivées ZIMA-CAD (.1, .2, ...)</translation>
     </message>
     <message>
         <location filename="../src/filtersdialog.cpp" line="43"/>
@@ -1012,14 +1075,14 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
         <translation>Onglets</translation>
     </message>
     <message>
-        <location filename="../src/maintabwidget.cpp" line="19"/>
-        <location filename="../src/maintabwidget.cpp" line="216"/>
+        <location filename="../src/maintabwidget.cpp" line="25"/>
+        <location filename="../src/maintabwidget.cpp" line="222"/>
         <source>Open a new tab</source>
         <translation>Ouvrir un nouvel onglet</translation>
     </message>
     <message>
-        <location filename="../src/maintabwidget.cpp" line="22"/>
-        <location filename="../src/maintabwidget.cpp" line="214"/>
+        <location filename="../src/maintabwidget.cpp" line="28"/>
+        <location filename="../src/maintabwidget.cpp" line="220"/>
         <source>Add tabs by pressing &quot;+&quot;</source>
         <translation>Ajoutez des onglets avec « + »</translation>
     </message>
