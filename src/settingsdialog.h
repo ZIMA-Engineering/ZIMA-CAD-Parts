@@ -32,6 +32,7 @@
 class QListWidgetItem;
 class QCheckBox;
 class UpdatesPage;
+class AiSettingsPage;
 
 namespace Ui {
 class SettingsDialog;
@@ -47,6 +48,7 @@ public:
         DataSources,
         ExternalPrograms,
         Updates,
+        AI,
         SectionCount
     };
 
@@ -79,6 +81,7 @@ private:
     QLineEdit *m_toolsMasks;
     DataSourceList m_editedDS;
     UpdatesPage *m_updatesPage;
+    AiSettingsPage *m_aiPage;
 
     void setupDatasourceList();
 };

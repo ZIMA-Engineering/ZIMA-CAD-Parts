@@ -17,6 +17,7 @@ DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
     : QWidget(parent)
 {
     setupUi(this);
+    connect(dirWidget, &DirectoryWidget::aiReferencesRequested, this, &DataSourceWidget::aiReferencesRequested);
 
     dsList->setStyleSheet(NavBar::loadStyle(":/styles/office2003gray.css"));
 
@@ -214,6 +215,9 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
         tr("Open in a new tab")
     );
     openInNewTabAction->setEnabled(QFileInfo(dataSource->rootPath).isDir());
+    auto aiAction = menu.addAction(QIcon(":/gfx/navigation/terminal.svg"), tr("Add to AI question"));
+    aiAction->setObjectName("addToAiQuestion");
+    aiAction->setEnabled(QFileInfo(dataSource->rootPath).isDir());
     menu.addSeparator();
 
     QAction *editAction = menu.addAction(
@@ -232,6 +236,10 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
     if (selectedAction == openInNewTabAction)
     {
         emit openInANewTabRequested(dataSource->rootPath);
+    }
+    else if (selectedAction == aiAction)
+    {
+        emit aiReferencesRequested({dataSource->rootPath});
     }
     else if (selectedAction == editAction)
     {
@@ -294,6 +302,7 @@ void DataSourceWidget::setupDataSources(const QString &dir)
     foreach(DataSource *ds, Settings::get()->DataSources)
     {
         DataSourceView *view = new DataSourceView(ds->rootPath, this);
+        connect(view, &DataSourceView::aiReferencesRequested, this, &DataSourceWidget::aiReferencesRequested);
 
         connect(view, SIGNAL(showSettings(SettingsDialog::Section)),
                 this, SIGNAL(showSettings(SettingsDialog::Section)));

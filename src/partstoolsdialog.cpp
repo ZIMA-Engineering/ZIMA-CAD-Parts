@@ -132,6 +132,58 @@ void PartsToolsDialog::invalidate()
     m_plan = {};
     m_files->clear();
 }
+void PartsToolsDialog::setPreparedPlan(const PartsCore::ToolPlan &plan)
+{
+    if (m_worker || plan.request.tool != m_tool) return;
+    m_path->setText(plan.request.path);
+    m_recursive->setChecked(plan.request.recursive);
+    if (m_output) m_output->setText(plan.request.outputDirectory);
+    if (m_old) m_old->setChecked(plan.request.oldVersions);
+    if (m_masks) m_masks->setText(plan.request.patterns.join(';'));
+    for (auto it = m_fields.begin(); it != m_fields.end(); ++it) {
+        it.value().first->setChecked(plan.request.fields.contains(it.key()));
+        it.value().second->setText(plan.request.fields[it.key()].toString());
+    }
+    m_plan = plan;
+    m_prepared = true;
+    m_options->setEnabled(false);
+    // An AI review shows the captured operation, not a second editing form.
+    for (auto button : m_options->findChildren<QPushButton *>()) button->hide();
+    auto form = qobject_cast<QFormLayout *>(m_options->layout());
+    form->setRowVisible(m_recursive, plan.request.recursive);
+    for (auto it = m_fields.begin(); it != m_fields.end(); ++it)
+        form->setRowVisible(it.value().first, plan.request.fields.contains(it.key()));
+    if (m_masks) form->setRowVisible(m_masks, !plan.request.patterns.isEmpty());
+    m_files->setMinimumHeight(100);
+    m_files->setMaximumHeight(180);
+    m_preview->hide();
+    m_apply->setText(tr("Allow selected"));
+    m_apply->setAutoDefault(false);
+    m_apply->setDefault(false);
+    m_cancel->setText(tr("Deny"));
+    m_cancel->setObjectName("denyPartsOperation");
+    m_cancel->setDefault(true);
+    showPlan();
+}
+
+void PartsToolsDialog::showPlan()
+{
+    m_files->clear();
+    for (const auto &item : m_plan.items) {
+        QString detail = !item.output.isEmpty() ? item.output : !item.keeper.isEmpty() ? tr("Keep: %1").arg(item.keeper) : QString();
+        if (!item.fields.isEmpty()) detail = QString::fromUtf8(QJsonDocument(item.fields).toJson(QJsonDocument::Compact));
+        auto row = new QTreeWidgetItem(m_files, {item.path, detail});
+        row->setCheckState(0, Qt::Checked);
+    }
+    for (const auto &value : m_plan.skipped) {
+        const auto item = value.toObject();
+        auto row = new QTreeWidgetItem(m_files, {item["path"].toString(), item["reason"].toString()});
+        row->setDisabled(true);
+    }
+    m_status->setText(tr("Ready: %1. Skipped: %2.").arg(m_plan.items.size()).arg(m_plan.skipped.size()));
+    m_apply->setEnabled(!m_plan.items.isEmpty() && (m_tool != "step-edit" || !m_plan.request.fields.isEmpty())
+        && (m_tool != "ps2pdf" || !PartsCore::ghostscriptExecutable().isEmpty()));
+}
 void PartsToolsDialog::start(bool apply)
 {
     if (m_worker) return;
@@ -154,7 +206,7 @@ void PartsToolsDialog::start(bool apply)
         for (int i = 0; i < m_plan.items.size(); ++i)
             if (m_files->topLevelItem(i)->checkState(0) == Qt::Checked) selected.items.append(m_plan.items[i]);
         if (selected.items.isEmpty()) return;
-        if (QMessageBox::question(this, title(m_tool), tr("Apply this operation to %1 selected files?").arg(selected.items.size()),
+        if (!m_prepared && QMessageBox::question(this, title(m_tool), tr("Apply this operation to %1 selected files?").arg(selected.items.size()),
             QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) return;
     }
     auto worker = QThread::create([request, selected, apply, result, applied, error] {
@@ -167,9 +219,13 @@ void PartsToolsDialog::start(bool apply)
     connect(worker, &QThread::finished, worker, &QObject::deleteLater);
     connect(worker, &QThread::finished, this, [this, result, applied, error, apply] {
         m_worker = nullptr;
-        m_options->setEnabled(true); m_preview->setEnabled(true); m_files->setEnabled(true); m_cancel->setText(tr("Close"));
+        m_options->setEnabled(!m_prepared); m_preview->setEnabled(true); m_files->setEnabled(true); m_cancel->setText(tr("Close"));
         invalidate();
-        if (!error->isEmpty()) { m_status->setText(*error); return; }
+        if (!error->isEmpty()) {
+            m_status->setText(*error);
+            if (m_prepared) { m_operationResult = {{"error", *error}}; QDialog::accept(); }
+            return;
+        }
         if (apply) {
             for (const auto &kind : {"completed", "failed", "skipped"})
                 for (const auto &value : (*applied)[kind].toArray()) {
@@ -179,22 +235,10 @@ void PartsToolsDialog::start(bool apply)
             m_status->setText(tr("Completed: %1. Failed: %2. Skipped: %3.")
                 .arg((*applied)["completed"].toArray().size()).arg((*applied)["failed"].toArray().size()).arg((*applied)["skipped"].toArray().size()));
             if (!(*applied)["completed"].toArray().isEmpty()) emit filesChanged();
+            if (m_prepared) { m_operationResult = *applied; QDialog::accept(); }
         } else {
             m_plan = *result;
-            for (const auto &item : m_plan.items) {
-                QString detail = !item.output.isEmpty() ? item.output : !item.keeper.isEmpty() ? tr("Keep: %1").arg(item.keeper) : QString();
-                if (!item.fields.isEmpty()) detail = QString::fromUtf8(QJsonDocument(item.fields).toJson(QJsonDocument::Compact));
-                auto row = new QTreeWidgetItem(m_files, {item.path, detail});
-                row->setCheckState(0, Qt::Checked);
-            }
-            for (const auto &value : m_plan.skipped) {
-                const auto item = value.toObject();
-                auto row = new QTreeWidgetItem(m_files, {item["path"].toString(), item["reason"].toString()});
-                row->setDisabled(true);
-            }
-            m_status->setText(tr("Ready: %1. Skipped: %2.").arg(m_plan.items.size()).arg(m_plan.skipped.size()));
-            m_apply->setEnabled(!m_plan.items.isEmpty() && (m_tool != "step-edit" || !m_plan.request.fields.isEmpty())
-                && (m_tool != "ps2pdf" || !PartsCore::ghostscriptExecutable().isEmpty()));
+            showPlan();
         }
     });
     worker->start();

@@ -231,6 +231,19 @@ GUI and CLI reuse the same naming, enumeration and local parameter rules.
 The [bottom command panel](doc/command-panel.md) shares the command processor
 with the CLI and supplies the active tab as the default directory.
 
+Enter `codex` in that panel for an optional [AI conversation](doc/ai-command-panel.md)
+using your own ChatGPT account. Codex discovers the available commands and
+reads directories as requested; Parts file changes go through the existing review.
+Drag files/directories into the panel or use **Add to AI question** to insert
+full quoted paths into your draft. System commands have an inline review
+before running with your OS user permissions; Parts directory locks do not
+constrain those commands.
+Configure the native Codex executable and sign in under **Settings > AI**.
+Use `/exit` to return to ordinary Parts commands.
+
+The input stays editable while Codex is working. Completion, errors and Stop
+preserve the next draft; it is sent only after your explicit submission.
+
 The built-in [PS2PDF, PTC-Cleaner and STEP-Edit](doc/integrated-tools.md)
 functions are available from the GUI and CLI. ZIMA-CAD-Sync is no longer offered.
 

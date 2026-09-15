@@ -21,11 +21,13 @@ public:
     void deleteParts();
     void refreshRequested();
     QString currentPath();
+    QStringList selectedReferencePaths();
 
 signals:
     void previewProductView(const QFileInfo &fi);
     void hideProductView();
     void openPartDirectory(const QFileInfo &fi);
+    void aiReferencesRequested(const QStringList &paths);
 
 public slots:
     void setDirectory(const QString &path);
@@ -36,6 +38,7 @@ public slots:
 protected:
     void hideEvent(QHideEvent *event) override;
     void scrollContentsBy(int dx, int dy);
+    void startDrag(Qt::DropActions supportedActions) override;
 
 private:
     QString m_path;

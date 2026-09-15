@@ -65,6 +65,60 @@
     </message>
 </context>
 <context>
+    <name>AiSettingsPage</name>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="44"/>
+        <location filename="../src/ai/aisettingspage.cpp" line="90"/>
+        <source>Codex executable</source>
+        <translation>Exécutable Codex</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="87"/>
+        <source>Use Codex with your own ChatGPT account. Type codex in the command panel to start; /exit returns to Parts commands. AI receives the active and working directory paths and reads files only through requested tools. Requested text and tool results are sent to OpenAI. File changes require your approval. Account limits apply. Connection and sign-in buttons act immediately.</source>
+        <translation>Utilisez Codex avec votre propre compte ChatGPT. Saisissez codex dans le panneau de commandes ; /exit revient aux commandes Parts. L’IA reçoit les chemins du dossier actif et du dossier de travail et lit les fichiers uniquement via les outils demandés. Les textes demandés et les résultats des outils sont envoyés à OpenAI. Toute modification de fichier exige votre accord. Les limites du compte s’appliquent. Les boutons de connexion agissent immédiatement.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="90"/>
+        <source>Model</source>
+        <translation>Modèle</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="93"/>
+        <source>Codex default</source>
+        <translation>Modèle Codex par défaut</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="94"/>
+        <source>Browse...</source>
+        <translation>Parcourir...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="94"/>
+        <source>Connect</source>
+        <translation>Connecter</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="95"/>
+        <source>Sign in with ChatGPT</source>
+        <translation>Se connecter avec ChatGPT</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="95"/>
+        <source>Sign out</source>
+        <translation>Se déconnecter</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="96"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="96"/>
+        <source>Get Codex / installation instructions</source>
+        <translation>Obtenir Codex / instructions d’installation</translation>
+    </message>
+</context>
+<context>
     <name>BrowserPage</name>
     <message>
         <location filename="../src/browserpage.cpp" line="71"/>
@@ -73,42 +127,239 @@
     </message>
 </context>
 <context>
-    <name>CommandPanel</name>
+    <name>CodexProvider</name>
     <message>
-        <location filename="../src/commandpanel.cpp" line="61"/>
-        <source>Commands: help, list, params, ps2pdf, ptc-clean, step-edit. Tools preview first; --apply executes. History: Up / Down.</source>
-        <translation>Commandes : help, list, params, ps2pdf, ptc-clean, step-edit. Aperçu par défaut ; --apply exécute les opérations. Historique : haut / bas.</translation>
+        <location filename="../src/ai/codexprovider.cpp" line="45"/>
+        <source>AI is disconnected.</source>
+        <translation>L’IA est déconnectée.</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="62"/>
+        <location filename="../src/ai/codexprovider.cpp" line="47"/>
+        <source>Codex did not respond in time. Connect again to retry.</source>
+        <translation>Codex n’a pas répondu à temps. Reconnectez-vous pour réessayer.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="86"/>
+        <source>Choose the native Codex executable in Settings &gt; AI.</source>
+        <translation>Choisissez l’exécutable natif de Codex dans Paramètres &gt; IA.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="89"/>
+        <source>Cannot create the private AI profile.</source>
+        <translation>Impossible de créer le profil privé de l’IA.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="91"/>
+        <source>Connecting to Codex...</source>
+        <translation>Connexion à Codex...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="114"/>
+        <source>Could not start Codex.</source>
+        <translation>Impossible de démarrer Codex.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="117"/>
+        <source>Codex disconnected. Connect again in Settings &gt; AI.</source>
+        <translation>Codex s’est déconnecté. Reconnectez-vous dans Paramètres &gt; IA.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="146"/>
+        <location filename="../src/ai/codexprovider.cpp" line="244"/>
+        <source>Codex sent an oversized response.</source>
+        <translation>Codex a envoyé une réponse trop volumineuse.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="155"/>
+        <location filename="../src/ai/codexprovider.cpp" line="224"/>
+        <location filename="../src/ai/codexprovider.cpp" line="228"/>
+        <location filename="../src/ai/codexprovider.cpp" line="252"/>
+        <source>Invalid Codex protocol response.</source>
+        <translation>Réponse de protocole Codex invalide.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="165"/>
+        <location filename="../src/ai/codexprovider.cpp" line="256"/>
+        <source>Connected with ChatGPT.</source>
+        <translation>Connecté avec ChatGPT.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="165"/>
+        <source>Sign in with your ChatGPT account.</source>
+        <translation>Connectez-vous avec votre compte ChatGPT.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="180"/>
+        <source>Codex exceeded the tool limit or sent an invalid tool request.</source>
+        <translation>Codex a dépassé la limite d’outils ou envoyé une demande invalide.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="190"/>
+        <source>An unsupported Codex tool was blocked. Check any earlier operation results.</source>
+        <translation>Un outil Codex non pris en charge a été bloqué. Vérifiez les résultats des opérations précédentes.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="198"/>
+        <source>Codex could not complete %1 (error %2). Check your account and runtime version.</source>
+        <translation>Codex n’a pas pu terminer %1 (erreur %2). Vérifiez votre compte et la version de Codex.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="216"/>
+        <source>Codex returned an unsupported sign-in address.</source>
+        <translation>Codex a renvoyé une adresse de connexion non prise en charge.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="219"/>
+        <source>Complete sign-in in your browser.</source>
+        <translation>Terminez la connexion dans votre navigateur.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="235"/>
+        <source>ChatGPT sign-in was not completed.</source>
+        <translation>La connexion à ChatGPT n’a pas été terminée.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="251"/>
+        <source>AI request failed or was interrupted. Check any reported file operation results.</source>
+        <translation>La demande à l’IA a échoué ou a été interrompue. Vérifiez les résultats signalés des opérations sur les fichiers.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="266"/>
+        <source>Opening ChatGPT sign-in...</source>
+        <translation>Ouverture de la connexion à ChatGPT...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="279"/>
+        <source>Connect your ChatGPT account in Settings &gt; AI first.</source>
+        <translation>Connectez d’abord votre compte ChatGPT dans Paramètres &gt; IA.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="281"/>
+        <source>The AI request is too large.</source>
+        <translation>La demande à l’IA est trop volumineuse.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="286"/>
+        <source>Codex is working...</source>
+        <translation>Codex travaille...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="323"/>
+        <source>Cancelled. Connect again to continue.</source>
+        <translation>Annulé. Reconnectez-vous pour continuer.</translation>
+    </message>
+</context>
+<context>
+    <name>CommandPanel</name>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="159"/>
         <source>Enter a command, e.g. list or params &quot;part.pdf&quot;</source>
         <translation>Saisissez une commande, par ex. list ou params &quot;piece.pdf&quot;</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="63"/>
+        <location filename="../src/commandpanel.cpp" line="160"/>
         <source>Reading...</source>
         <translation>Lecture…</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="63"/>
+        <location filename="../src/commandpanel.cpp" line="160"/>
         <source>Run</source>
         <translation>Exécuter</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="64"/>
+        <location filename="../src/commandpanel.cpp" line="165"/>
         <source>Clear output</source>
         <translation>Effacer la sortie</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="105"/>
-        <location filename="../src/commandpanel.cpp" line="120"/>
+        <location filename="../src/commandpanel.cpp" line="75"/>
+        <location filename="../src/commandpanel.cpp" line="229"/>
+        <location filename="../src/commandpanel.cpp" line="244"/>
+        <location filename="../src/commandpanel.cpp" line="301"/>
         <source>Error: %1</source>
         <translation>Erreur : %1</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="124"/>
+        <location filename="../src/commandpanel.cpp" line="83"/>
+        <source>AI stopped. Any completed file operations remain applied.</source>
+        <translation>L’IA est arrêtée. Les opérations déjà effectuées sur les fichiers restent appliquées.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="156"/>
+        <source>Codex conversation. /exit: Parts commands. /new: new conversation. File changes require approval.</source>
+        <translation>Conversation Codex. /exit : commandes Parts. /new : nouvelle conversation. Les modifications exigent votre accord.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="157"/>
+        <source>Commands: help, list, params, ps2pdf, ptc-clean, step-edit, codex. Tools preview first; --apply executes. History: Up / Down.</source>
+        <translation>Commandes : help, list, params, ps2pdf, ptc-clean, step-edit, codex. Les outils affichent d’abord un aperçu ; --apply exécute. Historique : haut / bas.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="158"/>
+        <source>Ask Codex, or drop files and directories here...</source>
+        <translation>Interrogez Codex ou déposez ici des fichiers et dossiers...</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="160"/>
+        <source>Working...</source>
+        <translation>Traitement...</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="160"/>
+        <source>Send</source>
+        <translation>Envoyer</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="162"/>
+        <source>AI settings...</source>
+        <translation>Paramètres IA...</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="164"/>
+        <source>Stop</source>
+        <translation>Arrêter</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="201"/>
+        <source>Codex mode. Your requests use the active directory. Type /exit to return.</source>
+        <translation>Mode Codex. Vos demandes utilisent le dossier actif. Saisissez /exit pour revenir.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="215"/>
+        <source>New conversation.</source>
+        <translation>Nouvelle conversation.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="248"/>
+        <location filename="../src/commandpanel.cpp" line="263"/>
         <source>Output was truncated. Use the CLI for complete JSON.</source>
         <translation>La sortie a été tronquée. Utilisez la CLI pour obtenir le JSON complet.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="269"/>
+        <source>Connect your ChatGPT account in AI settings first.</source>
+        <translation>Connectez d’abord votre compte ChatGPT dans les paramètres IA.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="120"/>
+        <location filename="../src/commandpanel.cpp" line="272"/>
+        <source>The AI request is too large.</source>
+        <translation>La demande à l’IA est trop volumineuse.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="110"/>
+        <source>Cannot insert AI paths: %1</source>
+        <translation>Impossible d’insérer les chemins dans la question IA : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="383"/>
+        <source>System command: %1</source>
+        <translation>Commande système : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="426"/>
+        <source>AI tool: %1</source>
+        <translation>Outil IA : %1</translation>
     </message>
 </context>
 <context>
@@ -142,83 +393,88 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="269"/>
+        <location filename="../src/datasourceview.cpp" line="272"/>
         <source>Scripts...</source>
         <translation>Scripts...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="295"/>
+        <location filename="../src/datasourceview.cpp" line="300"/>
         <source>Open</source>
         <translation>Ouvrir</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="296"/>
+        <location filename="../src/datasourceview.cpp" line="301"/>
         <source>Open in a new tab</source>
         <translation>Ouvrir dans un nouvel onglet</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="297"/>
+        <location filename="../src/datasourceview.cpp" line="302"/>
+        <source>Add to AI question</source>
+        <translation>Ajouter à la question IA</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourceview.cpp" line="306"/>
         <source>Set as working directory</source>
         <translation>Définir comme dossier de travail</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="298"/>
+        <location filename="../src/datasourceview.cpp" line="307"/>
         <source>Create directory</source>
         <translation>Créer un dossier</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="302"/>
+        <location filename="../src/datasourceview.cpp" line="311"/>
         <source>Directory properties</source>
         <translation>Propriétés du dossier</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="303"/>
+        <location filename="../src/datasourceview.cpp" line="312"/>
         <source>Copy as...</source>
         <translation>Copier sous...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="304"/>
+        <location filename="../src/datasourceview.cpp" line="313"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="359"/>
-        <location filename="../src/datasourceview.cpp" line="402"/>
+        <location filename="../src/datasourceview.cpp" line="368"/>
+        <location filename="../src/datasourceview.cpp" line="411"/>
         <source>Directory exists</source>
         <translation>Le dossier existe</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="360"/>
+        <location filename="../src/datasourceview.cpp" line="369"/>
         <source>Directory %1 already exists.</source>
         <translation>Le dossier %1 existe déjà.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="402"/>
+        <location filename="../src/datasourceview.cpp" line="411"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Le dossier &apos;%1&apos; existe déjà.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="409"/>
+        <location filename="../src/datasourceview.cpp" line="418"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Veuillez patienter pendant la copie du dossier...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="423"/>
+        <location filename="../src/datasourceview.cpp" line="432"/>
         <source>Directory locked</source>
         <translation>Dossier verrouillé</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="428"/>
+        <location filename="../src/datasourceview.cpp" line="437"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Voulez-vous vraiment supprimer le dossier sélectionné ?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="429"/>
+        <location filename="../src/datasourceview.cpp" line="438"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Voulez-vous vraiment supprimer le dossier &apos;%1&apos; ? Cette action est irréversible.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="436"/>
+        <location filename="../src/datasourceview.cpp" line="445"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Veuillez patienter pendant la suppression du dossier...</translation>
     </message>
@@ -226,17 +482,22 @@
 <context>
     <name>DataSourceWidget</name>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="214"/>
+        <location filename="../src/datasourcewidget.cpp" line="215"/>
         <source>Open in a new tab</source>
         <translation>Ouvrir dans un nouvel onglet</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="221"/>
+        <location filename="../src/datasourcewidget.cpp" line="218"/>
+        <source>Add to AI question</source>
+        <translation>Ajouter à la question IA</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="225"/>
         <source>Data source properties</source>
         <translation>Propriétés de la source de données</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="227"/>
+        <location filename="../src/datasourcewidget.cpp" line="231"/>
         <source>Edit in settings</source>
         <translation>Modifier dans les paramètres</translation>
     </message>
@@ -591,17 +852,17 @@ Dossiers en échec : %2</translation>
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="345"/>
+        <location filename="../src/directorywidget.cpp" line="346"/>
         <source>Delete index</source>
         <translation>Supprimer l’index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="355"/>
+        <location filename="../src/directorywidget.cpp" line="356"/>
         <source>Delete all indexes</source>
         <translation>Supprimer tous les index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="410"/>
+        <location filename="../src/directorywidget.cpp" line="411"/>
         <source>The following index file will be deleted:
 
 %1
@@ -614,7 +875,7 @@ Continue?</source>
 Continuer ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="411"/>
+        <location filename="../src/directorywidget.cpp" line="412"/>
         <source>The following index files will be deleted:
 
 %1
@@ -627,22 +888,22 @@ Continue?</source>
 Continuer ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="412"/>
+        <location filename="../src/directorywidget.cpp" line="413"/>
         <source>Delete all indexes?</source>
         <translation>Supprimer tous les index ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="412"/>
+        <location filename="../src/directorywidget.cpp" line="413"/>
         <source>Delete index?</source>
         <translation>Supprimer l’index ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="437"/>
+        <location filename="../src/directorywidget.cpp" line="438"/>
         <source>Index deletion failed</source>
         <translation>Échec de la suppression de l’index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="438"/>
+        <location filename="../src/directorywidget.cpp" line="439"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -651,18 +912,18 @@ Continuer ?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="726"/>
         <location filename="../src/directorywidget.cpp" line="727"/>
+        <location filename="../src/directorywidget.cpp" line="728"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Voulez-vous vraiment déplacer les pièces sélectionnées ?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="750"/>
+        <location filename="../src/directorywidget.cpp" line="751"/>
         <source>Update available</source>
         <translation>Mise à jour disponible</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="751"/>
+        <location filename="../src/directorywidget.cpp" line="752"/>
         <source>New version %1. Open Settings to install it.</source>
         <translation>Nouvelle version %1. Ouvrez les paramètres pour l’installer.</translation>
     </message>
@@ -974,42 +1235,47 @@ Continuer ?</translation>
 <context>
     <name>FileView</name>
     <message>
-        <location filename="../src/fileview.cpp" line="140"/>
+        <location filename="../src/fileview.cpp" line="144"/>
         <source>HTML index file already exists</source>
         <translation>Le fichier d’index HTML existe déjà</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="141"/>
+        <location filename="../src/fileview.cpp" line="145"/>
         <source>HTML index for already exists, would you like to overwrite it?</source>
         <translation>L’index HTML existe déjà. Voulez-vous l’écraser ?</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="170"/>
+        <location filename="../src/fileview.cpp" line="174"/>
         <source>Please wait while the parts are being removed...</source>
         <translation>Veuillez patienter pendant la suppression des pièces...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="187"/>
+        <location filename="../src/fileview.cpp" line="191"/>
         <source>Please wait while the parts are being copied...</source>
         <translation>Veuillez patienter pendant la copie des pièces...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="284"/>
+        <location filename="../src/fileview.cpp" line="288"/>
         <source>ProE Startup Error</source>
         <translation>Erreur de démarrage de Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="285"/>
+        <location filename="../src/fileview.cpp" line="289"/>
         <source>An error occured while ProE has been requested to start</source>
         <translation>Une erreur s’est produite lors du démarrage de Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="305"/>
+        <location filename="../src/fileview.cpp" line="314"/>
+        <source>Add to AI question</source>
+        <translation>Ajouter à la question IA</translation>
+    </message>
+    <message>
+        <location filename="../src/fileview.cpp" line="319"/>
         <source>Rename</source>
         <translation>Renommer</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="308"/>
+        <location filename="../src/fileview.cpp" line="322"/>
         <source>Edit</source>
         <translation>Modifier</translation>
     </message>
@@ -1094,13 +1360,13 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
     </message>
     <message>
         <location filename="../src/maintabwidget.cpp" line="25"/>
-        <location filename="../src/maintabwidget.cpp" line="222"/>
+        <location filename="../src/maintabwidget.cpp" line="223"/>
         <source>Open a new tab</source>
         <translation>Ouvrir un nouvel onglet</translation>
     </message>
     <message>
         <location filename="../src/maintabwidget.cpp" line="28"/>
-        <location filename="../src/maintabwidget.cpp" line="220"/>
+        <location filename="../src/maintabwidget.cpp" line="221"/>
         <source>Add tabs by pressing &quot;+&quot;</source>
         <translation>Ajoutez des onglets avec « + »</translation>
     </message>
@@ -1147,8 +1413,8 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="102"/>
-        <location filename="../src/mainwindow.cpp" line="196"/>
+        <location filename="../src/mainwindow.cpp" line="104"/>
+        <location filename="../src/mainwindow.cpp" line="208"/>
         <source>Command panel</source>
         <translation>Panneau de commandes</translation>
     </message>
@@ -1561,7 +1827,7 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
     </message>
     <message>
         <location filename="../src/partstoolsdialog.cpp" line="105"/>
-        <location filename="../src/partstoolsdialog.cpp" line="170"/>
+        <location filename="../src/partstoolsdialog.cpp" line="222"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
@@ -1571,32 +1837,42 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
         <translation>Annulation…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="157"/>
+        <location filename="../src/partstoolsdialog.cpp" line="160"/>
+        <source>Allow selected</source>
+        <translation>Autoriser la sélection</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="163"/>
+        <source>Deny</source>
+        <translation>Refuser</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="209"/>
         <source>Apply this operation to %1 selected files?</source>
         <translation>Appliquer cette opération aux %1 fichiers sélectionnés ?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <location filename="../src/partstoolsdialog.cpp" line="218"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <location filename="../src/partstoolsdialog.cpp" line="218"/>
         <source>Working...</source>
         <translation>Traitement…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="179"/>
+        <location filename="../src/partstoolsdialog.cpp" line="235"/>
         <source>Completed: %1. Failed: %2. Skipped: %3.</source>
         <translation>Terminés : %1. Échecs : %2. Ignorés : %3.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="185"/>
+        <location filename="../src/partstoolsdialog.cpp" line="173"/>
         <source>Keep: %1</source>
         <translation>Conserver : %1</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="195"/>
+        <location filename="../src/partstoolsdialog.cpp" line="183"/>
         <source>Ready: %1. Skipped: %2.</source>
         <translation>Prêts : %1. Ignorés : %2.</translation>
     </message>
@@ -2387,50 +2663,134 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
         <translation>Barre d’outils des spécifications techniques</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="68"/>
-        <location filename="../src/settingsdialog.cpp" line="131"/>
+        <location filename="../src/settingsdialog.cpp" line="69"/>
+        <location filename="../src/settingsdialog.cpp" line="134"/>
         <source>Updates</source>
         <translation>Mises à jour</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="102"/>
+        <location filename="../src/settingsdialog.cpp" line="71"/>
+        <location filename="../src/settingsdialog.cpp" line="135"/>
+        <source>AI</source>
+        <translation>IA</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="105"/>
         <source>Include subdirectories by default</source>
         <translation>Inclure les sous-dossiers par défaut</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="104"/>
+        <location filename="../src/settingsdialog.cpp" line="107"/>
         <source>Cleaner: remove old numbered versions</source>
         <translation>Nettoyage : supprimer les anciennes versions numérotées</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="109"/>
+        <location filename="../src/settingsdialog.cpp" line="112"/>
         <source>Cleaner: additional masks (semicolon separated)</source>
         <translation>Nettoyage : masques supplémentaires (séparés par un point-virgule)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="113"/>
+        <location filename="../src/settingsdialog.cpp" line="116"/>
         <source>Ghostscript runtime is missing</source>
         <translation>Le moteur Ghostscript est absent</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="329"/>
+        <location filename="../src/settingsdialog.cpp" line="334"/>
         <source>Locate ProE launcher</source>
         <translation>Localiser le lanceur Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="331"/>
+        <location filename="../src/settingsdialog.cpp" line="336"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Exécutable Pro/E (proe.exe);;Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="339"/>
+        <location filename="../src/settingsdialog.cpp" line="344"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts – sélectionner un éditeur de texte</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="347"/>
+        <location filename="../src/settingsdialog.cpp" line="352"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts – sélectionner un terminal</translation>
+    </message>
+</context>
+<context>
+    <name>SystemCommandDialog</name>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="23"/>
+        <source>Review system command</source>
+        <translation>Vérifier la commande système</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="35"/>
+        <source>Purpose: %1</source>
+        <translation>Objectif : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="36"/>
+        <source>Working directory: %1</source>
+        <translation>Dossier de travail : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="37"/>
+        <source>Shell: %1</source>
+        <translation>Interpréteur : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="41"/>
+        <source>Runs with your user permissions, including access outside the attached paths. System commands do not enforce Parts directory locks.</source>
+        <translation>S’exécute avec vos droits, y compris l’accès en dehors des chemins joints. Les commandes système ne respectent pas automatiquement les verrous de dossiers de Parts.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="46"/>
+        <source>Nothing runs until you confirm this command.</source>
+        <translation>Rien ne s’exécute avant votre confirmation de cette commande.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="48"/>
+        <source>Run command</source>
+        <translation>Exécuter la commande</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="50"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="60"/>
+        <source>Could not start the system shell.</source>
+        <translation>Impossible de démarrer l’interpréteur système.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="75"/>
+        <source>Could not control the system process tree.</source>
+        <translation>Impossible de contrôler l’arborescence des processus système.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="95"/>
+        <source>Allow</source>
+        <translation>Autoriser</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="96"/>
+        <source>Deny</source>
+        <translation>Refuser</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="108"/>
+        <source>The working directory changed. Request the command again.</source>
+        <translation>Le dossier de travail a changé. Demandez à nouveau la commande.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="113"/>
+        <source>Stop</source>
+        <translation>Arrêter</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="113"/>
+        <source>Command is running...</source>
+        <translation>Exécution de la commande...</translation>
     </message>
 </context>
 <context>
@@ -2478,32 +2838,32 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
 <context>
     <name>UpdateService</name>
     <message>
-        <location filename="../src/updateservice.cpp" line="21"/>
+        <location filename="../src/updateservice.cpp" line="45"/>
         <source>Update response is too large.</source>
         <translation>La réponse du service de mise à jour est trop volumineuse.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="34"/>
+        <location filename="../src/updateservice.cpp" line="63"/>
         <source>The update component could not be started.</source>
         <translation>Impossible de démarrer le composant de mise à jour.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="38"/>
+        <location filename="../src/updateservice.cpp" line="67"/>
         <source>Update cancelled. The installed version is unchanged.</source>
         <translation>Mise à jour annulée. La version installée est inchangée.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="41"/>
+        <location filename="../src/updateservice.cpp" line="70"/>
         <source>The update operation failed.</source>
         <translation>La mise à jour a échoué.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="74"/>
+        <location filename="../src/updateservice.cpp" line="106"/>
         <source>Use the distribution launcher to install updates.</source>
         <translation>Utilisez le lanceur du paquet de distribution pour installer les mises à jour.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="77"/>
+        <location filename="../src/updateservice.cpp" line="117"/>
         <source>The installer could not be started.</source>
         <translation>Impossible de démarrer le programme d’installation.</translation>
     </message>
@@ -2511,114 +2871,114 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
 <context>
     <name>UpdatesPage</name>
     <message>
-        <location filename="../src/updatespage.cpp" line="39"/>
-        <location filename="../src/updatespage.cpp" line="53"/>
+        <location filename="../src/updatespage.cpp" line="42"/>
+        <location filename="../src/updatespage.cpp" line="56"/>
         <source>Install update</source>
         <translation>Installer la mise à jour</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="39"/>
+        <location filename="../src/updatespage.cpp" line="42"/>
         <source>Download and install the update, then restart Parts? Your project files will be preserved.</source>
         <translation>Télécharger et installer la mise à jour, puis redémarrer Parts ? Les fichiers de vos projets seront conservés.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="43"/>
-        <location filename="../src/updatespage.cpp" line="54"/>
+        <location filename="../src/updatespage.cpp" line="46"/>
+        <location filename="../src/updatespage.cpp" line="57"/>
         <source>Return to previous version</source>
         <translation>Revenir à la version précédente</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="43"/>
+        <location filename="../src/updatespage.cpp" line="46"/>
         <source>Restart Parts with the previous verified version? This does not restore older project data.</source>
         <translation>Redémarrer Parts avec la version vérifiée précédente ? Cela ne restaure pas les anciennes données des projets.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="52"/>
+        <location filename="../src/updatespage.cpp" line="55"/>
         <source>Check for updates silently at startup</source>
         <translation>Rechercher les mises à jour discrètement au démarrage</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="53"/>
+        <location filename="../src/updatespage.cpp" line="56"/>
         <source>Check for updates</source>
         <translation>Rechercher les mises à jour</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="54"/>
+        <location filename="../src/updatespage.cpp" line="57"/>
         <source>Cancel download</source>
         <translation>Annuler le téléchargement</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="55"/>
+        <location filename="../src/updatespage.cpp" line="58"/>
         <source>Release notes will appear here.</source>
         <translation>Les notes de version s’afficheront ici.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="66"/>
+        <location filename="../src/updatespage.cpp" line="69"/>
         <source>Installed version: %1</source>
         <translation>Version installée : %1</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="66"/>
+        <location filename="../src/updatespage.cpp" line="69"/>
         <source>Available version: %1</source>
         <translation>Version disponible : %1</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="68"/>
+        <location filename="../src/updatespage.cpp" line="71"/>
         <source>Update check or installation failed. See details below.</source>
         <translation>La recherche ou l’installation a échoué. Consultez les détails ci-dessous.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="69"/>
+        <location filename="../src/updatespage.cpp" line="72"/>
         <source>Checking for updates...</source>
         <translation>Recherche de mises à jour…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="70"/>
+        <location filename="../src/updatespage.cpp" line="73"/>
         <source>Downloading update...</source>
         <translation>Téléchargement de la mise à jour…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="71"/>
+        <location filename="../src/updatespage.cpp" line="74"/>
         <source>Verifying the downloaded update...</source>
         <translation>Vérification de la mise à jour téléchargée…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="72"/>
+        <location filename="../src/updatespage.cpp" line="75"/>
         <source>Waiting for Parts to close...</source>
         <translation>En attente de la fermeture de Parts…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="73"/>
+        <location filename="../src/updatespage.cpp" line="76"/>
         <source>A new version is available.</source>
         <translation>Une nouvelle version est disponible.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="74"/>
+        <location filename="../src/updatespage.cpp" line="77"/>
         <source>No newer compatible release is available.</source>
         <translation>Aucune version compatible plus récente n’est disponible.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="75"/>
+        <location filename="../src/updatespage.cpp" line="78"/>
         <source>Updates have not been checked yet.</source>
         <translation>Les mises à jour n’ont pas encore été recherchées.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="79"/>
+        <location filename="../src/updatespage.cpp" line="86"/>
         <source>Last successful check: %1</source>
         <translation>Dernière recherche réussie : %1</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="79"/>
+        <location filename="../src/updatespage.cpp" line="86"/>
         <source>Never</source>
         <translation>Jamais</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="80"/>
+        <location filename="../src/updatespage.cpp" line="87"/>
         <source>Download size: %1 MiB</source>
         <translation>Taille du téléchargement : %1 Mio</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="81"/>
+        <location filename="../src/updatespage.cpp" line="88"/>
         <source>This is a development or custom copy. Use the distribution launcher to install updates.</source>
         <translation>Il s’agit d’une copie de développement ou personnalisée. Utilisez le lanceur du paquet de distribution pour installer les mises à jour.</translation>
     </message>

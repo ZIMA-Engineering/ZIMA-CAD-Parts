@@ -34,6 +34,7 @@ signals:
     void workingDirChanged();
     void newHistory(DataSourceHistory *history);
     void refreshRequested();
+    void aiReferencesRequested(const QStringList &paths);
 
 protected:
     void tabInserted(int index);

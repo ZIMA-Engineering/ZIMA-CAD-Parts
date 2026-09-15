@@ -41,6 +41,9 @@ DataSourceView::DataSourceView(const QString &rootPath, QWidget *parent) :
     setStyleSheet("icon-size: 32px;");
 
     setupModel();
+    setDragEnabled(true);
+    setDragDropMode(QAbstractItemView::DragOnly);
+    setDefaultDropAction(Qt::CopyAction);
 
     header()->close();
 
@@ -285,6 +288,8 @@ void DataSourceView::addScriptsToContextMenu(QMenu *menu)
 
 void DataSourceView::showContextMenu(const QPoint &point)
 {
+    const auto clicked = indexAt(point);
+    if (clicked.isValid()) setCurrentIndex(clicked);
     QModelIndex i = currentIndex();
 
     if (!i.isValid())
@@ -294,6 +299,10 @@ void DataSourceView::showContextMenu(const QPoint &point)
 
     menu->addAction(style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open"), this, SLOT(indexOpenPath()));
     menu->addAction(QIcon(":/gfx/tab-new.png"), tr("Open in a new tab"), this, SLOT(openInANewTab()));
+    auto ai = menu->addAction(QIcon(":/gfx/navigation/terminal.svg"), tr("Add to AI question"));
+    ai->setObjectName("addToAiQuestion");
+    const auto reference = currentFileInfo().absoluteFilePath();
+    connect(ai, &QAction::triggered, this, [this, reference] { emit aiReferencesRequested({reference}); });
     menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
     menu->addAction(style()->standardIcon(QStyle::SP_FileDialogNewFolder), tr("Create directory"), this, SLOT(createDirectory()));
 

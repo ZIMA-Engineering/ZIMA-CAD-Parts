@@ -32,6 +32,7 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui(new Ui::DirectoryWidget)
 {
     ui->setupUi(this);
+    connect(ui->partsTreeView, &FileView::aiReferencesRequested, this, &DirectoryWidget::aiReferencesRequested);
     ui->tabWidget->tabBar()->setProperty("wideTabs", true);
     QFile tabStyle(":/gfx/navigation/tabs.css");
     if (tabStyle.open(QIODevice::ReadOnly))

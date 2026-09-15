@@ -35,6 +35,7 @@ signals:
     void directorySelected(const QString &path);
     void directoryChanged(const QString &path);
     void openInANewTabRequested(const QString &path);
+    void aiReferencesRequested(const QStringList &paths);
 
 private:
     QString m_path;

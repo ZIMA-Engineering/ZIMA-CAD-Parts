@@ -65,6 +65,60 @@
     </message>
 </context>
 <context>
+    <name>AiSettingsPage</name>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="44"/>
+        <location filename="../src/ai/aisettingspage.cpp" line="90"/>
+        <source>Codex executable</source>
+        <translation>Исполняемый файл Codex</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="87"/>
+        <source>Use Codex with your own ChatGPT account. Type codex in the command panel to start; /exit returns to Parts commands. AI receives the active and working directory paths and reads files only through requested tools. Requested text and tool results are sent to OpenAI. File changes require your approval. Account limits apply. Connection and sign-in buttons act immediately.</source>
+        <translation>Используйте Codex со своей учётной записью ChatGPT. Введите codex в панели команд; /exit вернёт команды Parts. ИИ получает пути активного и рабочего каталогов и читает файлы только через запрошенные инструменты. Запрошенный текст и результаты инструментов отправляются в OpenAI. Изменения файлов требуют вашего подтверждения. Действуют лимиты учётной записи. Кнопки подключения и входа действуют немедленно.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="90"/>
+        <source>Model</source>
+        <translation>Модель</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="93"/>
+        <source>Codex default</source>
+        <translation>По умолчанию в Codex</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="94"/>
+        <source>Browse...</source>
+        <translation>Обзор...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="94"/>
+        <source>Connect</source>
+        <translation>Подключить</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="95"/>
+        <source>Sign in with ChatGPT</source>
+        <translation>Войти через ChatGPT</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="95"/>
+        <source>Sign out</source>
+        <translation>Выйти</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="96"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="96"/>
+        <source>Get Codex / installation instructions</source>
+        <translation>Получить Codex / инструкция по установке</translation>
+    </message>
+</context>
+<context>
     <name>BrowserPage</name>
     <message>
         <location filename="../src/browserpage.cpp" line="71"/>
@@ -73,42 +127,239 @@
     </message>
 </context>
 <context>
-    <name>CommandPanel</name>
+    <name>CodexProvider</name>
     <message>
-        <location filename="../src/commandpanel.cpp" line="61"/>
-        <source>Commands: help, list, params, ps2pdf, ptc-clean, step-edit. Tools preview first; --apply executes. History: Up / Down.</source>
-        <translation>Команды: help, list, params, ps2pdf, ptc-clean, step-edit. По умолчанию — просмотр; --apply выполняет изменения. История: вверх / вниз.</translation>
+        <location filename="../src/ai/codexprovider.cpp" line="45"/>
+        <source>AI is disconnected.</source>
+        <translation>ИИ не подключён.</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="62"/>
+        <location filename="../src/ai/codexprovider.cpp" line="47"/>
+        <source>Codex did not respond in time. Connect again to retry.</source>
+        <translation>Codex не ответил вовремя. Подключитесь снова.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="86"/>
+        <source>Choose the native Codex executable in Settings &gt; AI.</source>
+        <translation>Выберите исполняемый файл Codex в Настройки &gt; ИИ.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="89"/>
+        <source>Cannot create the private AI profile.</source>
+        <translation>Не удалось создать личный профиль ИИ.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="91"/>
+        <source>Connecting to Codex...</source>
+        <translation>Подключение к Codex...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="114"/>
+        <source>Could not start Codex.</source>
+        <translation>Не удалось запустить Codex.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="117"/>
+        <source>Codex disconnected. Connect again in Settings &gt; AI.</source>
+        <translation>Codex отключился. Подключитесь снова в Настройки &gt; ИИ.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="146"/>
+        <location filename="../src/ai/codexprovider.cpp" line="244"/>
+        <source>Codex sent an oversized response.</source>
+        <translation>Codex отправил слишком большой ответ.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="155"/>
+        <location filename="../src/ai/codexprovider.cpp" line="224"/>
+        <location filename="../src/ai/codexprovider.cpp" line="228"/>
+        <location filename="../src/ai/codexprovider.cpp" line="252"/>
+        <source>Invalid Codex protocol response.</source>
+        <translation>Недопустимый ответ протокола Codex.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="165"/>
+        <location filename="../src/ai/codexprovider.cpp" line="256"/>
+        <source>Connected with ChatGPT.</source>
+        <translation>Подключено через ChatGPT.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="165"/>
+        <source>Sign in with your ChatGPT account.</source>
+        <translation>Войдите в свою учётную запись ChatGPT.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="180"/>
+        <source>Codex exceeded the tool limit or sent an invalid tool request.</source>
+        <translation>Codex превысил лимит инструментов или отправил недопустимый запрос.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="190"/>
+        <source>An unsupported Codex tool was blocked. Check any earlier operation results.</source>
+        <translation>Неподдерживаемый инструмент Codex заблокирован. Проверьте результаты предыдущих операций.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="198"/>
+        <source>Codex could not complete %1 (error %2). Check your account and runtime version.</source>
+        <translation>Codex не смог завершить %1 (ошибка %2). Проверьте учётную запись и версию Codex.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="216"/>
+        <source>Codex returned an unsupported sign-in address.</source>
+        <translation>Codex вернул неподдерживаемый адрес входа.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="219"/>
+        <source>Complete sign-in in your browser.</source>
+        <translation>Завершите вход в браузере.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="235"/>
+        <source>ChatGPT sign-in was not completed.</source>
+        <translation>Вход через ChatGPT не завершён.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="251"/>
+        <source>AI request failed or was interrupted. Check any reported file operation results.</source>
+        <translation>Запрос ИИ завершился ошибкой или был прерван. Проверьте результаты операций с файлами.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="266"/>
+        <source>Opening ChatGPT sign-in...</source>
+        <translation>Открытие входа через ChatGPT...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="279"/>
+        <source>Connect your ChatGPT account in Settings &gt; AI first.</source>
+        <translation>Сначала подключите учётную запись ChatGPT в Настройки &gt; ИИ.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="281"/>
+        <source>The AI request is too large.</source>
+        <translation>Запрос ИИ слишком большой.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="286"/>
+        <source>Codex is working...</source>
+        <translation>Codex работает...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="323"/>
+        <source>Cancelled. Connect again to continue.</source>
+        <translation>Отменено. Подключитесь снова для продолжения.</translation>
+    </message>
+</context>
+<context>
+    <name>CommandPanel</name>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="159"/>
         <source>Enter a command, e.g. list or params &quot;part.pdf&quot;</source>
         <translation>Введите команду, например list или params &quot;part.pdf&quot;</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="63"/>
+        <location filename="../src/commandpanel.cpp" line="160"/>
         <source>Reading...</source>
         <translation>Чтение…</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="63"/>
+        <location filename="../src/commandpanel.cpp" line="160"/>
         <source>Run</source>
         <translation>Выполнить</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="64"/>
+        <location filename="../src/commandpanel.cpp" line="165"/>
         <source>Clear output</source>
         <translation>Очистить вывод</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="105"/>
-        <location filename="../src/commandpanel.cpp" line="120"/>
+        <location filename="../src/commandpanel.cpp" line="75"/>
+        <location filename="../src/commandpanel.cpp" line="229"/>
+        <location filename="../src/commandpanel.cpp" line="244"/>
+        <location filename="../src/commandpanel.cpp" line="301"/>
         <source>Error: %1</source>
         <translation>Ошибка: %1</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="124"/>
+        <location filename="../src/commandpanel.cpp" line="83"/>
+        <source>AI stopped. Any completed file operations remain applied.</source>
+        <translation>ИИ остановлен. Завершённые операции с файлами сохраняются.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="156"/>
+        <source>Codex conversation. /exit: Parts commands. /new: new conversation. File changes require approval.</source>
+        <translation>Диалог с Codex. /exit: команды Parts. /new: новый диалог. Изменения файлов требуют подтверждения.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="157"/>
+        <source>Commands: help, list, params, ps2pdf, ptc-clean, step-edit, codex. Tools preview first; --apply executes. History: Up / Down.</source>
+        <translation>Команды: help, list, params, ps2pdf, ptc-clean, step-edit, codex. Сначала предварительный просмотр; --apply выполняет изменения. История: вверх / вниз.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="158"/>
+        <source>Ask Codex, or drop files and directories here...</source>
+        <translation>Спросите Codex или перетащите сюда файлы и каталоги...</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="160"/>
+        <source>Working...</source>
+        <translation>Выполнение...</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="160"/>
+        <source>Send</source>
+        <translation>Отправить</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="162"/>
+        <source>AI settings...</source>
+        <translation>Настройки ИИ...</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="164"/>
+        <source>Stop</source>
+        <translation>Остановить</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="201"/>
+        <source>Codex mode. Your requests use the active directory. Type /exit to return.</source>
+        <translation>Режим Codex. Запросы используют активный каталог. Для возврата введите /exit.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="215"/>
+        <source>New conversation.</source>
+        <translation>Новый диалог.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="248"/>
+        <location filename="../src/commandpanel.cpp" line="263"/>
         <source>Output was truncated. Use the CLI for complete JSON.</source>
         <translation>Вывод сокращён. Полный JSON доступен через CLI.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="269"/>
+        <source>Connect your ChatGPT account in AI settings first.</source>
+        <translation>Сначала подключите учётную запись ChatGPT в настройках ИИ.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="120"/>
+        <location filename="../src/commandpanel.cpp" line="272"/>
+        <source>The AI request is too large.</source>
+        <translation>Запрос ИИ слишком большой.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="110"/>
+        <source>Cannot insert AI paths: %1</source>
+        <translation>Не удалось вставить пути в запрос ИИ: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="383"/>
+        <source>System command: %1</source>
+        <translation>Системная команда: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="426"/>
+        <source>AI tool: %1</source>
+        <translation>Инструмент ИИ: %1</translation>
     </message>
 </context>
 <context>
@@ -142,83 +393,88 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="269"/>
+        <location filename="../src/datasourceview.cpp" line="272"/>
         <source>Scripts...</source>
         <translation>Скрипты...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="295"/>
+        <location filename="../src/datasourceview.cpp" line="300"/>
         <source>Open</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="296"/>
+        <location filename="../src/datasourceview.cpp" line="301"/>
         <source>Open in a new tab</source>
         <translation>Открыть в новой вкладке</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="297"/>
+        <location filename="../src/datasourceview.cpp" line="302"/>
+        <source>Add to AI question</source>
+        <translation>Добавить к вопросу ИИ</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourceview.cpp" line="306"/>
         <source>Set as working directory</source>
         <translation>Сделать рабочей папкой</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="298"/>
+        <location filename="../src/datasourceview.cpp" line="307"/>
         <source>Create directory</source>
         <translation>Создать папку</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="302"/>
+        <location filename="../src/datasourceview.cpp" line="311"/>
         <source>Directory properties</source>
         <translation>Свойства папки</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="303"/>
+        <location filename="../src/datasourceview.cpp" line="312"/>
         <source>Copy as...</source>
         <translation>Копировать как...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="304"/>
+        <location filename="../src/datasourceview.cpp" line="313"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="359"/>
-        <location filename="../src/datasourceview.cpp" line="402"/>
+        <location filename="../src/datasourceview.cpp" line="368"/>
+        <location filename="../src/datasourceview.cpp" line="411"/>
         <source>Directory exists</source>
         <translation>Папка существует</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="360"/>
+        <location filename="../src/datasourceview.cpp" line="369"/>
         <source>Directory %1 already exists.</source>
         <translation>Папка %1 уже существует.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="402"/>
+        <location filename="../src/datasourceview.cpp" line="411"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Папка &apos;%1&apos; уже существует.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="409"/>
+        <location filename="../src/datasourceview.cpp" line="418"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Подождите, выполняется копирование папки...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="423"/>
+        <location filename="../src/datasourceview.cpp" line="432"/>
         <source>Directory locked</source>
         <translation>Папка заблокирована</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="428"/>
+        <location filename="../src/datasourceview.cpp" line="437"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Вы действительно хотите удалить выбранную папку?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="429"/>
+        <location filename="../src/datasourceview.cpp" line="438"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Вы действительно хотите удалить папку &apos;%1&apos;? Это действие нельзя отменить.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="436"/>
+        <location filename="../src/datasourceview.cpp" line="445"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Подождите, выполняется удаление папки...</translation>
     </message>
@@ -226,17 +482,22 @@
 <context>
     <name>DataSourceWidget</name>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="214"/>
+        <location filename="../src/datasourcewidget.cpp" line="215"/>
         <source>Open in a new tab</source>
         <translation>Открыть в новой вкладке</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="221"/>
+        <location filename="../src/datasourcewidget.cpp" line="218"/>
+        <source>Add to AI question</source>
+        <translation>Добавить к вопросу ИИ</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="225"/>
         <source>Data source properties</source>
         <translation>Свойства источника данных</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="227"/>
+        <location filename="../src/datasourcewidget.cpp" line="231"/>
         <source>Edit in settings</source>
         <translation>Изменить в настройках</translation>
     </message>
@@ -591,17 +852,17 @@ Failed directories: %2</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="345"/>
+        <location filename="../src/directorywidget.cpp" line="346"/>
         <source>Delete index</source>
         <translation>Удалить индекс</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="355"/>
+        <location filename="../src/directorywidget.cpp" line="356"/>
         <source>Delete all indexes</source>
         <translation>Удалить все индексы</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="410"/>
+        <location filename="../src/directorywidget.cpp" line="411"/>
         <source>The following index file will be deleted:
 
 %1
@@ -614,7 +875,7 @@ Continue?</source>
 Продолжить?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="411"/>
+        <location filename="../src/directorywidget.cpp" line="412"/>
         <source>The following index files will be deleted:
 
 %1
@@ -627,22 +888,22 @@ Continue?</source>
 Продолжить?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="412"/>
+        <location filename="../src/directorywidget.cpp" line="413"/>
         <source>Delete all indexes?</source>
         <translation>Удалить все индексы?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="412"/>
+        <location filename="../src/directorywidget.cpp" line="413"/>
         <source>Delete index?</source>
         <translation>Удалить индекс?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="437"/>
+        <location filename="../src/directorywidget.cpp" line="438"/>
         <source>Index deletion failed</source>
         <translation>Ошибка удаления индекса</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="438"/>
+        <location filename="../src/directorywidget.cpp" line="439"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -651,18 +912,18 @@ Continue?</source>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="726"/>
         <location filename="../src/directorywidget.cpp" line="727"/>
+        <location filename="../src/directorywidget.cpp" line="728"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Вы действительно хотите переместить выбранные детали?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="750"/>
+        <location filename="../src/directorywidget.cpp" line="751"/>
         <source>Update available</source>
         <translation>Доступно обновление</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="751"/>
+        <location filename="../src/directorywidget.cpp" line="752"/>
         <source>New version %1. Open Settings to install it.</source>
         <translation>Новая версия %1. Откройте настройки для установки.</translation>
     </message>
@@ -974,42 +1235,47 @@ Continue?</source>
 <context>
     <name>FileView</name>
     <message>
-        <location filename="../src/fileview.cpp" line="140"/>
+        <location filename="../src/fileview.cpp" line="144"/>
         <source>HTML index file already exists</source>
         <translation>Файл индекса HTML уже существует</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="141"/>
+        <location filename="../src/fileview.cpp" line="145"/>
         <source>HTML index for already exists, would you like to overwrite it?</source>
         <translation>Индекс HTML уже существует. Перезаписать его?</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="170"/>
+        <location filename="../src/fileview.cpp" line="174"/>
         <source>Please wait while the parts are being removed...</source>
         <translation>Подождите, выполняется удаление деталей...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="187"/>
+        <location filename="../src/fileview.cpp" line="191"/>
         <source>Please wait while the parts are being copied...</source>
         <translation>Подождите, выполняется копирование деталей...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="284"/>
+        <location filename="../src/fileview.cpp" line="288"/>
         <source>ProE Startup Error</source>
         <translation>Ошибка запуска Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="285"/>
+        <location filename="../src/fileview.cpp" line="289"/>
         <source>An error occured while ProE has been requested to start</source>
         <translation>При запуске Pro/E произошла ошибка</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="305"/>
+        <location filename="../src/fileview.cpp" line="314"/>
+        <source>Add to AI question</source>
+        <translation>Добавить к вопросу ИИ</translation>
+    </message>
+    <message>
+        <location filename="../src/fileview.cpp" line="319"/>
         <source>Rename</source>
         <translation>Переименовать</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="308"/>
+        <location filename="../src/fileview.cpp" line="322"/>
         <source>Edit</source>
         <translation>Изменить</translation>
     </message>
@@ -1094,13 +1360,13 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
     </message>
     <message>
         <location filename="../src/maintabwidget.cpp" line="25"/>
-        <location filename="../src/maintabwidget.cpp" line="222"/>
+        <location filename="../src/maintabwidget.cpp" line="223"/>
         <source>Open a new tab</source>
         <translation>Открыть новую вкладку</translation>
     </message>
     <message>
         <location filename="../src/maintabwidget.cpp" line="28"/>
-        <location filename="../src/maintabwidget.cpp" line="220"/>
+        <location filename="../src/maintabwidget.cpp" line="221"/>
         <source>Add tabs by pressing &quot;+&quot;</source>
         <translation>Добавляйте вкладки кнопкой «+»</translation>
     </message>
@@ -1147,8 +1413,8 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="102"/>
-        <location filename="../src/mainwindow.cpp" line="196"/>
+        <location filename="../src/mainwindow.cpp" line="104"/>
+        <location filename="../src/mainwindow.cpp" line="208"/>
         <source>Command panel</source>
         <translation>Панель команд</translation>
     </message>
@@ -1561,7 +1827,7 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
     </message>
     <message>
         <location filename="../src/partstoolsdialog.cpp" line="105"/>
-        <location filename="../src/partstoolsdialog.cpp" line="170"/>
+        <location filename="../src/partstoolsdialog.cpp" line="222"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
@@ -1571,32 +1837,42 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
         <translation>Отмена…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="157"/>
+        <location filename="../src/partstoolsdialog.cpp" line="160"/>
+        <source>Allow selected</source>
+        <translation>Разрешить выбранное</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="163"/>
+        <source>Deny</source>
+        <translation>Отклонить</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="209"/>
         <source>Apply this operation to %1 selected files?</source>
         <translation>Применить эту операцию к выбранным файлам (%1)?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <location filename="../src/partstoolsdialog.cpp" line="218"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <location filename="../src/partstoolsdialog.cpp" line="218"/>
         <source>Working...</source>
         <translation>Выполнение…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="179"/>
+        <location filename="../src/partstoolsdialog.cpp" line="235"/>
         <source>Completed: %1. Failed: %2. Skipped: %3.</source>
         <translation>Выполнено: %1. Ошибки: %2. Пропущено: %3.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="185"/>
+        <location filename="../src/partstoolsdialog.cpp" line="173"/>
         <source>Keep: %1</source>
         <translation>Оставить: %1</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="195"/>
+        <location filename="../src/partstoolsdialog.cpp" line="183"/>
         <source>Ready: %1. Skipped: %2.</source>
         <translation>Готово: %1. Пропущено: %2.</translation>
     </message>
@@ -2387,50 +2663,134 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
         <translation>Панель инструментов технических спецификаций</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="68"/>
-        <location filename="../src/settingsdialog.cpp" line="131"/>
+        <location filename="../src/settingsdialog.cpp" line="69"/>
+        <location filename="../src/settingsdialog.cpp" line="134"/>
         <source>Updates</source>
         <translation>Обновления</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="102"/>
+        <location filename="../src/settingsdialog.cpp" line="71"/>
+        <location filename="../src/settingsdialog.cpp" line="135"/>
+        <source>AI</source>
+        <translation>ИИ</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="105"/>
         <source>Include subdirectories by default</source>
         <translation>По умолчанию включать подкаталоги</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="104"/>
+        <location filename="../src/settingsdialog.cpp" line="107"/>
         <source>Cleaner: remove old numbered versions</source>
         <translation>Очистка: удалять старые версии</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="109"/>
+        <location filename="../src/settingsdialog.cpp" line="112"/>
         <source>Cleaner: additional masks (semicolon separated)</source>
         <translation>Очистка: дополнительные маски (через точку с запятой)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="113"/>
+        <location filename="../src/settingsdialog.cpp" line="116"/>
         <source>Ghostscript runtime is missing</source>
         <translation>Отсутствует среда Ghostscript</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="329"/>
+        <location filename="../src/settingsdialog.cpp" line="334"/>
         <source>Locate ProE launcher</source>
         <translation>Найти программу запуска Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="331"/>
+        <location filename="../src/settingsdialog.cpp" line="336"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Исполняемый файл Pro/E (proe.exe);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="339"/>
+        <location filename="../src/settingsdialog.cpp" line="344"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts — выбрать текстовый редактор</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="347"/>
+        <location filename="../src/settingsdialog.cpp" line="352"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts — выбрать терминал</translation>
+    </message>
+</context>
+<context>
+    <name>SystemCommandDialog</name>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="23"/>
+        <source>Review system command</source>
+        <translation>Проверка системной команды</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="35"/>
+        <source>Purpose: %1</source>
+        <translation>Цель: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="36"/>
+        <source>Working directory: %1</source>
+        <translation>Рабочий каталог: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="37"/>
+        <source>Shell: %1</source>
+        <translation>Оболочка: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="41"/>
+        <source>Runs with your user permissions, including access outside the attached paths. System commands do not enforce Parts directory locks.</source>
+        <translation>Выполняется с вашими правами, включая доступ за пределами добавленных путей. Системные команды не соблюдают блокировки каталогов Parts.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="46"/>
+        <source>Nothing runs until you confirm this command.</source>
+        <translation>Ничего не выполняется, пока вы не подтвердите эту команду.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="48"/>
+        <source>Run command</source>
+        <translation>Выполнить команду</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="50"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="60"/>
+        <source>Could not start the system shell.</source>
+        <translation>Не удалось запустить системную оболочку.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="75"/>
+        <source>Could not control the system process tree.</source>
+        <translation>Не удалось управлять деревом системных процессов.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="95"/>
+        <source>Allow</source>
+        <translation>Разрешить</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="96"/>
+        <source>Deny</source>
+        <translation>Отклонить</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="108"/>
+        <source>The working directory changed. Request the command again.</source>
+        <translation>Рабочий каталог изменился. Запросите команду ещё раз.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="113"/>
+        <source>Stop</source>
+        <translation>Остановить</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="113"/>
+        <source>Command is running...</source>
+        <translation>Команда выполняется...</translation>
     </message>
 </context>
 <context>
@@ -2479,32 +2839,32 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
 <context>
     <name>UpdateService</name>
     <message>
-        <location filename="../src/updateservice.cpp" line="21"/>
+        <location filename="../src/updateservice.cpp" line="45"/>
         <source>Update response is too large.</source>
         <translation>Ответ службы обновлений слишком большой.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="34"/>
+        <location filename="../src/updateservice.cpp" line="63"/>
         <source>The update component could not be started.</source>
         <translation>Не удалось запустить компонент обновления.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="38"/>
+        <location filename="../src/updateservice.cpp" line="67"/>
         <source>Update cancelled. The installed version is unchanged.</source>
         <translation>Обновление отменено. Установленная версия не изменена.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="41"/>
+        <location filename="../src/updateservice.cpp" line="70"/>
         <source>The update operation failed.</source>
         <translation>Операция обновления завершилась ошибкой.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="74"/>
+        <location filename="../src/updateservice.cpp" line="106"/>
         <source>Use the distribution launcher to install updates.</source>
         <translation>Для установки обновлений используйте программу запуска из дистрибутива.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="77"/>
+        <location filename="../src/updateservice.cpp" line="117"/>
         <source>The installer could not be started.</source>
         <translation>Не удалось запустить установщик.</translation>
     </message>
@@ -2512,114 +2872,114 @@ These settings apply only to this folder; subfolders do not inherit them.</sourc
 <context>
     <name>UpdatesPage</name>
     <message>
-        <location filename="../src/updatespage.cpp" line="39"/>
-        <location filename="../src/updatespage.cpp" line="53"/>
+        <location filename="../src/updatespage.cpp" line="42"/>
+        <location filename="../src/updatespage.cpp" line="56"/>
         <source>Install update</source>
         <translation>Установить обновление</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="39"/>
+        <location filename="../src/updatespage.cpp" line="42"/>
         <source>Download and install the update, then restart Parts? Your project files will be preserved.</source>
         <translation>Скачать и установить обновление, затем перезапустить Parts? Файлы ваших проектов будут сохранены.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="43"/>
-        <location filename="../src/updatespage.cpp" line="54"/>
+        <location filename="../src/updatespage.cpp" line="46"/>
+        <location filename="../src/updatespage.cpp" line="57"/>
         <source>Return to previous version</source>
         <translation>Вернуться к предыдущей версии</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="43"/>
+        <location filename="../src/updatespage.cpp" line="46"/>
         <source>Restart Parts with the previous verified version? This does not restore older project data.</source>
         <translation>Перезапустить Parts с предыдущей проверенной версией? Старые данные проектов при этом не восстанавливаются.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="52"/>
+        <location filename="../src/updatespage.cpp" line="55"/>
         <source>Check for updates silently at startup</source>
         <translation>Проверять обновления при запуске без уведомлений</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="53"/>
+        <location filename="../src/updatespage.cpp" line="56"/>
         <source>Check for updates</source>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="54"/>
+        <location filename="../src/updatespage.cpp" line="57"/>
         <source>Cancel download</source>
         <translation>Отменить скачивание</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="55"/>
+        <location filename="../src/updatespage.cpp" line="58"/>
         <source>Release notes will appear here.</source>
         <translation>Здесь появятся примечания к выпуску.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="66"/>
+        <location filename="../src/updatespage.cpp" line="69"/>
         <source>Installed version: %1</source>
         <translation>Установленная версия: %1</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="66"/>
+        <location filename="../src/updatespage.cpp" line="69"/>
         <source>Available version: %1</source>
         <translation>Доступная версия: %1</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="68"/>
+        <location filename="../src/updatespage.cpp" line="71"/>
         <source>Update check or installation failed. See details below.</source>
         <translation>Проверка или установка обновления завершилась ошибкой. Подробности приведены ниже.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="69"/>
+        <location filename="../src/updatespage.cpp" line="72"/>
         <source>Checking for updates...</source>
         <translation>Проверка обновлений…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="70"/>
+        <location filename="../src/updatespage.cpp" line="73"/>
         <source>Downloading update...</source>
         <translation>Скачивание обновления…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="71"/>
+        <location filename="../src/updatespage.cpp" line="74"/>
         <source>Verifying the downloaded update...</source>
         <translation>Проверка скачанного обновления…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="72"/>
+        <location filename="../src/updatespage.cpp" line="75"/>
         <source>Waiting for Parts to close...</source>
         <translation>Ожидание закрытия Parts…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="73"/>
+        <location filename="../src/updatespage.cpp" line="76"/>
         <source>A new version is available.</source>
         <translation>Доступна новая версия.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="74"/>
+        <location filename="../src/updatespage.cpp" line="77"/>
         <source>No newer compatible release is available.</source>
         <translation>Более новой совместимой версии нет.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="75"/>
+        <location filename="../src/updatespage.cpp" line="78"/>
         <source>Updates have not been checked yet.</source>
         <translation>Проверка обновлений ещё не выполнялась.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="79"/>
+        <location filename="../src/updatespage.cpp" line="86"/>
         <source>Last successful check: %1</source>
         <translation>Последняя успешная проверка: %1</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="79"/>
+        <location filename="../src/updatespage.cpp" line="86"/>
         <source>Never</source>
         <translation>Никогда</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="80"/>
+        <location filename="../src/updatespage.cpp" line="87"/>
         <source>Download size: %1 MiB</source>
         <translation>Размер загрузки: %1 МиБ</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="81"/>
+        <location filename="../src/updatespage.cpp" line="88"/>
         <source>This is a development or custom copy. Use the distribution launcher to install updates.</source>
         <translation>Это версия для разработки или собственная сборка. Для установки обновлений используйте программу запуска из дистрибутива.</translation>
     </message>

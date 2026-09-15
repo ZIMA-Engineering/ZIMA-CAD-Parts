@@ -1,5 +1,7 @@
 #include "commandpanel.h"
 #include "updateservice.h"
+#include "ai/aiprovider.h"
+#include <QDesktopServices>
 #include <QTimer>
 #include <QDockWidget>
 /*
@@ -109,9 +111,19 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
         if (dataSource) context.directory = dataSource->currentDir();
         context.language = Settings::get()->LanguageMetadata;
         context.showVersions = Settings::get()->ShowProeVersions;
+        context.workingDirectory = Settings::get()->getWorkingDir();
         return context;
     }, m_commandDock);
+    connect(m_commandPanel, &CommandPanel::aiSettingsRequested, this, [this] { showSettings(SettingsDialog::AI); });
+    connect(partsAiProvider(), &AiProvider::loginUrl, this, [](const QUrl &url) { QDesktopServices::openUrl(url); });
+    connect(m_commandPanel, &CommandPanel::filesChanged, this, [this](const QString &directory) {
+        for (auto page : ui->tabWidget->findChildren<DirectoryWidget *>()) page->updateDirectory(directory);
+    });
     m_commandDock->setWidget(m_commandPanel);
+    connect(ui->tabWidget, &MainTabWidget::aiReferencesRequested, this, [this](const QStringList &paths) {
+        m_commandDock->show(); m_commandDock->raise();
+        m_commandPanel->addAiReferences(paths);
+    });
     addDockWidget(Qt::BottomDockWidgetArea, m_commandDock);
     auto commandAction = m_commandDock->toggleViewAction();
     commandAction->setObjectName("toggleCommandPanel");

@@ -65,6 +65,60 @@
     </message>
 </context>
 <context>
+    <name>AiSettingsPage</name>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="44"/>
+        <location filename="../src/ai/aisettingspage.cpp" line="90"/>
+        <source>Codex executable</source>
+        <translation>Spustitelný soubor Codexu</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="87"/>
+        <source>Use Codex with your own ChatGPT account. Type codex in the command panel to start; /exit returns to Parts commands. AI receives the active and working directory paths and reads files only through requested tools. Requested text and tool results are sent to OpenAI. File changes require your approval. Account limits apply. Connection and sign-in buttons act immediately.</source>
+        <translation>Používejte Codex s vlastním účtem ChatGPT. Začněte příkazem codex v příkazovém panelu; /exit vrátí příkazy Parts. AI dostane cesty aktivního a pracovního adresáře a čte soubory jen pomocí vyžádaných nástrojů. Vyžádaný text a výsledky nástrojů se odesílají OpenAI. Změny souborů vyžadují vaše potvrzení. Platí limity účtu. Tlačítka připojení a přihlášení působí okamžitě.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="90"/>
+        <source>Model</source>
+        <translation>Model</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="93"/>
+        <source>Codex default</source>
+        <translation>Výchozí model Codexu</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="94"/>
+        <source>Browse...</source>
+        <translation>Procházet...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="94"/>
+        <source>Connect</source>
+        <translation>Připojit</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="95"/>
+        <source>Sign in with ChatGPT</source>
+        <translation>Přihlásit přes ChatGPT</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="95"/>
+        <source>Sign out</source>
+        <translation>Odhlásit</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="96"/>
+        <source>Cancel</source>
+        <translation>Zrušit</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/aisettingspage.cpp" line="96"/>
+        <source>Get Codex / installation instructions</source>
+        <translation>Získat Codex / návod k instalaci</translation>
+    </message>
+</context>
+<context>
     <name>BrowserPage</name>
     <message>
         <location filename="../src/browserpage.cpp" line="71"/>
@@ -73,42 +127,239 @@
     </message>
 </context>
 <context>
-    <name>CommandPanel</name>
+    <name>CodexProvider</name>
     <message>
-        <location filename="../src/commandpanel.cpp" line="61"/>
-        <source>Commands: help, list, params, ps2pdf, ptc-clean, step-edit. Tools preview first; --apply executes. History: Up / Down.</source>
-        <translation>Příkazy: help, list, params, ps2pdf, ptc-clean, step-edit. Nástroje nejprve zobrazí náhled; --apply provede změny. Historie: nahoru / dolů.</translation>
+        <location filename="../src/ai/codexprovider.cpp" line="45"/>
+        <source>AI is disconnected.</source>
+        <translation>AI není připojená.</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="62"/>
+        <location filename="../src/ai/codexprovider.cpp" line="47"/>
+        <source>Codex did not respond in time. Connect again to retry.</source>
+        <translation>Codex neodpověděl včas. Zkuste se znovu připojit.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="86"/>
+        <source>Choose the native Codex executable in Settings &gt; AI.</source>
+        <translation>V Nastavení &gt; AI vyberte nativní spustitelný soubor Codexu.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="89"/>
+        <source>Cannot create the private AI profile.</source>
+        <translation>Nelze vytvořit soukromý profil AI.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="91"/>
+        <source>Connecting to Codex...</source>
+        <translation>Připojování ke Codexu...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="114"/>
+        <source>Could not start Codex.</source>
+        <translation>Codex se nepodařilo spustit.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="117"/>
+        <source>Codex disconnected. Connect again in Settings &gt; AI.</source>
+        <translation>Codex se odpojil. Připojte se znovu v Nastavení &gt; AI.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="146"/>
+        <location filename="../src/ai/codexprovider.cpp" line="244"/>
+        <source>Codex sent an oversized response.</source>
+        <translation>Codex poslal příliš velkou odpověď.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="155"/>
+        <location filename="../src/ai/codexprovider.cpp" line="224"/>
+        <location filename="../src/ai/codexprovider.cpp" line="228"/>
+        <location filename="../src/ai/codexprovider.cpp" line="252"/>
+        <source>Invalid Codex protocol response.</source>
+        <translation>Neplatná odpověď protokolu Codexu.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="165"/>
+        <location filename="../src/ai/codexprovider.cpp" line="256"/>
+        <source>Connected with ChatGPT.</source>
+        <translation>Připojeno přes ChatGPT.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="165"/>
+        <source>Sign in with your ChatGPT account.</source>
+        <translation>Přihlaste se svým účtem ChatGPT.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="180"/>
+        <source>Codex exceeded the tool limit or sent an invalid tool request.</source>
+        <translation>Codex překročil limit nástrojů nebo poslal neplatný požadavek.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="190"/>
+        <source>An unsupported Codex tool was blocked. Check any earlier operation results.</source>
+        <translation>Nepodporovaný nástroj Codexu byl zablokován. Zkontrolujte výsledky předchozích operací.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="198"/>
+        <source>Codex could not complete %1 (error %2). Check your account and runtime version.</source>
+        <translation>Codex nemohl dokončit %1 (chyba %2). Zkontrolujte účet a verzi Codexu.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="216"/>
+        <source>Codex returned an unsupported sign-in address.</source>
+        <translation>Codex vrátil nepodporovanou přihlašovací adresu.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="219"/>
+        <source>Complete sign-in in your browser.</source>
+        <translation>Dokončete přihlášení v prohlížeči.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="235"/>
+        <source>ChatGPT sign-in was not completed.</source>
+        <translation>Přihlášení přes ChatGPT nebylo dokončeno.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="251"/>
+        <source>AI request failed or was interrupted. Check any reported file operation results.</source>
+        <translation>Požadavek AI selhal nebo byl přerušen. Zkontrolujte uvedené výsledky operací se soubory.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="266"/>
+        <source>Opening ChatGPT sign-in...</source>
+        <translation>Otevírání přihlášení přes ChatGPT...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="279"/>
+        <source>Connect your ChatGPT account in Settings &gt; AI first.</source>
+        <translation>Nejprve připojte svůj účet ChatGPT v Nastavení &gt; AI.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="281"/>
+        <source>The AI request is too large.</source>
+        <translation>Požadavek pro AI je příliš dlouhý.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="286"/>
+        <source>Codex is working...</source>
+        <translation>Codex pracuje...</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/codexprovider.cpp" line="323"/>
+        <source>Cancelled. Connect again to continue.</source>
+        <translation>Zrušeno. Pro pokračování se znovu připojte.</translation>
+    </message>
+</context>
+<context>
+    <name>CommandPanel</name>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="159"/>
         <source>Enter a command, e.g. list or params &quot;part.pdf&quot;</source>
         <translation>Zadejte příkaz, např. list nebo params &quot;dil.pdf&quot;</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="63"/>
+        <location filename="../src/commandpanel.cpp" line="160"/>
         <source>Reading...</source>
         <translation>Načítání…</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="63"/>
+        <location filename="../src/commandpanel.cpp" line="160"/>
         <source>Run</source>
         <translation>Spustit</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="64"/>
+        <location filename="../src/commandpanel.cpp" line="165"/>
         <source>Clear output</source>
         <translation>Vyčistit výpis</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="105"/>
-        <location filename="../src/commandpanel.cpp" line="120"/>
+        <location filename="../src/commandpanel.cpp" line="75"/>
+        <location filename="../src/commandpanel.cpp" line="229"/>
+        <location filename="../src/commandpanel.cpp" line="244"/>
+        <location filename="../src/commandpanel.cpp" line="301"/>
         <source>Error: %1</source>
         <translation>Chyba: %1</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="124"/>
+        <location filename="../src/commandpanel.cpp" line="83"/>
+        <source>AI stopped. Any completed file operations remain applied.</source>
+        <translation>AI byla zastavena. Dokončené operace se soubory zůstávají provedené.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="156"/>
+        <source>Codex conversation. /exit: Parts commands. /new: new conversation. File changes require approval.</source>
+        <translation>Rozhovor s Codexem. /exit: příkazy Parts. /new: nový rozhovor. Změny souborů vyžadují potvrzení.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="157"/>
+        <source>Commands: help, list, params, ps2pdf, ptc-clean, step-edit, codex. Tools preview first; --apply executes. History: Up / Down.</source>
+        <translation>Příkazy: help, list, params, ps2pdf, ptc-clean, step-edit, codex. Nástroje nejprve zobrazí náhled; --apply provede změny. Historie: nahoru / dolů.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="158"/>
+        <source>Ask Codex, or drop files and directories here...</source>
+        <translation>Napište Codexu nebo sem přetáhněte soubory a adresáře...</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="160"/>
+        <source>Working...</source>
+        <translation>Pracuji...</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="160"/>
+        <source>Send</source>
+        <translation>Odeslat</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="162"/>
+        <source>AI settings...</source>
+        <translation>Nastavení AI...</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="164"/>
+        <source>Stop</source>
+        <translation>Zastavit</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="201"/>
+        <source>Codex mode. Your requests use the active directory. Type /exit to return.</source>
+        <translation>Režim Codexu. Požadavky používají aktivní adresář. Návrat příkazem /exit.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="215"/>
+        <source>New conversation.</source>
+        <translation>Nový rozhovor.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="248"/>
+        <location filename="../src/commandpanel.cpp" line="263"/>
         <source>Output was truncated. Use the CLI for complete JSON.</source>
         <translation>Výpis byl zkrácen. Úplný JSON získáte přes CLI.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="269"/>
+        <source>Connect your ChatGPT account in AI settings first.</source>
+        <translation>Nejprve připojte svůj účet ChatGPT v nastavení AI.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="120"/>
+        <location filename="../src/commandpanel.cpp" line="272"/>
+        <source>The AI request is too large.</source>
+        <translation>Požadavek pro AI je příliš dlouhý.</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="110"/>
+        <source>Cannot insert AI paths: %1</source>
+        <translation>Nelze vložit cesty do dotazu AI: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="383"/>
+        <source>System command: %1</source>
+        <translation>Systémový příkaz: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="426"/>
+        <source>AI tool: %1</source>
+        <translation>Nástroj AI: %1</translation>
     </message>
 </context>
 <context>
@@ -142,83 +393,88 @@
 <context>
     <name>DataSourceView</name>
     <message>
-        <location filename="../src/datasourceview.cpp" line="269"/>
+        <location filename="../src/datasourceview.cpp" line="272"/>
         <source>Scripts...</source>
         <translation>Skripty...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="295"/>
+        <location filename="../src/datasourceview.cpp" line="300"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="296"/>
+        <location filename="../src/datasourceview.cpp" line="301"/>
         <source>Open in a new tab</source>
         <translation>Otevřít v nové kartě</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="297"/>
+        <location filename="../src/datasourceview.cpp" line="302"/>
+        <source>Add to AI question</source>
+        <translation>Přidat do dotazu AI</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourceview.cpp" line="306"/>
         <source>Set as working directory</source>
         <translation>Nastavit jako pracovní adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="298"/>
+        <location filename="../src/datasourceview.cpp" line="307"/>
         <source>Create directory</source>
         <translation>Vytvořit adresář</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="302"/>
+        <location filename="../src/datasourceview.cpp" line="311"/>
         <source>Directory properties</source>
         <translation>Vlastnosti adresáře</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="303"/>
+        <location filename="../src/datasourceview.cpp" line="312"/>
         <source>Copy as...</source>
         <translation>Kopírovat jako...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="304"/>
+        <location filename="../src/datasourceview.cpp" line="313"/>
         <source>Delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="359"/>
-        <location filename="../src/datasourceview.cpp" line="402"/>
+        <location filename="../src/datasourceview.cpp" line="368"/>
+        <location filename="../src/datasourceview.cpp" line="411"/>
         <source>Directory exists</source>
         <translation>Adresář existuje</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="360"/>
+        <location filename="../src/datasourceview.cpp" line="369"/>
         <source>Directory %1 already exists.</source>
         <translation>Adresář %1 již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="402"/>
+        <location filename="../src/datasourceview.cpp" line="411"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Adresář &apos;%1&apos; již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="409"/>
+        <location filename="../src/datasourceview.cpp" line="418"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Počkejte prosím na zkopírování adresáře...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="423"/>
+        <location filename="../src/datasourceview.cpp" line="432"/>
         <source>Directory locked</source>
         <translation>Adresář je zamčený</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="428"/>
+        <location filename="../src/datasourceview.cpp" line="437"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Opravdu chcete smazat vybraný adresář?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="429"/>
+        <location filename="../src/datasourceview.cpp" line="438"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Opravdu chcete smazat adresář &apos;%1&apos;? Tuto akci nelze vrátit zpět.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="436"/>
+        <location filename="../src/datasourceview.cpp" line="445"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Počkejte prosím na odstranění adresáře...</translation>
     </message>
@@ -226,17 +482,22 @@
 <context>
     <name>DataSourceWidget</name>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="214"/>
+        <location filename="../src/datasourcewidget.cpp" line="215"/>
         <source>Open in a new tab</source>
         <translation>Otevřít v nové kartě</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="221"/>
+        <location filename="../src/datasourcewidget.cpp" line="218"/>
+        <source>Add to AI question</source>
+        <translation>Přidat do dotazu AI</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="225"/>
         <source>Data source properties</source>
         <translation>Vlastnosti datového zdroje</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="227"/>
+        <location filename="../src/datasourcewidget.cpp" line="231"/>
         <source>Edit in settings</source>
         <translation>Upravit v nastavení</translation>
     </message>
@@ -591,17 +852,17 @@ Adresáře s chybou: %2</translation>
         <translation>Kopírovat</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="345"/>
+        <location filename="../src/directorywidget.cpp" line="346"/>
         <source>Delete index</source>
         <translation>Smazat index</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="355"/>
+        <location filename="../src/directorywidget.cpp" line="356"/>
         <source>Delete all indexes</source>
         <translation>Smazat všechny indexy</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="410"/>
+        <location filename="../src/directorywidget.cpp" line="411"/>
         <source>The following index file will be deleted:
 
 %1
@@ -614,7 +875,7 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="411"/>
+        <location filename="../src/directorywidget.cpp" line="412"/>
         <source>The following index files will be deleted:
 
 %1
@@ -627,22 +888,22 @@ Continue?</source>
 Pokračovat?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="412"/>
+        <location filename="../src/directorywidget.cpp" line="413"/>
         <source>Delete all indexes?</source>
         <translation>Smazat všechny indexy?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="412"/>
+        <location filename="../src/directorywidget.cpp" line="413"/>
         <source>Delete index?</source>
         <translation>Smazat index?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="437"/>
+        <location filename="../src/directorywidget.cpp" line="438"/>
         <source>Index deletion failed</source>
         <translation>Smazání indexu selhalo</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="438"/>
+        <location filename="../src/directorywidget.cpp" line="439"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -651,18 +912,18 @@ Pokračovat?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="726"/>
         <location filename="../src/directorywidget.cpp" line="727"/>
+        <location filename="../src/directorywidget.cpp" line="728"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Opravdu chcete přesunout vybrané díly?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="750"/>
+        <location filename="../src/directorywidget.cpp" line="751"/>
         <source>Update available</source>
         <translation>Dostupná aktualizace</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="751"/>
+        <location filename="../src/directorywidget.cpp" line="752"/>
         <source>New version %1. Open Settings to install it.</source>
         <translation>Nová verze %1. Pro instalaci otevřete Nastavení.</translation>
     </message>
@@ -974,42 +1235,47 @@ Pokračovat?</translation>
 <context>
     <name>FileView</name>
     <message>
-        <location filename="../src/fileview.cpp" line="140"/>
+        <location filename="../src/fileview.cpp" line="144"/>
         <source>HTML index file already exists</source>
         <translation>Soubor indexu HTML již existuje</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="141"/>
+        <location filename="../src/fileview.cpp" line="145"/>
         <source>HTML index for already exists, would you like to overwrite it?</source>
         <translation>Index HTML již existuje. Chcete jej přepsat?</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="170"/>
+        <location filename="../src/fileview.cpp" line="174"/>
         <source>Please wait while the parts are being removed...</source>
         <translation>Počkejte prosím na odstranění dílů...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="187"/>
+        <location filename="../src/fileview.cpp" line="191"/>
         <source>Please wait while the parts are being copied...</source>
         <translation>Počkejte prosím na zkopírování dílů...</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="284"/>
+        <location filename="../src/fileview.cpp" line="288"/>
         <source>ProE Startup Error</source>
         <translation>Chyba při spuštění Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="285"/>
+        <location filename="../src/fileview.cpp" line="289"/>
         <source>An error occured while ProE has been requested to start</source>
         <translation>Při spouštění Pro/E došlo k chybě</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="305"/>
+        <location filename="../src/fileview.cpp" line="314"/>
+        <source>Add to AI question</source>
+        <translation>Přidat do dotazu AI</translation>
+    </message>
+    <message>
+        <location filename="../src/fileview.cpp" line="319"/>
         <source>Rename</source>
         <translation>Přejmenovat</translation>
     </message>
     <message>
-        <location filename="../src/fileview.cpp" line="308"/>
+        <location filename="../src/fileview.cpp" line="322"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
@@ -1094,13 +1360,13 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
     </message>
     <message>
         <location filename="../src/maintabwidget.cpp" line="25"/>
-        <location filename="../src/maintabwidget.cpp" line="222"/>
+        <location filename="../src/maintabwidget.cpp" line="223"/>
         <source>Open a new tab</source>
         <translation>Otevřít novou kartu</translation>
     </message>
     <message>
         <location filename="../src/maintabwidget.cpp" line="28"/>
-        <location filename="../src/maintabwidget.cpp" line="220"/>
+        <location filename="../src/maintabwidget.cpp" line="221"/>
         <source>Add tabs by pressing &quot;+&quot;</source>
         <translation>Přidejte karty tlačítkem &quot;+&quot;</translation>
     </message>
@@ -1147,8 +1413,8 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="102"/>
-        <location filename="../src/mainwindow.cpp" line="196"/>
+        <location filename="../src/mainwindow.cpp" line="104"/>
+        <location filename="../src/mainwindow.cpp" line="208"/>
         <source>Command panel</source>
         <translation>Příkazový panel</translation>
     </message>
@@ -1561,7 +1827,7 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
     </message>
     <message>
         <location filename="../src/partstoolsdialog.cpp" line="105"/>
-        <location filename="../src/partstoolsdialog.cpp" line="170"/>
+        <location filename="../src/partstoolsdialog.cpp" line="222"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>
@@ -1571,32 +1837,42 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
         <translation>Ruším…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="157"/>
+        <location filename="../src/partstoolsdialog.cpp" line="160"/>
+        <source>Allow selected</source>
+        <translation>Povolit vybrané</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="163"/>
+        <source>Deny</source>
+        <translation>Odmítnout</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="209"/>
         <source>Apply this operation to %1 selected files?</source>
         <translation>Provést tuto operaci pro %1 vybraných souborů?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <location filename="../src/partstoolsdialog.cpp" line="218"/>
         <source>Cancel</source>
         <translation>Zrušit</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <location filename="../src/partstoolsdialog.cpp" line="218"/>
         <source>Working...</source>
         <translation>Pracuji…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="179"/>
+        <location filename="../src/partstoolsdialog.cpp" line="235"/>
         <source>Completed: %1. Failed: %2. Skipped: %3.</source>
         <translation>Dokončeno: %1. Chyby: %2. Přeskočeno: %3.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="185"/>
+        <location filename="../src/partstoolsdialog.cpp" line="173"/>
         <source>Keep: %1</source>
         <translation>Ponechat: %1</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="195"/>
+        <location filename="../src/partstoolsdialog.cpp" line="183"/>
         <source>Ready: %1. Skipped: %2.</source>
         <translation>Připraveno: %1. Přeskočeno: %2.</translation>
     </message>
@@ -2387,50 +2663,134 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
         <translation>Panel nástrojů technických specifikací</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="68"/>
-        <location filename="../src/settingsdialog.cpp" line="131"/>
+        <location filename="../src/settingsdialog.cpp" line="69"/>
+        <location filename="../src/settingsdialog.cpp" line="134"/>
         <source>Updates</source>
         <translation>Aktualizace</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="102"/>
+        <location filename="../src/settingsdialog.cpp" line="71"/>
+        <location filename="../src/settingsdialog.cpp" line="135"/>
+        <source>AI</source>
+        <translation>AI</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="105"/>
         <source>Include subdirectories by default</source>
         <translation>Výchozí procházení včetně podadresářů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="104"/>
+        <location filename="../src/settingsdialog.cpp" line="107"/>
         <source>Cleaner: remove old numbered versions</source>
         <translation>Cleaner: odstranit staré číslované verze</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="109"/>
+        <location filename="../src/settingsdialog.cpp" line="112"/>
         <source>Cleaner: additional masks (semicolon separated)</source>
         <translation>Cleaner: další masky (oddělené středníkem)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="113"/>
+        <location filename="../src/settingsdialog.cpp" line="116"/>
         <source>Ghostscript runtime is missing</source>
         <translation>Chybí převodní program Ghostscript</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="329"/>
+        <location filename="../src/settingsdialog.cpp" line="334"/>
         <source>Locate ProE launcher</source>
         <translation>Najít spouštěč Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="331"/>
+        <location filename="../src/settingsdialog.cpp" line="336"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Spustitelný soubor Pro/E (proe.exe);;Všechny soubory (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="339"/>
+        <location filename="../src/settingsdialog.cpp" line="344"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts – vybrat textový editor</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="347"/>
+        <location filename="../src/settingsdialog.cpp" line="352"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts – vybrat terminál</translation>
+    </message>
+</context>
+<context>
+    <name>SystemCommandDialog</name>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="23"/>
+        <source>Review system command</source>
+        <translation>Potvrzení systémového příkazu</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="35"/>
+        <source>Purpose: %1</source>
+        <translation>Účel: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="36"/>
+        <source>Working directory: %1</source>
+        <translation>Pracovní adresář: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="37"/>
+        <source>Shell: %1</source>
+        <translation>Příkazový interpret: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="41"/>
+        <source>Runs with your user permissions, including access outside the attached paths. System commands do not enforce Parts directory locks.</source>
+        <translation>Spustí se s vašimi uživatelskými právy, včetně přístupu mimo přidané cesty. Systémové příkazy se neřídí zámečky adresářů v Parts.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="46"/>
+        <source>Nothing runs until you confirm this command.</source>
+        <translation>Dokud tento příkaz nepotvrdíte, nic se nespustí.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="48"/>
+        <source>Run command</source>
+        <translation>Spustit příkaz</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="50"/>
+        <source>Cancel</source>
+        <translation>Zrušit</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="60"/>
+        <source>Could not start the system shell.</source>
+        <translation>Nelze spustit příkazový interpret systému.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="75"/>
+        <source>Could not control the system process tree.</source>
+        <translation>Nelze řídit strom systémových procesů.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="95"/>
+        <source>Allow</source>
+        <translation>Povolit</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="96"/>
+        <source>Deny</source>
+        <translation>Odmítnout</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="108"/>
+        <source>The working directory changed. Request the command again.</source>
+        <translation>Pracovní adresář se změnil. Vyžádejte příkaz znovu.</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="113"/>
+        <source>Stop</source>
+        <translation>Zastavit</translation>
+    </message>
+    <message>
+        <location filename="../src/ai/systemcommanddialog.cpp" line="113"/>
+        <source>Command is running...</source>
+        <translation>Příkaz se provádí...</translation>
     </message>
 </context>
 <context>
@@ -2479,32 +2839,32 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
 <context>
     <name>UpdateService</name>
     <message>
-        <location filename="../src/updateservice.cpp" line="21"/>
+        <location filename="../src/updateservice.cpp" line="45"/>
         <source>Update response is too large.</source>
         <translation>Odpověď aktualizátoru je příliš velká.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="34"/>
+        <location filename="../src/updateservice.cpp" line="63"/>
         <source>The update component could not be started.</source>
         <translation>Aktualizační součást se nepodařilo spustit.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="38"/>
+        <location filename="../src/updateservice.cpp" line="67"/>
         <source>Update cancelled. The installed version is unchanged.</source>
         <translation>Aktualizace zrušena. Nainstalovaná verze se nezměnila.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="41"/>
+        <location filename="../src/updateservice.cpp" line="70"/>
         <source>The update operation failed.</source>
         <translation>Aktualizace se nezdařila.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="74"/>
+        <location filename="../src/updateservice.cpp" line="106"/>
         <source>Use the distribution launcher to install updates.</source>
         <translation>Pro instalaci aktualizací použijte spouštěč distribučního balíku.</translation>
     </message>
     <message>
-        <location filename="../src/updateservice.cpp" line="77"/>
+        <location filename="../src/updateservice.cpp" line="117"/>
         <source>The installer could not be started.</source>
         <translation>Instalátor se nepodařilo spustit.</translation>
     </message>
@@ -2512,114 +2872,114 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
 <context>
     <name>UpdatesPage</name>
     <message>
-        <location filename="../src/updatespage.cpp" line="39"/>
-        <location filename="../src/updatespage.cpp" line="53"/>
+        <location filename="../src/updatespage.cpp" line="42"/>
+        <location filename="../src/updatespage.cpp" line="56"/>
         <source>Install update</source>
         <translation>Nainstalovat aktualizaci</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="39"/>
+        <location filename="../src/updatespage.cpp" line="42"/>
         <source>Download and install the update, then restart Parts? Your project files will be preserved.</source>
         <translation>Stáhnout a nainstalovat aktualizaci a potom restartovat Parts? Soubory projektů zůstanou zachovány.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="43"/>
-        <location filename="../src/updatespage.cpp" line="54"/>
+        <location filename="../src/updatespage.cpp" line="46"/>
+        <location filename="../src/updatespage.cpp" line="57"/>
         <source>Return to previous version</source>
         <translation>Vrátit předchozí verzi</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="43"/>
+        <location filename="../src/updatespage.cpp" line="46"/>
         <source>Restart Parts with the previous verified version? This does not restore older project data.</source>
         <translation>Restartovat Parts s předchozí ověřenou verzí? Starší data projektů se tím neobnoví.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="52"/>
+        <location filename="../src/updatespage.cpp" line="55"/>
         <source>Check for updates silently at startup</source>
         <translation>Při spuštění tiše kontrolovat aktualizace</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="53"/>
+        <location filename="../src/updatespage.cpp" line="56"/>
         <source>Check for updates</source>
         <translation>Zkontrolovat aktualizace</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="54"/>
+        <location filename="../src/updatespage.cpp" line="57"/>
         <source>Cancel download</source>
         <translation>Zrušit stahování</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="55"/>
+        <location filename="../src/updatespage.cpp" line="58"/>
         <source>Release notes will appear here.</source>
         <translation>Zde se zobrazí poznámky k vydání.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="66"/>
+        <location filename="../src/updatespage.cpp" line="69"/>
         <source>Installed version: %1</source>
         <translation>Nainstalovaná verze: %1</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="66"/>
+        <location filename="../src/updatespage.cpp" line="69"/>
         <source>Available version: %1</source>
         <translation>Dostupná verze: %1</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="68"/>
+        <location filename="../src/updatespage.cpp" line="71"/>
         <source>Update check or installation failed. See details below.</source>
         <translation>Kontrola nebo instalace aktualizace se nezdařila. Podrobnosti jsou níže.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="69"/>
+        <location filename="../src/updatespage.cpp" line="72"/>
         <source>Checking for updates...</source>
         <translation>Kontroluji aktualizace…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="70"/>
+        <location filename="../src/updatespage.cpp" line="73"/>
         <source>Downloading update...</source>
         <translation>Stahuji aktualizaci…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="71"/>
+        <location filename="../src/updatespage.cpp" line="74"/>
         <source>Verifying the downloaded update...</source>
         <translation>Ověřuji staženou aktualizaci…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="72"/>
+        <location filename="../src/updatespage.cpp" line="75"/>
         <source>Waiting for Parts to close...</source>
         <translation>Čekám na zavření Parts…</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="73"/>
+        <location filename="../src/updatespage.cpp" line="76"/>
         <source>A new version is available.</source>
         <translation>Je dostupná nová verze.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="74"/>
+        <location filename="../src/updatespage.cpp" line="77"/>
         <source>No newer compatible release is available.</source>
         <translation>Není dostupná novější kompatibilní verze.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="75"/>
+        <location filename="../src/updatespage.cpp" line="78"/>
         <source>Updates have not been checked yet.</source>
         <translation>Aktualizace dosud nebyly zkontrolovány.</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="79"/>
+        <location filename="../src/updatespage.cpp" line="86"/>
         <source>Last successful check: %1</source>
         <translation>Poslední úspěšná kontrola: %1</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="79"/>
+        <location filename="../src/updatespage.cpp" line="86"/>
         <source>Never</source>
         <translation>Nikdy</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="80"/>
+        <location filename="../src/updatespage.cpp" line="87"/>
         <source>Download size: %1 MiB</source>
         <translation>Velikost ke stažení: %1 MiB</translation>
     </message>
     <message>
-        <location filename="../src/updatespage.cpp" line="81"/>
+        <location filename="../src/updatespage.cpp" line="88"/>
         <source>This is a development or custom copy. Use the distribution launcher to install updates.</source>
         <translation>Toto je vývojová nebo vlastní kopie. Pro instalaci aktualizací použijte spouštěč distribučního balíku.</translation>
     </message>

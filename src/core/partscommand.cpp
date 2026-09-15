@@ -28,10 +28,14 @@ QStringList PartsCore::splitCommand(const QString &line)
     return result;
 }
 
-PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments, const CommandContext &context)
+PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments, const CommandContext &context,
+    ToolPlan *previewPlan, std::function<QString(const QString &)> authorizePath)
 {
-    if (!arguments.isEmpty() && arguments[0] == "update") return executeUpdateCommand(arguments.mid(1));
     const auto fail = [](const QString &error, int code) { return CommandResult{{}, {}, error, code}; };
+    if (!arguments.isEmpty() && arguments[0] == "update") {
+        if (authorizePath) return fail("Use Settings > Updates to manage application updates", 2);
+        return executeUpdateCommand(arguments.mid(1));
+    }
     QCommandLineParser parser;
     parser.setApplicationDescription("Parts commands: list, params, ps2pdf, ptc-clean, step-edit, update. Tools preview by default; --apply executes. UTF-8 JSON output.");
     parser.addHelpOption();
@@ -54,6 +58,7 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
         return {{}, parser.helpText(), {}, 0};
     if (parser.isSet("version"))
         return {{}, QStringLiteral(VERSION) + '\n', {}, 0};
+    if (previewPlan && parser.isSet("apply")) return fail("Use the preview plan and request user approval to apply", 2);
     auto positional = parser.positionalArguments();
     const bool tool = !positional.isEmpty() && QStringList{"ps2pdf", "ptc-clean", "step-edit"}.contains(positional[0]);
     if (tool) {
@@ -79,7 +84,12 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
             request.fields[assignment.left(equals)] = assignment.mid(equals + 1);
         }
         try {
+            if (authorizePath) {
+                request.path = authorizePath(request.path);
+                if (!request.outputDirectory.isEmpty()) request.outputDirectory = authorizePath(request.outputDirectory);
+            }
             const auto plan = planTool(request);
+            if (previewPlan) *previewPlan = plan;
             auto data = parser.isSet("apply") ? applyTool(plan) : describePlan(plan);
             const bool failed = !data["failed"].toArray().isEmpty() || !data["skipped"].toArray().isEmpty();
             return {data, {}, failed && parser.isSet("apply") ? "Some files could not be processed; see result" : QString(),
@@ -104,9 +114,10 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
         if (mode != "all" && mode != "latest") return fail("Expected all or latest for --default-proe-versions", 2);
         versions = mode == "all";
     }
-    const QString path = QDir::isAbsolutePath(positional[1]) || context.directory.isEmpty()
+    QString path = QDir::isAbsolutePath(positional[1]) || context.directory.isEmpty()
         ? positional[1] : QDir(context.directory).filePath(positional[1]);
     try {
+        if (authorizePath) path = authorizePath(path);
         if (positional[0] == "list")
             return {listParts(path, language, versions, parser.value("name")), {}, {}, 0};
         QFileInfo file(path);

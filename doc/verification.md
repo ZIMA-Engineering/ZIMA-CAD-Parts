@@ -1,17 +1,19 @@
 # Build verification
 
-## Integrated-tools baseline: September 15, 2026
+## Windows: verified September 15, 2026
 
-The complete GUI, CLI and integration test projects were built with Qt 6.10.1,
-MSVC x64 and Open CASCADE 8.0.0. Recorded results for the command panel and
-built-in tools are:
+The complete GUI, CLI, updater and integration test projects were built with
+Qt 6.10.1, MSVC x64 and Open CASCADE 8.0.0. The current local Windows build is
+**2026091506**. Recorded checks for the implemented features are:
 
-- **27 integration tests passed**, with no failures or skips.
+- **44 integration tests passed**, with no failures or skips, including AI
+  drafting, inline approval, path insertion and updater settings.
 - **4 read-only CLI tests passed**.
+- **18 isolated updater tests passed**, including platform-independent releases.
 - **9 built-in tool CLI tests passed**, including actual Ghostscript
   conversion, conversion failure cleanup, STEP backups and system trash.
 - **4 distribution tests passed** using the native Windows launcher.
-- All four translation catalogs passed validation, with **454 complete
+- All four translation catalogs passed validation, with **553 complete
   messages per language**, including placeholders and plural forms.
 
 The system trash test passed with access to the Windows recycle bin; a
@@ -23,7 +25,9 @@ Manual checks included green active tabs, SVG icons, the command panel and
 PDF/STEP tool dialogs. The full GUI build was repeated after removing the
 separate built-in tools toolbar icon. The deployed and packaged GUI binaries
 match the resulting build. The distribution ZIP passed its CRC check, and
-its file checksums were regenerated.
+its file checksums were regenerated. The current development ZIP also passed
+signature, CRC and all 1,476 file-checksum checks; its 563 source files and all
+three binaries matched the checkout and build outputs when packaged.
 
 These results were obtained on the development workstation. A clean Windows
 installation, the modified GitHub workflows and Linux/KDE runtime behavior
@@ -117,12 +121,61 @@ filtering, download/install/rollback, signature/hash failures, traversal,
 modified staging, interrupted import, failed startup recovery, retention,
 modified old versions, incompatible protocols, catalog replay/offline errors, restart without approval,
 case collisions, unsigned bootstrap rejection and source retention across platforms.
-Additional cases cover host-only installation, skipping newer releases for
-another platform, and independently finalizing Windows-only and Debian-only
-publisher fixtures. These fixtures do not execute a Debian binary.
+They also cover offering and installing an archive containing only the current
+platform, skipping a newer release for the other platform, and independently
+finalizing signed Windows-only and Debian-only publisher fixtures. The Debian
+publisher fixture checks the archive contract; it does not execute a Linux binary.
 GUI integration also checks all five update-page languages, disabled installation
 for development copies, and opening Settings without starting a download.
 
-Windows GUI integration: 28 passing checks. CLI read commands: 4; built-in tools:
-9; the four translation catalogs contain 485 complete entries each. Debian
-execution remains pending; these Windows results do not establish Linux support.
+## AI command panel checks
+
+The Windows GUI and CLI were built with Qt 6.10.1, MSVC and OCCT for version
+2026091506. GUI integration now has 44 passing checks, including sixteen AI
+cases. CLI read commands: 4 passing checks; built-in tools: 9. The system
+trash case required the normal Windows user context because the restricted
+sandbox cannot access that user's recycle bin.
+
+The AI fixture covers command mode switching, captured directory roots,
+minimal initial context, paginated reads, command discovery, rejected direct
+apply, local locks, changed-file revalidation, explicit review, cancelled
+plan replay, protocol errors, native-tool rejection and cancellation.
+Settings are checked in all five UI languages, including status translation
+and the executable label after switching languages. The four translation
+catalogs contain 553 complete entries each; placeholder and markup checks pass.
+
+Path checks cover local URL drag/drop, insertion into drafts, duplicate removal,
+selection replacement, undo, quoted paths with spaces and Unicode, native Windows
+paths, captured requests, deletion before sending and `/new`, exact-file access versus
+directory descendants, rejection of remote URLs, multiple highlighted rows,
+and menu routing from files, tree directories and data source roots. Screenshots
+of Czech path insertion and the inline system-command review were inspected.
+
+Real system-command fixtures verify that cancelled reviews do not create files,
+approved commands do create only their temporary fixture files, UTF-8 output
+returns to AI, invalid arguments fail, nonzero exits are reported, and timeout
+and cancellation stop execution. A child-process fixture also verifies that
+Stop prevents a delayed child write. These tests do not use a live AI account.
+
+The actual installed native Windows Codex runtime successfully completed
+App Server initialization and account discovery in a separate empty profile.
+That initial profile was signed out. For version 2026091504, a separate live
+smoke check used the existing Parts ChatGPT login and the adapter's exported
+thread/tool contract. A request to create a text file in an empty temporary
+directory produced a `system_command` proposal. The probe declined it without
+execution; Codex correctly reported that no file had been created. No account
+details were logged. Actual approved writes are covered by local Qt fixtures.
+See [AI setup and behavior](ai-command-panel.md).
+
+Inline review checks verify that neither kind of AI approval is modal,
+declining leaves files unchanged, provider failure closes pending approval,
+and one click applies only the selected STEP files without another popup.
+Existing ordinary Parts tool dialogs retain their confirmation behavior.
+
+Draft regression checks type through real keyboard events during context
+preparation, active inference and inline approval. Enter cannot send another
+request or approve an operation while busy. The next draft survives normal
+completion, errors and Stop, and only a later explicit submission sends it.
+
+Debian execution remains pending; these Windows results do not establish
+Linux support.

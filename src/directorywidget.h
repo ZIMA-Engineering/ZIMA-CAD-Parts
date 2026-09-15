@@ -45,6 +45,7 @@ signals:
     void fileOperationFinished();
     void refreshRequested();
     void openDirectoryRequested(const QString &path);
+    void aiReferencesRequested(const QStringList &paths);
 
 protected:
     void changeEvent(QEvent *event);

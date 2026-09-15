@@ -42,6 +42,8 @@ void Settings::load()
     LanguageMetadata = s.value("LanguageMetadata", "en").toString();
 
     UpdatesAutomatic = s.value("Updates/Automatic", true).toBool();
+    AiCodexExecutable = s.value("AI/CodexExecutable").toString();
+    AiModel = s.value("AI/Model").toString();
     ToolsRecursive = s.value("Tools/Recursive", false).toBool();
     ToolsCleanOld = s.value("Tools/CleanOld", true).toBool();
     ToolsCleanMasks = s.value("Tools/CleanMasks").toStringList();
@@ -84,6 +86,8 @@ void Settings::save()
     s.setValue("LanguageMetadata", LanguageMetadata);
 
     s.setValue("Updates/Automatic", UpdatesAutomatic);
+    s.setValue("AI/CodexExecutable", AiCodexExecutable);
+    s.setValue("AI/Model", AiModel);
     s.setValue("Tools/Recursive", ToolsRecursive);
     s.setValue("Tools/CleanOld", ToolsCleanOld);
     s.setValue("Tools/CleanMasks", ToolsCleanMasks);

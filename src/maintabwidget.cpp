@@ -117,6 +117,7 @@ void MainTabWidget::load()
 void MainTabWidget::addDataSourceWidget(const QString &dir)
 {
     auto dsw = new DataSourceWidget(dir, this);
+    connect(dsw, &DataSourceWidget::aiReferencesRequested, this, &MainTabWidget::aiReferencesRequested);
 
     connect(dsw, SIGNAL(showSettings(SettingsDialog::Section)),
             this, SIGNAL(showSettings(SettingsDialog::Section)));

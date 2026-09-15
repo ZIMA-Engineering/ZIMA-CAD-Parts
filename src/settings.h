@@ -93,6 +93,8 @@ public:
     void setWorkingDir(const QString &wd);
 
     bool UpdatesAutomatic = true;
+    QString AiCodexExecutable;
+    QString AiModel;
     bool ToolsRecursive = false;
     bool ToolsCleanOld = true;
     QStringList ToolsCleanMasks;

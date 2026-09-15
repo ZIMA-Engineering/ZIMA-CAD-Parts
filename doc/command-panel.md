@@ -42,8 +42,19 @@ The output is limited to 1,500 text blocks and each result to 24,000
 characters. A notice appears when output is truncated; use the standalone
 CLI for complete JSON. The panel also supports [built-in
 tools](integrated-tools.md): `ps2pdf`, `ptc-clean` and `step-edit`. Without
-`--apply`, they return a preview; with `--apply`, they modify files. AI and a
-system shell are not part of the panel.
+`--apply`, they return a preview; with `--apply`, they modify files.
+
+Enter `codex` to use the optional [Codex conversation mode](ai-command-panel.md).
+It works with the available commands and directories, obtaining information
+through tools as needed. `/exit` returns to ordinary Parts commands. AI
+file operations require a local review. Drag files or directories into the
+panel, or use **Add to AI question** in a context menu, to insert full quoted
+paths at the cursor. Edit or delete them as ordinary draft text; nothing is
+sent until you submit the question. `/new` clears the conversation's paths.
+You can draft the next question while AI is working. Sending waits for the
+current request to end; completion, an error or Stop preserves your draft.
+System tools are available through reviewed PowerShell or `/bin/sh` commands;
+each command needs explicit confirmation and runs with the OS user's rights.
 
 ## Verification
 

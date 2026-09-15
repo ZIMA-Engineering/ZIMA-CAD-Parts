@@ -19,6 +19,8 @@
 #include <QHeaderView>
 #include <QShortcut>
 #include <QtDebug>
+#include <QDrag>
+#include <QMimeData>
 
 
 FileView::FileView(QWidget *parent) :
@@ -31,6 +33,8 @@ FileView::FileView(QWidget *parent) :
     setModel(m_proxy);
 
     setSelectionMode(QAbstractItemView::ExtendedSelection);
+    setDragEnabled(true);
+    setDragDropMode(QAbstractItemView::DragOnly);
 
     connect(selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(updateSelection(QItemSelection,QItemSelection)));
@@ -295,12 +299,22 @@ void FileView::openPart(const QModelIndex &index)
 
 void FileView::showContextMenu(const QPoint &point)
 {
+    const auto clicked = indexAt(point);
+    if (clicked.isValid() && !selectionModel()->isRowSelected(clicked.row(), clicked.parent()))
+        selectionModel()->setCurrentIndex(clicked, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    else if (clicked.isValid())
+        selectionModel()->setCurrentIndex(clicked, QItemSelectionModel::NoUpdate);
     QModelIndex i = currentIndex();
 
     if (!i.isValid())
         return;
 
     QMenu *menu = new QMenu(this);
+    const auto paths = selectedReferencePaths();
+    auto ai = menu->addAction(QIcon(":/gfx/navigation/terminal.svg"), tr("Add to AI question"));
+    ai->setObjectName("addToAiQuestion");
+    connect(ai, &QAction::triggered, this, [this, paths] { emit aiReferencesRequested(paths); });
+    menu->addSeparator();
 
     menu->addAction(QIcon(":/gfx/edit-rename.png"), tr("Rename"),
                     this, SLOT(renameFile()));
@@ -309,6 +323,28 @@ void FileView::showContextMenu(const QPoint &point)
                     this, SLOT(editFile()));
     menu->exec(mapToGlobal(point));
     menu->deleteLater();
+}
+
+QStringList FileView::selectedReferencePaths()
+{
+    QStringList paths;
+    for (const auto &index : selectionModel()->selectedRows(0))
+        paths.append(fileInfo(index).absoluteFilePath());
+    if (paths.isEmpty() && currentIndex().isValid()) paths.append(fileInfo(currentIndex()).absoluteFilePath());
+    paths.removeDuplicates();
+    return paths;
+}
+
+void FileView::startDrag(Qt::DropActions supportedActions)
+{
+    Q_UNUSED(supportedActions);
+    const auto paths = selectedReferencePaths();
+    if (paths.isEmpty()) return;
+    auto mime = new QMimeData;
+    QList<QUrl> urls;
+    for (const auto &path : paths) urls.append(QUrl::fromLocalFile(path));
+    mime->setUrls(urls);
+    QDrag drag(this); drag.setMimeData(mime); drag.exec(Qt::CopyAction);
 }
 
 void FileView::renameFile()

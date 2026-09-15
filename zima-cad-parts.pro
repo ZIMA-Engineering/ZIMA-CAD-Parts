@@ -412,3 +412,8 @@ HEADERS += src/updateservice.h src/updatespage.h src/update/installationclient.h
 
 SOURCES += src/core/partsupdatecommand.cpp
 HEADERS += src/core/partsupdatecommand.h
+
+SOURCES += src/ai/aitools.cpp src/ai/codexprovider.cpp src/ai/aisettingspage.cpp
+SOURCES += src/ai/systemcommanddialog.cpp
+HEADERS += src/ai/systemcommanddialog.h
+HEADERS += src/ai/aitools.h src/ai/aiprovider.h src/ai/codexprovider.h src/ai/aisettingspage.h

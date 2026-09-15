@@ -1,4 +1,8 @@
 #include "commandpanel.h"
+#include "ai/aitools.h"
+#include "ai/codexprovider.h"
+#include "ai/systemcommanddialog.h"
+#include "ai-fixture.h"
 #include "updatespage.h"
 #include "updateservice.h"
 #include "settingsdialog.h"
@@ -30,6 +34,13 @@
 #include "filemover.h"
 #include "fileview.h"
 #include <QLineEdit>
+#include <QLabel>
+#include <QMenu>
+#include <QMimeData>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QScopedValueRollback>
+#include "maintabwidget.h"
 #include <QComboBox>
 #include <QCheckBox>
 #include "mainwindow.h"
@@ -107,6 +118,476 @@ private slots:
         DirectoryWidget directory;
         auto indicator = directory.findChild<QToolButton *>("updateAvailableIndicator");
         QVERIFY(indicator); QVERIFY(indicator->isHidden());
+    }
+
+    void aiReadsUseCapturedRootsAndNeverSendAnAutomaticInventory()
+    {
+        QTemporaryDir root, other, working;
+        touch(root.path(), "inside.txt"); touch(other.path(), "outside.txt"); touch(working.path(), "destination.txt");
+        PartsCore::CommandContext context; context.directory = root.path(); context.workingDirectory = working.path();
+        const auto sent = PartsAi::contextData(context);
+        QCOMPARE(sent.size(), 4); QVERIFY(!sent.contains("entries")); QVERIFY(!sent.contains("selectedFiles"));
+        auto read = PartsAi::runTool("read_text", {{"path", "inside.txt"}, {"offset", 0}}, context);
+        QVERIFY(read.success); QCOMPARE(read.data["text"].toString(), QString("fixture"));
+        QVERIFY(!PartsAi::runTool("read_text", {{"path", other.filePath("outside.txt")}, {"offset", 0}}, context).success);
+        QVERIFY(PartsAi::runTool("read_text", {{"path", working.filePath("destination.txt")}, {"offset", 0}}, context).success);
+        QVERIFY(!PartsAi::runTool("read_text", {{"path", "inside.txt"}, {"offset", -1}}, context).success);
+        QVERIFY(!PartsAi::runTool("unknown", {}, context).success);
+        QVERIFY(!PartsAi::runTool("parts_command", {{"arguments", QJsonArray{"list", other.path()}}}, context).success);
+        auto help = PartsAi::runTool("parts_command", {{"arguments", QJsonArray{"help"}}}, context);
+        QVERIFY(help.success); QVERIFY(help.data["text"].toString().contains("ps2pdf"));
+        QVERIFY(!PartsAi::runTool("parts_command", {{"arguments", QJsonArray{"update", "install", "--apply"}}}, context).success);
+        for (int i = 0; i < 130; ++i) touch(root.path(), QString("file-%1").arg(i));
+        auto page = PartsAi::runTool("directory_list", {{"path", "."}, {"offset", 0}}, context);
+        QVERIFY(page.success); QCOMPARE(page.data["entries"].toArray().size(), 100);
+        QCOMPARE(page.data["nextOffset"].toInt(), 100);
+        auto second = PartsAi::runTool("directory_list", {{"path", "."}, {"offset", 100}}, context);
+        QCOMPARE(second.data["entries"].toArray().size(), 31); QVERIFY(second.data["nextOffset"].isNull());
+    }
+
+    void aiPreviewHonorsLocksAndRejectsDirectApply()
+    {
+        QTemporaryDir root;
+        touch(root.path(), "part.prt.1"); touch(root.path(), "part.prt.2");
+        QDir(root.path()).mkpath("0000-index");
+        const auto metadata = root.filePath("0000-index/metadata.ini");
+        { QSettings s(metadata, QSettings::IniFormat); s.setValue("Directory/PreventRemoval", true); s.sync(); }
+        PartsCore::CommandContext context; context.directory = root.path();
+        auto locked = PartsAi::runTool("parts_command", {{"arguments", QJsonArray{"ptc-clean"}}}, context);
+        QVERIFY(locked.success); QVERIFY(locked.plan.items.isEmpty()); QCOMPARE(locked.plan.skipped.size(), 1);
+        auto applied = PartsAi::runTool("parts_command", {{"arguments", QJsonArray{"ptc-clean", "--apply"}}}, context);
+        QVERIFY(!applied.success); QVERIFY(QFileInfo::exists(root.filePath("part.prt.1")));
+        { QSettings s(metadata, QSettings::IniFormat); s.setValue("Directory/PreventRemoval", false); s.sync(); }
+        auto preview = PartsAi::runTool("parts_command", {{"arguments", QJsonArray{"ptc-clean"}}}, context);
+        QCOMPARE(preview.plan.items.size(), 1);
+        QFile changed(root.filePath("part.prt.1")); QVERIFY(changed.open(QIODevice::Append)); changed.write("changed"); changed.close();
+        auto stale = PartsCore::applyTool(preview.plan);
+        QCOMPARE(stale["failed"].toArray().size(), 1); QVERIFY(QFileInfo::exists(changed.fileName()));
+    }
+
+    void aiReferencesGrantExactFilesAndDirectoryDescendants()
+    {
+        QTemporaryDir root, external;
+        touch(external.path(), "žluťoučký part.txt"); touch(external.path(), "sibling.txt");
+        QDir(external.path()).mkpath("attached/sub"); touch(external.filePath("attached/sub"), "notes.txt");
+        PartsCore::CommandContext context; context.directory = root.path();
+        const auto filePath = external.filePath("žluťoučký part.txt");
+        const auto refs = PartsAi::referenceData({filePath, external.filePath("attached"), filePath});
+        QCOMPARE(refs.size(), 2);
+        QCOMPARE(refs[0].toObject()["type"].toString(), QString("file"));
+        QCOMPARE(refs[1].toObject()["type"].toString(), QString("directory"));
+        QVERIFY(PartsAi::runTool("read_text", {{"path", filePath}, {"offset", 0}}, context, refs).success);
+        QVERIFY(!PartsAi::runTool("read_text", {{"path", external.filePath("sibling.txt")}, {"offset", 0}}, context, refs).success);
+        QVERIFY(PartsAi::runTool("read_text", {{"path", external.filePath("attached/sub/notes.txt")}, {"offset", 0}}, context, refs).success);
+        QVERIFY(!PartsAi::runTool("directory_list", {{"path", external.path()}, {"offset", 0}}, context, refs).success);
+        QVERIFY(!PartsAi::runTool("read_text", {{"path", filePath}, {"offset", 0}}, context).success);
+        const auto sent = PartsAi::contextData(context, refs);
+        QVERIFY(!QJsonDocument(sent).toJson().contains("fixture"));
+        QVERIFY(QFile::remove(filePath)); QVERIFY(QDir().mkpath(filePath)); touch(filePath, "new.txt");
+        QVERIFY(!PartsAi::runTool("read_text", {{"path", filePath + "/new.txt"}, {"offset", 0}}, context, refs).success);
+    }
+
+    void aiDroppedPathsAreEditableTextAndUseTheRequestSnapshot()
+    {
+        QTemporaryDir root, external, directory;
+        touch(external.path(), "notes with spaces.txt");
+        PartsCore::CommandContext context; context.directory = root.path();
+        FakeAiProvider ai; CommandPanel panel([&] { return context; }, nullptr, &ai);
+        panel.resize(1000, 360); panel.show();
+        auto input = panel.findChild<QLineEdit *>("commandPanelInput"); input->setText("Look at this file");
+        QMimeData mime; mime.setUrls({QUrl::fromLocalFile(external.filePath("notes with spaces.txt")), QUrl::fromLocalFile(directory.path())});
+        QDragEnterEvent enter(QPoint(10, 10), Qt::CopyAction | Qt::MoveAction, &mime, Qt::LeftButton, Qt::NoModifier);
+        QApplication::sendEvent(input, &enter); QVERIFY(enter.isAccepted());
+        QDropEvent drop(QPointF(10, 10), Qt::CopyAction | Qt::MoveAction, &mime, Qt::LeftButton, Qt::NoModifier);
+        QApplication::sendEvent(input, &drop); QVERIFY(drop.isAccepted()); QCOMPARE(drop.dropAction(), Qt::CopyAction);
+        const auto filePath = QFileInfo(external.filePath("notes with spaces.txt")).canonicalFilePath();
+        const auto directoryPath = QFileInfo(directory.path()).canonicalFilePath();
+        const auto expected = "Look at this file " + PartsAi::quotedPath(filePath) + ' ' + PartsAi::quotedPath(directoryPath);
+        QCOMPARE(ai.asks, 0); QCOMPARE(input->text(), expected);
+        QVERIFY(panel.findChildren<QFrame *>("aiReferenceChip").isEmpty());
+        QVERIFY(panel.addAiReferences({filePath})); QCOMPARE(input->text(), expected);
+        if (qEnvironmentVariableIsSet("PARTS_AI_REFERENCES_SCREENSHOT")) {
+            applyApplicationLanguage("cs_CZ"); QCoreApplication::processEvents(); QCoreApplication::processEvents();
+            QVERIFY(panel.grab().save(qEnvironmentVariable("PARTS_AI_REFERENCES_SCREENSHOT")));
+            applyApplicationLanguage("en_US"); QCoreApplication::processEvents();
+        }
+        // Removing a path from the draft must not silently retain it as an attachment.
+        input->setText("Look at " + PartsAi::quotedPath(filePath));
+        const auto sent = input->text();
+        QTest::keyClick(input, Qt::Key_Return); QTRY_COMPARE(ai.asks, 1);
+        QCOMPARE(ai.prompt, sent); QVERIFY(input->text().isEmpty());
+        QCOMPARE(ai.context["references"].toArray().size(), 1);
+        QVERIFY(panel.addAiReferences({directoryPath})); // Draft for the next request only.
+        emit ai.toolRequested("not-sent", "directory_list", {{"path", directoryPath}, {"offset", 0}});
+        QTRY_COMPARE(ai.lastId, QString("not-sent")); QVERIFY(!ai.lastSuccess);
+        emit ai.toolRequested("captured", "read_text", {{"path", external.filePath("notes with spaces.txt")}, {"offset", 0}});
+        QTRY_COMPARE(ai.lastId, QString("captured")); QVERIFY(ai.lastSuccess);
+        ai.running = false; emit ai.answer("Done");
+        QVERIFY(input->text().contains(PartsAi::quotedPath(directoryPath)));
+        QTest::keyClick(input, Qt::Key_Return); QTRY_COMPARE(ai.asks, 2);
+        QCOMPARE(ai.context["references"].toArray().size(), 2);
+        // Paths already sent remain part of this conversation, like ordinary chat text.
+        emit ai.toolRequested("follow-up", "read_text", {{"path", filePath}, {"offset", 0}});
+        QTRY_COMPARE(ai.lastId, QString("follow-up")); QVERIFY(ai.lastSuccess);
+        ai.running = false; emit ai.answer("Done");
+        input->setText("/exit"); QTest::keyClick(input, Qt::Key_Return); QVERIFY(input->text().isEmpty());
+        input->setText("codex"); QTest::keyClick(input, Qt::Key_Return);
+        input->setText("/new"); QTest::keyClick(input, Qt::Key_Return);
+        input->setText("A new question"); QTest::keyClick(input, Qt::Key_Return); QTRY_COMPARE(ai.asks, 3);
+        QVERIFY(ai.context["references"].toArray().isEmpty());
+        ai.running = false; emit ai.answer("Done");
+        mime.setUrls({QUrl("https://example.com/not-a-local-file")});
+        QDragEnterEvent remote(QPoint(10, 10), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
+        QApplication::sendEvent(input, &remote); QVERIFY(!remote.isAccepted());
+    }
+
+    void aiPathInsertionSupportsSelectionUndoAndManualPaths()
+    {
+        QTemporaryDir root;
+        touch(root.path(), "česká poznámka.txt");
+        const auto path = QFileInfo(root.filePath("česká poznámka.txt")).canonicalFilePath();
+        PartsCore::CommandContext context; context.directory = root.path();
+        FakeAiProvider ai; CommandPanel panel([&] { return context; }, nullptr, &ai); panel.show();
+        auto input = panel.findChild<QLineEdit *>("commandPanelInput");
+        input->setText("Compare HERE with the original"); input->setSelection(8, 4);
+        QVERIFY(panel.addAiReferences({path}));
+        QCOMPARE(input->text(), "Compare " + PartsAi::quotedPath(path) + " with the original");
+        QCOMPARE(PartsAi::promptReferences(input->text()).first().toObject()["path"].toString(), path);
+        input->undo(); QCOMPARE(input->text(), QString("Compare HERE with the original"));
+        QVERIFY(PartsAi::promptReferences(input->text()).isEmpty());
+        const auto native = '"' + QDir::toNativeSeparators(path) + '"';
+        QCOMPARE(PartsAi::promptReferences("Read " + native).first().toObject()["path"].toString(), path);
+        QCOMPARE(ai.asks, 0);
+    }
+
+    void aiFileContextMenuUsesOnlySelectedRowsAndOpensPanel()
+    {
+        QTemporaryDir root; touch(root.path(), "first.txt"); touch(root.path(), "second.txt");
+        FileView view; view.setDirectory(root.path()); view.resize(700, 400); view.show();
+        QTRY_COMPARE(view.model()->rowCount(), 2);
+        view.selectionModel()->select(view.model()->index(0, 0), QItemSelectionModel::Select | QItemSelectionModel::Rows);
+        view.selectionModel()->select(view.model()->index(1, 0), QItemSelectionModel::Select | QItemSelectionModel::Rows);
+        QCOMPARE(view.selectedReferencePaths().size(), 2);
+        QSignalSpy requested(&view, &FileView::aiReferencesRequested);
+        QTimer::singleShot(0, &view, [&view] {
+            auto menu = view.findChild<QMenu *>(); QVERIFY(menu);
+            auto action = menu->findChild<QAction *>("addToAiQuestion"); QVERIFY(action); action->trigger(); menu->close();
+        });
+        const auto point = view.visualRect(view.model()->index(0, 0)).center();
+        QVERIFY(QMetaObject::invokeMethod(&view, "showContextMenu", Q_ARG(QPoint, point)));
+        QCOMPARE(requested.size(), 1); QCOMPARE(requested.first()[0].toStringList().size(), 2);
+        MainWindow window(nullptr); window.show();
+        auto dock = window.findChild<QDockWidget *>("commandPanelDock"); dock->hide();
+        auto tabs = window.findChild<MainTabWidget *>(); QVERIFY(tabs);
+        emit tabs->currentDataSource()->aiReferencesRequested({root.path()});
+        QVERIFY(dock->isVisible());
+        QCOMPARE(window.findChild<CommandPanel *>()->findChild<QLineEdit *>("commandPanelInput")->text(),
+            PartsAi::quotedPath(QFileInfo(root.path()).canonicalFilePath()));
+        QVERIFY(!partsAiProvider()->busy());
+    }
+
+    void aiSystemCommandsRequireReviewAndReturnRealResults()
+    {
+        QTemporaryDir root;
+        PartsCore::CommandContext context; context.directory = root.path();
+        FakeAiProvider ai; CommandPanel panel([&] { return context; }, nullptr, &ai); panel.show();
+        auto input = panel.findChild<QLineEdit *>("commandPanelInput");
+        input->setText("codex"); QTest::keyClick(input, Qt::Key_Return);
+        input->setText("Create a note"); QTest::keyClick(input, Qt::Key_Return); QTRY_COMPARE(ai.asks, 1);
+#ifdef Q_OS_WIN
+        const QString command = "[IO.File]::WriteAllText((Join-Path (Get-Location) 'made.txt'), 'fixture'); Write-Output 'žluťoučký'";
+#else
+        const QString command = "printf fixture > made.txt; printf 'žluťoučký\\n'";
+#endif
+        QJsonObject args{{"command", command}, {"directory", "."}, {"reason", "Create the requested note"}, {"timeoutSeconds", 10}};
+        emit ai.toolRequested("decline", "system_command", args);
+        auto dialog = panel.findChild<SystemCommandDialog *>(); QVERIFY(dialog);
+        QVERIFY(dialog->isVisible()); QVERIFY(!dialog->isWindow()); QVERIFY(!dialog->isModal());
+        QVERIFY(!QApplication::activeModalWidget());
+        QCOMPARE(dialog->findChild<QPlainTextEdit *>("systemCommandPreview")->toPlainText(), command);
+        QVERIFY(dialog->findChild<QPlainTextEdit *>("systemCommandPreview")->parentWidget() != dialog);
+        QVERIFY(!QFileInfo::exists(root.filePath("made.txt"))); QVERIFY(!dialog->wasStarted());
+        QVERIFY(input->isEnabled()); QTest::keyClicks(input, "Draft during approval");
+        QTest::keyClick(input, Qt::Key_Return);
+        QCOMPARE(ai.asks, 1); QVERIFY(!dialog->wasStarted());
+        dialog->findChild<QPushButton *>("denySystemCommand")->click();
+        QTRY_COMPARE(ai.lastId, QString("decline")); QVERIFY(ai.lastResult["cancelled"].toBool());
+        QVERIFY(!QFileInfo::exists(root.filePath("made.txt")));
+        QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+        emit ai.toolRequested("approved", "system_command", args);
+        dialog = panel.findChild<SystemCommandDialog *>(); QVERIFY(dialog);
+        if (qEnvironmentVariableIsSet("PARTS_INLINE_REVIEW_SCREENSHOT")) {
+            panel.resize(1000, 540); QCoreApplication::processEvents();
+            QTest::qWait(100);
+            QVERIFY(panel.grab().save(qEnvironmentVariable("PARTS_INLINE_REVIEW_SCREENSHOT")));
+        }
+        dialog->findChild<QPushButton *>("runSystemCommand")->click();
+        QTRY_COMPARE_WITH_TIMEOUT(ai.lastId, QString("approved"), 15000);
+        QVERIFY2(ai.lastSuccess, QJsonDocument(ai.lastResult).toJson().constData());
+        QVERIFY(QFileInfo::exists(root.filePath("made.txt"))); QCOMPARE(ai.lastResult["exitCode"].toInt(), 0);
+        QVERIFY(ai.lastResult["output"].toString().contains("žluťoučký"));
+        QCOMPARE(input->text(), QString("Draft during approval"));
+        args["timeoutSeconds"] = 0;
+        emit ai.toolRequested("invalid", "system_command", args); QCOMPARE(ai.lastId, QString("invalid")); QVERIFY(!ai.lastSuccess);
+        QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+        args["timeoutSeconds"] = 10;
+        emit ai.toolRequested("stale", "system_command", args);
+        dialog = panel.findChild<SystemCommandDialog *>(); QVERIFY(dialog);
+        emit ai.failed("Fixture disconnect during approval");
+        QVERIFY(!dialog->isVisible()); QVERIFY(!dialog->wasStarted());
+        panel.findChild<QPushButton *>("commandPanelStop")->click();
+    }
+
+    void aiTreeAndRootMenusProvideDirectoryReferences()
+    {
+        QTemporaryDir root; QVERIFY(QDir(root.path()).mkpath("child"));
+        DataSource source("Fixture", root.path());
+        QScopedValueRollback<DataSourceList> restore(Settings::get()->DataSources, {&source});
+        DataSourceWidget widget(root.path()); widget.resize(900, 650); widget.show();
+        QTRY_VERIFY(widget.findChild<DataSourceView *>());
+        auto view = widget.findChild<DataSourceView *>();
+        QTRY_VERIFY(view->navigateToDirectory(root.filePath("child")));
+        QVERIFY(view->dragEnabled());
+        QScopedPointer<QMimeData> mime(view->model()->mimeData({view->currentIndex()}));
+        QCOMPARE(mime->urls(), QList<QUrl>{QUrl::fromLocalFile(root.filePath("child"))});
+        QSignalSpy requests(&widget, &DataSourceWidget::aiReferencesRequested);
+        QTimer::singleShot(0, &widget, [view] {
+            auto menu = view->findChild<QMenu *>(); QVERIFY(menu);
+            auto action = menu->findChild<QAction *>("addToAiQuestion"); QVERIFY(action); action->trigger(); menu->close();
+        });
+        const auto point = view->visualRect(view->currentIndex()).center();
+        QVERIFY(QMetaObject::invokeMethod(view, "showContextMenu", Q_ARG(QPoint, point)));
+        QCOMPARE(requests.size(), 1); QCOMPARE(requests.first()[0].toStringList(), QStringList{root.filePath("child")});
+        QTimer::singleShot(0, &widget, [&widget] {
+            auto menu = qobject_cast<QMenu *>(QApplication::activePopupWidget()); QVERIFY(menu);
+            auto action = menu->findChild<QAction *>("addToAiQuestion"); QVERIFY(action);
+            QTest::mouseClick(menu, Qt::LeftButton, Qt::NoModifier, menu->actionGeometry(action).center());
+        });
+        QVERIFY(QMetaObject::invokeMethod(&widget, "showDataSourceContextMenu", Q_ARG(int, 0), Q_ARG(QPoint, widget.mapToGlobal(QPoint(20, 20)))));
+        QCOMPARE(requests.size(), 2); QCOMPARE(requests.last()[0].toStringList(), QStringList{root.path()});
+    }
+
+    void systemCommandsReportFailureTimeoutAndCancellation()
+    {
+        QTemporaryDir root;
+        SystemCommandDialog failure("exit 7", root.path(), "Fixture failure", 10);
+        QSignalSpy failed(&failure, &QDialog::finished);
+        failure.findChild<QPushButton *>("runSystemCommand")->click();
+        QTRY_COMPARE_WITH_TIMEOUT(failed.size(), 1, 15000); QCOMPARE(failure.operationResult()["exitCode"].toInt(), 7);
+#ifdef Q_OS_WIN
+        const QString delayed = "Start-Sleep -Seconds 4; [IO.File]::WriteAllText((Join-Path (Get-Location) 'late.txt'), 'bad')";
+#else
+        const QString delayed = "sleep 4; printf bad > late.txt";
+#endif
+        SystemCommandDialog timeout(delayed, root.path(), "Fixture timeout", 1);
+        QSignalSpy timed(&timeout, &QDialog::finished);
+        timeout.findChild<QPushButton *>("runSystemCommand")->click();
+        QTRY_COMPARE_WITH_TIMEOUT(timed.size(), 1, 10000); QVERIFY(timeout.operationResult()["timedOut"].toBool());
+        SystemCommandDialog stopped(delayed, root.path(), "Fixture cancellation", 10);
+        stopped.show();
+        QSignalSpy cancelled(&stopped, &QDialog::finished);
+        stopped.findChild<QPushButton *>("runSystemCommand")->click();
+        QTest::qWait(500); stopped.close();
+        QTRY_COMPARE_WITH_TIMEOUT(cancelled.size(), 1, 10000); QVERIFY(stopped.operationResult()["cancelled"].toBool());
+        QVERIFY(!QFileInfo::exists(root.filePath("late.txt")));
+#ifdef Q_OS_WIN
+        QString childPath = root.filePath("child-late.txt"); childPath.replace("'", "''");
+        const QString script = "Start-Sleep -Seconds 3; [IO.File]::WriteAllText('" + childPath + "', 'bad')";
+        const auto encoded = QByteArray(reinterpret_cast<const char *>(script.utf16()), script.size() * 2).toBase64();
+        const QString childCommand = "$child = Start-Process -FilePath ($env:SystemRoot + '\\System32\\WindowsPowerShell\\v1.0\\powershell.exe') "
+            "-ArgumentList '-NoProfile','-NonInteractive','-EncodedCommand','" + QString::fromLatin1(encoded)
+            + "' -PassThru -WindowStyle Hidden; [IO.File]::WriteAllText((Join-Path (Get-Location) 'child.pid'), [string]$child.Id); Wait-Process -Id $child.Id";
+#else
+        const QString childCommand = "(sleep 3; printf bad > child-late.txt) & child=$!; printf '%s' $child > child.pid; wait $child";
+#endif
+        SystemCommandDialog tree(childCommand, root.path(), "Fixture process tree", 10); tree.show();
+        QSignalSpy treeStopped(&tree, &QDialog::finished);
+        tree.findChild<QPushButton *>("runSystemCommand")->click();
+        QTRY_VERIFY_WITH_TIMEOUT(QFileInfo::exists(root.filePath("child.pid")), 5000);
+        tree.close(); QTRY_COMPARE_WITH_TIMEOUT(treeStopped.size(), 1, 5000);
+        QVERIFY(tree.operationResult()["cancelled"].toBool());
+        QTest::qWait(3300); QVERIFY(!QFileInfo::exists(root.filePath("child-late.txt")));
+    }
+
+    void aiDraftRemainsEditableUntilExplicitSubmission()
+    {
+        QTemporaryDir root;
+        PartsCore::CommandContext context; context.directory = root.path();
+        for (const auto ending : {0, 1, 2}) {
+            FakeAiProvider ai; CommandPanel panel([&] { return context; }, nullptr, &ai); panel.show();
+            auto input = panel.findChild<QLineEdit *>("commandPanelInput");
+            auto send = panel.findChild<QPushButton *>("commandPanelRun");
+            input->setText("codex"); QTest::keyClick(input, Qt::Key_Return);
+            input->setText("First question"); QTest::keyClick(input, Qt::Key_Return);
+            QVERIFY(input->isEnabled()); QVERIFY(!input->isReadOnly());
+            QTest::keyClicks(input, "Next question"); // Also during local context preparation.
+            QTRY_COMPARE(ai.asks, 1); QCOMPARE(ai.prompt, QString("First question"));
+            QVERIFY(!send->isEnabled());
+            emit ai.message("Still working");
+            QTest::keyClick(input, Qt::Key_Return);
+            QCOMPARE(ai.asks, 1); QCOMPARE(input->text(), QString("Next question"));
+            if (ending == 2) panel.findChild<QPushButton *>("commandPanelStop")->click();
+            else {
+                ai.running = false;
+                if (ending == 0) emit ai.answer("Done");
+                else emit ai.failed("Fixture error");
+            }
+            QVERIFY(input->isEnabled()); QVERIFY(send->isEnabled());
+            QCOMPARE(input->text(), QString("Next question")); QCOMPARE(ai.asks, 1);
+            QTest::keyClicks(input, " edited");
+            QTest::keyClick(input, Qt::Key_Return); QTRY_COMPARE(ai.asks, 2);
+            QCOMPARE(ai.prompt, QString("Next question edited"));
+            ai.cancel();
+        }
+    }
+
+    void aiPanelStartsWithCodexAndRetainsRequestDirectory()
+    {
+        QTemporaryDir first, second;
+        touch(first.path(), "first.txt"); touch(second.path(), "second.txt");
+        PartsCore::CommandContext context; context.directory = first.path();
+        FakeAiProvider ai;
+        CommandPanel panel([&] { return context; }, nullptr, &ai); panel.show();
+        auto input = panel.findChild<QLineEdit *>("commandPanelInput");
+        auto output = panel.findChild<QPlainTextEdit *>("commandPanelOutput");
+        input->setText("codex"); QTest::keyClick(input, Qt::Key_Return); QCOMPARE(ai.asks, 0);
+        input->setText("What is here?"); QTest::keyClick(input, Qt::Key_Return);
+        QTRY_COMPARE(ai.asks, 1);
+        QCOMPARE(ai.context["currentDirectory"].toString(), first.path()); QVERIFY(!ai.context.contains("entries"));
+        context.directory = second.path();
+        emit ai.toolRequested("read-first", "directory_list", {{"path", "."}, {"offset", 0}});
+        QTRY_COMPARE(ai.lastId, QString("read-first")); QVERIFY(ai.lastSuccess);
+        QVERIFY(QJsonDocument(ai.lastResult).toJson().contains("first.txt"));
+        QVERIFY(!QJsonDocument(ai.lastResult).toJson().contains("second.txt"));
+        ai.running = false; emit ai.message("Done"); emit ai.answer("Done");
+        QVERIFY(input->isEnabled());
+        input->setText("/exit"); QTest::keyClick(input, Qt::Key_Return);
+        QSignalSpy finished(&panel, &CommandPanel::commandFinished);
+        input->setText("list"); QTest::keyClick(input, Qt::Key_Return);
+        QTRY_COMPARE(finished.size(), 1); QVERIFY(output->toPlainText().contains("second.txt"));
+    }
+
+    void aiChangesRequireReviewAndCancelledPlansCannotReplay()
+    {
+        QTemporaryDir root;
+        touch(root.path(), "part.prt.1"); touch(root.path(), "part.prt.2");
+        PartsCore::CommandContext context; context.directory = root.path();
+        FakeAiProvider ai; CommandPanel panel([&] { return context; }, nullptr, &ai); panel.show();
+        auto input = panel.findChild<QLineEdit *>("commandPanelInput");
+        input->setText("codex"); QTest::keyClick(input, Qt::Key_Return);
+        input->setText("Clean old versions"); QTest::keyClick(input, Qt::Key_Return); QTRY_COMPARE(ai.asks, 1);
+        emit ai.toolRequested("preview", "parts_command", {{"arguments", QJsonArray{"ptc-clean"}}});
+        QTRY_COMPARE(ai.lastId, QString("preview"));
+        const auto plan = ai.lastResult["planId"].toString(); QVERIFY(!plan.isEmpty());
+        QVERIFY(QFileInfo::exists(root.filePath("part.prt.1")));
+        emit ai.toolRequested("review", "parts_apply", {{"planId", plan}});
+        auto dialog = panel.findChild<PartsToolsDialog *>(); QVERIFY(dialog); QVERIFY(dialog->isVisible());
+        QVERIFY(!dialog->isWindow()); QVERIFY(!dialog->isModal()); QVERIFY(!QApplication::activeModalWidget());
+        QVERIFY(QFileInfo::exists(root.filePath("part.prt.1")));
+        dialog->findChild<QPushButton *>("denyPartsOperation")->click();
+        QTRY_COMPARE(ai.lastId, QString("review")); QVERIFY(ai.lastResult["cancelled"].toBool());
+        emit ai.toolRequested("replay", "parts_apply", {{"planId", plan}});
+        QCOMPARE(ai.lastId, QString("replay")); QVERIFY(!ai.lastSuccess);
+        QVERIFY(QFileInfo::exists(root.filePath("part.prt.1")));
+        panel.findChild<QPushButton *>("commandPanelStop")->click(); QVERIFY(input->isEnabled());
+    }
+
+    void aiInlinePartsApprovalAppliesOnlySelectedFiles()
+    {
+        QTemporaryDir root;
+        const QByteArray original = "ISO-10303-21;\nHEADER;\nFILE_NAME('part','2026-09-15',('old'),('ZIMA'),'','','');\nENDSEC;\nDATA;\nENDSEC;\nEND-ISO-10303-21;\n";
+        for (const auto &name : {"one.step", "two.step"}) {
+            QFile file(root.filePath(name)); QVERIFY(file.open(QIODevice::WriteOnly)); file.write(original);
+        }
+        PartsCore::CommandContext context; context.directory = root.path();
+        FakeAiProvider ai; CommandPanel panel([&] { return context; }, nullptr, &ai); panel.show();
+        auto input = panel.findChild<QLineEdit *>("commandPanelInput");
+        input->setText("codex"); QTest::keyClick(input, Qt::Key_Return);
+        input->setText("Update the author"); QTest::keyClick(input, Qt::Key_Return); QTRY_COMPARE(ai.asks, 1);
+        emit ai.toolRequested("preview", "parts_command", {{"arguments", QJsonArray{"step-edit", "--set", "author=New author"}}});
+        QTRY_COMPARE(ai.lastId, QString("preview"));
+        const auto plan = ai.lastResult["planId"].toString(); QVERIFY(!plan.isEmpty());
+        emit ai.toolRequested("apply", "parts_apply", {{"planId", plan}});
+        auto review = panel.findChild<PartsToolsDialog *>(); QVERIFY(review); QVERIFY(!review->isWindow());
+        auto files = review->findChild<QTreeWidget *>("toolFiles"); QCOMPARE(files->topLevelItemCount(), 2);
+        const auto selected = files->topLevelItem(0)->text(0), excluded = files->topLevelItem(1)->text(0);
+        files->topLevelItem(1)->setCheckState(0, Qt::Unchecked);
+        if (qEnvironmentVariableIsSet("PARTS_INLINE_PARTS_SCREENSHOT")) {
+            panel.resize(1000, 540); QCoreApplication::processEvents(); QTest::qWait(100);
+            QVERIFY(panel.grab().save(qEnvironmentVariable("PARTS_INLINE_PARTS_SCREENSHOT")));
+        }
+        bool popup = false;
+        QTimer modalGuard;
+        connect(&modalGuard, &QTimer::timeout, &panel, [&] {
+            if (auto modal = qobject_cast<QDialog *>(QApplication::activeModalWidget())) { popup = true; modal->reject(); }
+        });
+        modalGuard.start(20);
+        review->findChild<QPushButton *>("toolApply")->click();
+        QTRY_COMPARE(ai.lastId, QString("apply")); QVERIFY(!popup); QVERIFY(ai.lastSuccess);
+        QFile changed(selected), unchanged(excluded);
+        QVERIFY(changed.open(QIODevice::ReadOnly)); QVERIFY(changed.readAll().contains("New author"));
+        QVERIFY(unchanged.open(QIODevice::ReadOnly)); QCOMPARE(unchanged.readAll(), original);
+        panel.findChild<QPushButton *>("commandPanelStop")->click();
+    }
+
+    void aiSettingsAreLocalizedAndStayOfflineUntilConnect()
+    {
+        SettingsDialog dialog(nullptr); dialog.setSection(SettingsDialog::AI); dialog.resize(1000, 660); dialog.show();
+        const auto login = dialog.findChild<QPushButton *>("aiLogin"); QVERIFY(login); QVERIFY(!login->isEnabled());
+        const auto status = dialog.findChild<QLabel *>("aiStatus"); QVERIFY(status);
+        const auto executableLabel = dialog.findChild<QLabel *>("aiExecutableLabel"); QVERIFY(executableLabel);
+        const auto executable = dialog.findChild<QLineEdit *>("aiExecutable"); QVERIFY(executable);
+        const QMap<QString, QString> expected{{"cs_CZ", "Přihlásit přes ChatGPT"}, {"de_DE", "Mit ChatGPT anmelden"},
+            {"fr_FR", "Se connecter avec ChatGPT"}, {"ru_RU", "Войти через ChatGPT"}, {"en_US", "Sign in with ChatGPT"}};
+        for (auto it = expected.begin(); it != expected.end(); ++it) {
+            applyApplicationLanguage(it.key()); QCoreApplication::processEvents(); QCOMPARE(login->text(), it.value());
+            QCOMPARE(status->text(), QCoreApplication::translate("CodexProvider", "AI is disconnected."));
+            QVERIFY(executableLabel->width() >= executableLabel->fontMetrics().horizontalAdvance(executableLabel->text()));
+            QTRY_VERIFY(executableLabel->geometry().right() < executable->geometry().left());
+            if (it.key() == "cs_CZ" && qEnvironmentVariableIsSet("PARTS_AI_SCREENSHOT"))
+                QVERIFY(dialog.grab().save(qEnvironmentVariable("PARTS_AI_SCREENSHOT")));
+            SystemCommandDialog review("echo example", QDir::tempPath(), "Example", 10);
+            QCOMPARE(review.findChild<QPushButton *>("runSystemCommand")->text(), QCoreApplication::translate("SystemCommandDialog", "Run command"));
+            review.setInlineReview();
+            QCOMPARE(review.findChild<QPushButton *>("runSystemCommand")->text(), QCoreApplication::translate("SystemCommandDialog", "Allow"));
+            QVERIFY(!review.wasStarted());
+            if (it.key() == "cs_CZ" && qEnvironmentVariableIsSet("PARTS_SYSTEM_REVIEW_SCREENSHOT"))
+                QVERIFY(review.grab().save(qEnvironmentVariable("PARTS_SYSTEM_REVIEW_SCREENSHOT")));
+        }
+        QVERIFY(!partsAiProvider()->busy()); QVERIFY(!partsAiProvider()->connected());
+        applyApplicationLanguage("en_US");
+    }
+
+    void codexProtocolSupportsToolsAndChangingDirectories()
+    {
+        QTemporaryDir profile, first, second;
+        CodexProvider provider(nullptr, profile.path());
+        QSignalSpy errors(&provider, &AiProvider::failed), answers(&provider, &AiProvider::answer), calls(&provider, &AiProvider::toolRequested);
+        provider.connectAccount(QCoreApplication::applicationFilePath());
+        QTRY_VERIFY(provider.ready()); QTRY_VERIFY(!provider.models().isEmpty());
+        provider.ask("List files", {{"currentDirectory", first.path()}}, "fixture");
+        QTRY_COMPARE(calls.size(), 1); QCOMPARE(calls.first()[1].toString(), QString("directory_list"));
+        provider.toolResult(calls.first()[0].toString(), {{"entries", QJsonArray{}}}, true);
+        QTRY_COMPARE(answers.size(), 1); QCOMPARE(answers.first()[0].toString(), first.path());
+        provider.ask("Now here", {{"currentDirectory", second.path()}}, "fixture");
+        QTRY_COMPARE(calls.size(), 2);
+        provider.toolResult(calls.last()[0].toString(), {}, true);
+        QTRY_COMPARE(answers.size(), 2); QCOMPARE(answers.last()[0].toString(), second.path());
+        QVERIFY(errors.isEmpty());
+        provider.ask("WAIT_FOREVER", {{"currentDirectory", second.path()}}, "fixture");
+        QVERIFY(provider.busy()); provider.cancel(); QVERIFY(!provider.busy()); QVERIFY(!provider.ready());
+    }
+
+    void codexProtocolRejectsNativeToolsAndMalformedMessages()
+    {
+        for (const auto &request : {QString("NATIVE_TOOL"), QString("INVALID_JSON")}) {
+            QTemporaryDir profile;
+            CodexProvider provider(nullptr, profile.path());
+            QSignalSpy errors(&provider, &AiProvider::failed), answers(&provider, &AiProvider::answer);
+            provider.connectAccount(QCoreApplication::applicationFilePath()); QTRY_VERIFY(provider.ready());
+            provider.ask(request, {{"currentDirectory", profile.path()}}, "fixture");
+            QTRY_COMPARE(errors.size(), 1); QVERIFY(answers.isEmpty()); QVERIFY(!provider.busy());
+        }
     }
 
     void toolPlansRejectChangedFilesAndLocks()
@@ -999,6 +1480,7 @@ private slots:
 };
 int main(int argc, char **argv)
 {
+    if (argc > 1 && QString::fromLocal8Bit(argv[1]) == "app-server") return runAiServerFixture();
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     QStandardPaths::setTestModeEnabled(true);
     QApplication app(argc, argv);

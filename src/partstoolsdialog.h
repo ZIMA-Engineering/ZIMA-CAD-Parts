@@ -16,6 +16,8 @@ public:
     PartsToolsDialog(const QString &tool, const QString &path, QWidget *parent = nullptr);
     ~PartsToolsDialog() override;
     static QString title(const QString &tool);
+    void setPreparedPlan(const PartsCore::ToolPlan &plan);
+    QJsonObject operationResult() const { return m_operationResult; }
 signals:
     void filesChanged();
 protected:
@@ -23,6 +25,7 @@ protected:
 private:
     void start(bool apply);
     void invalidate();
+    void showPlan();
     QString m_tool;
     QLineEdit *m_path, *m_output = nullptr, *m_masks = nullptr;
     QCheckBox *m_recursive, *m_old = nullptr;
@@ -33,5 +36,7 @@ private:
     QWidget *m_options;
     QPointer<QThread> m_worker;
     PartsCore::ToolPlan m_plan;
+    bool m_prepared = false;
+    QJsonObject m_operationResult;
 };
 #endif

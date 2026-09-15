@@ -42,6 +42,7 @@ signals:
     void directoryChanged(DataSourceWidget*, const QString&);
 
     void openInANewTabRequested(const QString &path);
+    void aiReferencesRequested(const QStringList &paths);
     void editDataSourceRequested(DataSource *dataSource);
 
 public slots:
