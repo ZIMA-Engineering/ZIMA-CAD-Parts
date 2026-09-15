@@ -37,6 +37,16 @@ Example filesystem structure of a data source:
 
 Meaning of the special directories and files is described below.
 
+## Data source header actions
+
+Right-click a top-level data source header in the directory tree to use
+**Open**, **Open in a new tab**, **Add to AI question**, or **Set as working
+directory** for the source's root directory. **Open** launches the system's
+file manager, such as Explorer on Windows or Dolphin on KDE. Setting the
+working directory updates the same application setting used by ordinary
+directory actions. These actions are disabled when the root directory is
+unavailable; **Edit in settings** remains available.
+
 ## Metadata directory
 Each directory within the data source and the data source itself can be
 described by contents of special subdirectory called `0000-index`.

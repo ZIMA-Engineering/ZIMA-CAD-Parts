@@ -4,7 +4,7 @@
 
 The complete GUI, CLI, updater and integration test projects were built with
 Qt 6.10.1, MSVC x64 and Open CASCADE 8.0.0. The current local Windows build is
-**2026091506**. Recorded checks for the implemented features are:
+**2026091507**. Recorded checks for the implemented features are:
 
 - **44 integration tests passed**, with no failures or skips, including AI
   drafting, inline approval, path insertion and updater settings.
@@ -13,21 +13,34 @@ Qt 6.10.1, MSVC x64 and Open CASCADE 8.0.0. The current local Windows build is
 - **9 built-in tool CLI tests passed**, including actual Ghostscript
   conversion, conversion failure cleanup, STEP backups and system trash.
 - **4 distribution tests passed** using the native Windows launcher.
-- All four translation catalogs passed validation, with **553 complete
+- All four translation catalogs passed validation, with **555 complete
   messages per language**, including placeholders and plural forms.
 
 The system trash test passed with access to the Windows recycle bin; a
 restricted sandbox blocked that test's initial attempt. Native launcher
 tests passed independently of the machine's PowerShell script policy.
 
-The deployed root executable was checked in the running Windows application.
-Manual checks included green active tabs, SVG icons, the command panel and
-PDF/STEP tool dialogs. The full GUI build was repeated after removing the
-separate built-in tools toolbar icon. The deployed and packaged GUI binaries
-match the resulting build. The distribution ZIP passed its CRC check, and
-its file checksums were regenerated. The current development ZIP also passed
-signature, CRC and all 1,476 file-checksum checks; its 563 source files and all
-three binaries matched the checkout and build outputs when packaged.
+Build 2026091507 adds **Open** and **Set as working directory** to data source
+header menus. The GUI, CLI and updater were rebuilt, and all 44 existing
+integration checks passed again. The two new labels use the same translations
+as ordinary directory actions.
+
+Earlier manual checks of the deployed Windows application included green active
+tabs, SVG icons, the command panel and PDF/STEP tool dialogs. The full GUI build
+was repeated after removing the separate built-in tools toolbar icon.
+
+The signed 2026091506 packaging baseline was rebuilt from clean commit
+`68e6eda400ef91c099489bc7b1ea71726270d7ce`. Its ZIP passed signature, CRC and
+all 1,476 file-checksum checks. All 563 source files matched committed bytes,
+and all three application binaries matched the build outputs. The packaged
+updater recognized the signed bootstrap record as trusted. Native launcher,
+GUI build-info and CLI/updater version checks passed with only Windows system
+directories on PATH.
+
+Repeat these archive and bootstrap checks for each Windows package after
+building its matching release tag. Keep the signed ZIP, manifest and signature
+together. Preparing a local bundle does not publish a GitHub release; publishing
+is a separate step described in [GitHub updates](github-updates.md).
 
 These results were obtained on the development workstation. A clean Windows
 installation, the modified GitHub workflows and Linux/KDE runtime behavior

@@ -6,8 +6,11 @@
 #include "directoryeditordialog.h"
 
 #include <QApplication>
+#include <QDesktopServices>
 #include <QFileInfo>
 #include <QMenu>
+#include <QStyle>
+#include <QUrl>
 #include <QtDebug>
 #include <QShowEvent>
 #include <QTimer>
@@ -208,23 +211,33 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
         return;
 
     dsList->setCurrentIndex(index);
+    const QString rootPath = dataSource->rootPath;
+    const bool hasDirectory = QFileInfo(rootPath).isDir();
 
     QMenu menu(this);
+    QAction *openAction = menu.addAction(
+        style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open")
+    );
+    openAction->setEnabled(hasDirectory);
     QAction *openInNewTabAction = menu.addAction(
         QIcon(":/gfx/tab-new.png"),
         tr("Open in a new tab")
     );
-    openInNewTabAction->setEnabled(QFileInfo(dataSource->rootPath).isDir());
+    openInNewTabAction->setEnabled(hasDirectory);
     auto aiAction = menu.addAction(QIcon(":/gfx/navigation/terminal.svg"), tr("Add to AI question"));
     aiAction->setObjectName("addToAiQuestion");
-    aiAction->setEnabled(QFileInfo(dataSource->rootPath).isDir());
+    aiAction->setEnabled(hasDirectory);
+    QAction *workingDirectoryAction = menu.addAction(
+        QIcon(":/gfx/gohome.png"), tr("Set as working directory")
+    );
+    workingDirectoryAction->setEnabled(hasDirectory);
     menu.addSeparator();
 
     QAction *editAction = menu.addAction(
         QIcon(":/gfx/document-edit.png"),
         tr("Data source properties")
     );
-    editAction->setEnabled(QFileInfo(dataSource->rootPath).isDir());
+    editAction->setEnabled(hasDirectory);
 
     QAction *settingsAction = menu.addAction(
         QIcon(":/gfx/configure.png"),
@@ -233,13 +246,22 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
 
     QAction *selectedAction = menu.exec(globalPos);
 
-    if (selectedAction == openInNewTabAction)
+    if (selectedAction == openAction && QFileInfo(rootPath).isDir())
     {
-        emit openInANewTabRequested(dataSource->rootPath);
+        QDesktopServices::openUrl(QUrl::fromLocalFile(rootPath));
+    }
+    else if (selectedAction == workingDirectoryAction && QFileInfo(rootPath).isDir())
+    {
+        Settings::get()->setWorkingDir(rootPath);
+        emit workingDirChanged();
+    }
+    else if (selectedAction == openInNewTabAction)
+    {
+        emit openInANewTabRequested(rootPath);
     }
     else if (selectedAction == aiAction)
     {
-        emit aiReferencesRequested({dataSource->rootPath});
+        emit aiReferencesRequested({rootPath});
     }
     else if (selectedAction == editAction)
     {

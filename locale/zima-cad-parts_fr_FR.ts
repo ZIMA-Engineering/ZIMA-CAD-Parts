@@ -482,22 +482,32 @@
 <context>
     <name>DataSourceWidget</name>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="215"/>
+        <location filename="../src/datasourcewidget.cpp" line="219"/>
+        <source>Open</source>
+        <translation>Ouvrir</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="224"/>
         <source>Open in a new tab</source>
         <translation>Ouvrir dans un nouvel onglet</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="218"/>
+        <location filename="../src/datasourcewidget.cpp" line="227"/>
         <source>Add to AI question</source>
         <translation>Ajouter à la question IA</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="225"/>
+        <location filename="../src/datasourcewidget.cpp" line="231"/>
+        <source>Set as working directory</source>
+        <translation>Définir comme dossier de travail</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="238"/>
         <source>Data source properties</source>
         <translation>Propriétés de la source de données</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="231"/>
+        <location filename="../src/datasourcewidget.cpp" line="244"/>
         <source>Edit in settings</source>
         <translation>Modifier dans les paramètres</translation>
     </message>

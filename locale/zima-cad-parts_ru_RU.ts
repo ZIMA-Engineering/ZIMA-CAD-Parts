@@ -482,22 +482,32 @@
 <context>
     <name>DataSourceWidget</name>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="215"/>
+        <location filename="../src/datasourcewidget.cpp" line="219"/>
+        <source>Open</source>
+        <translation>Открыть</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="224"/>
         <source>Open in a new tab</source>
         <translation>Открыть в новой вкладке</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="218"/>
+        <location filename="../src/datasourcewidget.cpp" line="227"/>
         <source>Add to AI question</source>
         <translation>Добавить к вопросу ИИ</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="225"/>
+        <location filename="../src/datasourcewidget.cpp" line="231"/>
+        <source>Set as working directory</source>
+        <translation>Сделать рабочей папкой</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="238"/>
         <source>Data source properties</source>
         <translation>Свойства источника данных</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="231"/>
+        <location filename="../src/datasourcewidget.cpp" line="244"/>
         <source>Edit in settings</source>
         <translation>Изменить в настройках</translation>
     </message>

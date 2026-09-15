@@ -198,15 +198,19 @@ Refreshing the listing preserves stored metadata; Pro/E imports use the highest
 numeric revision. [Interface notes](doc/interface.md) cover the green active tabs,
 navigation icons and the renamed Properties actions.
 
+The [data source header menu](doc/datasource.md#data-source-header-actions)
+also opens the source root in the system file manager or sets it as the working
+directory, alongside opening a new tab and adding the path to an AI question.
+
 See [verification](doc/verification.md) for the build and test requirements and
 the validation of the current Windows release.
 
 ## Approved distribution design
 
 The [binding distribution and versioning policy](doc/distribution-policy.md)
-defines the planned versioned Windows/Debian packages, shared source archives,
-launchers and two-version retention. This is the approved implementation target;
-the deployment instructions above describe the current application.
+defines versioned Windows/Debian packages, shared source archives, launchers
+and two-version retention. Windows bundles implement this layout; Debian
+runtime validation remains pending.
 
 The first [Windows packaging implementation](doc/windows-distribution.md)
 provides a clean versioned source/runtime bundle and configurable launcher.

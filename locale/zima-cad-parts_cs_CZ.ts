@@ -482,22 +482,32 @@
 <context>
     <name>DataSourceWidget</name>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="215"/>
+        <location filename="../src/datasourcewidget.cpp" line="219"/>
+        <source>Open</source>
+        <translation>Otevřít</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="224"/>
         <source>Open in a new tab</source>
         <translation>Otevřít v nové kartě</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="218"/>
+        <location filename="../src/datasourcewidget.cpp" line="227"/>
         <source>Add to AI question</source>
         <translation>Přidat do dotazu AI</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="225"/>
+        <location filename="../src/datasourcewidget.cpp" line="231"/>
+        <source>Set as working directory</source>
+        <translation>Nastavit jako pracovní adresář</translation>
+    </message>
+    <message>
+        <location filename="../src/datasourcewidget.cpp" line="238"/>
         <source>Data source properties</source>
         <translation>Vlastnosti datového zdroje</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="231"/>
+        <location filename="../src/datasourcewidget.cpp" line="244"/>
         <source>Edit in settings</source>
         <translation>Upravit v nastavení</translation>
     </message>
