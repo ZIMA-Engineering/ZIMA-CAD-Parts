@@ -1,59 +1,94 @@
-# Ověření sestavy
+# Build verification
 
-## Windows — ověřeno 15. září 2026
+## Windows: verified September 15, 2026
 
-Aplikace byla sestavena z kompletního projektu pomocí Qt 6.10.1 MSVC x64
-s Open CASCADE 8.0.0. Integrační sada před doplněním menu hlavních zdrojů dokončila
-**22 testů bez chyby**.
-Kontrola všech čtyř překladových katalogů ověřila **413 úplných textů** v každém
-jazyce, včetně parametrů, nových dialogů a množných tvarů.
+The complete GUI, CLI and integration test projects were built with Qt 6.10.1,
+MSVC x64 and Open CASCADE 8.0.0. Recorded results for the command panel and
+built-in tools are:
 
-Nasazený `ZIMA-CAD-Parts.exe` v kořeni vytvořil reagující hlavní okno a korektně
-se ukončil s návratovým kódem 0. Vzhled zelených záložek a SVG ikon byl
-zkontrolován v běžícím programu na Windows. Běh na Linuxu/KDE v této změně
-nebyl samostatně ověřen.
+- **27 integration tests passed**, with no failures or skips.
+- **4 read-only CLI tests passed**.
+- **9 built-in tool CLI tests passed**, including actual Ghostscript
+  conversion, conversion failure cleanup, STEP backups and system trash.
+- **4 distribution tests passed** using the native Windows launcher.
+- All four translation catalogs passed validation, with **454 complete
+  messages per language**, including placeholders and plural forms.
 
-Doplnění položky **Otevřít v nové kartě** u hlavních zdrojů bylo ověřeno
-sestavením celého projektu, kontrolou překladů a spuštěním výsledného EXE
-s korektním ukončením. Integrační sada se pro tuto drobnou změnu neopakovala.
+The system trash test passed with access to the Windows recycle bin; a
+restricted sandbox blocked that test's initial attempt. Native launcher
+tests passed independently of the machine's PowerShell script policy.
 
-## Co ověřují integrační testy
+The deployed root executable was checked in the running Windows application.
+Manual checks included green active tabs, SVG icons, the command panel and
+PDF/STEP tool dialogs. The full GUI build was repeated after removing the
+separate built-in tools toolbar icon. The deployed and packaged GUI binaries
+match the resulting build. The distribution ZIP passed its CRC check, and
+its file checksums were regenerated.
 
-- Přepínání jazyků, SVG ikony a import STEP/IGES/STL.
-- Lazy načítání záložek, náhledy, filtry a neblokující úvodní obrazovku.
-- Zachování ostatních větví stromu při smazání a práci se zobrazenou složkou.
-- Sdílené parametry PDF, Pro/E a ZIMA-CAD, editaci v tabulce i dialogu,
-  zachování při Refresh a čtení starších záznamů metadat.
-- Výběr nejvyšší číselné verze Pro/E pro načítání parametrů.
-- Uložení a odemčení lokálního zámečku, zákaz smazání a přesunu chráněných
-  souborů či celé nadřazené složky a povolené kopírování z knihovny.
-- Nezávislé podadresáře, blokování přepsání chráněného souboru a reakci
-  tlačítek na výběr, zamčení a odemčení.
-- Rekurzivní hromadné zamčení i odemčení, zachování jiných metadat,
-  vynechání `0000-index`, hlášení chyb a zastavení operace.
-- Okamžitý účinek tlačítka Aplikovat na podadresáře i při pozdějším zrušení
-  okna Vlastností. Nové podadresáře zámeček automaticky nepřebírají.
+These results were obtained on the development workstation. A clean Windows
+installation, the modified GitHub workflows and Linux/KDE runtime behavior
+still need separate verification. No verified Debian binary is available yet.
 
-## Opakování kontrol
+## Integration coverage
 
-Překlady:
+- Language switching, SVG icons and STEP/IGES/STL import.
+- Deferred tab loading, thumbnails, filters and the non-blocking splash screen.
+- Preserving other tree branches when deleting and working with the displayed
+  directory.
+- Shared PDF, Pro/E and ZIMA-CAD parameters, table and dialog editing,
+  preservation after Refresh, and legacy metadata records.
+- Selecting the highest numeric Pro/E revision for parameter import.
+- Saving and clearing a local protection lock; blocking deletion or moving
+  of protected files or a containing directory; allowing copying out.
+- Independent subdirectory locks, blocking protected file overwrites, and
+  updating controls after selection, locking and unlocking.
+- Recursive bulk locking and unlocking, preservation of other metadata,
+  exclusion of `0000-index`, error reporting and cancellation.
+- Immediate **Apply to subdirectories** behavior even if Properties is later
+  cancelled. New subdirectories do not automatically inherit the lock.
+- Agreement between CLI JSON and the real GUI model/filter.
+- Command panel context capture, relative paths, history, draft restoration,
+  parsing errors, help and visibility.
+- Tool previews and revalidation of changed files, retained revisions and
+  locks before applying changes.
+
+## Repeating checks
+
+Check translations from the repository root:
 
 ```sh
 python tests/check_translations.py
 ```
 
-Sestavujte mimo adresář zdrojů. Pro integrační testy nejprve dokončete
-release aplikace, poté spusťte qmake nad `tests/parts-integration.pro`.
-Předejte `PARTS_OBJECTS_DIR` s absolutní cestou k release objektům aplikace,
-stejné `OCCT_ROOT` a `CONFIG+=release`. Použijte stejný Qt kit a kompilátor;
-na Windows MSVC sestavte pomocí `nmake release`.
+Build outside the source directory. For integration tests, finish the release
+application first, then run qmake on `tests/parts-integration.pro`. Pass
+`PARTS_OBJECTS_DIR` with the absolute path to the application's release
+objects, the same `OCCT_ROOT`, and `CONFIG+=release`. Use the same Qt kit
+and compiler; on Windows MSVC, build with `nmake release`.
 
-Testovací EXE potřebuje stejné běhové knihovny jako aplikace a Qt Test.
-Na Windows lze dočasně umístit testovací EXE vedle nasazené aplikace.
-Pro testy bez obrazovky nastavte `QT_QPA_PLATFORM=offscreen` a
-`QT_QPA_PLATFORM_PLUGIN_PATH` na `plugins/platforms` použitého Qt kitu.
-Standardní distribuční složka nemusí obsahovat plugin `qoffscreen.dll`.
-Po dokončení odstraňte pouze dočasný testovací EXE.
+The test executable needs the application's runtime libraries and Qt Test.
+On Windows, it can temporarily be placed beside the deployed application.
+For headless tests, set `QT_QPA_PLATFORM=offscreen` and point
+`QT_QPA_PLATFORM_PLUGIN_PATH` to the Qt kit's `plugins/platforms` directory.
+The normal distribution may not include `qoffscreen.dll`. Remove only the
+temporary test executable afterwards.
 
-Samostatná sada `tests/parts-performance.pro` nevyžaduje WebEngine;
-postup je uveden v [dokumentaci filtrů](filters.md).
+Set `PARTS_CLI_EXE` to the built CLI executable before running integration
+tests; otherwise the CLI comparison is skipped. The same variable selects
+the executable for these process tests:
+
+```sh
+python tests/test_cli.py
+python tests/test_tools.py
+```
+
+Tool tests need Ghostscript and a usable system trash. On Windows, the CLI
+can use the prepared `tools/ghostscript` runtime beside it. Set
+`PARTS_LAUNCHER` to the compiled native root launcher before running:
+
+```sh
+python tests/test_distribution.py
+```
+
+The standalone `tests/parts-performance.pro` suite does not require
+WebEngine; see the [filter documentation](filters.md) for its build steps.

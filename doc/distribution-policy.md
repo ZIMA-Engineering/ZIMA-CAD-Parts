@@ -1,43 +1,46 @@
-# Závazný návrh distribuce a verzování
+# Binding distribution and versioning policy
 
-Schváleno vlastníkem projektu 15. září 2026. Tento dokument je závazným
-zadáním pro budoucí implementaci, nikoli popisem již hotového aktualizátoru.
-Později se stejná pravidla použijí pro ZIMA-CAD a další programy
-ZIMA-Engineering. Jejich repozitáře se tímto zápisem nemění.
+Approved by the project owner on September 15, 2026. This document defines
+the implementation requirements; it does not describe a completed updater.
+The same rules are intended for ZIMA-CAD and other ZIMA-Engineering programs
+later. This document does not modify their repositories.
 
-## Identita vydání
+## Release identity
 
-- Vydání, distribuční balíky a Git tagy se označují například
+- Releases, distribution archives and Git tags use names such as
   `ZIMA-CAD-Parts-2026091501`.
-- Interní číslo má formát `YYYYMMDDNN`: datum sestavení/vydání a dvoumístné
-  pořadí vydání v daném dni. Stejné číslo označuje zdroje i odpovídající
-  oficiální sestavení pro jednotlivé platformy.
-- „ZIMA-CAD-Parts 9“ je pouze marketingový název v sekci O programu.
-  Devítka se nepoužívá pro technické verzování, názvy balíků, tagy ani
-  rozhodování o aktualizacích. O programu uvádí také skutečné číslo sestavení.
-- Oficiální uvedení je plánováno na narozeniny vlastníka; konkrétní datum
-  zatím nebylo stanoveno v tomto zadání.
+- The internal number follows `YYYYMMDDNN`: the build/release date and a
+  two-digit sequence within that day. The same number identifies the source
+  and corresponding official builds for each platform.
+- **ZIMA-CAD-Parts 9** is only the marketing name on the About page. The nine
+  is not used for technical versions, archive names, tags or update decisions.
+  About also shows the actual build number.
+- The official launch is planned for the owner's birthday; this specification
+  does not establish a date.
 
-## Distribuční struktura
+## Distribution structure
 
-Výsledkem je jeden společný archiv `ZIMA-CAD-Parts-YYYYMMDDNN.zip`, bez
-platformy v názvu. Obsahuje složku ZIMA-CAD-Parts se zdroji a sestaveními
-obou platforem. Linuxové sestavení lze doplnit později a stejnou složku
-znovu zabalit. Při spojování se zachová nastavení již přítomné platformy;
-oba běhové balíky musí odpovídat příslušné verzi zdrojů. Kontrolní součty
-se po doplnění souborů musí znovu vytvořit.
+The final artifact is one shared `ZIMA-CAD-Parts-YYYYMMDDNN.zip` archive,
+without a platform in its name. It contains the `ZIMA-CAD-Parts` directory
+with sources and builds for both platforms. The Linux build can be added
+later and the same directory repackaged. Merging must preserve settings for
+an existing platform. Both runtimes must match their respective source
+version, and checksums must be regenerated after adding files.
 
-Místní `.dist-output/` obsahuje přímo `ZIMA-CAD-Parts/` a výsledný ZIP,
-bez trvalé mezisložky windows-native-final. Platformní výstupy CI jsou
-mezivýsledky pro sestavení společného vydání, nikoli odlišné veřejné edice.
+Local `.dist-output/` directly contains `ZIMA-CAD-Parts/` and the final ZIP,
+without a permanent intermediate `windows-native-final` directory. Platform
+CI outputs are intermediate artifacts for assembling the shared release,
+not separate public editions.
 
-Stálá hlavní složka obsahuje dva spouštěče. Verze jsou uvnitř podsložek
-jednotlivých platforem, nikoli v názvu této stálé instalační složky.
+The stable root directory contains two launchers. Versions live inside the
+platform subdirectories, not in the name of this stable installation folder.
+The full project license is also present beside the launchers.
 
 ```text
 ZIMA-CAD-Parts/
     ZIMA-CAD-Parts.exe
     ZIMA-CAD-Parts.sh
+    LICENSE
     windows/
         2026091501/
         2026091601/
@@ -53,53 +56,61 @@ ZIMA-CAD-Parts/
     launcher.ini
 ```
 
-Spouštěče vybírají nastavenou verzi pro svůj systém. Přesné schéma
-`launcher.ini` se určí při implementaci. Každá oficiální verze obsahuje
-vlastní potřebné běhové knihovny, pluginy a prostředky; nesmějí se míchat
-knihovny různých verzí nebo platforem.
+Launchers select the configured version for their platform. The implemented
+`launcher.ini` settings are described in the [Windows](windows-distribution.md)
+and [Debian](debian-distribution.md) guides. Each official version contains
+its own required runtime libraries, plugins and resources. Libraries from
+different versions or platforms must not be mixed.
 
-Zdrojová složka obsahuje kompletní projekt, prostředky, překlady, předpisy
-sestavení a skutečný obsah submodulů v odpovídajících revizích. Musí umožnit
-vlastní sestavení po dodání vývojových závislostí. Zdrojové archivy nesmějí
-obsahovat pracovní zálohy, osobní data nebo dočasné sestavy.
+The source directory contains the complete project, resources, translations,
+build definitions and actual submodule contents at matching revisions. It
+must support a custom build after installing development dependencies.
+Source archives must exclude working backups, personal data and temporary
+builds. Project documentation is maintained in English. Third-party
+licenses and notices remain with their components.
 
-## Platformy
+## Platforms
 
-- Windows: oficiální připravené sestavení s potřebnými závislostmi.
-- Linux: nejprve pouze nejnovější stabilní Debian, x86-64, s ověřením
-  KDE/Wayland. Každé vydání uvede přesnou podporovanou verzi Debianu.
-- Linuxový balík přibaluje Qt, WebEngine, OCCT a potřebné přenositelné
-  závislosti. Základní systémové knihovny a grafické ovladače dodává Debian.
-  Přesný seznam přibalených souborů se stanoví a ověří při implementaci.
-- Běžný uživatel rozbalí a spustí; kompilace není podmínkou používání.
-- Nový stabilní Debian se začne podporovat po ověření sestavení a běhu.
-  Ostatní distribuce zatím nejsou cílem podpory.
+- Windows: an official ready-to-run build with required dependencies.
+- Linux: initially only the latest stable Debian, x86-64, verified under
+  KDE/Wayland. Each release must identify the exact supported Debian version.
+- The Linux package bundles Qt, WebEngine, OCCT and required portable
+  dependencies. Debian supplies core system libraries and graphics drivers.
+  The exact bundled file list must be established and verified during
+  implementation. See the Debian guide for current exceptions.
+- End users extract and run the package; compilation is not required.
+- A new stable Debian release becomes supported after build and runtime
+  verification. Other distributions are currently outside the support target.
 
-## Aktualizace a uchování verzí
+## Updates and version retention
 
-Oficiální balíky se zveřejňují u vydání na GitHubu a odpovídají Git tagu.
-Aktualizace stahuje hotový balík; binární sestavy se neukládají do běžné
-historie zdrojového repozitáře.
+Official packages are published as GitHub release assets matching a Git tag.
+Updates download a ready-made package; binaries are not stored in the source
+repository's regular history.
 
-Nová verze se připraví do samostatné složky, ověří a aktivuje po ukončení
-programu. Běžící instalace se nepřepisuje. Předchozí verze umožňuje návrat.
-Pro každou platformu se uchovávají maximálně dvě oficiální verze: aktuální
-a předchozí. Dočasně rozpracovaná aktualizace nesmí způsobit předčasné
-smazání funkční verze; starší verze se odstraní až po úspěšném ověření nové.
-Při úklidu zdrojů je nutné zachovat zdroje všech ponechaných oficiálních
-verzí na obou platformách. Uživatelská a projektová data zůstávají oddělená.
+A new version is prepared in a separate directory, verified and activated
+after the application exits. A running installation is not overwritten.
+The previous version provides a rollback option. At most two official
+versions are retained per platform: current and previous. An incomplete
+update must not remove a working version prematurely; older versions are
+removed only after successful verification of the new version.
 
-## Vlastní sestavení a původ balíků
+Source cleanup must preserve the sources of every retained official version
+on both platforms. User and project data remain separate.
 
-Vlastní sestavení patří do `custom/`, lze je vybrat ke spuštění a aktualizátor
-je nepřepisuje ani automaticky nemaže. Limit dvou verzí se na ně nevztahuje.
+## Custom builds and package origin
 
-Oficiální sestavení ZIMA-Engineering se od vlastních sestavení rozlišují
-ve verzi, diagnostice a sekci O programu. Uvádí se číslo vydání, commit
-a původ sestavení. Pravost oficiálního balíku se ověřuje podpisem; samotný
-text v upravitelných zdrojích není důkazem původu. Technologie podpisu
-a správa klíčů budou určeny při implementaci.
+Custom builds belong in `custom/`, can be selected for launching, and must
+not be overwritten or automatically deleted by the updater. The two-version
+limit does not apply to them.
 
-Testování a podpora se vztahují na oficiální nezměněné balíky. Vlastní
-sestavení nejsou vydavatelem ověřena. Toto pravidlo podpory nezavádí
-nová licenční omezení ani právní příslib záruky.
+Official ZIMA-Engineering builds and custom builds are distinguished in
+version information, diagnostics and About. This information includes the
+release number, commit and build origin. Official package authenticity must
+be verified by a signature; text in editable sources does not prove origin.
+The signing technology and key management will be defined during
+implementation.
+
+Testing and support apply to official, unmodified packages. Custom builds
+are not verified by the publisher. This support policy adds no license
+restrictions or legal warranty commitments.

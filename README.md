@@ -1,6 +1,18 @@
 ZIMA-CAD-Parts
 ==============
 
+License
+-------
+ZIMA-CAD-Parts is licensed under the GNU General Public License, version 3
+or (at your option) any later version (`GPL-3.0-or-later`), as stated in the
+source headers. The full license text is in [LICENSE](LICENSE).
+Distribution bundles also include this file beside the root launchers.
+Third-party components retain their own licenses; see [licenses/](licenses/)
+and the license files shipped with the bundled dependencies.
+
+Documentation is maintained in English. UI translations and examples of
+localized metadata retain their respective languages; see [AGENTS.md](AGENTS.md).
+
 Requirements
 ------------
 Qt 6.8 LTS or newer - modules `core`, `gui`, `network`, `widgets`,
@@ -204,8 +216,14 @@ It does not yet implement automatic updates or signing.
 Linux runtime validation is still pending. Windows packages now use a native
 root EXE launcher without a PowerShell dependency.
 
-## Read-only command line
+## Command line and built-in tools
 
 The [CLI documentation](doc/cli.md) covers the Qt Core-only executable for
 listing/filtering parts and reading saved shared metadata as JSON.
 GUI and CLI reuse the same naming, enumeration and local parameter rules.
+
+The [bottom command panel](doc/command-panel.md) shares the command processor
+with the CLI and supplies the active tab as the default directory.
+
+The built-in [PS2PDF, PTC-Cleaner and STEP-Edit](doc/integrated-tools.md)
+functions are available from the GUI and CLI. ZIMA-CAD-Sync is no longer offered.

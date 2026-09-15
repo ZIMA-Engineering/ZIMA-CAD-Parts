@@ -1,42 +1,59 @@
-# Jazyky rozhraní
+# Interface languages
 
-Parts podporuje češtinu (cs_CZ), němčinu (de_DE), angličtinu (en_US),
-francouzštinu (fr_FR) a ruštinu (ru_RU). V horní liště jsou vlajky v pořadí
-angličtina, čeština, němčina, francouzština, ruština. Ruská vlajka je vpravo.
+Parts supports English (`en_US`), Czech (`cs_CZ`), German (`de_DE`), French
+(`fr_FR`) and Russian (`ru_RU`). The toolbar flags appear in that order, with
+Russian on the right.
 
-Ruština je nyní přidaná do Parts; její doplnění do ZIMA-CAD je samostatný
-budoucí krok. Zdrojové soubory ani nastavení ZIMA-CAD tato změna neupravuje.
+Russian support in ZIMA-CAD is a separate future task. Adding it to Parts
+does not modify ZIMA-CAD source files or settings.
 
-Vlajka přepne rozhraní i jazyk metadat. Stejnou volbu nabízí Nastavení.
-Změna se uloží a projeví bez restartu. Automatická detekce používá jazyk
-systému; regionální varianty se sjednotí (například fr_CA na fr_FR).
-Nepodporovaný jazyk přejde na angličtinu. Regionální varianta ru_BY se
-sjednotí na ru_RU; dříve uložená ruština je znovu plně podporovaná.
+A flag switches both the interface and metadata language. The same choice
+is available in Settings. The change is saved and takes effect without a
+restart. Automatic detection uses the system language and normalizes
+regional variants, for example `fr_CA` to `fr_FR` and `ru_BY` to `ru_RU`.
+Unsupported languages fall back to English. Previously saved Russian
+preferences are supported again.
 
-Přeloženy jsou texty aplikace, dialogy, chyby, vyhledávání, nastavení,
-operace se soubory a vestavěná stránka O programu. Uživatelské názvy
-adresářů, metadata, skripty a externí webové stránky program nepřekládá.
-Metadata používají vlastní jazykové hodnoty z projektových souborů.
+Application UI text is translated, including dialogs, search, settings,
+file operations and the built-in About page. Technical CLI/core diagnostics
+and command help remain in English. User directory names, metadata, scripts
+and external web pages are not translated automatically. Metadata uses the
+language-specific values stored in project files.
 
-## Údržba překladů
+## Maintaining translations
 
-Angličtina je jazyk zdrojových textů. Úplné katalogy jsou v locale:
-zima-cad-parts_cs_CZ.ts, zima-cad-parts_de_DE.ts, zima-cad-parts_fr_FR.ts
-a zima-cad-parts_ru_RU.ts.
-Po změně textů spusťte lupdate zima-cad-parts.pro -no-obsolete,
-doplňte překlady a spusťte python tests/check_translations.py.
+English is the source language. Complete translation catalogs are in `locale/`:
 
-qmake pomocí CONFIG += lrelease embed_translations kompiluje katalogy
-a vkládá je do prostředků aplikace pod /i18n. Samostatné aplikační
-soubory QM tedy nejsou pro běh potřebné. Standardní dialogy Qt používají
-sloučené katalogy qt_cs.qm, qt_de.qm, qt_fr.qm a qt_ru.qm ze složky translations,
-které na Windows připraví windeployqt. Na Linuxu se mohou načíst také
-systémové katalogy qtbase_cs.qm, qtbase_de.qm, qtbase_fr.qm a qtbase_ru.qm.
+- `zima-cad-parts_cs_CZ.ts`
+- `zima-cad-parts_de_DE.ts`
+- `zima-cad-parts_fr_FR.ts`
+- `zima-cad-parts_ru_RU.ts`
 
-Integrační test ověřuje všech pět vlajek, změnu skutečných textů
-hlavní lišty, francouzský a ruský dialog filtrů, regionální variantu,
-nepodporovaný jazyk, uložení volby a opakovaný návrat do angličtiny.
+After changing UI strings, update the catalogs, complete the translations
+and run the check:
 
-Aktuální katalogy obsahují 413 textů včetně správy hesel, automatických indexů
-a CAD náhledů, vlastností adresáře, zámečku a hromadného použití na podadresáře. Kontrola zahrnuje také české, německé, francouzské a ruské množné tvary.
-Ruština se za běhu ověřuje pro počty 1, 2, 5 a 21.
+```sh
+lupdate zima-cad-parts.pro -no-obsolete
+python tests/check_translations.py
+```
+
+qmake uses `CONFIG += lrelease embed_translations` to compile the catalogs
+and embed them in application resources under `/i18n`. Separate application
+QM files are not required at runtime. Standard Qt dialogs use merged
+`qt_cs.qm`, `qt_de.qm`, `qt_fr.qm` and `qt_ru.qm` catalogs in `translations/`,
+prepared by `windeployqt` on Windows. Linux can also load the system catalogs
+`qtbase_cs.qm`, `qtbase_de.qm`, `qtbase_fr.qm` and `qtbase_ru.qm`.
+
+Integration tests cover all five flags, actual toolbar text changes, French
+and Russian filter dialogs, regional variants, unsupported language fallback,
+persistence and switching back to English.
+
+The current catalogs contain 454 messages each, covering password management,
+automatic indexes, CAD previews, directory properties, protection locks,
+recursive lock application, the command panel and built-in tools. Checks
+include Czech, German, French and Russian plural forms. Russian plurals are
+also tested at runtime with counts 1, 2, 5 and 21.
+
+Project documentation is maintained in English, as required by
+[AGENTS.md](../AGENTS.md). This does not change the languages of UI catalogs
+or examples demonstrating localized metadata.

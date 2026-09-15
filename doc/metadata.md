@@ -2,7 +2,7 @@ metadata.ini
 ============
 
 Metadata is stored in the INI format, specifically in the version that
-[QSettings](http:\\doc.qt.io\qt-5\qsettings.html) uses.
+[QSettings](https://doc.qt.io/qt-6/qsettings.html) uses.
 
 
 ## Format versions

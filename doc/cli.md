@@ -1,66 +1,76 @@
-# CLI: první čtecí etapa
+# CLI: reading parts and using built-in tools
 
-`ZIMA-CAD-Parts-cli` je samostatný konzolový program nad Qt Core. Neotevírá
-okna, nespouští WebEngine ani správce náhledů. Na Windows má příponu `.exe`.
-Spodní příkazový panel, zápis dat a AI nejsou součástí této etapy.
+`ZIMA-CAD-Parts-cli` is a separate console application built on Qt Core. It
+opens no windows and does not start WebEngine or the thumbnail manager. On
+Windows, the executable has the `.exe` extension. The [bottom command
+panel](command-panel.md) uses the same command processor.
+The `list` and `params` commands are read-only. The `ps2pdf`, `ptc-clean`
+and `step-edit` functions can apply changes with `--apply`; see
+[built-in tools](integrated-tools.md). AI is not implemented yet.
 
-## Použití
+## Usage
 
 ```powershell
-./ZIMA-CAD-Parts-cli.exe list "C:/CAD/Projekt" --language cs
-./ZIMA-CAD-Parts-cli.exe list "C:/CAD/Projekt" --name sroub --json
-./ZIMA-CAD-Parts-cli.exe params "C:/CAD/Projekt/xxx.prt.10" --language cs
+./ZIMA-CAD-Parts-cli.exe list "C:/CAD/Project" --language en
+./ZIMA-CAD-Parts-cli.exe list "C:/CAD/Project" --name screw --json
+./ZIMA-CAD-Parts-cli.exe params "C:/CAD/Project/xxx.prt.10" --language en
 ./ZIMA-CAD-Parts-cli.exe --help
 ```
 
-Na Debianu se používají stejné argumenty bez `.exe`. Výstup je vždy UTF-8
-JSON (`--json` je volitelný). `list` vrací schemaVersion, adresář, jazyk,
-sloupce a díly; každý díl má name, path, baseName, directory a parameters.
-`params` vrací jeden explicitně vybraný existující soubor nebo adresář;
-viditelnost podle filtrů jeho přímé načtení neomezuje.
+On Debian, use the same arguments without `.exe`. Command results are UTF-8
+JSON (`--json` is optional); help and version output are plain text.
+`list` returns `schemaVersion`, directory, language, columns and parts.
+Each part has `name`, `path`, `baseName`, `directory` and `parameters`.
+`params` returns one explicitly selected existing file or directory;
+visibility filters do not restrict this direct lookup.
 
-Parametry jsou **uložené hodnoty z metadata.ini**. CLI znovu neparsuje CAD
-soubory a nesynchronizuje jejich obsah do metadat. Automatický Pro/E import
-v GUI tedy může následně změnit uložené hodnoty; v této etapě není součástí
-čtecího příkazu. Výběr zobrazených revizí používá stejná pravidla jako GUI.
+Parameters are **saved values from metadata.ini**. The CLI does not parse
+CAD files again or synchronize their contents into metadata. Automatic Pro/E
+import in the GUI may subsequently change saved values; it is not part of
+these read commands. Displayed revisions follow the same rules as the GUI.
 
-Filtry se načítají výhradně z místního `0000-index/filters.ini` a nedědí se.
-`0000-index` a `.directory` zůstávají skryté. Podadresáře jsou součástí výpisu
-jen při Directory/SubdirectoriesAsParts. Volba verzí Pro/E respektuje
-místní nastavení a jako výchozí hodnotu používá uložené globální nastavení
-aplikace. `--default-proe-versions all|latest` změní jen tuto výchozí hodnotu,
-nepřebije místní filters.ini. `--name` filtruje celé jméno bez rozlišení
-velikosti písmen, stejně jako filtr sloupce názvu v GUI.
+Filters are loaded only from the local `0000-index/filters.ini` and are not
+inherited. `0000-index` and `.directory` remain hidden. Subdirectories appear
+in the listing only when `Directory/SubdirectoriesAsParts` is enabled.
+Pro/E revision visibility follows local settings, using the application's
+saved global preference as the default. `--default-proe-versions all|latest`
+changes only that default; it does not override the local `filters.ini`.
+`--name` matches the full file name without case sensitivity, like the
+GUI's name column filter.
 
-Jazyk je bez `--language` převzat z LanguageMetadata aplikace (výchozí en).
-Používejte kódy metadat cs, en, de, fr nebo ru. Zachovává se dosavadní
-jazykový fallback i čtení starších skupin pojmenovaných podle celého souboru.
-PDF, Pro/E a ZIMA-CAD se stejným základním názvem sdílejí stejné parametry.
+Without `--language`, the language comes from the application's
+`LanguageMetadata` setting (default: `en`). Use metadata language codes
+`cs`, `en`, `de`, `fr` or `ru`. Existing language fallback and support for
+legacy groups named after the full file name are preserved. PDF, Pro/E and
+ZIMA-CAD files with the same base name share parameters.
 
-## Čtení bez změn v projektu
+## Reading without changing project files
 
-CLI neukládá uživatelské nastavení a nevytváří indexy, náhledy nebo zálohy
-v projektu. Formát metadat v1 převádí existující migrací pouze v dočasné
-kopii, kterou po skončení odstraní. Na disku projektu se nic nemění.
-Podporuje IncludeParameters včetně relativních a absolutních cest;
-cyklus, příliš hluboké vnoření nebo nečitelná metadata vrátí chybu.
+The `list` and `params` commands do not save user settings or create indexes,
+thumbnails or backups in the project. Version 1 metadata is converted using
+the existing migration in a temporary copy, which is removed afterwards.
+Project files remain unchanged. `IncludeParameters` supports relative and
+absolute paths; a cycle, excessive nesting or unreadable metadata produces
+an error.
 
-Návratové kódy: 0 úspěch, 2 chybné argumenty, 3 chyba vstupních dat nebo
-čtení, 4 chyba zápisu výstupu. Chyba je JSON na stderr, výsledky na stdout.
-Ve veřejném JSON je `schemaVersion: 1`; názvy polí nejsou lokalizované.
+Exit codes: 0 for success, 2 for invalid arguments, 3 for input or read
+errors, and 4 for an output write failure. Errors are JSON on stderr;
+results go to stdout. Public JSON uses `schemaVersion: 1`, and field names
+are not localized.
 
-## Společná logika
+## Shared logic
 
-`src/core/partsread.*` sdílí GUI i CLI: seznam položek, základní názvy dílů,
-čtení místních hodnot včetně legacy fallbacku a řešení cest includes.
-`LocalFilters` zůstává společným pravidlem filtrování. File, PartCache a
-Metadata delegují odpovídající operace na tuto vrstvu. `partsquery.*`
-sestavuje čtecí snímek a JSON bez závislosti na widgetech.
+`src/core/partsread.*` is shared by the GUI and CLI: item enumeration, part
+base names, local parameter lookup with legacy fallback, and include path
+resolution. `LocalFilters` supplies the shared filtering rules. File,
+PartCache and Metadata delegate the corresponding operations to this layer.
+`partsquery.*` builds the read snapshot and JSON without widget dependencies.
 
-Jde o začátek oddělení jádra: GUI nadále má své cache, migrace a zápisové
-operace. Nejedná se o kompletní přepis všech modelů a dialogů.
+This is the first stage of separating the core. The GUI still has its own
+caches, migrations and write operations; the models and dialogs have not all
+been rewritten.
 
-## Sestavení a distribuce
+## Build and distribution
 
 ```sh
 mkdir .build-cli
@@ -69,21 +79,29 @@ qmake ../zima-cad-parts-cli.pro
 make
 ```
 
-Na Windows použijte Qt MSVC developer shell a `nmake release` místo make.
-Cílový projekt potřebuje pouze Qt Core 6.8+ a C++17. GUI se sestavuje jako
-dosud. Oba balicí skripty vyžadují `--cli` s cestou k odpovídající CLI
-binárce a ověřují její číslo verze. Windows ji ukládá vedle verzovaného
-GUI EXE; Debian do verzovaného bin/. Sestavení v CI zahrnuje také CLI.
+On Windows, use a Qt MSVC developer shell and `nmake release` instead of
+`make`. This target needs only Qt Core 6.8+ and C++17. Build the GUI as usual.
+Both packaging scripts require `--cli` pointing to the matching CLI binary
+and check its version number. Windows places it beside the versioned GUI
+executable; Debian places it in the versioned `bin/`. CI also builds the CLI.
 
-## Ověření
+## Verification
 
-`tests/test_cli.py` spouští skutečný proces podle PARTS_CLI_EXE. Ověřuje
-Unicode, revize, místní filtry, parametry, starý formát, explicitně prázdné
-hodnoty, includes, cykly, chybové kódy a nezměněné projektové soubory.
-Na Windows byl proces testován pouze s Qt Core a jeho běhovými závislostmi,
-bez GUI pluginů, s neplatně nastavenou platformou Qt.
+`tests/test_cli.py` starts the real executable selected by `PARTS_CLI_EXE`.
+It checks Unicode, revisions, local filters, parameters, legacy metadata,
+explicit empty values, includes, cycles, exit codes and unchanged project
+files. On Windows, the process was tested with only Qt Core and its runtime
+dependencies, without GUI plugins and with an invalid Qt platform setting.
 
-Integrační test cliMatchesGuiReadResults porovnává skutečný JSON s GUI
-modelem a filtrem. Při spuštění integrační sady nastavte PARTS_CLI_EXE;
-bez něj se pouze tento procesový test přeskočí. Linuxové provedení těchto
-změn zatím vyžaduje ověření v Debian CI.
+The integration test `cliMatchesGuiReadResults` compares actual JSON with
+the GUI model and filter. Set `PARTS_CLI_EXE` when running the integration
+suite; otherwise, only this process test is skipped. These changes still
+need Linux verification in Debian CI. See [verification](verification.md)
+for the latest recorded results.
+
+## Built-in tools
+
+`ps2pdf`, `ptc-clean` and `step-edit` share their implementation with the GUI.
+Their previews, `--apply` execution and file modification rules are described
+in the [tools documentation](integrated-tools.md). The read-only guarantees
+above apply to `list` and `params`, not to tool execution.

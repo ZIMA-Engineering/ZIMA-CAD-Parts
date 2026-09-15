@@ -1,36 +1,42 @@
-# Vzhled a ovládání
+# Appearance and navigation
 
-Aktivní hlavní záložka má zelené pozadí ve stylu ZIMA-CAD (`#4DD811`)
-a tmavý text. Stejné zvýraznění používají záložky **Adresář** a **Díly**.
-Neaktivní záložky respektují systémovou paletu; při přejetí myší mají
-světle zelené zvýraznění. Hlavní záložky při nedostatku místa používají
-posouvací tlačítka.
+The active main tab uses the ZIMA-CAD green background (`#4DD811`) with dark
+text. **Directory** and **Parts** tabs use the same highlight. Inactive tabs
+follow the system palette and use a light green hover highlight. Main tabs
+show scroll buttons when space is limited.
 
-**Adresář** a **Díly** jsou širší a před názvem mají ikonu složky nebo dílu.
-Tlačítka **Filtry**, **Obnovit**, **Smazat**, **Přesunout** a **Kopírovat**
-používají společnou sadu SVG ikon. Ikony a styl jsou součástí prostředků
-aplikace v `gfx/navigation`; nevyžadují další instalaci tématu ikon.
+**Directory** and **Parts** tabs are wider and have a folder or part icon
+before the label. **Filters**, **Refresh**, **Delete**, **Move** and **Copy**
+buttons use a shared set of SVG icons. Icons and styling are embedded in
+application resources under `gfx/navigation`; no additional icon theme
+installation is required for these controls.
 
-Původní položka **Upravit** v kontextovém menu adresáře se nyní jmenuje
-**Vlastnosti adresáře**. Odpovídající položka u datového zdroje je
-**Vlastnosti datového zdroje**.
+The former **Edit** directory context action is now **Directory properties**.
+The corresponding data source action is **Data source properties**.
 
-Ve Vlastnostech adresáře je zámeček **Chránit před smazáním a přesunutím**.
-Napravo je **Aplikovat na podadresáře**. Toto tlačítko působí okamžitě,
-nezávisle na následném potvrzení či zrušení okna. Podrobnosti, omezení
-lokálního zámečku a jeho uložení popisuje [dokumentace adresářů a filtrů](filters.md).
+Directory properties includes **Protect against deletion and moving**, with
+**Apply to subdirectories** on its right. The latter takes effect immediately,
+regardless of whether the dialog is subsequently accepted or cancelled.
+See the [directory and filter documentation](filters.md) for details,
+limitations and storage of the local lock.
 
-Zamčené soubory mají **Smazat** a **Přesunout** zašedlé a neaktivní.
-Bublinová nápověda ukazuje důvod. Stejná ochrana vypíná mazání v kontextovém
-menu stromu. Stav reaguje na změnu adresáře, výběru a zámečku; při hromadném
-výběru se zohledňují i vybrané soubory z jiných adresářů. Kopírování zůstává
-povolené a zamčené podadresáře neblokují práci se soubory v nezamčených sousedech.
+**Delete** and **Move** are greyed out and disabled for locked files, with
+an explanatory tooltip. The same protection disables deletion in the tree
+context menu. The state responds to changes in directory, selection and
+lock settings. Multiple selections also account for selected files from
+other directories. Copying out remains available, and locked subdirectories
+do not prevent work on files in unlocked neighboring directories.
 
-Volba **Zobrazit archivní verze ZIMA-CAD** má stejný smysl jako volba verzí
-Pro/E: zaškrtnuto znamená zobrazit. Dříve uložené hodnoty `ShowZimaVersions`
-zůstávají platné a nevyžadují přepis nastavení.
+**Show ZIMA-CAD archive versions (.1, .2, ...)** follows the same convention
+as Pro/E revision visibility: checked means visible. Previously saved
+`ShowZimaVersions` values remain valid and require no settings migration.
 
-Kontextové menu hlavního datového zdroje ve stromu nabízí také
-**Otevřít v nové kartě**. Otevře kořen vybraného zdroje v nové hlavní
-záložce, stejně jako tato volba u jednotlivých adresářů. Pokud kořenový
-adresář není dostupný, je položka neaktivní.
+The context menu for a root data source in the tree also provides **Open in
+a new tab**. It opens that source's root in a new main tab, like the same
+action on individual directories. The action is disabled if the root
+directory is unavailable.
+
+The [command panel](command-panel.md) is toggled with the terminal toolbar
+button or **Ctrl+Shift+P**. [Built-in tools](integrated-tools.md) are available
+from the directory context menu and commands; they have no separate toolbar
+icons.

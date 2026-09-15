@@ -2,7 +2,8 @@
 
 Current Parts uses local exclusion rules in 0000-index/filters.ini.
 It shows every file type, including hidden and system files, except the
-reserved 0000-index directory and files excluded by local rules.
+reserved `0000-index` directory, the `.directory` helper file and files
+excluded by local rules.
 
 The former allow-list configuration in 0000-index/files.ini is no longer
 read for filtering. Existing files.ini files are preserved and are not

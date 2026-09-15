@@ -1,17 +1,18 @@
-# Filtry a náhledy v Parts
+# Parts filters and previews
 
-Parts zobrazuje všechny typy souborů, včetně skrytých a systémových.
-Adresář `0000-index` zůstává vyhrazený pro metadata a nezobrazuje se.
-Pomocný soubor `.directory` se také vždy skrývá na Windows i Linuxu,
-bez zápisu výjimky do lokálních filtrů; na disku zůstává zachovaný.
-Zobrazení podadresářů jako dílů dál řídí `Directory/SubdirectoriesAsParts`.
+Parts shows all file types, including hidden and system files. The
+`0000-index` directory remains reserved for metadata and is not displayed.
+The `.directory` helper file is also always hidden on Windows and Linux,
+without a local filter rule; it remains on disk. Whether subdirectories
+appear as parts is still controlled by `Directory/SubdirectoriesAsParts`.
 
-## Lokální výjimky
+## Local exclusions
 
-Tlačítko **Filters...** upravuje pouze aktuální adresář. Nastavení se ukládá do
-`0000-index/filters.ini`; do podadresářů ani přes metadata includes se nedědí.
+The **Filters...** button edits only the current directory. Settings are
+saved in `0000-index/filters.ini` and are not inherited by subdirectories
+or through metadata includes.
 
-Příklad (výchozí seznam výjimek je prázdný):
+Example (the default exclusion list is empty):
 
 ```ini
 [Filters]
@@ -20,44 +21,47 @@ ShowVersions=false
 ShowZimaVersions=false
 ```
 
-V dialogu se zadává jeden název nebo vzor na řádek. `*` znamená libovolný počet
-znaků, `?` jeden znak. Vzory se porovnávají s celým názvem souboru bez cesty,
-bez rozlišování velikosti písmen, stejně na Windows i Linuxu.
-Po ruční úpravě INI obnovte seznam v Parts.
+Enter one file name or pattern per line in the dialog. `*` matches any
+number of characters, and `?` matches one character. Patterns match the
+entire file name without its path, case-insensitively on both Windows and
+Linux. Refresh the Parts list after editing the INI manually.
 
-`ShowVersions=false` zobrazí pouze nejvyšší číselnou verzi souborů
-`*.prt.N`, `*.asm.N`, `*.drw.N`, `*.frm.N`, `*.neu.N` (tedy `.10` před `.9`).
-Pokud výjimka skryje nejnovější verzi, starší verze se místo ní nezobrazí.
-Bez lokálního nastavení verzí se použije dosavadní preference aplikace.
-Původní seznam povolených typů v 0000-index/files.ini se pro zobrazení souborů
-už nepoužívá. Soubor zůstává zachovaný, automaticky se nepřepisuje ani nemaže.
-Aktuální pravidla ukládejte do filters.ini.
+`ShowVersions=false` displays only the highest numeric revision of
+`*.prt.N`, `*.asm.N`, `*.drw.N`, `*.frm.N` and `*.neu.N` (`.10` takes precedence
+over `.9`). If an exclusion hides the latest revision, an older revision
+is not shown in its place. Without a local revision setting, the existing
+application preference is used.
 
-Hledání v hlavičce Parts prohledává zobrazenou hodnotu, včetně celého názvu
-souboru a přípony. Nerozlišuje velikost písmen. Při psaní čeká 120 ms na další
-znak a pak filtruje; výjimky a nejnovější verze se nepřepočítávají při každém
-stisku klávesy.
+The former file type allow-list in `0000-index/files.ini` is no longer used
+for file visibility. Existing files are preserved and are not automatically
+rewritten or deleted. Save current rules in `filters.ini`.
 
-## Náhledy a ikony
+Search in the Parts table header matches displayed values, including the
+full file name and extension, without case sensitivity. It waits 120 ms
+for further typing before filtering. Exclusions and latest revisions are
+not recalculated on every keystroke.
 
-Obrázky se dekódují v pracovním vlákně, až když si tabulka vyžádá náhled.
-Hotové náhledy se doplňují do jednotlivých buněk bez resetu seznamu.
-Paměťová cache náhledů má limit 32 MiB. Při změně složky se fronta vyprázdní
-a opožděné výsledky staré složky se ignorují; při opuštění Parts se zruší
-čekající požadavky. Již probíhající čtení jednoho souboru může doběhnout,
-ale přechod do jiné složky na ně nečeká.
+## Thumbnails and icons
 
-Samotný výpis souborů a metadata zůstávají synchronní: na pomalém síťovém disku
-mohou stále chvíli trvat. Dekódování všech obrázků už není podmínkou pro práci
-se seznamem. Automatické měření šířek sloupců je omezeno na 50 položek.
+Images are decoded in a worker thread when the table requests a thumbnail.
+Completed thumbnails update individual cells without resetting the list.
+The in-memory thumbnail cache is limited to 32 MiB. Changing directories
+clears the queue and ignores late results from the previous directory;
+leaving Parts cancels pending requests. Reading one file already in progress
+may finish, but switching directories does not wait for it.
 
-Pro/E a ZIMA-CAD mají vlastní ikony, ostatní soubory používají systémového poskytovatele Qt.
-Náhledy zachovávají přednost obrázků vedle dílu, poté `0000-index/thumbnails`
-a nakonec `IncludeThumbnails`. Cyklické odkazy se bezpečně ukončí.
+File enumeration and metadata reading remain synchronous and can still take
+time on a slow network drive. Decoding every image is no longer required
+before using the list. Automatic column sizing samples at most 50 items.
 
-## Ověření
+Pro/E and ZIMA-CAD have dedicated icons; other files use Qt's system icon
+provider. Thumbnails prefer images beside the part, then
+`0000-index/thumbnails`, then `IncludeThumbnails`. Cyclic references stop
+safely.
 
-Samostatné testy nepotřebují WebEngine:
+## Verification
+
+The standalone tests do not require WebEngine:
 
 ```sh
 mkdir .build-tests
@@ -67,86 +71,96 @@ make
 ./parts-performance-tests
 ```
 
-Na Windows použijte odpovídající Qt kit a `mingw32-make` nebo `nmake`;
-výsledný program může být v podadresáři `release`.
-Pro testy bez oken nastavte `QT_QPA_PLATFORM=offscreen`.
+On Windows, use the matching Qt kit and `mingw32-make` or `nmake`. The
+executable may be in the `release` subdirectory. For tests without windows,
+set `QT_QPA_PLATFORM=offscreen`.
 
-Integrační test skutečného modelu a proxy používá objekty již sestavené aplikace:
+The integration tests use the real model and proxy and reuse objects from
+an already built application:
 
 ```sh
-qmake ../tests/parts-integration.pro PARTS_OBJECTS_DIR=/absolutni/cesta/k/objektum
+qmake ../tests/parts-integration.pro PARTS_OBJECTS_DIR=/absolute/path/to/objects
 make
 ```
 
-Je nutné použít stejný Qt kit a release konfiguraci jako u aplikace.
-Na tomto Windows je sloučená aplikace sestavena pomocí Qt 6.10.1 MSVC
-a Open CASCADE 8.0.0. Integrační testy přebírají stejné OCCT_ROOT jako aplikace.
+Use the same Qt kit and release configuration as the application. The
+Windows build was verified with Qt 6.10.1 MSVC and Open CASCADE 8.0.0.
+Integration tests use the same `OCCT_ROOT` as the application. See
+[verification](verification.md) for complete build instructions and results.
 
 ## ZIMA-CAD
 
-Typy dokumentů: .prtz díl, .asmz sestava, .drwz výkres, .frmz rámeček, .tblz razítko.
-Aktuální dokument nemá číselnou příponu. Soubory .1, .2, ... jsou archivní kopie
-předchozích uložení. ShowZimaVersions=false skryje všechny takové archivy, i když
-aktuální dokument chybí; nikdy je nevydává za aktuální verzi. Výchozí hodnota je true: v dialogu je volba „Zobrazit archivní verze ZIMA-CAD“ zaškrtnutá a číslované verze zůstávají viditelné.
-Přepínač je nezávislý na Pro/E a platí pouze pro aktuální složku.
-Ikony jsou kopie původních SVG ze ZIMA-CAD/resources/icons, uložené přímo v Parts.
+Document types are `.prtz` (part), `.asmz` (assembly), `.drwz` (drawing),
+`.frmz` (frame) and `.tblz` (title block). The current document has no numeric
+extension. Files ending in `.1`, `.2`, etc. are archive copies of previous
+saves. `ShowZimaVersions=false` hides all such archives, even if the current
+document is missing; archives are never treated as the current version.
+The default is `true`: **Show ZIMA-CAD archive versions (.1, .2, ...)** is
+checked and numbered versions remain visible.
 
-## Spuštění Windows sestavy
+This setting is independent of Pro/E and applies only to the current
+directory. Icons are copies of the original SVG files from
+`ZIMA-CAD/resources/icons`, stored directly in Parts.
 
-Spustitelný release program je v kořeni projektu: ZIMA-CAD-Parts.exe.
-Potřebuje přiložené DLL a adresáře Qt. Před zkoušením nové sestavy zavřete staré instance,
-aby nedocházelo k záměně verzí a souběžnému ukládání společných preferencí.
+## Running the Windows build
 
-Neaktivní záložky načítají obsah při prvním zobrazení. Úvodní obrazovka zachovává
-checkbox a nastavenou dobu zobrazení, ale používá časovač a neblokuje hlavní vlákno.
-Po úspěšném smazání složky strom přejde na jejího rodiče; QFileSystemModel aktualizuje
-jen změněnou větev. Ostatní rozbalené větve se neresetují.
+The deployed release executable is `ZIMA-CAD-Parts.exe` in the repository
+root. It needs the adjacent DLLs and Qt directories. Close old instances
+before testing a new build to avoid confusing versions or concurrent writes
+to shared preferences.
 
-## Sdílené parametry dílu
+Inactive tabs load their contents on first display. The splash screen retains
+its checkbox and configured duration, but uses a timer without blocking the
+main thread. After a directory is deleted, the tree selects its parent;
+QFileSystemModel updates only the changed branch. Other expanded branches
+are not reset.
 
-Soubory stejného dílu (například `xxx.pdf`, `xxx.prt.1`, `xxx.prt.10`
-a `xxx.prtz`) používají společné parametry pod názvem `xxx`. Editace
-v tabulce i dialogu pracuje se stejným záznamem a aktualizuje všechny
-odpovídající řádky. Názvy obsahující tečky zachovávají společný základ.
+## Shared part parameters
 
-Běžné obnovení seznamu nemaže záznamy v metadata.ini. Dříve chybně uložené
-hodnoty pod celým názvem existujícího souboru zůstávají zachované a slouží
-jako náhradní hodnoty, pokud společný záznam ještě není vyplněný.
+Files belonging to the same part, such as `xxx.pdf`, `xxx.prt.1`,
+`xxx.prt.10` and `xxx.prtz`, share parameters under the name `xxx`. Edits
+in the table and dialog use the same record and update all matching rows.
+Names containing dots retain their common base name.
 
-Parametry Pro/E se načítají pouze z nejvyšší číselné verze každého CAD
-souboru, nezávisle na nastavení viditelnosti verzí. Prázdná načtená hodnota
-nepřepisuje vyplněný parametr.
+A normal refresh does not delete records from `metadata.ini`. Values
+previously saved incorrectly under an existing file's full name remain
+available as fallback values when the shared record is not yet populated.
 
-## Ochrana knihovny před smazáním a přesunutím
+Pro/E parameters are imported only from the highest numeric revision of
+each CAD file, regardless of revision visibility. An empty imported value
+does not overwrite a populated parameter.
 
-Ve **Vlastnostech adresáře** lze zaškrtnout **Chránit před smazáním a
-přesunutím**. Volba se ukládá do místního `0000-index/metadata.ini`:
+## Protecting libraries from deletion and moves
+
+In **Directory properties**, enable **Protect against deletion and moving**.
+The setting is stored in the local `0000-index/metadata.ini`:
 
 ```ini
 [Directory]
 PreventRemoval=true
 ```
 
-Výchozí hodnota je `false`. Zámeček se nedědí: chrání pouze soubory přímo
-v tomto adresáři. Podadresáře lze zamknout samostatně. Odemčené podadresáře
-zůstávají použitelné i uvnitř zamčené knihovny.
+The default is `false`. The lock is not inherited: it protects only files
+directly in this directory. Subdirectories can be locked separately.
+Unlocked subdirectories remain usable within a locked library.
 
-Parts odmítne také odstranění nebo přesun celé složky obsahující zamčený
-adresář. Kopírování z knihovny je povolené; přepsání zamčeného souboru
-kopírováním nebo přesunem je zablokované. Parametry lze nadále upravovat.
-Jde o ochranu před omylem uvnitř Parts, nikoliv o oprávnění operačního systému.
+Parts also rejects deleting or moving a whole folder containing a locked
+directory. Copying out of the library is allowed, while overwriting a
+protected file through copying or moving is blocked. Parameters remain
+editable. This prevents mistakes within Parts; it is not an operating system
+permission.
 
-Zamčené soubory mají tlačítka **Smazat** a **Přesunout** neaktivní a zašedlá.
-Vysvětlení je dostupné v bublinové nápovědě. Stav se mění při přepnutí adresáře,
-změně výběru i po zamčení nebo odemčení ve Vlastnostech adresáře.
+**Delete** and **Move** are disabled and greyed out for locked files. A
+tooltip explains why. The state updates when the directory or selection
+changes, or after locking or unlocking in Directory properties.
 
-Tlačítko **Aplikovat na podadresáře** napravo od zámečku okamžitě zapíše
-aktuální stav zaškrtávátka do všech existujících podadresářů, i v dalších
-úrovních. Zaškrtnuto zamyká, nezaškrtnuto odemyká. Ostatní metadata zůstávají
-zachována. Systémové adresáře `0000-index` a odkazy na adresáře se neprocházejí.
-Nově vytvořené podadresáře nastavení automaticky nepřebírají.
+**Apply to subdirectories**, to the right of the lock, immediately writes
+the current checkbox state to all existing subdirectories at every depth.
+Checked locks them; unchecked unlocks them. Other metadata is preserved.
+System `0000-index` directories and directory links are excluded. Newly
+created subdirectories do not inherit this setting automatically.
 
-Operaci lze zastavit; již provedené změny zůstávají uložené. Výsledek uvádí
-počet aktualizovaných adresářů a případné chyby. Zrušení okna Vlastností
-nevrací hromadnou změnu zpět. Nastavení samotného otevřeného adresáře se
-nadále potvrzuje tlačítkem OK.
+The operation can be stopped; completed changes remain saved. The result
+reports the number of updated directories and any errors. Cancelling the
+Properties dialog does not undo this bulk change. The open directory's own
+setting is still confirmed with **OK**.

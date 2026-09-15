@@ -122,16 +122,18 @@ on. The following environment variables are set:
   - `ZCP_DIRECTORY` - absolute path to the directory the script is run on (same
     as the processes' working directory)
 
-## Přejmenování a mazání otevřených adresářů
+## Renaming and deleting open directories
 
-Před přejmenováním, přesunem nebo mazáním adresáře ZCP dočasně uvolní sledování změn
-v jeho `0000-index` ve všech náhledech, které zobrazují daný adresář nebo
-jeho podadresáře. Otevřené sledování podsložky na Windows jinak blokuje
-operaci nad rodičem chybou přístupu, i když jsou práva prototypu správná.
-Během operace se sledování znovu neotevírá. Po úspěchu se náhledy přepnou
-na novou cestu, po smazání na existujícího rodiče; při neúspěchu se obnoví
-původní cesta. Přesun uvolní také náhled cílového adresáře při jeho nahrazení.
-Přejmenování a mazání kvůli tomu neresetují rozbalené větve stromu.
+Before renaming, moving or deleting a directory, ZCP temporarily releases
+filesystem watches on its `0000-index` in every view showing that directory
+or a descendant. On Windows, an open watch on a child directory can otherwise
+block an operation on its parent with an access error, even when prototype
+permissions are correct.
 
-Zobrazované názvy a parametry se nadále načítají z `0000-index/metadata.ini`.
-Přejmenování fyzické složky samo o sobě nemění její jazykové popisky.
+Watches are not reopened during the operation. On success, views switch to
+the new path, or to an existing parent after deletion. On failure, the
+original path is restored. Moving also releases views of the destination
+when replacing it. Renaming and deletion do not reset expanded tree branches.
+
+Display labels and parameters still come from `0000-index/metadata.ini`.
+Renaming a physical directory does not change its localized labels.

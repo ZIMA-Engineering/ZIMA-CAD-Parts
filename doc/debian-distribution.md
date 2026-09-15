@@ -1,53 +1,67 @@
-# Debian distribuce – připraveno k ověření
+# Debian distribution: awaiting verification
 
-Cílové prostředí je Debian 13 (trixie), amd64. Aktuální stabilní řadu uvádí
-[Debian Releases](https://www.debian.org/releases/). Qt Wayland a obrazové
-pluginy dodává při sestavení správce balíčků. Podporované balíčky jsou popsány
-v [qt6-wayland](https://packages.debian.org/trixie/qt6-wayland),
-[qt6-svg-plugins](https://packages.debian.org/trixie/qt6-svg-plugins)
-a [qt6-image-formats-plugins](https://packages.debian.org/trixie/qt6-image-formats-plugins).
+The target environment is Debian 13 (trixie), amd64. See
+[Debian Releases](https://www.debian.org/releases/) for release information.
+Qt Wayland and image plugins are installed by the package manager during
+the build. Relevant packages are
+[qt6-wayland](https://packages.debian.org/trixie/qt6-wayland),
+[qt6-svg-plugins](https://packages.debian.org/trixie/qt6-svg-plugins) and
+[qt6-image-formats-plugins](https://packages.debian.org/trixie/qt6-image-formats-plugins).
 
-**Stav:** Windows pracoviště nemá WSL ani Docker. Skript ani sestavení
-nebyly spuštěny na Debianu. Není zatím k dispozici ověřená Linux binárka.
-Nový CI workflow je omezen na Debian 13; ověří sestavení a připraví
-experimentální archiv, ale sám nenahrazuje testy KDE/Wayland.
+**Status:** the Windows workstation has neither WSL nor Docker. The script
+and build have not been run on Debian, and no verified Linux binary is
+available yet. The new CI workflow targets Debian 13 to build and prepare
+an experimental archive; it does not replace KDE/Wayland runtime tests.
 
-## Sestavení
+## Build
 
-Z inicializovaného Git checkoutu s obsahem submodulů:
+From a Git checkout with initialized submodules:
 
 ```sh
 docker build --pull --build-arg BASE_IMAGE=debian:13 --build-arg DISTRO=debian -f .github/ci/linux-build.Dockerfile -t parts-debian-build .
 docker run --rm --user "$(id -u):$(id -g)" --volume "$PWD:/workspace" --workdir /workspace --env HOME=/tmp parts-debian-build bash .github/ci/build-debian.sh
 ```
 
-Výstup je v `.dist-output/debian/ZIMA-CAD-Parts/` a v odpovídajícím tar.gz.
-Skript `package-debian.py` kontroluje Debian 13, architekturu a číslo EXE,
-exportuje sledované zdroje včetně submodulů, přibaluje Qt, WebEngine,
-pluginy Wayland/X11, OCCT a rekurzivně dohledané knihovny. Přenosné cesty
-ELF souborů nastavuje přes patchelf. Existující výstup nepřepisuje.
+Output goes to `.dist-output/debian/ZIMA-CAD-Parts/` and the corresponding
+`.tar.gz`. `package-debian.py` checks Debian 13, architecture and executable
+version, exports tracked sources including submodules, and bundles Qt,
+WebEngine, Wayland/X11 plugins, OCCT and recursively resolved libraries.
+It sets portable ELF paths with `patchelf` and refuses to overwrite existing
+output.
 
-Glibc, grafické rozhraní a ovladače zůstávají ze systému. Manifest uvádí
-konkrétní hostitelské knihovny. Sandbox WebEngine se nevypíná; aplikace
-se má spouštět jako běžný uživatel. Dostupnost knihovny podle ldd sama
-neprokazuje úplnost dynamicky načítaných pluginů nebo témat KDE.
+Glibc, graphics interfaces and drivers remain system-provided. The manifest
+lists specific host libraries. The WebEngine sandbox remains enabled;
+run the application as a regular user. Finding libraries with `ldd` alone
+does not establish completeness of dynamically loaded plugins or KDE themes.
 
-## Spuštění
+PS2PDF currently requires the system `ghostscript` package on the target
+machine: `sudo apt install ghostscript`. It is listed in the manifest as a
+system dependency. Windows bundles it; a portable Linux Ghostscript runtime
+has not yet been prepared.
+
+The full Parts license is included as `LICENSE` beside the root launcher,
+in the source snapshot and in the runtime's `licenses/Parts-LICENSE`.
+Source headers specify `GPL-3.0-or-later`; dependencies retain their own
+licenses and notices.
+
+## Run
 
 ```sh
 ./ZIMA-CAD-Parts.sh
 ./ZIMA-CAD-Parts.sh -Version 2026091501
-./ZIMA-CAD-Parts.sh -Custom -Version moje-sestaveni
+./ZIMA-CAD-Parts.sh -Custom -Version my-build
 ./ZIMA-CAD-Parts.sh -Check
 ```
 
-`launcher.ini` používá klíče `linux` a `linux_custom`. Každé oficiální
-adresářové sestavení má `build.ini` s verzí a platformou debian-13-x86_64.
-Manifest není kryptografický podpis. Vlastní sestavení leží v custom/linux.
-Verzovaný spouštěč nastaví cesty knihoven a prostředků pouze svému procesu.
+`launcher.ini` uses the `linux` and `linux_custom` keys. Each build in the
+official directory branch has `build.ini` with its version and the platform
+`debian-13-x86_64`. The manifest is not a cryptographic signature. Custom
+builds live in `custom/linux/`. The versioned launcher sets library and
+resource paths only for its own process.
 
-Před veřejným vydáním je nutné ověřit balík na čistém Debianu s KDE/Wayland:
-spuštění, webové stránky/PDF, CAD import a vykreslení, systémové ikony,
-hesla přes systémovou službu, přepínání verzí a kopírování celého balíku
-na jinou cestu. Je také nutné dokončit distribuční licenční soupis všech
-přibalených systémových balíků a podpisy. Výsledky zatím nejsou potvrzené.
+Before a public release, verify the bundle on clean Debian with KDE/Wayland:
+startup, web pages/PDFs, CAD import and rendering, system icons, passwords
+through the system service, version switching and copying the whole bundle
+to a different path. The distribution license inventory for all bundled
+system packages and signing also need completion. These results have not
+yet been confirmed.

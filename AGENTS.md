@@ -20,8 +20,20 @@
 - Keep UI text in translation-aware strings; when touching `*.ui`, ensure identifiers stay descriptive.
 - Keep the Czech translation (`locale/zima-cad-parts_cs_CZ.ts`) in sync with code/UI text changes; run `lupdate` and translate new entries when strings change.
 
+## Documentation Language
+- Write and maintain all project documentation in English, including README
+  files, `doc/`, build and distribution guides, and contributor instructions.
+- Update the relevant English documentation when behavior changes.
+- Keep UI translations and examples of localized metadata in their intended
+  languages. Preserve upstream license texts and third-party documentation.
+- Keep the project `LICENSE` in the repository root and beside the launchers
+  in distribution bundles. The existing source headers specify GPL-3.0-or-later;
+  retain separate third-party license notices when packaging dependencies.
+
 ## Testing Guidelines
-- No automated test suite is present; run the built binary and exercise core flows (load a datasource, browse parts, open tech specs, download files).
+- Automated checks live in `tests/`; see `doc/verification.md` for build
+  requirements and commands. Also run the built binary and exercise core
+  flows: load a datasource, browse parts, open tech specs, and download files.
 - For password-manager changes, start `python3 tools/manual-tests/password_manager_fixture.py --port 18080` and follow `doc/password-manager.md`.
 - For datasource-related changes, validate against the sample structure described in `doc/datasource.md` and ensure metadata/thumbnails render.
 - File critical regressions as issues before merging when manual gaps exist.

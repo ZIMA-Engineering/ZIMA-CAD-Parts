@@ -1,96 +1,129 @@
-# První implementace distribučního balíku pro Windows
+# Windows distribution implementation
 
-Tato etapa realizuje strukturu a spouštění podle [závazného návrhu](distribution-policy.md).
-Automatické aktualizace, podpisy, mazání starých verzí a Debian runtime zatím
-nejsou implementované. Vzniklý vývojový balík není podepsané oficiální vydání.
+This stage implements the structure and launchers from the
+[binding policy](distribution-policy.md). Automatic updates, signing and
+old-version cleanup are not implemented. Debian runtime verification is
+pending. The resulting development bundle is not a signed official release.
 
-## Verze a sestavení
+## Version and build
 
-Jediným zdrojem čísla je `VERSION` v `src/zima-cad-parts.h` (YYYYMMDDNN).
-Program ho uvádí v O programu a v `QCoreApplication::applicationVersion()`.
-Volání `ZIMA-CAD-Parts.exe --build-info` vrací JSON bez spuštění GUI.
-Marketingová devítka se zobrazuje pouze na stránce O programu.
+The single version source is `VERSION` in `src/zima-cad-parts.h`
+(`YYYYMMDDNN`). The application reports it in About and through
+`QCoreApplication::applicationVersion()`. Running
+`ZIMA-CAD-Parts.exe --build-info` returns JSON without starting the GUI.
+The marketing name with the number nine appears only on the About page.
 
-Sestavte celý projekt pomocí qmake a nmake z MSVC developer shellu,
-mimo zdrojový adresář, se stejným Qt kitem a OCCT jako pro distribuci.
-Balení vyžaduje Python 3, Git, MSVC `dumpbin` a `windeployqt` tohoto kitu.
+Build the complete project using qmake and nmake from an MSVC developer
+shell, outside the source directory, with the same Qt kit and OCCT used for
+distribution. Packaging requires Python 3, Git, MSVC `dumpbin` and that kit's
+`windeployqt`. Before packaging, prepare Ghostscript with its license and
+sources:
+
+```powershell
+python tools/distribution/prepare-ghostscript.py --sevenzip "C:/Program Files/7-Zip/7z.exe"
+```
+
+See [built-in tools](integrated-tools.md) for details and conversion commands.
+After building the GUI and CLI:
 
 ```powershell
 python tools/distribution/package-windows.py --exe .build-release/release/ZIMA-CAD-Parts.exe --cli .build-cli/release/ZIMA-CAD-Parts-cli.exe --qt C:/Qt/6.10.1/msvc2022_64 --occt C:/zb/i/x64-windows --output .dist-output/2026091501
 ```
 
-EXE musí pocházet z tohoto checkoutu. Pokud není schopné najít DLL v build
-adresáři, přidejte pro balení do PATH `bin` příslušného Qt a OCCT. Skript
-ověřuje číslo EXE proti zdrojům, nikoli úplnou reprodukovatelnost kompilace.
-Výstup musí být nový adresář; existující balík se nepřepisuje.
+The executable must come from this checkout. If it cannot locate DLLs in
+the build directory, add the selected Qt and OCCT `bin` directories to PATH
+for packaging. The script checks the executable version against the sources;
+it does not prove a fully reproducible build. The output directory must be
+new; an existing package is not overwritten.
 
-Zdroje se kopírují podle Git indexu, včetně skutečného obsahu inicializovaných
-submodulů. Ve vývojovém balíku jde o aktuální obsah pracovních souborů;
-manifest označí změněný checkout. Nové dosud nesledované soubory lze přidat
-jednotlivě pomocí `--include cesta`. Žádné ostatní nesledované soubory
-se automaticky nepřibalují. Úplnost exportu je nutné před vydáním ověřit
-sestavením přímo z exportovaných zdrojů.
+Sources are copied using the Git index, including actual contents of
+initialized submodules. A development bundle uses current working files,
+and its manifest marks a modified checkout. New untracked files can be
+included individually with `--include path`. Other untracked files are not
+automatically bundled. Before release, verify export completeness by
+building directly from the exported sources.
 
-Přepínač `--release` vyžaduje čistý checkout a tag `ZIMA-CAD-Parts-<VERSION>`
-na HEAD. Vytváří kandidáta vydání; sám nezajišťuje podpis ani oficiální
-ověřenou distribuci. GitHub workflow používá tento skript; datumový tag vytváří koncept vydání
-s archivem. Dokud není implementovaný podpis, nejde o automaticky
-publikované podepsané vydání.
+`--release` requires a clean checkout and a `ZIMA-CAD-Parts-<VERSION>` tag
+at HEAD. It creates a release candidate, not a signature or an officially
+verified distribution. The GitHub workflow uses this script; a date-based
+tag creates a draft release with an archive. Until signing is implemented,
+this is not automatic publication of a signed release.
 
-Qt nasazuje windeployqt; další DLL se dohledávají rekurzivně podle importů
-přes dumpbin. Qt knihovny mají přednost z vybraného Qt kitu. Nevyřešená
-závislost balení zastaví. Dynamicky načítané komponenty je nutné ověřit
-běhovými testy, samotný seznam importů jejich úplnost nedokazuje.
+`windeployqt` deploys Qt. Other DLLs are resolved recursively from imports
+using `dumpbin`, preferring Qt libraries from the selected kit. An unresolved
+dependency stops packaging. Dynamically loaded components require runtime
+tests; an import list alone cannot prove their completeness.
 
-## Spouštění a přepínání
+## Launching and switching versions
 
-V kořeni vytvořené složky ZIMA-CAD-Parts spusťte `ZIMA-CAD-Parts.exe`.
-Jde o malý nativní Win32 spouštěč se staticky připojeným MSVC runtime;
-nepotřebuje Qt ani povolení PowerShell skriptů. Samotná aplikace je ve
-verzované složce `windows/<verze>/`.
+Run `ZIMA-CAD-Parts.exe` in the generated `ZIMA-CAD-Parts` root directory.
+This is a small native Win32 launcher with a statically linked MSVC runtime;
+it requires neither Qt nor permission to run PowerShell scripts. The actual
+application is in `windows/<version>/`.
 
-`launcher.ini` vybírá Windows verzi; `windows_custom=false` znamená
-oficiální adresářovou větev. Vývojový balík ve stejné struktuře je stále
-v manifestu označen jako development, nikoli jako ověřené vydání.
+`launcher.ini` selects the Windows version. `windows_custom=false` selects
+the official directory branch. A development bundle using that structure
+is still marked as development in its manifest, not as a verified release.
 
 ```powershell
 ./ZIMA-CAD-Parts.exe -Version 2026091501
-./ZIMA-CAD-Parts.exe -Custom -Version moje-sestaveni
+./ZIMA-CAD-Parts.exe -Custom -Version my-build
 ./ZIMA-CAD-Parts.exe -Check
 ```
 
-Vlastní sestavení leží v `custom/windows/moje-sestaveni/`, včetně svého
-EXE a knihoven. Přepínač `-Check` ověří výběr a vypíše cestu bez spuštění.
-Spouštěč kontroluje formát názvu a u vydání shodu `build.ini` (číslo a platforma). Neověřuje
-kryptografický podpis. Pro nový proces odstraní vývojové Qt cesty a omezí
-PATH na složku programu a systém Windows.
+Custom builds live in `custom/windows/my-build/`, including their executable
+and libraries. `-Check` validates the selection and prints its path without
+launching it. The launcher checks the name format and, for release directories,
+the version and platform in `build.ini`. It does not verify a cryptographic
+signature. For the new process, it removes development Qt paths and limits
+PATH to the application directory and Windows system directories.
 
-Linuxový kořenový spouštěč vybírá standardní nebo vlastní sestavení
-a kontroluje build.ini. Bez Debian balíku skončí s chybou. Linux zde
-zatím nebyl spuštěn; postup popisuje dokumentace Debian distribuce.
-Do složek lze ručně umístit aktuální a předchozí sestavení; tato etapa sama
-žádnou verzi nestahuje ani neodstraňuje.
+The Linux root launcher selects a standard or custom build and checks
+`build.ini`. It fails if no Debian bundle is installed. Linux execution has
+not been verified here; see the [Debian guide](debian-distribution.md).
+Current and previous builds can be placed in the folders manually. This
+stage does not download or remove versions.
 
-`checksums.json` obsahuje SHA-256 zabalených souborů. Slouží ke kontrole
-integrity, ne jako podpis původu. `version.json` uvádí verzi, commit,
-platformu, Qt kit a vývojový stav.
+`checksums.json` contains SHA-256 hashes of packaged files for integrity
+checking, not proof of origin. `version.json` records the version, commit,
+platform, Qt kit and development state.
 
-## Ověření první etapy
+## License files
 
-Kontroly spouštěče a exportu: `python tests/test_distribution.py`.
-Testy ověřují výběr aktuální i předchozí verze, vlastní sestavení,
-odmítnutí neplatných cest a manifestů, datumové číslování a přítomnost
-obsahu submodulů v exportu. Překlady kontroluje `tests/check_translations.py`.
+The full Parts GPL text is copied to `LICENSE` beside the root launchers,
+to the source snapshot, and to `windows/<version>/licenses/Parts-LICENSE`.
+Source headers specify `GPL-3.0-or-later`. Other notices are in the runtime's
+`licenses/` directory. Ghostscript retains its own license and corresponding
+source archive under `tools/ghostscript`.
 
-Před předáním balíku ověřte spuštění přes kořenový spouštěč bez vývojového
-Qt/OCCT v PATH a sestavení z přibalených zdrojů. Běh na počítači vývojáře
-nenahrazuje ověření v čisté instalaci Windows. Zdrojový export a první
-balík se testují místně; změny GitHub workflow vyžadují následný běh v CI.
+## Verification
 
-## Výsledný archiv
+Launcher and export checks:
 
-Dohodnutý výsledný název je `ZIMA-CAD-Parts-YYYYMMDDNN.zip`, bez platformy.
-Místní balík leží přímo v `.dist-output/ZIMA-CAD-Parts/`. Po doplnění
-Linuxového sestavení je nutné zachovat Windows část launcher.ini a
-přegenerovat checksums.json. Automatické spojení dvou platformních výstupů
-a přebalení zatím skripty neprovádějí.
+```sh
+python tests/test_distribution.py
+python tests/check_translations.py
+```
+
+Set `PARTS_LAUNCHER` to the compiled native launcher to exercise the shipped
+launcher. Without it, Windows tests use the PowerShell fallback, which is
+subject to the machine's script execution policy. Checks cover current and
+previous versions, custom builds, invalid paths and manifests, date-based
+numbering and submodule contents in source exports.
+
+Before delivery, verify the root launcher without development Qt/OCCT in
+PATH and build from the bundled sources. Running on a developer workstation
+does not replace testing on a clean Windows installation. Local source
+export and package checks do not verify GitHub workflow execution; CI must
+be run separately. See [verification](verification.md) for recorded results.
+
+## Final archive
+
+The agreed final name is `ZIMA-CAD-Parts-YYYYMMDDNN.zip`, without a platform.
+The local assembled bundle lives directly in `.dist-output/ZIMA-CAD-Parts/`.
+The version-specific output in the packaging example is a staging directory,
+not an extra level in the final distribution.
+
+After adding the Linux build, preserve the Windows entries in `launcher.ini`
+and regenerate `checksums.json`. Scripts do not yet automatically merge
+platform outputs and rebuild the shared archive.
