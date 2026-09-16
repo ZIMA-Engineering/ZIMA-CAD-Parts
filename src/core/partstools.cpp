@@ -17,6 +17,12 @@
 #include <QProcessEnvironment>
 #include <QUuid>
 #include <QMap>
+#ifdef Q_OS_WIN
+#include <qt_windows.h>
+#include <shobjidl.h>
+#include <wrl/client.h>
+#include <wrl/implements.h>
+#endif
 
 namespace {
 void checkCanceled()
@@ -81,6 +87,124 @@ QStringList collectFiles(const PartsCore::ToolRequest &request)
     }
     return result;
 }
+#ifdef Q_OS_WIN
+QString trashError(HRESULT result)
+{
+    return QString("Cannot move file to trash (Windows error 0x%1)")
+        .arg(quint32(result), 8, 16, QLatin1Char('0'));
+}
+class TrashProgress final : public Microsoft::WRL::RuntimeClass<
+    Microsoft::WRL::RuntimeClassFlags<Microsoft::WRL::ClassicCom>, IFileOperationProgressSink>
+{
+public:
+    explicit TrashProgress(const PartsCore::ToolItem &value) : item(value) {}
+    PartsCore::ToolItem item;
+    QString error, trash;
+    bool completed = false;
+
+    IFACEMETHODIMP PreDeleteItem(DWORD flags, IShellItem *) override
+    {
+        try {
+            checkCanceled();
+            // Refuse the Shell's permanent-delete fallback, including on shares.
+            if (!(flags & TSF_DELETE_RECYCLE_IF_POSSIBLE)) throw QString("System trash is unavailable");
+            if (fingerprint(item.path) != item.hash) throw QString("File changed since preview");
+            if (locked(item.path)) throw QString("Directory is locked");
+            if (!item.keeper.isEmpty() && fingerprint(item.keeper) != item.keeperHash)
+                throw QString("Retained version changed since preview");
+            return S_OK;
+        } catch (const QString &message) {
+            error = message;
+            return E_ABORT;
+        }
+    }
+    IFACEMETHODIMP PostDeleteItem(DWORD, IShellItem *, HRESULT result, IShellItem *recycled) override
+    {
+        completed = SUCCEEDED(result) && recycled && !QFileInfo::exists(item.path);
+        if (completed) {
+            PWSTR value = nullptr;
+            if (SUCCEEDED(recycled->GetDisplayName(SIGDN_FILESYSPATH, &value))) {
+                trash = QDir::fromNativeSeparators(QString::fromWCharArray(value));
+                CoTaskMemFree(value);
+            }
+        } else if (error.isEmpty()) {
+            error = trashError(result);
+        }
+        return S_OK;
+    }
+    IFACEMETHODIMP StartOperations() override { return S_OK; }
+    IFACEMETHODIMP FinishOperations(HRESULT) override { return S_OK; }
+    IFACEMETHODIMP PreRenameItem(DWORD, IShellItem *, LPCWSTR) override { return S_OK; }
+    IFACEMETHODIMP PostRenameItem(DWORD, IShellItem *, LPCWSTR, HRESULT, IShellItem *) override { return S_OK; }
+    IFACEMETHODIMP PreMoveItem(DWORD, IShellItem *, IShellItem *, LPCWSTR) override { return S_OK; }
+    IFACEMETHODIMP PostMoveItem(DWORD, IShellItem *, IShellItem *, LPCWSTR, HRESULT, IShellItem *) override { return S_OK; }
+    IFACEMETHODIMP PreCopyItem(DWORD, IShellItem *, IShellItem *, LPCWSTR) override { return S_OK; }
+    IFACEMETHODIMP PostCopyItem(DWORD, IShellItem *, IShellItem *, LPCWSTR, HRESULT, IShellItem *) override { return S_OK; }
+    IFACEMETHODIMP PreNewItem(DWORD, IShellItem *, LPCWSTR) override { return S_OK; }
+    IFACEMETHODIMP PostNewItem(DWORD, IShellItem *, LPCWSTR, LPCWSTR, DWORD, HRESULT, IShellItem *) override { return S_OK; }
+    IFACEMETHODIMP UpdateProgress(UINT, UINT) override
+    {
+        return QThread::currentThread()->isInterruptionRequested() ? E_ABORT : S_OK;
+    }
+    IFACEMETHODIMP ResetTimer() override { return S_OK; }
+    IFACEMETHODIMP PauseTimer() override { return S_OK; }
+    IFACEMETHODIMP ResumeTimer() override { return S_OK; }
+};
+QJsonObject recycleWindows(const PartsCore::ToolPlan &plan)
+{
+    struct Apartment {
+        HRESULT status = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+        ~Apartment() { if (SUCCEEDED(status)) CoUninitialize(); }
+    } apartment;
+    if (FAILED(apartment.status)) throw trashError(apartment.status);
+    Microsoft::WRL::ComPtr<IFileOperation> operation;
+    auto result = CoCreateInstance(CLSID_FileOperation, nullptr, CLSCTX_INPROC_SERVER,
+        IID_PPV_ARGS(operation.GetAddressOf()));
+    if (FAILED(result)) throw trashError(result);
+    result = operation->SetOperationFlags(FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI
+        | FOF_NO_CONNECTED_ELEMENTS | FOFX_RECYCLEONDELETE | FOFX_ADDUNDORECORD);
+    if (FAILED(result)) throw trashError(result);
+    QList<Microsoft::WRL::ComPtr<TrashProgress>> sinks;
+    for (const auto &item : plan.items) {
+        auto sink = Microsoft::WRL::Make<TrashProgress>(item);
+        sinks.append(sink);
+        try {
+            checkCanceled();
+            checkPath(item.path);
+            if (!QFileInfo(item.path).isFile()) throw QString("Source file is missing");
+            Microsoft::WRL::ComPtr<IShellItem> source;
+            const auto path = QDir::toNativeSeparators(item.path);
+            result = SHCreateItemFromParsingName(reinterpret_cast<LPCWSTR>(path.utf16()), nullptr,
+                IID_PPV_ARGS(source.GetAddressOf()));
+            if (FAILED(result)) throw trashError(result);
+            result = operation->DeleteItem(source.Get(), sink.Get());
+            if (FAILED(result)) throw trashError(result);
+        } catch (const QString &message) { sink->error = message; }
+    }
+    // One Shell transaction for the whole selection, on the tool's worker thread.
+    // PreDeleteItem validates each file immediately before the Shell recycles it.
+    const auto performed = operation->PerformOperations();
+    BOOL aborted = FALSE;
+    const auto abortStatus = operation->GetAnyOperationsAborted(&aborted);
+    QJsonArray completed, failed;
+    for (const auto &sink : sinks) {
+        if (sink->completed) {
+            completed.append(QJsonObject{{"path", sink->item.path}, {"trash", sink->trash}});
+        } else {
+            if (sink->error.isEmpty()) {
+                sink->error = QThread::currentThread()->isInterruptionRequested() ? "Cancelled"
+                    : FAILED(performed) ? trashError(performed)
+                    : FAILED(abortStatus) ? trashError(abortStatus)
+                    : "Not processed because recycling was interrupted";
+            }
+            failed.append(QJsonObject{{"path", sink->item.path}, {"reason", sink->error}});
+        }
+    }
+    return {{"schemaVersion", 1}, {"tool", plan.request.tool}, {"preview", false},
+        {"completed", completed}, {"failed", failed}, {"skipped", plan.skipped},
+        {"cancelled", QThread::currentThread()->isInterruptionRequested() || bool(aborted)}};
+}
+#endif
 const QStringList fieldNames{"name", "date", "author", "organization", "preprocessor", "system", "authorization"};
 struct StepHeader { int start = -1, end = -1; QStringList raw; QJsonObject fields; };
 // Lexical scan handles comments, apostrophes, commas and nested author lists.
@@ -256,6 +380,14 @@ PartsCore::ToolPlan PartsCore::planTool(const ToolRequest &request)
             latest[m.captured(1)] = {number, file};
     }
     QMap<QString, int> outputs;
+    QMap<QString, QString> previewHashes;
+    const auto previewHash = [&previewHashes](const QString &path) {
+        const auto found = previewHashes.constFind(path);
+        if (found != previewHashes.cend()) return found.value();
+        const auto value = fingerprint(path);
+        previewHashes.insert(path, value);
+        return value;
+    };
     for (const auto &path : files) {
         checkCanceled();
         const QFileInfo file(path);
@@ -277,8 +409,8 @@ PartsCore::ToolPlan PartsCore::planTool(const ToolRequest &request)
         if (!wanted) continue;
         try {
             if (request.tool == "ptc-clean" && locked(path)) throw QString("Directory is locked");
-            item.hash = fingerprint(path);
-            if (!item.keeper.isEmpty()) item.keeperHash = fingerprint(item.keeper);
+            item.hash = previewHash(path);
+            if (!item.keeper.isEmpty()) item.keeperHash = previewHash(item.keeper);
             if (request.tool == "ps2pdf") {
                 QFile input(path);
                 if (!input.open(QIODevice::ReadOnly)) throw input.errorString();
@@ -332,6 +464,9 @@ QJsonObject PartsCore::describePlan(const ToolPlan &plan)
 
 QJsonObject PartsCore::applyTool(const ToolPlan &plan)
 {
+#ifdef Q_OS_WIN
+    if (plan.request.tool == "ptc-clean" && !plan.items.isEmpty()) return recycleWindows(plan);
+#endif
     QJsonArray completed, failed;
     if (plan.request.tool == "step-edit" && plan.request.fields.isEmpty()) throw QString("No STEP fields specified");
     for (const auto &item : plan.items) {

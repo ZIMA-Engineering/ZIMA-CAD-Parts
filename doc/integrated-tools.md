@@ -10,10 +10,13 @@ The original projects, installations and their saved settings are preserved.
 ## Common workflow
 
 1. Select a file or directory, options and whether to include subdirectories.
-2. Preview the affected files and skipped items, with reasons.
-3. Select items and use **Apply selected**. Confirmation shows the item count.
+2. Review the affected files and skipped items, with reasons. PTC-Cleaner
+   loads its list automatically; PDF and STEP tools use **Preview**.
+3. Select items and use **Clean** in PTC-Cleaner or **Apply selected** in the
+   other tools. Confirmation shows the item count.
 
-Changing options invalidates the preview. Before applying changes, the file
+Changing options invalidates the preview. PTC-Cleaner automatically refreshes
+it after a short typing pause; the other tools require another **Preview**. Before applying changes, the file
 contents are checked again using SHA-256. The system directory `0000-index`,
 symlinks and junctions are excluded from traversal. Reading and execution
 run outside the UI thread. **Cancel** stops further work and terminates an
@@ -85,6 +88,18 @@ build has not been verified on the Windows workstation.
 
 ## PTC-Cleaner
 
+The dialog uses the directory from which it was opened in Parts. It has no
+source-path field, file/directory browse buttons or Preview button. The initial
+scan and rescans after changing recursion, revision rules or masks are automatic
+and read-only. Recursion, revision rules and masks are below the file list.
+**Clean** is enabled only for a completed list; it asks for confirmation before
+moving the checked files to the trash. Successfully removed files disappear
+from the list, leaving it empty when all candidates were cleaned. Unchecked
+files and failures remain available. Changing options immediately retires the
+old list. Each distinct file is hashed only once per scan, including a latest
+revision shared by many older revisions; apply still rechecks file contents. Prepared AI approvals keep their captured list
+and never trigger an automatic rescan.
+
 The number after the last dot is the revision. Groups are identified by the
 entire preceding name and directory: `part.v2.prt.2` and `part.v2.prt.10`
 belong together, while `part.v2.asm.3` has a separate group. The highest
@@ -92,6 +107,14 @@ number is retained. This rule applies to numeric extensions, not only CAD
 file types. Optional masks provide additional removal candidates, so they
 can also select the latest revision. `--patterns-only` disables revision
 comparison. Masks are case-sensitive, as in the original Cleaner.
+
+On Windows, Cleaner queues the checked files into one native Shell recycle
+operation on the worker thread. Each file is revalidated immediately before its
+move. A validation failure can stop the remaining batch; unprocessed files stay
+in the list. The Cleaner window is modeless, so the rest of Parts remains usable
+while it is open. Directory-cache and auto-index notifications for the affected
+tree are suspended during the batch and reconciled once when it ends; unrelated
+directories continue updating. Closing a busy Cleaner requests cancellation.
 
 Cleaner moves files to the system trash. If trash is unavailable, it reports
 an error and does not fall back to permanent deletion. The

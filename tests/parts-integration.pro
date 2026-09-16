@@ -24,3 +24,6 @@ LIBS += $$APP_OBJECTS
 PRE_TARGETDEPS += $$APP_OBJECTS
 INCLUDEPATH += $$PARTS_OBJECTS_DIR/..
 INCLUDEPATH += ..
+
+# Windows PTC Cleaner uses one native Shell recycle operation per selection.
+win32:LIBS += -lole32 -lshell32 -luuid

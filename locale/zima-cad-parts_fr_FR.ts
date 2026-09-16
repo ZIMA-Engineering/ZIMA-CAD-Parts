@@ -1689,200 +1689,215 @@ Ces paramètres s’appliquent uniquement à ce dossier ; les sous-dossiers n’
 <context>
     <name>PartsToolsDialog</name>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="18"/>
+        <location filename="../src/partstoolsdialog.cpp" line="20"/>
         <source>PostScript to PDF</source>
         <translation>PostScript vers PDF</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="19"/>
+        <location filename="../src/partstoolsdialog.cpp" line="21"/>
         <source>Clean PTC files</source>
         <translation>Nettoyer les fichiers PTC</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="20"/>
+        <location filename="../src/partstoolsdialog.cpp" line="22"/>
         <source>Edit STEP header</source>
         <translation>Modifier l’en-tête STEP</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="35"/>
+        <location filename="../src/partstoolsdialog.cpp" line="38"/>
         <source>File...</source>
         <translation>Fichier…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="36"/>
-        <location filename="../src/partstoolsdialog.cpp" line="56"/>
+        <location filename="../src/partstoolsdialog.cpp" line="39"/>
+        <location filename="../src/partstoolsdialog.cpp" line="61"/>
         <source>Directory...</source>
         <translation>Dossier…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="38"/>
+        <location filename="../src/partstoolsdialog.cpp" line="41"/>
         <source>Source</source>
         <translation>Source</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="48"/>
+        <location filename="../src/partstoolsdialog.cpp" line="52"/>
         <source>Include subdirectories</source>
         <translation>Inclure les sous-dossiers</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="53"/>
+        <location filename="../src/partstoolsdialog.cpp" line="58"/>
         <source>Beside each source file</source>
         <translation>À côté de chaque fichier source</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="58"/>
-        <location filename="../src/partstoolsdialog.cpp" line="61"/>
+        <location filename="../src/partstoolsdialog.cpp" line="63"/>
+        <location filename="../src/partstoolsdialog.cpp" line="66"/>
         <source>Output directory</source>
         <translation>Dossier de sortie</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="62"/>
+        <location filename="../src/partstoolsdialog.cpp" line="67"/>
         <source>Existing PDFs are kept. PLT input must contain PostScript.</source>
         <translation>Les PDF existants sont conservés. Les fichiers PLT doivent contenir du PostScript.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="64"/>
+        <location filename="../src/partstoolsdialog.cpp" line="69"/>
         <source>Ghostscript is missing. Repair the Parts runtime package.</source>
         <translation>Ghostscript est absent. Réparez le paquet d’exécution de Parts.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="66"/>
+        <location filename="../src/partstoolsdialog.cpp" line="71"/>
         <source>Remove old numbered versions; keep the highest number</source>
         <translation>Supprimer les anciennes versions numérotées ; conserver le numéro le plus élevé</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="71"/>
+        <location filename="../src/partstoolsdialog.cpp" line="78"/>
         <source>Additional removal masks (semicolon separated)</source>
         <translation>Masques de suppression supplémentaires (séparés par un point-virgule)</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="72"/>
+        <location filename="../src/partstoolsdialog.cpp" line="79"/>
         <source>Selected files go to the trash. Directory locks are respected.</source>
         <translation>Les fichiers sélectionnés vont dans la corbeille. Les verrouillages des dossiers sont respectés.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <location filename="../src/partstoolsdialog.cpp" line="82"/>
         <source>File name</source>
         <translation>Nom du fichier</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <location filename="../src/partstoolsdialog.cpp" line="82"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <location filename="../src/partstoolsdialog.cpp" line="82"/>
         <source>Author</source>
         <translation>Auteur</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <location filename="../src/partstoolsdialog.cpp" line="82"/>
         <source>Organization</source>
         <translation>Organisation</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="76"/>
+        <location filename="../src/partstoolsdialog.cpp" line="83"/>
         <source>Preprocessor</source>
         <translation>Préprocesseur</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="76"/>
+        <location filename="../src/partstoolsdialog.cpp" line="83"/>
         <source>Originating system</source>
         <translation>Système d’origine</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="76"/>
+        <location filename="../src/partstoolsdialog.cpp" line="83"/>
         <source>Authorization</source>
         <translation>Autorisation</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="85"/>
+        <location filename="../src/partstoolsdialog.cpp" line="92"/>
         <source>Check only fields to change. Originals are backed up in 0000-index/tool-backups.</source>
         <translation>Cochez uniquement les champs à modifier. Les originaux sont sauvegardés dans 0000-index/tool-backups.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="90"/>
+        <location filename="../src/partstoolsdialog.cpp" line="97"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="90"/>
+        <location filename="../src/partstoolsdialog.cpp" line="97"/>
         <source>Result / reason</source>
         <translation>Résultat / motif</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="94"/>
+        <location filename="../src/partstoolsdialog.cpp" line="103"/>
+        <source>Choose files to clean. The list updates automatically.</source>
+        <translation>Sélectionnez les fichiers à nettoyer. La liste se met à jour automatiquement.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="104"/>
         <source>Preview the operation, then choose files to apply.</source>
         <translation>Affichez l’aperçu, puis sélectionnez les fichiers à traiter.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="98"/>
+        <location filename="../src/partstoolsdialog.cpp" line="108"/>
         <source>Select all</source>
         <translation>Tout sélectionner</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="99"/>
+        <location filename="../src/partstoolsdialog.cpp" line="109"/>
         <source>Select none</source>
         <translation>Tout désélectionner</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="101"/>
+        <location filename="../src/partstoolsdialog.cpp" line="112"/>
         <source>Preview</source>
         <translation>Aperçu</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="103"/>
+        <location filename="../src/partstoolsdialog.cpp" line="116"/>
         <source>Apply selected</source>
         <translation>Appliquer à la sélection</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="105"/>
-        <location filename="../src/partstoolsdialog.cpp" line="222"/>
+        <location filename="../src/partstoolsdialog.cpp" line="116"/>
+        <source>Clean</source>
+        <translation>Nettoyer</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="119"/>
+        <location filename="../src/partstoolsdialog.cpp" line="269"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="126"/>
+        <location filename="../src/partstoolsdialog.cpp" line="150"/>
         <source>Cancelling...</source>
         <translation>Annulation…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="160"/>
+        <location filename="../src/partstoolsdialog.cpp" line="196"/>
         <source>Allow selected</source>
         <translation>Autoriser la sélection</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="163"/>
+        <location filename="../src/partstoolsdialog.cpp" line="199"/>
         <source>Deny</source>
         <translation>Refuser</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="209"/>
+        <location filename="../src/partstoolsdialog.cpp" line="248"/>
+        <source>Move %1 selected files to the trash?</source>
+        <translation>Déplacer les %1 fichiers sélectionnés vers la corbeille ?</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="249"/>
         <source>Apply this operation to %1 selected files?</source>
         <translation>Appliquer cette opération aux %1 fichiers sélectionnés ?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="218"/>
+        <location filename="../src/partstoolsdialog.cpp" line="261"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="218"/>
+        <location filename="../src/partstoolsdialog.cpp" line="261"/>
         <source>Working...</source>
         <translation>Traitement…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="235"/>
+        <location filename="../src/partstoolsdialog.cpp" line="307"/>
         <source>Completed: %1. Failed: %2. Skipped: %3.</source>
         <translation>Terminés : %1. Échecs : %2. Ignorés : %3.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="173"/>
+        <location filename="../src/partstoolsdialog.cpp" line="209"/>
         <source>Keep: %1</source>
         <translation>Conserver : %1</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="183"/>
+        <location filename="../src/partstoolsdialog.cpp" line="219"/>
         <source>Ready: %1. Skipped: %2.</source>
         <translation>Prêts : %1. Ignorés : %2.</translation>
     </message>

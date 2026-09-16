@@ -18,3 +18,6 @@ SOURCES += src/core/partsupdatecommand.cpp
 HEADERS += src/core/partsupdatecommand.h
 SOURCES += src/update/installationclient.cpp
 HEADERS += src/update/installationclient.h
+
+# Windows PTC Cleaner uses one native Shell recycle operation per selection.
+win32:LIBS += -lole32 -lshell32 -luuid

@@ -17,6 +17,8 @@ public:
     void clear(const QString &dir);
     void clearBelow(const QString &path);
     void renameDirectory(const QString &oldDir, const QString &newDir);
+    void beginFileChanges(const QString &directory);
+    void endFileChanges(const QString &directory);
 
 signals:
     void directoryOperationStarted(const QString &path);
@@ -31,6 +33,7 @@ signals:
 private:
     static PartCache *m_instance;
     QHash<QString, QFileInfoList> m_parts;
+    QHash<QString, int> m_fileChanges;
     QFileSystemWatcher m_fsWatcher;
 
     PartCache();

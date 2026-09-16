@@ -623,12 +623,195 @@ private slots:
         PartsToolsDialog dialog("ptc-clean", dir.path());
         dialog.show();
         auto apply = dialog.findChild<QPushButton *>("toolApply");
+        auto files = dialog.findChild<QTreeWidget *>("toolFiles");
+        auto old = dialog.findChild<QCheckBox *>("toolCleanOld");
+        QVERIFY(!dialog.findChild<QPushButton *>("toolPreview"));
+        QVERIFY(!dialog.findChild<QLineEdit *>("toolPath"));
+        QCOMPARE(apply->text(), QString("Clean"));
         QVERIFY(!apply->isEnabled());
-        QTest::mouseClick(dialog.findChild<QPushButton *>("toolPreview"), Qt::LeftButton);
         QTRY_VERIFY(apply->isEnabled());
-        QCOMPARE(dialog.findChild<QTreeWidget *>("toolFiles")->topLevelItemCount(), 1);
-        dialog.findChild<QLineEdit *>("toolPath")->setText(dir.path() + "/other");
+        QCOMPARE(files->topLevelItemCount(), 1);
+        QCOMPARE(files->topLevelItem(0)->text(0), dir.filePath("part.prt.1"));
+        old->setChecked(false);
         QVERIFY(!apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 0);
+        QTRY_VERIFY(old->isEnabled() && !apply->isEnabled());
+        old->setChecked(true);
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 1);
+        QVERIFY(QFileInfo::exists(dir.filePath("part.prt.1")));
+        QVERIFY(QFileInfo::exists(dir.filePath("part.prt.10")));
+    }
+
+    void cleanerAutomaticallyRefreshesMasksAndRecursion()
+    {
+        QTemporaryDir dir;
+        touch(dir.path(), "root.prt.1"); touch(dir.path(), "root.prt.2");
+        touch(dir.path(), "trail.log");
+        QVERIFY(QDir(dir.path()).mkdir("child"));
+        touch(dir.filePath("child"), "child.prt.1");
+        touch(dir.filePath("child"), "child.prt.2");
+        PartsToolsDialog dialog("ptc-clean", dir.path());
+        dialog.show();
+        auto apply = dialog.findChild<QPushButton *>("toolApply");
+        auto files = dialog.findChild<QTreeWidget *>("toolFiles");
+        auto masks = dialog.findChild<QLineEdit *>("toolCleanMasks");
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 1);
+        dialog.findChild<QCheckBox *>("toolRecursive")->setChecked(true);
+        QVERIFY(!apply->isEnabled());
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 2);
+        masks->setText("*");
+        masks->setText("*.log");
+        QVERIFY(!apply->isEnabled());
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 3);
+        for (int i = 0; i < files->topLevelItemCount(); ++i)
+            QVERIFY(!files->topLevelItem(i)->text(0).endsWith(".2"));
+        masks->clear();
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 2);
+        QVERIFY(QFileInfo::exists(dir.filePath("root.prt.1")));
+        QVERIFY(QFileInfo::exists(dir.filePath("child/child.prt.1")));
+        QVERIFY(QFileInfo::exists(dir.filePath("trail.log")));
+    }
+
+    void cleanerRemovesOnlyCompletedRows()
+    {
+        QTemporaryDir dir;
+        touch(dir.path(), "first.prt.1"); touch(dir.path(), "first.prt.2");
+        touch(dir.path(), "second.prt.1"); touch(dir.path(), "second.prt.2");
+        PartsToolsDialog dialog("ptc-clean", dir.path());
+        dialog.show();
+        auto apply = dialog.findChild<QPushButton *>("toolApply");
+        auto files = dialog.findChild<QTreeWidget *>("toolFiles");
+        QSignalSpy changed(&dialog, &PartsToolsDialog::filesChanged);
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 2);
+        files->topLevelItem(1)->setCheckState(0, Qt::Unchecked);
+        const auto confirm = [&dialog] {
+            auto box = dialog.findChild<QMessageBox *>();
+            QVERIFY(box);
+            QCOMPARE(box->text(), QString("Move 1 selected files to the trash?"));
+            QTest::mouseClick(box->button(QMessageBox::Yes), Qt::LeftButton);
+        };
+        QTimer::singleShot(0, &dialog, confirm);
+        apply->click();
+        QTRY_COMPARE(changed.count(), 1);
+        QCOMPARE(files->topLevelItemCount(), 1);
+        QCOMPARE(files->topLevelItem(0)->checkState(0), Qt::Unchecked);
+        QVERIFY(!QFileInfo::exists(dir.filePath("first.prt.1")));
+        QVERIFY(QFileInfo::exists(dir.filePath("first.prt.2")));
+        QVERIFY(QFileInfo::exists(dir.filePath("second.prt.1")));
+        files->topLevelItem(0)->setCheckState(0, Qt::Checked);
+        QTimer::singleShot(0, &dialog, confirm);
+        apply->click();
+        QTRY_COMPARE(changed.count(), 2);
+        QCOMPARE(files->topLevelItemCount(), 0);
+        QVERIFY(!apply->isEnabled());
+        QVERIFY(!QFileInfo::exists(dir.filePath("second.prt.1")));
+        QVERIFY(QFileInfo::exists(dir.filePath("second.prt.2")));
+    }
+
+    void cleanerKeepsFailedRowsAndShowsOptionsBelowFiles()
+    {
+        QTemporaryDir dir;
+        touch(dir.path(), "part.prt.1"); touch(dir.path(), "part.prt.2");
+        PartsToolsDialog dialog("ptc-clean", dir.path());
+        dialog.show();
+        auto apply = dialog.findChild<QPushButton *>("toolApply");
+        auto files = dialog.findChild<QTreeWidget *>("toolFiles");
+        QTRY_VERIFY(apply->isEnabled());
+        auto recursive = dialog.findChild<QCheckBox *>("toolRecursive");
+        QVERIFY(recursive->mapTo(&dialog, QPoint()).y() > files->geometry().bottom());
+        QFile changed(dir.filePath("part.prt.1"));
+        QVERIFY(changed.open(QIODevice::Append)); changed.write("changed"); changed.close();
+        QTimer::singleShot(0, &dialog, [&dialog] {
+            auto box = dialog.findChild<QMessageBox *>();
+            QVERIFY(box);
+            QTest::mouseClick(box->button(QMessageBox::Yes), Qt::LeftButton);
+        });
+        apply->click();
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 1);
+        QVERIFY(files->topLevelItem(0)->text(1).contains("File changed since preview"));
+        QVERIFY(QFileInfo::exists(dir.filePath("part.prt.1")));
+    }
+
+    void cleanerCoalescesDirectoryRefreshes()
+    {
+        QTemporaryDir dir, other;
+        touch(dir.path(), "first.prt.1"); touch(dir.path(), "first.prt.2");
+        touch(other.path(), "other.prt.1");
+        auto cache = PartCache::get();
+        QCOMPARE(cache->count(dir.path()), 2);
+        QCOMPARE(cache->count(other.path()), 1);
+        QSignalSpy changed(cache, &PartCache::directoryChanged);
+        cache->beginFileChanges(dir.path());
+        cache->beginFileChanges(dir.path());
+        QVERIFY(QFile::remove(dir.filePath("first.prt.1")));
+        QVERIFY(QMetaObject::invokeMethod(cache, "onDirectoryChange", Q_ARG(QString, dir.path())));
+        QCOMPARE(cache->count(dir.path()), 2);
+        QVERIFY(changed.isEmpty());
+        touch(other.path(), "other.prt.2");
+        QVERIFY(QMetaObject::invokeMethod(cache, "onDirectoryChange", Q_ARG(QString, other.path())));
+        QCOMPARE(cache->count(other.path()), 2);
+        QCOMPARE(changed.count(), 1);
+        cache->endFileChanges(dir.path());
+        QCOMPARE(cache->count(dir.path()), 2);
+        cache->endFileChanges(dir.path());
+        QCOMPARE(cache->count(dir.path()), 1);
+        QCOMPARE(changed.count(), 2);
+        cache->clear(dir.path()); cache->clear(other.path());
+    }
+
+    void cleanerLocalizedLayout()
+    {
+        QTemporaryDir dir;
+        touch(dir.path(), "hydraulic_block.prt.1"); touch(dir.path(), "hydraulic_block.prt.12");
+        applyApplicationLanguage("cs_CZ");
+        {
+            PartsToolsDialog dialog("ptc-clean", dir.path());
+            dialog.show();
+            auto apply = dialog.findChild<QPushButton *>("toolApply");
+            QTRY_VERIFY(apply->isEnabled());
+            QCOMPARE(apply->text(), QString::fromUtf8("Vyčistit"));
+            if (qEnvironmentVariableIsSet("PARTS_CLEANER_SCREENSHOT"))
+                QVERIFY(dialog.grab().save(qEnvironmentVariable("PARTS_CLEANER_SCREENSHOT")));
+        }
+        applyApplicationLanguage("en_US");
+    }
+
+    void cleanerPreparedReviewDoesNotRescan()
+    {
+        QTemporaryDir dir;
+        touch(dir.path(), "part.prt.1"); touch(dir.path(), "part.prt.2");
+        PartsCore::ToolRequest request; request.tool = "ptc-clean"; request.path = dir.path();
+        const auto plan = PartsCore::planTool(request);
+        QCOMPARE(plan.items.size(), 1);
+        touch(dir.path(), "other.prt.1"); touch(dir.path(), "other.prt.2");
+        PartsToolsDialog dialog("ptc-clean", dir.path());
+        dialog.setPreparedPlan(plan);
+        dialog.show();
+        QTest::qWait(350);
+        auto files = dialog.findChild<QTreeWidget *>("toolFiles");
+        QCOMPARE(files->topLevelItemCount(), 1);
+        QCOMPARE(files->topLevelItem(0)->text(0), dir.filePath("part.prt.1"));
+        QCOMPARE(dialog.findChild<QPushButton *>("toolApply")->text(), QString("Allow selected"));
+        QVERIFY(QFileInfo::exists(dir.filePath("part.prt.1")));
+    }
+
+    void otherToolDialogsKeepManualPreview()
+    {
+        QTemporaryDir dir;
+        PartsToolsDialog dialog("step-edit", dir.path());
+        dialog.show();
+        QVERIFY(dialog.findChild<QLineEdit *>("toolPath"));
+        QVERIFY(dialog.findChild<QPushButton *>("toolPreview")->isVisible());
+        QCOMPARE(dialog.findChild<QPushButton *>("toolApply")->text(), QString("Apply selected"));
+        QTest::qWait(350);
+        QVERIFY(!dialog.findChild<QPushButton *>("toolApply")->isEnabled());
         QCOMPARE(dialog.findChild<QTreeWidget *>("toolFiles")->topLevelItemCount(), 0);
     }
 

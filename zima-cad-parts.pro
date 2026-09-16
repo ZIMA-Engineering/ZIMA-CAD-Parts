@@ -417,3 +417,6 @@ SOURCES += src/ai/aitools.cpp src/ai/codexprovider.cpp src/ai/aisettingspage.cpp
 SOURCES += src/ai/systemcommanddialog.cpp
 HEADERS += src/ai/systemcommanddialog.h
 HEADERS += src/ai/aitools.h src/ai/aiprovider.h src/ai/codexprovider.h src/ai/aisettingspage.h
+
+# Windows PTC Cleaner uses one native Shell recycle operation per selection.
+win32:LIBS += -lole32 -lshell32 -luuid

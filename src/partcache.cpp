@@ -6,6 +6,20 @@
 #include <QSet>
 #include <QDebug>
 
+namespace {
+bool coversDirectory(const QString &root, const QString &path)
+{
+#ifdef Q_OS_WIN
+    const auto sensitivity = Qt::CaseInsensitive;
+#else
+    const auto sensitivity = Qt::CaseSensitive;
+#endif
+    const auto directory = QDir::cleanPath(root);
+    const auto candidate = QDir::cleanPath(path);
+    return candidate.compare(directory, sensitivity) == 0
+        || candidate.startsWith(directory.endsWith('/') ? directory : directory + '/', sensitivity);
+}
+}
 PartCache* PartCache::m_instance = nullptr;
 
 PartCache *PartCache::get()
@@ -143,8 +157,28 @@ void PartCache::processDiff(const QString &dir, const QFileInfoList &newFiles)
     }
 }
 
+void PartCache::beginFileChanges(const QString &directory)
+{
+    const auto path = QDir::cleanPath(directory);
+    if (++m_fileChanges[path] == 1) emit directoryOperationStarted(path);
+}
+
+void PartCache::endFileChanges(const QString &directory)
+{
+    const auto path = QDir::cleanPath(directory);
+    auto found = m_fileChanges.find(path);
+    if (found == m_fileChanges.end() || --found.value() > 0) return;
+    m_fileChanges.erase(found);
+    const auto cached = m_parts.keys();
+    for (const auto &entry : cached)
+        if (coversDirectory(path, entry)) onDirectoryChange(entry);
+    emit directoryOperationFinished(path, path);
+}
+
 void PartCache::onDirectoryChange(const QString &path)
 {
+    for (auto it = m_fileChanges.cbegin(); it != m_fileChanges.cend(); ++it)
+        if (coversDirectory(it.key(), path)) return;
     if (!m_parts.contains(path))
         return;
 

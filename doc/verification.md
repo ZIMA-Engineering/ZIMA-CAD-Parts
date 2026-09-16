@@ -1,5 +1,27 @@
 # Build verification
 
+## Windows: PTC Cleaner revision 2026091601, September 16, 2026
+
+The complete local GUI and CLI were rebuilt with Qt 6.10.1 and MSVC x64.
+Verification of automatic preview, the simplified Czech layout, option changes,
+completed/unchecked/failed rows, captured AI approvals, unchanged PDF/STEP
+controls and coalesced directory notifications passed:
+
+- **51 integration tests passed**, with no failures or skips.
+- **9 built-in tool CLI tests and 4 read-only CLI tests passed**.
+- All four translation catalogs passed validation with **558 complete messages**.
+- The Czech Cleaner window was rendered and visually inspected.
+- A Windows benchmark recycling 128 small temporary old revisions took
+  **7.145 seconds before** and **1.842 seconds after** batch recycling. Both runs
+  preserved the latest revision. This is a workstation fixture result, not a
+  guarantee for other drives, file sizes or network storage.
+
+Run GUI integration beside the deployed runtime as described below. Executing
+directly from the build directory first missed WebEngine resources, Qt standard
+translations and SVG plugins; the complete deployed-runtime run passed.
+The user's example project was inspected read-only; deletion checks used only
+temporary fixtures. Linux execution has not been verified for this change.
+
 ## Windows: verified September 15, 2026
 
 The complete GUI, CLI, updater and integration test projects were built with
