@@ -2,6 +2,18 @@
 
 ## Windows: PTC Cleaner revision 2026091601, September 16, 2026
 
+The signed Windows release was built from clean commit
+`53484737ddccf9f3fbd3c8d1014d5ed065ad7fe3`. Its final ZIP is **316,779,015 bytes**
+and passed Ed25519, ZIP CRC, all 1,477 file-checksum checks,
+all 564 committed-source comparisons, binary matching and
+startup probes with development directories removed from PATH. The production
+updater reports version **2026091601**, `trusted: true`, and idle status.
+
+The packaged runtime passed **51 integration tests**, **9 built-in tool tests**,
+**4 read-only CLI tests**, **4 distribution tests**, and all four translation
+catalog checks. Archive SHA-256:
+`4d35512e51bb1de5b73ddaa94b43698b968307847ed6cfa45b8c3e9462efdbb6`.
+
 The complete local GUI and CLI were rebuilt with Qt 6.10.1 and MSVC x64.
 Verification of automatic preview, the simplified Czech layout, option changes,
 completed/unchecked/failed rows, captured AI approvals, unchanged PDF/STEP
