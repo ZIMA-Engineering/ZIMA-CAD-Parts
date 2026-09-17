@@ -1,5 +1,14 @@
 # Build verification
 
+## Signed Linux acceptance completed (2026-09-17)
+
+Version 2026091701 passed signing, packaged bootstrap trust and native Debian
+13.6 KDE/Wayland acceptance, including web/PDF, system credentials across
+processes, STEP/OpenGL rendering and relocation with isolated profiles.
+See [release acceptance and exact test scope](releases/2026091701.md).
+Earlier unsigned/pending statements below describe historical checks.
+
+
 ## Debian 13: candidate 2026091701, September 17, 2026
 
 Built GUI, CLI, production updater and test helpers with GCC 14.2 and Qt 6.8.2

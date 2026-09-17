@@ -1,5 +1,14 @@
 # Debian distribution: Linux candidate
 
+## Signed Linux acceptance completed (2026-09-17)
+
+Version 2026091701 passed signing, packaged bootstrap trust and native Debian
+13.6 KDE/Wayland acceptance, including web/PDF, system credentials across
+processes, STEP/OpenGL rendering and relocation with isolated profiles.
+See [release acceptance and exact test scope](releases/2026091701.md).
+Earlier unsigned/pending statements below describe historical checks.
+
+
 The target environment is Debian 13 (trixie), amd64. See
 [Debian Releases](https://www.debian.org/releases/) for release information.
 Qt Wayland and image plugins are installed by the package manager during

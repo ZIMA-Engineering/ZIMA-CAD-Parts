@@ -1,5 +1,14 @@
 # GitHub updates
 
+## Signed Linux acceptance completed (2026-09-17)
+
+Version 2026091701 passed signing, packaged bootstrap trust and native Debian
+13.6 KDE/Wayland acceptance, including web/PDF, system credentials across
+processes, STEP/OpenGL rendering and relocation with isolated profiles.
+See [release acceptance and exact test scope](releases/2026091701.md).
+Earlier unsigned/pending statements below describe historical checks.
+
+
 ZIMA-CAD-Parts checks for published updates in the background after startup.
 The owner starts installation from **Settings > Updates** and confirms it.
 The download, verification, normal shutdown, activation and restart then run
