@@ -222,8 +222,8 @@ installation from Settings after confirmation, signed release assets,
 rollback and two-version retention. Windows implementation and fixture tests
 are available; Debian runtime verification remains pending.
 
-[Debian packaging](doc/debian-distribution.md) is prepared for Debian 13 CI;
-Linux runtime validation is still pending. Windows packages now use a native
+[Debian packaging](doc/debian-distribution.md) has a locally built Debian 13
+candidate; signing and clean-machine runtime acceptance remain pending. Windows packages now use a native
 root EXE launcher without a PowerShell dependency.
 
 ## Command line and built-in tools

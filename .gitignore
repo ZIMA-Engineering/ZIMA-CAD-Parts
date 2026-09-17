@@ -8,6 +8,10 @@ locale/*.qm
 moc_*.cpp
 moc_*.h
 qrc_*.cpp
+/.qm/
+/qmake_qmake_qm_files.qrc
+/kwallet_interface.cpp
+/kwallet_interface.h
 ui_*.h
 
 .build-*/

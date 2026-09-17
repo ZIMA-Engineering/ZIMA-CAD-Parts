@@ -191,9 +191,9 @@ void chooseEngine(const QString &root, const QString &version)
     const auto path = child(root, ".updates/engine.ini");
     QSettings old(path, QSettings::IniFormat);
     auto windows = old.value("updater/windows").toString();
-    auto linux = old.value("updater/linux").toString();
-    (platformDirectory() == "windows" ? windows : linux) = version;
-    writeFile(path, ("[updater]\nwindows=" + windows + "\nlinux=" + linux + "\n").toUtf8());
+    auto linuxVersion = old.value("updater/linux").toString();
+    (platformDirectory() == "windows" ? windows : linuxVersion) = version;
+    writeFile(path, ("[updater]\nwindows=" + windows + "\nlinux=" + linuxVersion + "\n").toUtf8());
 }
 bool running(qint64 pid)
 {

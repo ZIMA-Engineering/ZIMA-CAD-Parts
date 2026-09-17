@@ -1,5 +1,27 @@
 # Build verification
 
+## Debian 13: candidate 2026091701, September 17, 2026
+
+Built GUI, CLI, production updater and test helpers with GCC 14.2 and Qt 6.8.2
+on Debian 13 amd64, with system OCCT and libsecret enabled. The root GUI build
+used `qmake6 zima-cad-parts.pro && make -j$(nproc)`.
+
+- 51 GUI integration checks passed using the offscreen Qt platform.
+- 4 CLI checks, 9 built-in tool checks and 18 isolated updater checks passed.
+- Distribution checks: 3 passed, 1 Windows-only check skipped.
+- All four application catalogs passed with 558 complete translations each.
+- The repaired context-menu fixture also passed on native Wayland.
+- The portable package launcher check, GUI build-info and CLI/updater version
+  probes passed. A 15-second KDE/Wayland GUI startup probe stayed running until
+  the intentional timeout, without disabling the WebEngine sandbox.
+
+An initial complete Wayland test run found the Russian standard Qt Cancel
+button in English with the KDE platform theme; application catalog checks
+passed. Clean-machine PDF/web, credentials, relocation and signed update
+acceptance remain pending. The candidate is an unsigned GitHub draft, not a
+stable automatic update. Dependency-license inventory and publisher signing
+must be completed before public release.
+
 ## Windows: PTC Cleaner revision 2026091601, September 16, 2026
 
 The signed Windows release was built from clean commit

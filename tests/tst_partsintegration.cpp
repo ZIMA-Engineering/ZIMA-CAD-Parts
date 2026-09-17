@@ -361,7 +361,9 @@ private slots:
         QTimer::singleShot(0, &widget, [&widget] {
             auto menu = qobject_cast<QMenu *>(QApplication::activePopupWidget()); QVERIFY(menu);
             auto action = menu->findChild<QAction *>("addToAiQuestion"); QVERIFY(action);
-            QTest::mouseClick(menu, Qt::LeftButton, Qt::NoModifier, menu->actionGeometry(action).center());
+            // Native popup positioning can still be pending on Wayland.
+            menu->setActiveAction(action);
+            QTest::keyClick(menu, Qt::Key_Return);
         });
         QVERIFY(QMetaObject::invokeMethod(&widget, "showDataSourceContextMenu", Q_ARG(int, 0), Q_ARG(QPoint, widget.mapToGlobal(QPoint(20, 20)))));
         QCOMPARE(requests.size(), 2); QCOMPARE(requests.last()[0].toStringList(), QStringList{root.path()});

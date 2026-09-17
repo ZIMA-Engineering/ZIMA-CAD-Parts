@@ -20,7 +20,8 @@ SOURCES += tst_partsintegration.cpp
 isEmpty(PARTS_OBJECTS_DIR): error("Pass PARTS_OBJECTS_DIR pointing to the application's release objects")
 APP_OBJECTS = $$files($$PARTS_OBJECTS_DIR/*.obj) $$files($$PARTS_OBJECTS_DIR/*.o)
 APP_OBJECTS -= $$PARTS_OBJECTS_DIR/zima-cad-parts.obj $$PARTS_OBJECTS_DIR/zima-cad-parts.o
-LIBS += $$APP_OBJECTS
+# GNU ld needs application objects before the libraries resolving their symbols.
+LIBS = $$APP_OBJECTS $$LIBS
 PRE_TARGETDEPS += $$APP_OBJECTS
 INCLUDEPATH += $$PARTS_OBJECTS_DIR/..
 INCLUDEPATH += ..

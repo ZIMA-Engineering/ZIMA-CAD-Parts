@@ -1,4 +1,4 @@
-# Debian distribution: awaiting verification
+# Debian distribution: Linux candidate
 
 The target environment is Debian 13 (trixie), amd64. See
 [Debian Releases](https://www.debian.org/releases/) for release information.
@@ -8,10 +8,12 @@ the build. Relevant packages are
 [qt6-svg-plugins](https://packages.debian.org/trixie/qt6-svg-plugins) and
 [qt6-image-formats-plugins](https://packages.debian.org/trixie/qt6-image-formats-plugins).
 
-**Status:** the Windows workstation has neither WSL nor Docker. The script
-and build have not been run on Debian, and no verified Linux binary is
-available yet. The new CI workflow targets Debian 13 to build and prepare
-an experimental archive; it does not replace KDE/Wayland runtime tests.
+**Status (September 17, 2026):** version 2026091701 builds on Debian 13
+amd64 with Qt 6.8.2 and system OCCT. The GUI, CLI and updater are bundled,
+and a local KDE/Wayland startup probe passed with the WebEngine sandbox enabled.
+The GitHub draft contains an unsigned Linux candidate, not a stable automatic
+update. Publisher signing, a complete dependency-license inventory and clean
+Debian acceptance remain pending. See [verification](verification.md).
 
 ## Build
 
