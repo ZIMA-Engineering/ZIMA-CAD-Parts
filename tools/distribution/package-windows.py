@@ -17,6 +17,7 @@ import io
 import tarfile
 
 ROOT = Path(__file__).resolve().parents[2]
+SUPPORTED_QT_LANGUAGES = ('en', 'cs', 'de', 'fr', 'ru')
 
 
 def run(*args, cwd=ROOT):
@@ -75,10 +76,23 @@ def export_clean_sources(destination, repository=ROOT, prefix=Path()):
             export_clean_sources(destination, submodule, prefix / name)
 
 
+def copy_qt_translations(qt, destination):
+    """Deploy the Qt base catalogs required by the supported UI languages."""
+    source = qt / 'translations'
+    target = destination / 'translations'
+    target.mkdir(parents=True, exist_ok=True)
+    for language in SUPPORTED_QT_LANGUAGES:
+        catalog = source / f'qtbase_{language}.qm'
+        if not catalog.is_file():
+            raise RuntimeError(f'Missing Qt base translation: {catalog.name}')
+        shutil.copy2(catalog, target / catalog.name)
+
+
 def copy_runtime(executable, destination, qt, occt):
     shutil.copy2(executable, destination / executable.name)
     subprocess.run([str(qt / 'bin/windeployqt.exe'), '--release', '--force',
                     '--compiler-runtime', str(destination / executable.name)], check=True)
+    copy_qt_translations(qt, destination)
     redist = os.environ.get('VCToolsRedistDir')
     crt_dirs = list((Path(redist) / 'x64').glob('Microsoft.VC*.CRT')) if redist else []
     if len(crt_dirs) != 1:

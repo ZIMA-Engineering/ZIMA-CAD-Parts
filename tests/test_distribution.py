@@ -16,6 +16,23 @@ spec.loader.exec_module(package)
 
 
 class PackagingTests(unittest.TestCase):
+    def test_windows_package_includes_supported_qt_base_translations(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            qt = root / 'qt'
+            destination = root / 'runtime'
+            (qt / 'translations').mkdir(parents=True)
+            for language in package.SUPPORTED_QT_LANGUAGES:
+                (qt / 'translations' / f'qtbase_{language}.qm').write_bytes(language.encode())
+            package.copy_qt_translations(qt, destination)
+            self.assertEqual(
+                {path.name for path in (destination / 'translations').iterdir()},
+                {f'qtbase_{language}.qm' for language in package.SUPPORTED_QT_LANGUAGES})
+
+            (qt / 'translations/qtbase_ru.qm').unlink()
+            with self.assertRaises(RuntimeError):
+                package.copy_qt_translations(qt, destination)
+
     def test_version_rejects_invalid_dates_and_sequence(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

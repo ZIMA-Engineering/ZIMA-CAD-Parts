@@ -98,6 +98,9 @@ Source headers specify `GPL-3.0-or-later`. Other notices are in the runtime's
 `licenses/` directory. Ghostscript retains its own license and corresponding
 source archive under `tools/ghostscript`.
 
+The Windows runtime includes the Qt base translation catalogs for every
+supported UI language so standard Qt controls follow the selected language.
+
 ## Verification
 
 Launcher and export checks:
