@@ -106,6 +106,10 @@ Their previews, `--apply` execution and file modification rules are described
 in the [tools documentation](integrated-tools.md). The read-only guarantees
 above apply to `list` and `params`, not to tool execution.
 
+For `ps2pdf`, `--output-dir` accepts an absolute path or a path relative to the
+selected source directory. `--delete-source` removes a source only after its
+new or replaced PDF has been saved successfully.
+
 ## Updates
 
 `update check`, `update download --target YYYYMMDDNN`, `update status`,

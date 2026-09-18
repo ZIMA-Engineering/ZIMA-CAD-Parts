@@ -327,7 +327,7 @@ void DataSourceView::showContextMenu(const QPoint &point)
         auto action = menu->addAction(QIcon(":/gfx/external_programs/" + icon + ".png"), PartsToolsDialog::title(tool));
         const auto directory = currentFileInfo().absoluteFilePath();
         connect(action, &QAction::triggered, this, [this, tool, directory] {
-            if (tool == "ptc-clean") {
+            if (tool == "ptc-clean" || tool == "ps2pdf") {
                 auto dialog = new PartsToolsDialog(tool, directory, this);
                 dialog->setAttribute(Qt::WA_DeleteOnClose);
                 connect(dialog, &PartsToolsDialog::filesChanged, this, [this, directory] { emit directoryChanged(directory); });

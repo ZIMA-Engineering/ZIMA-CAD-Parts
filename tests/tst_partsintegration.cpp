@@ -817,6 +817,29 @@ private slots:
         QCOMPARE(dialog.findChild<QTreeWidget *>("toolFiles")->topLevelItemCount(), 0);
     }
 
+    void pdfDialogUsesAutomaticCleanerStyleWorkflow()
+    {
+        QTemporaryDir dir;
+        QFile source(dir.filePath("drawing.ps"));
+        QVERIFY(source.open(QIODevice::WriteOnly));
+        source.write("%!PS-Adobe-3.0\nshowpage\n");
+        source.close();
+        PartsToolsDialog dialog("ps2pdf", dir.path());
+        dialog.show();
+        QVERIFY(!dialog.findChild<QLineEdit *>("toolPath"));
+        QVERIFY(!dialog.findChild<QPushButton *>("toolPreview"));
+        auto output = dialog.findChild<QLineEdit *>("toolOutputDirectory");
+        auto remove = dialog.findChild<QCheckBox *>("toolDeleteSources");
+        auto files = dialog.findChild<QTreeWidget *>("toolFiles");
+        QVERIFY(output); QVERIFY(remove); QVERIFY(files);
+        QCOMPARE(output->text(), QString("pdf"));
+        QVERIFY(!remove->isChecked());
+        QCOMPARE(dialog.findChild<QPushButton *>("toolApply")->text(), QString("Create PDF"));
+        QVERIFY(output->mapTo(&dialog, QPoint()).y() > files->geometry().bottom());
+        QTRY_COMPARE(files->topLevelItemCount(), 1);
+        QCOMPARE(files->topLevelItem(0)->text(1), dir.filePath("pdf/drawing.pdf"));
+    }
+
     void commandPanelUsesCapturedContextAndHistory()
     {
         QTemporaryDir first;

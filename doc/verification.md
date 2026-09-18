@@ -1,5 +1,25 @@
 # Build verification
 
+## Windows: PS2PDF release 2026091801, September 18, 2026
+
+The GUI, CLI, updater and integration-test projects were rebuilt with Qt
+6.10.1, MSVC x64 and Open CASCADE 8.0.0 after the PS2PDF workflow update.
+
+- Five focused CLI tests passed with real Ghostscript. They cover replacing an
+  existing PDF, preserving it when conversion fails, creating the relative
+  `pdf` output directory, deleting a source only after success and rejecting
+  conflicting destinations or non-PostScript PLT data.
+- The dedicated GUI integration check passed for automatic list loading, the
+  Cleaner-style layout, the default `pdf` path, the source-deletion checkbox
+  and the **Create PDF** action.
+- All four translation catalogs passed with 563 complete messages each.
+
+The complete tool test run passed every PS2PDF and STEP check. Its existing
+PTC-Cleaner recycle-bin case could not use the Windows system trash inside the
+restricted test environment. A complete GUI run from the bare build directory
+also lacked deployed application resources for unrelated WebEngine, icon,
+language and Cleaner checks; the focused PS2PDF GUI check passed independently.
+
 ## Debian 13: candidate 2026091701, September 17, 2026
 
 Built GUI, CLI, production updater and test helpers with GCC 14.2 and Qt 6.8.2

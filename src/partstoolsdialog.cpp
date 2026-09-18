@@ -31,7 +31,8 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
     auto layout = new QVBoxLayout(this);
     m_options = new QWidget(this);
     auto form = new QFormLayout(m_options);
-    if (tool != "ptc-clean") {
+    const bool automaticTool = tool == "ptc-clean" || tool == "ps2pdf";
+    if (!automaticTool) {
         auto sourceRow = new QHBoxLayout;
         m_path = new QLineEdit(path, this);
         m_path->setObjectName("toolPath");
@@ -55,17 +56,21 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
     m_recursive->setChecked(Settings::get()->ToolsRecursive);
     form->addRow(m_recursive);
     if (tool == "ps2pdf") {
-        m_output = new QLineEdit(this);
-        m_output->setPlaceholderText(tr("Beside each source file"));
+        m_output = new QLineEdit("pdf", this);
+        m_output->setObjectName("toolOutputDirectory");
+        m_output->setPlaceholderText(tr("Relative to the source directory"));
         auto outputRow = new QHBoxLayout;
         outputRow->addWidget(m_output);
         auto browse = new QPushButton(tr("Directory..."), this); outputRow->addWidget(browse);
         connect(browse, &QPushButton::clicked, this, [this] {
-            const auto value = QFileDialog::getExistingDirectory(this, tr("Output directory"), m_path->text());
+            const auto value = QFileDialog::getExistingDirectory(this, tr("Output directory"), m_sourcePath);
             if (!value.isEmpty()) m_output->setText(value);
         });
         form->addRow(tr("Output directory"), outputRow);
-        form->addRow(new QLabel(tr("Existing PDFs are kept. PLT input must contain PostScript."), this));
+        m_deleteSources = new QCheckBox(tr("Delete PS source files after creating PDF"), this);
+        m_deleteSources->setObjectName("toolDeleteSources");
+        form->addRow(m_deleteSources);
+        form->addRow(new QLabel(tr("Existing PDFs are replaced. PLT input must contain PostScript."), this));
         if (PartsCore::ghostscriptExecutable().isEmpty())
             form->addRow(new QLabel(tr("Ghostscript is missing. Repair the Parts runtime package."), this));
     } else if (tool == "ptc-clean") {
@@ -92,16 +97,17 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
         }
         form->addRow(new QLabel(tr("Check only fields to change. Originals are backed up in 0000-index/tool-backups."), this));
     }
-    if (tool != "ptc-clean") layout->addWidget(m_options);
+    if (!automaticTool) layout->addWidget(m_options);
     m_files = new QTreeWidget(this);
     m_files->setObjectName("toolFiles");
     m_files->setHeaderLabels({tr("File"), tr("Result / reason")});
     m_files->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     m_files->setSelectionMode(QAbstractItemView::ExtendedSelection);
     layout->addWidget(m_files, 1);
-    if (tool == "ptc-clean") layout->addWidget(m_options);
-    m_status = new QLabel(tool == "ptc-clean"
-        ? tr("Choose files to clean. The list updates automatically.")
+    if (automaticTool) layout->addWidget(m_options);
+    m_status = new QLabel(automaticTool
+        ? (tool == "ptc-clean" ? tr("Choose files to clean. The list updates automatically.")
+            : tr("Choose files to convert. The list updates automatically."))
         : tr("Preview the operation, then choose files to apply."), this);
     m_status->setWordWrap(true);
     layout->addWidget(m_status);
@@ -109,18 +115,19 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
     auto selectAll = new QPushButton(tr("Select all"), this);
     auto selectNone = new QPushButton(tr("Select none"), this);
     buttons->addWidget(selectAll); buttons->addWidget(selectNone); buttons->addStretch();
-    if (tool != "ptc-clean") {
+    if (!automaticTool) {
         m_preview = new QPushButton(tr("Preview"), this);
         m_preview->setObjectName("toolPreview");
         buttons->addWidget(m_preview);
     }
-    m_apply = new QPushButton(tool == "ptc-clean" ? tr("Clean") : tr("Apply selected"), this);
-    if (tool == "ptc-clean") m_apply->setAutoDefault(false);
+    m_apply = new QPushButton(tool == "ptc-clean" ? tr("Clean")
+        : tool == "ps2pdf" ? tr("Create PDF") : tr("Apply selected"), this);
+    if (automaticTool) m_apply->setAutoDefault(false);
     m_apply->setObjectName("toolApply"); m_apply->setEnabled(false);
     m_cancel = new QPushButton(tr("Close"), this);
     buttons->addWidget(m_apply); buttons->addWidget(m_cancel);
     layout->addLayout(buttons);
-    if (tool == "ptc-clean") {
+    if (automaticTool) {
         m_autoPreview = new QTimer(this);
         m_autoPreview->setSingleShot(true);
         m_autoPreview->setInterval(250);
@@ -184,6 +191,7 @@ void PartsToolsDialog::setPreparedPlan(const PartsCore::ToolPlan &plan)
     if (m_path) m_path->setText(plan.request.path);
     m_recursive->setChecked(plan.request.recursive);
     if (m_output) m_output->setText(plan.request.outputDirectory);
+    if (m_deleteSources) m_deleteSources->setChecked(plan.request.deleteSourcesAfterConversion);
     if (m_old) m_old->setChecked(plan.request.oldVersions);
     if (m_masks) m_masks->setText(plan.request.patterns.join(';'));
     for (auto it = m_fields.begin(); it != m_fields.end(); ++it) {
@@ -240,6 +248,7 @@ void PartsToolsDialog::start(bool apply)
     request.path = m_path ? m_path->text() : m_sourcePath;
     request.recursive = m_recursive->isChecked();
     if (m_output) request.outputDirectory = m_output->text();
+    if (m_deleteSources) request.deleteSourcesAfterConversion = m_deleteSources->isChecked();
     if (m_old) request.oldVersions = m_old->isChecked();
     if (m_masks) {
         for (const auto &mask : m_masks->text().split(';', Qt::SkipEmptyParts))
@@ -255,7 +264,11 @@ void PartsToolsDialog::start(bool apply)
         if (selected.items.isEmpty()) return;
         const auto confirmation = m_tool == "ptc-clean"
             ? tr("Move %1 selected files to the trash?").arg(selected.items.size())
-            : tr("Apply this operation to %1 selected files?").arg(selected.items.size());
+            : m_tool == "ps2pdf"
+                ? (request.deleteSourcesAfterConversion
+                    ? tr("Create or replace %1 selected PDFs and delete their PS source files?").arg(selected.items.size())
+                    : tr("Create or replace %1 selected PDFs?").arg(selected.items.size()))
+                : tr("Apply this operation to %1 selected files?").arg(selected.items.size());
         if (!m_prepared && QMessageBox::question(this, title(m_tool), confirmation,
             QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) return;
     }
@@ -264,7 +277,7 @@ void PartsToolsDialog::start(bool apply)
         catch (const QString &e) { *error = e; }
     });
     m_worker = worker;
-    if (apply && m_tool == "ptc-clean") {
+    if (apply && (m_tool == "ptc-clean" || m_tool == "ps2pdf")) {
         const QFileInfo source(request.path);
         m_fileChangesPath = source.isDir() ? source.absoluteFilePath() : source.absolutePath();
         PartCache::get()->beginFileChanges(m_fileChangesPath);
@@ -293,7 +306,7 @@ void PartsToolsDialog::start(bool apply)
             return;
         }
         if (apply) {
-            if (m_tool == "ptc-clean" && !m_prepared) {
+            if ((m_tool == "ptc-clean" || m_tool == "ps2pdf") && !m_prepared) {
                 QSet<QString> completed, checked;
                 QMap<QString, QString> failures;
                 for (const auto &value : (*applied)["completed"].toArray())

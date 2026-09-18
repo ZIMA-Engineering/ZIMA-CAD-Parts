@@ -10,13 +10,13 @@ The original projects, installations and their saved settings are preserved.
 ## Common workflow
 
 1. Select a file or directory, options and whether to include subdirectories.
-2. Review the affected files and skipped items, with reasons. PTC-Cleaner
-   loads its list automatically; PDF and STEP tools use **Preview**.
-3. Select items and use **Clean** in PTC-Cleaner or **Apply selected** in the
-   other tools. Confirmation shows the item count.
+2. Review the affected files and skipped items, with reasons. PTC-Cleaner and
+   PS2PDF load their lists automatically; STEP-Edit uses **Preview**.
+3. Select items and use **Clean**, **Create PDF**, or **Apply selected**.
+   Confirmation shows the item count.
 
-Changing options invalidates the preview. PTC-Cleaner automatically refreshes
-it after a short typing pause; the other tools require another **Preview**. Before applying changes, the file
+Changing options invalidates the preview. PTC-Cleaner and PS2PDF automatically
+refresh it after a short typing pause; STEP-Edit requires another **Preview**. Before applying changes, the file
 contents are checked again using SHA-256. The system directory `0000-index`,
 symlinks and junctions are excluded from traversal. Reading and execution
 run outside the UI thread. **Cancel** stops further work and terminates an
@@ -34,6 +34,7 @@ The same Qt Core implementation serves the GUI, panel and standalone CLI:
 ```text
 ZIMA-CAD-Parts-cli ps2pdf "C:/project/drawing.ps"
 ZIMA-CAD-Parts-cli ps2pdf "C:/project" --recursive --apply
+ZIMA-CAD-Parts-cli ps2pdf "C:/project" --output-dir pdf --delete-source --apply
 ZIMA-CAD-Parts-cli ptc-clean "C:/project"
 ZIMA-CAD-Parts-cli ptc-clean "C:/project" --mask "trail.txt.*" --apply
 ZIMA-CAD-Parts-cli ptc-clean "C:/project" --patterns-only --mask "*.log"
@@ -56,12 +57,22 @@ the command explicitly defines its scope.
 
 Converts PS, EPS and PostScript PLT files to PDF 1.7 using Ghostscript
 `pdfwrite`. PLT files containing HPGL or PCL are not converted. The original
-file remains unchanged. The PDF is created beside the input, or in an
-existing directory selected with `--output-dir`. Existing PDFs are never
-overwritten. Multiple inputs targeting the same output are reported as
-collisions in the preview. Conversion creates a temporary PDF and renames
-it only after success. Ghostscript options are fixed, including `-dSAFER`,
-and no shell is used.
+file remains unchanged unless source deletion is explicitly selected. The GUI
+uses the relative output directory `pdf` by default. Relative output paths are
+resolved from the selected source directory and are created when conversion
+starts. The CLI creates PDFs beside their inputs unless `--output-dir` is used.
+Existing PDFs are atomically replaced only after Ghostscript has produced and
+validated the new PDF, so a failed conversion preserves the previous drawing.
+Multiple inputs targeting the same output are reported as collisions in the
+preview. **Delete PS source files after creating PDF** and CLI
+`--delete-source` remove each PS, EPS or PostScript PLT source only after its
+own PDF has been saved successfully. Ghostscript options are fixed, including
+`-dSAFER`, and no shell is used.
+
+The PS2PDF window follows the same automatic workflow as PTC-Cleaner. It uses
+the directory from which it was opened, has no redundant source selector or
+Preview button, keeps its options below the candidate list and runs modelessly
+so the rest of Parts remains usable.
 
 The Windows runtime includes Ghostscript 10.08.0 in `tools/ghostscript`,
 its AGPL license and the corresponding source archive. Prepare it before

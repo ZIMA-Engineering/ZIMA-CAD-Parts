@@ -44,6 +44,7 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
     parser.addOption({"patterns-only", "Cleaner: use masks only, without old-version cleanup."});
     parser.addOption({"mask", "Cleaner: additional filename wildcard; repeat to add more.", "pattern"});
     parser.addOption({"output-dir", "PDF destination directory; default beside each input.", "directory"});
+    parser.addOption({"delete-source", "PDF conversion: delete each source only after its PDF is saved."});
     parser.addOption({"set", "STEP field assignment, e.g. author=Name; repeat for more fields.", "field=value"});
     parser.addVersionOption();
     parser.addOption({"json", "Output JSON (the default)."});
@@ -68,6 +69,7 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
             if (parser.isSet(option)) return fail("Option applies only to list/params: " + QString(option), 2);
         if ((parser.isSet("mask") || parser.isSet("patterns-only")) && positional[0] != "ptc-clean") return fail("Cleaner option used for another tool", 2);
         if (parser.isSet("output-dir") && positional[0] != "ps2pdf") return fail("--output-dir applies to ps2pdf", 2);
+        if (parser.isSet("delete-source") && positional[0] != "ps2pdf") return fail("--delete-source applies to ps2pdf", 2);
         if (parser.isSet("set") && positional[0] != "step-edit") return fail("--set applies to step-edit", 2);
         const auto resolve = [&context](const QString &path) {
             return QDir::isAbsolutePath(path) || context.directory.isEmpty() ? path : QDir(context.directory).filePath(path);
@@ -78,6 +80,7 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
         request.oldVersions = !parser.isSet("patterns-only");
         request.patterns = parser.values("mask");
         if (parser.isSet("output-dir")) request.outputDirectory = resolve(parser.value("output-dir"));
+        request.deleteSourcesAfterConversion = parser.isSet("delete-source");
         for (const auto &assignment : parser.values("set")) {
             const int equals = assignment.indexOf('=');
             if (equals < 1) return fail("Expected --set field=value", 2);
@@ -96,7 +99,7 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
                 failed && parser.isSet("apply") ? 3 : 0};
         } catch (const QString &error) { return fail(error, 3); }
     }
-    for (const auto &option : {"apply", "recursive", "patterns-only", "mask", "output-dir", "set"})
+    for (const auto &option : {"apply", "recursive", "patterns-only", "mask", "output-dir", "delete-source", "set"})
         if (parser.isSet(option)) return fail("Option applies only to tools: " + QString(option), 2);
     if (positional.size() == 1 && positional[0] == "list" && !context.directory.isEmpty())
         positional.append(context.directory);

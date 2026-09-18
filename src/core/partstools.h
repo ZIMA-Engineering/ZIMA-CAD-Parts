@@ -11,6 +11,7 @@ struct ToolRequest {
     QString path;
     bool recursive = false;
     bool oldVersions = true;
+    bool deleteSourcesAfterConversion = false;
     QStringList patterns;
     QString outputDirectory;
     QJsonObject fields;

@@ -72,6 +72,7 @@ class ToolTests(unittest.TestCase):
             self.invoke('step-edit',p,'--set','unsupported=x',code=3)
             self.invoke('list',tmp,'--apply',code=2)
             self.invoke('ps2pdf',tmp,'--mask','*',code=2)
+            self.invoke('step-edit',p,'--delete-source',code=2)
 
     def test_pdf_conversion_and_existing_destination(self):
         with tempfile.TemporaryDirectory(prefix='PDF české ') as tmp:
@@ -83,9 +84,21 @@ class ToolTests(unittest.TestCase):
             self.invoke('ps2pdf',p,'--apply')
             pdf = p.with_suffix('.pdf'); original = pdf.read_bytes()
             self.assertTrue(original.startswith(b'%PDF-'))
-            result = self.invoke('ps2pdf',p,'--apply',code=3)
-            self.assertEqual(len(result['skipped']),1)
-            self.assertEqual(pdf.read_bytes(),original)
+            p.write_bytes(b'%!PS-Adobe-3.0\n/Helvetica findfont 30 scalefont setfont\n72 700 moveto (Updated drawing) show\nshowpage\n')
+            result = self.invoke('ps2pdf',p,'--apply')
+            self.assertEqual(len(result['completed']),1)
+            self.assertTrue(pdf.read_bytes().startswith(b'%PDF-'))
+            self.assertNotEqual(pdf.read_bytes(),original)
+
+    def test_pdf_relative_output_is_created_and_source_deleted_after_success(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp)/'drawing.ps'
+            source.write_bytes(b'%!PS-Adobe-3.0\nshowpage\n')
+            result = self.invoke('ps2pdf',source,'--output-dir','pdf','--delete-source','--apply')
+            output = Path(tmp)/'pdf'/'drawing.pdf'
+            self.assertTrue(output.read_bytes().startswith(b'%PDF-'))
+            self.assertFalse(source.exists())
+            self.assertTrue(result['completed'][0]['sourceDeleted'])
 
     def test_cleaner_apply_moves_only_old_fixture_to_trash(self):
         with tempfile.TemporaryDirectory(prefix='Parts cleaner test ') as tmp:
@@ -101,10 +114,21 @@ class ToolTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)/'bad.ps'
             p.write_bytes(b'%!PS\nThisIsNotAPostScriptOperator\n')
-            result=self.invoke('ps2pdf',p,'--apply',code=3)
+            result=self.invoke('ps2pdf',p,'--delete-source','--apply',code=3)
             self.assertEqual(len(result['failed']),1)
             self.assertFalse(p.with_suffix('.pdf').exists())
+            self.assertTrue(p.exists())
             self.assertEqual(list(Path(tmp).iterdir()),[p])
+
+    def test_failed_conversion_preserves_existing_pdf(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp)/'bad.ps'
+            output = source.with_suffix('.pdf')
+            source.write_bytes(b'%!PS\nThisIsNotAPostScriptOperator\n')
+            output.write_bytes(b'%PDF-existing-drawing')
+            result = self.invoke('ps2pdf',source,'--apply',code=3)
+            self.assertEqual(len(result['failed']),1)
+            self.assertEqual(output.read_bytes(),b'%PDF-existing-drawing')
 
     def test_pdf_collision_and_non_postscript_plt(self):
         with tempfile.TemporaryDirectory() as tmp:

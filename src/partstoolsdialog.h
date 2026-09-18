@@ -31,7 +31,7 @@ private:
     void showPlan();
     QString m_tool, m_sourcePath, m_fileChangesPath;
     QLineEdit *m_path = nullptr, *m_output = nullptr, *m_masks = nullptr;
-    QCheckBox *m_recursive, *m_old = nullptr;
+    QCheckBox *m_recursive, *m_old = nullptr, *m_deleteSources = nullptr;
     QMap<QString, QPair<QCheckBox *, QLineEdit *>> m_fields;
     QTreeWidget *m_files;
     QLabel *m_status;

@@ -341,9 +341,25 @@ void convertPdf(const PartsCore::ToolItem &item)
     if (process.exitStatus() != QProcess::NormalExit || process.exitCode()) throw QString::fromLocal8Bit(log);
     QFile pdf(output);
     if (!pdf.open(QIODevice::ReadOnly) || pdf.read(5) != "%PDF-") throw QString("Ghostscript produced no valid PDF");
-    pdf.close();
-    // QFile::rename never overwrites an existing destination.
-    if (!QFile::rename(output, item.output)) throw QString("Cannot save PDF (destination may exist): ") + item.output;
+    if (!pdf.seek(0)) throw QString("Cannot read generated PDF");
+    QSaveFile destination(item.output);
+    if (!destination.open(QIODevice::WriteOnly)) throw QString("Cannot save PDF: ") + destination.errorString();
+    while (!pdf.atEnd()) {
+        checkCanceled();
+        const auto bytes = pdf.read(1024 * 1024);
+        if (pdf.error() != QFileDevice::NoError) throw QString("Cannot read generated PDF: ") + pdf.errorString();
+        if (destination.write(bytes) != bytes.size()) throw QString("Cannot save PDF: ") + destination.errorString();
+    }
+    if (!destination.commit()) throw QString("Cannot replace PDF: ") + destination.errorString();
+}
+
+QString pdfOutputDirectory(const PartsCore::ToolRequest &request)
+{
+    const QFileInfo source(request.path);
+    const QString base = source.isDir() ? source.absoluteFilePath() : source.absolutePath();
+    return QDir::isAbsolutePath(request.outputDirectory)
+        ? QDir::cleanPath(request.outputDirectory)
+        : QDir(base).absoluteFilePath(request.outputDirectory);
 }
 }
 
@@ -415,11 +431,11 @@ PartsCore::ToolPlan PartsCore::planTool(const ToolRequest &request)
                 QFile input(path);
                 if (!input.open(QIODevice::ReadOnly)) throw input.errorString();
                 if (!input.read(1024).contains("%!PS")) throw QString("Not PostScript (PLT may contain HPGL or PCL)");
-                const auto directory = request.outputDirectory.isEmpty() ? file.absolutePath() : QFileInfo(request.outputDirectory).absoluteFilePath();
+                const auto directory = request.outputDirectory.isEmpty() ? file.absolutePath() : pdfOutputDirectory(request);
                 checkPath(directory);
-                if (!QFileInfo(directory).isDir()) throw QString("Output directory does not exist");
+                if (QFileInfo::exists(directory) && !QFileInfo(directory).isDir()) throw QString("Output path is not a directory");
                 item.output = QDir(directory).filePath(file.completeBaseName() + ".pdf");
-                if (QFileInfo::exists(item.output) || QFileInfo(item.output).isSymLink()) throw QString("PDF already exists");
+                checkPath(item.output);
                 if (++outputs[item.output.toCaseFolded()] > 1) throw QString("Multiple inputs target the same PDF");
             } else if (request.tool == "step-edit") {
                 QFile input(path);
@@ -482,7 +498,14 @@ QJsonObject PartsCore::applyTool(const ToolPlan &plan)
                 result["trash"] = trash;
             } else if (plan.request.tool == "ps2pdf") {
                 checkPath(item.output);
-                convertPdf(item); result["output"] = item.output;
+                const auto outputDirectory = QFileInfo(item.output).absolutePath();
+                if (!QDir().mkpath(outputDirectory)) throw QString("Cannot create PDF output directory: ") + outputDirectory;
+                convertPdf(item);
+                result["output"] = item.output;
+                if (plan.request.deleteSourcesAfterConversion) {
+                    if (!QFile::remove(item.path)) throw QString("PDF was created, but the source file could not be deleted");
+                    result["sourceDeleted"] = true;
+                }
             } else if (plan.request.tool == "step-edit") {
                 const auto folder = QDir(QFileInfo(item.path).absolutePath()).filePath("0000-index/tool-backups");
                 if (QFileInfo(QFileInfo(folder).absolutePath()).isSymLink() || QFileInfo(QFileInfo(folder).absolutePath()).isJunction() || QFileInfo(folder).isSymLink()

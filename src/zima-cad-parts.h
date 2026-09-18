@@ -21,7 +21,7 @@
 #ifndef ZIMAPARTS_H
 #define ZIMAPARTS_H
 
-#define VERSION "2026091701"
+#define VERSION "2026091801"
 
 // Extensions
 //#ifdef Q_OS_WIN32
