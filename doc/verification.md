@@ -1,5 +1,13 @@
 # Build verification
 
+## Signed Windows release 2026091902, September 19, 2026
+
+The clean release build and packaged runtime passed 59 integration checks,
+18 CLI tests, five distribution checks and all translation catalogs. Signature,
+source/binary identity, complete checksum inventories, clean-PATH probes and
+public update discovery from 2026091901 passed. See the
+[release acceptance record](releases/2026091902.md) for hashes and scope.
+
 ## Native ZIMA-CAD parameter import, September 19, 2026
 
 The Windows GUI, CLI, updater and integration projects were rebuilt with
