@@ -11,7 +11,7 @@ class PtrReaderThread : public QThread
     Q_OBJECT
 
 public:
-    PtrReaderThread(QFileInfoList partList);
+    PtrReaderThread(QFileInfoList partList, QString language = QStringLiteral("en"));
 
 signals:
     void partParam(const QString &part, const QString &param, const QString &value);
@@ -21,8 +21,10 @@ protected:
 
 private:
     QFileInfoList m_partList;
+    QString m_language;
 
     void parseFile(const QFileInfo &fi);
+    void parseZimaFile(const QFileInfo &fi);
 };
 
 class PrtReader : public QObject

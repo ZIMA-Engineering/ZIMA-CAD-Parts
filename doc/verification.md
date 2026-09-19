@@ -1,5 +1,24 @@
 # Build verification
 
+## Native ZIMA-CAD parameter import, September 19, 2026
+
+The Windows GUI, CLI, updater and integration projects were rebuilt with
+Qt 6.10.1 and MSVC x64. All **59 integration checks**, **14 tool CLI tests**,
+**4 read-only CLI tests** and four translation catalogs passed, with no
+integration failures or skips.
+
+New coverage checks native Part/Assembly files saved by ZIMA-CAD, Czech and
+English values, historical Pro/E column handles, literal text, alias collisions,
+empty and zero values, archive exclusion, malformed documents, native-over-Pro/E
+precedence, metadata persistence and FileModel updates after reloading an edited
+source. Existing Pro/E, browsing, thumbnail and datasource checks also passed.
+
+Logs are `.build-ui-20260919/zima-parameters-build.log`,
+`.build-ui-20260919/zima-parameters-tests.log` and
+`.build-ui-20260919/integration-results.txt`. This verifies a local Windows
+development build; it does not replace the immutable release below. Linux,
+interactive technical-specification browsing and downloads were not repeated.
+
 ## Signed Windows release 2026091901, September 19, 2026
 
 [Published immutable release](https://github.com/ZIMA-Engineering/ZIMA-CAD-Parts/releases/tag/ZIMA-CAD-Parts-2026091901) was built from clean commit

@@ -2,12 +2,16 @@
 #include "file.h"
 #include "metadata.h"
 #include "localfilters.h"
+#include "settings.h"
 
 #include <QRegularExpression>
 #include <QDebug>
+#include <QMap>
+#include <QSet>
+#include <QStringConverter>
 
-PtrReaderThread::PtrReaderThread(QFileInfoList partList) :
-    m_partList(partList)
+PtrReaderThread::PtrReaderThread(QFileInfoList partList, QString language) :
+    m_partList(partList), m_language(language.section('_', 0, 0).toLower())
 {
 
 }
@@ -22,7 +26,10 @@ void PtrReaderThread::run()
     // Read the highest numeric revision independently of visible filters.
     LocalFilters versions;
     versions.showVersions = false;
+    versions.showZimaVersions = false;
     const auto accepted = versions.accepted(m_partList, false);
+    // A current native ZIMA document wins over a same-named Pro/E export.
+    for (const bool native : {false, true})
     for (int row = 0; row < m_partList.size(); ++row)
     {
         if (!accepted.testBit(row))
@@ -33,11 +40,92 @@ void PtrReaderThread::run()
 
         FileMetadata fm(fi);
 
-        if (!fileTypes.contains(fm.type))
+        const bool zima = fm.type == FileType::ZIMA_PRT || fm.type == FileType::ZIMA_ASM;
+        if (native != zima || (!zima && !fileTypes.contains(fm.type)))
             continue;
 
-        qDebug() << "Parsing prt file" << fi.absoluteFilePath();
-        parseFile(fi);
+        if (zima)
+            parseZimaFile(fi);
+        else
+            parseFile(fi);
+    }
+}
+
+void PtrReaderThread::parseZimaFile(const QFileInfo &fi)
+{
+    QFile file(fi.absoluteFilePath());
+    if (!file.open(QIODevice::ReadOnly))
+        return;
+    // Native CAD metadata is literal UTF-8 INI, not QSettings value syntax:
+    // commas, quotes, backslashes and @ prefixes must survive unchanged.
+    QMap<QString, QMap<QString, QString>> sections;
+    QString section;
+    const QSet<QString> wanted{"Document", "UserParameters", "UserParameterLabels", "UserParameterValues"};
+    while (!file.atEnd())
+    {
+        if (isInterruptionRequested())
+            return;
+        QByteArray bytes = file.readLine(128 * 1024 + 1);
+        if (bytes.isEmpty() && file.error() != QFileDevice::NoError)
+            return;
+        if (!bytes.endsWith('\n') && !file.atEnd())
+        {
+            // Geometry/cache records can be huge. Skip them with bounded memory.
+            do {
+                if (isInterruptionRequested()) return;
+                bytes = file.readLine(128 * 1024 + 1);
+                if (bytes.isEmpty() && file.error() != QFileDevice::NoError) return;
+            } while (!bytes.endsWith('\n') && !file.atEnd());
+            if (wanted.contains(section)) return;
+            continue;
+        }
+        QStringDecoder decoder(QStringDecoder::Utf8);
+        const QString decoded = decoder.decode(bytes);
+        const QString line = decoded.trimmed();
+        if (line.isEmpty() || line.startsWith(';') || line.startsWith('#')) continue;
+        if (line.startsWith('[') && line.endsWith(']'))
+        {
+            section = line.mid(1, line.size() - 2).trimmed();
+            continue;
+        }
+        if (!wanted.contains(section)) continue;
+        const auto split = line.indexOf('=');
+        if (decoder.hasError() || split <= 0) return;
+        auto &values = sections[section];
+        if (values.size() >= 4096 * 128) return;
+        values.insert(line.left(split).trimmed(), line.mid(split + 1).trimmed());
+    }
+    const QString expected = FileMetadata(fi).type == FileType::ZIMA_PRT ? "part" : "assembly";
+    if (sections.value("Document").value("type") != expected) return;
+    const QStringList order = sections.value("UserParameters").value("Order").split(',', Qt::SkipEmptyParts);
+    if (order.size() > 4096) return;
+    QMap<QString, QString> parameters, aliases;
+    QSet<QString> ambiguous;
+    const auto &stored = sections["UserParameterValues"];
+    const auto &labels = sections["UserParameterLabels"];
+    for (const QString &entry : order)
+    {
+        const QString key = entry.trimmed();
+        const QString localized = key + '\\' + m_language;
+        const QString value = stored.contains(localized) ? stored.value(localized) : stored.value(key);
+        if (key.isEmpty() || value.isEmpty()) continue;
+        parameters.insert(key.toLower(), value);
+        for (auto label = labels.lowerBound(key); label != labels.cend(); ++label)
+        {
+            if (label.key() != key && !label.key().startsWith(key + '\\')) break;
+            const QString alias = label.value().trimmed().toLower();
+            if (alias.isEmpty()) continue;
+            if (aliases.contains(alias) && aliases.value(alias) != key) ambiguous.insert(alias);
+            aliases.insert(alias, key);
+        }
+    }
+    for (auto alias = aliases.cbegin(); alias != aliases.cend(); ++alias)
+        if (!ambiguous.contains(alias.key()) && !parameters.contains(alias.key()))
+            parameters.insert(alias.key(), parameters.value(alias.value().toLower()));
+    for (auto value = parameters.cbegin(); value != parameters.cend(); ++value)
+    {
+        if (isInterruptionRequested()) return;
+        emit partParam(fi.fileName(), value.key(), value.value());
     }
 }
 
@@ -126,7 +214,7 @@ void PrtReader::load(const QString &dir, const QFileInfoList &partList)
         stop();
 
     m_dir = dir;
-    m_thread = new PtrReaderThread(partList);
+    m_thread = new PtrReaderThread(partList, Settings::get()->LanguageMetadata);
     auto thread = m_thread.data();
     connect(thread, &PtrReaderThread::partParam, this,
             [this, thread](const QString &part, const QString &param, const QString &value) {

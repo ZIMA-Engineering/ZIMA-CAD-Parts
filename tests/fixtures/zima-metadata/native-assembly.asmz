@@ -1,0 +1,59 @@
+[CachedBodies]
+data={}
+encoding=zima-cpp-assembly-data
+
+[Container.01a0b9f48c207a38986f7827ccc6cedd]
+TYPE=ASSEMBLY
+id=01a0b9f48c207a38986f7827ccc6cedd
+kind=container
+name=native-assembly
+param.cpp_assembly={"format":"zima-shared-cache-v1","root":{"$zima_cache":0},"values":[{"components":[],"constructions":[],"cuts":[],"dependencies":[],"dimension_identifiers":{"entries":[],"next":1},"dimension_layouts":[],"document_id":"01a0b9f48c207a38986f7827ccc6cedd","document_precision":{"angular_tolerance":"0.001","decimal_places":"3","linear_tolerance":"0.001","mesh_deflection":"0.1"},"document_units":{"Angle":"deg","Length":"mm","Mass":"kg","Stress":"MPa","Temperature":"C","Time":"s"},"family":{"evaluated":{},"parent":"","row":""},"family_table":"{\"bindings\":{},\"columns\":[],\"instances\":[]}","format":"zima-cad-cpp","format_version":45,"material_parameter_descriptions":{},"measurements":[],"name":"native-assembly","named_views":"[]","operation_geometries":{},"physical_parameter_units":{},"physical_parameters":{},"relations":[{"expression":"model.mass","target":"mass"}],"sections":[],"sketch_containers":[],"sketches":[],"type":"assembly","user_parameter_labels":{"name":{"cs":"nazev","en":"Name"},"quantity":{"cs":"mnozstvi"},"stock":{"cs":"polotovar"}},"user_parameter_order":["name","stock","quantity","mass"],"user_parameter_values":{"mass":{"":"0.000"},"name":{"":"Sestava A","cs":"Sestava A"},"quantity":{"":"0"},"stock":{"":"RHS 40,20 = \"A\""}},"user_parameters":{"mass":"0.000","name":"Sestava A","quantity":"0","stock":"RHS 40,20 = \"A\""}}]}
+param.cpp_kind=assembly
+
+[Containers]
+items=01a0b9f48c207a38986f7827ccc6cedd
+
+[Document]
+document_id=01a0b9f48c207a38986f7827ccc6cedd
+family_table={"bindings":{},"columns":[],"instances":[]}
+format_version=33
+name=native-assembly
+type=assembly
+
+[DocumentPrecision]
+angular_tolerance=0.001
+decimal_places=3
+linear_tolerance=0.001
+mesh_deflection=0.1
+
+[DocumentUnits]
+Angle=deg
+Length=mm
+Mass=kg
+Stress=MPa
+Temperature=C
+Time=s
+
+[Material]
+Name=
+
+[MaterialUnits]
+
+[Relations]
+Data=[{"expression":"model.mass","target":"mass"}]
+
+[UserParameterLabels]
+name\cs=nazev
+name\en=Name
+quantity\cs=mnozstvi
+stock\cs=polotovar
+
+[UserParameterValues]
+mass=0.000
+name=Sestava A
+name\cs=Sestava A
+quantity=0
+stock=RHS 40,20 = "A"
+
+[UserParameters]
+Order=name, stock, quantity, mass

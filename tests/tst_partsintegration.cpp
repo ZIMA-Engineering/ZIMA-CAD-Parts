@@ -1566,6 +1566,116 @@ private slots:
         QCOMPARE(meta->partParam("xxx", "description"), QString("Newest"));
     }
 
+    void zimaParametersUseCurrentFilesAndExistingMetadataHandles()
+    {
+        QTemporaryDir directory;
+        QScopedValueRollback<QString> language(Settings::get()->LanguageMetadata, "cs");
+        QFileInfoList files;
+        const auto document = [](const QByteArray &type, const QByteArray &name) {
+            return QByteArray("[Document]\ntype=") + type + "\nformat_version=41\n"
+                "[CachedBodies]\ndata=" + QByteArray(300000, 'x') + "\n"
+                "[UserParameters]\nOrder=name,stock,mass,quantity,empty,custom,first,second,nazev,description\n"
+                "[UserParameterLabels]\nname\\cs=nazev\nname\\en=Name\nstock\\cs=polotovar\n"
+                "mass\\cs=hmotnost\nquantity\\cs=mnozstvi\nfirst\\cs=ambiguous\nsecond\\cs=ambiguous\n"
+                "[UserParameterValues]\nname=Shared\nname\\cs=" + name + "\nstock=RHS 40,20 = \"A\"\\B\n"
+                "mass=1.250\nquantity=0\nempty=\ncustom=@String(unchanged)\nfirst=A\nsecond=B\n"
+                "nazev=Explicit key wins\ndescription=" + name + "\n";
+        };
+        const auto write = [&](const QString &name, const QByteArray &bytes) {
+            QFile file(directory.filePath(name));
+            if (!file.open(QIODevice::WriteOnly)) return false;
+            if (file.write(bytes) != bytes.size()) return false;
+            file.close();files.append(QFileInfo(file.fileName()));return true;
+        };
+        const auto partBytes = document("part", QString::fromUtf8("Díl žluťoučký").toUtf8());
+        QVERIFY(write("part.PRTZ", partBytes));
+        QVERIFY(write("assembly.asmz", document("assembly", "Assembly current")));
+        QVERIFY(write("part.PRTZ.999", document("part", "Archive must not win")));
+        QVERIFY(write("orphan.prtz.1", document("part", "Orphan must not import")));
+        QVERIFY(write("drawing.drwz", document("drawing", "Not a model")));
+        QVERIFY(write("invalid.prtz", document("assembly", "Wrong type")));
+        QVERIFY(write("broken.prtz", document("part", "Partial") + "[UserParameterValues]\nbroken line\n"));
+        QVERIFY(write("part.prt.10", "description\x15" "DESCRIPTION'xxProE valuex\x14\n"));
+        auto meta = MetadataCache::get()->metadata(directory.path());
+        meta->setParameterHandles({"name","nazev","polotovar","hmotnost","mnozstvi","empty","custom","ambiguous","description"});
+        meta->setPartParam("part", "empty", "Keep manual value");
+        PrtReader reader;QSignalSpy loaded(&reader, &PrtReader::loaded);
+        reader.load(directory.path(), files);
+        QTRY_COMPARE(meta->partParam("part", "name"), QString::fromUtf8("Díl žluťoučký"));
+        QTRY_VERIFY(!reader.isRunning());
+        QVERIFY(!loaded.isEmpty());
+        QCOMPARE(meta->partParam("part", "nazev"), QString("Explicit key wins"));
+        QCOMPARE(meta->partParam("part", "polotovar"), QString("RHS 40,20 = \"A\"\\B"));
+        QCOMPARE(meta->partParam("part", "hmotnost"), QString("1.250"));
+        QCOMPARE(meta->partParam("part", "mnozstvi"), QString("0"));
+        QCOMPARE(meta->partParam("part", "custom"), QString("@String(unchanged)"));
+        QCOMPARE(meta->partParam("part", "empty"), QString("Keep manual value"));
+        QCOMPARE(meta->partParam("part", "ambiguous"), QString());
+        QCOMPARE(meta->partParam("part", "description"), QString::fromUtf8("Díl žluťoučký"));
+        QCOMPARE(meta->partParam("assembly", "name"), QString("Assembly current"));
+        for (const QString name : {"orphan","drawing","invalid","broken"})
+            QCOMPARE(meta->partParam(name, "name"), QString());
+        QFile unchanged(directory.filePath("part.PRTZ"));QVERIFY(unchanged.open(QIODevice::ReadOnly));
+        QCOMPARE(unchanged.readAll(), partBytes);
+        MetadataCache::get()->clear(directory.path());
+        QCOMPARE(MetadataCache::get()->metadata(directory.path())->partParam("part", "hmotnost"), QString("1.250"));
+    }
+
+    void zimaParametersReadNativeCadSavedFixtures()
+    {
+        const QString fixtures=QFINDTESTDATA("fixtures/zima-metadata");QVERIFY(!fixtures.isEmpty());
+        for (const QString language : {"cs", "en"})
+        {
+            QTemporaryDir directory;
+            QScopedValueRollback<QString> selectedLanguage(Settings::get()->LanguageMetadata, language);
+            QFileInfoList files;
+            for (const QString file : {"native-part.prtz", "native-assembly.asmz"})
+            {
+                QVERIFY(QFile::copy(QDir(fixtures).filePath(file),directory.filePath(file)));
+                files.append(QFileInfo(directory.filePath(file)));
+            }
+            auto meta=MetadataCache::get()->metadata(directory.path());
+            meta->setParameterHandles({"nazev","polotovar","mnozstvi","mass"});
+            PrtReader reader;reader.load(directory.path(),files);
+            QTRY_COMPARE(meta->partParam("native-part","nazev"),language=="cs"?QString::fromUtf8("Držák A"):QString("Drzak A"));
+            QTRY_VERIFY(!reader.isRunning());
+            QCOMPARE(meta->partParam("native-assembly","nazev"),QString("Sestava A"));
+            for (const QString part : {"native-part","native-assembly"})
+            {
+                QCOMPARE(meta->partParam(part,"polotovar"),QString("RHS 40,20 = \"A\""));
+                QCOMPARE(meta->partParam(part,"mnozstvi"),QString("0"));
+                QCOMPARE(meta->partParam(part,"mass"),QString("0.000"));
+            }
+        }
+    }
+
+    void zimaCzechLabelsShareProeColumnsAndRefreshFileModel()
+    {
+        QTemporaryDir directory;
+        QScopedValueRollback<QString> language(Settings::get()->LanguageMetadata, "cs");
+        const QByteArray bytes("[Document]\ntype=part\nformat_version=41\n[UserParameters]\nOrder=name,stock\n"
+            "[UserParameterLabels]\nname\\cs=nazev\nstock\\cs=polotovar\n"
+            "[UserParameterValues]\nname=Bracket\nstock=Plate 2 mm\n");
+        QFile file(directory.filePath("bracket.prtz"));QVERIFY(file.open(QIODevice::WriteOnly));file.write(bytes);file.close();
+        auto meta=MetadataCache::get()->metadata(directory.path());meta->setParameterHandles({"nazev","polotovar"});
+        FileModel model;QSignalSpy updates(&model,&QAbstractItemModel::dataChanged);model.setDirectory(directory.path());model.reloadParts();
+        QTRY_COMPARE(meta->partParam("bracket","nazev"),QString("Bracket"));
+        QTRY_VERIFY(!updates.isEmpty());
+        const auto parameter = [&](int column) {
+            for (int row = 0; row < model.rowCount(); ++row)
+                if (model.fileInfo(model.index(row, 0)).fileName() == "bracket.prtz")
+                    return model.data(model.index(row, column), Qt::DisplayRole).toString();
+            return QString();
+        };
+        QCOMPARE(parameter(2),QString("Bracket"));
+        QCOMPARE(parameter(3),QString("Plate 2 mm"));
+        QVERIFY(file.open(QIODevice::WriteOnly|QIODevice::Truncate));
+        file.write(QByteArray(bytes).replace("Bracket","Edited bracket"));file.close();
+        model.reloadParts();
+        QTRY_COMPARE(meta->partParam("bracket","nazev"),QString("Edited bracket"));
+        QCOMPARE(parameter(2),QString("Edited bracket"));
+    }
+
     void modelRejectsStaleColumnsAfterMetadataChange()
     {
         QTemporaryDir directory;
