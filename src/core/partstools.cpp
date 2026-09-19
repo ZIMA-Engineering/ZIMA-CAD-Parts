@@ -97,8 +97,10 @@ class TrashProgress final : public Microsoft::WRL::RuntimeClass<
     Microsoft::WRL::RuntimeClassFlags<Microsoft::WRL::ClassicCom>, IFileOperationProgressSink>
 {
 public:
-    explicit TrashProgress(const PartsCore::ToolItem &value) : item(value) {}
+    TrashProgress(const PartsCore::ToolItem &value, const PartsCore::ToolCompleted &callback)
+        : item(value), onCompleted(callback) {}
     PartsCore::ToolItem item;
+    PartsCore::ToolCompleted onCompleted;
     QString error, trash;
     bool completed = false;
 
@@ -127,6 +129,7 @@ public:
                 trash = QDir::fromNativeSeparators(QString::fromWCharArray(value));
                 CoTaskMemFree(value);
             }
+            if (onCompleted) onCompleted(item.path);
         } else if (error.isEmpty()) {
             error = trashError(result);
         }
@@ -150,7 +153,7 @@ public:
     IFACEMETHODIMP PauseTimer() override { return S_OK; }
     IFACEMETHODIMP ResumeTimer() override { return S_OK; }
 };
-QJsonObject recycleWindows(const PartsCore::ToolPlan &plan)
+QJsonObject recycleWindows(const PartsCore::ToolPlan &plan, const PartsCore::ToolCompleted &onCompleted)
 {
     struct Apartment {
         HRESULT status = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
@@ -166,7 +169,7 @@ QJsonObject recycleWindows(const PartsCore::ToolPlan &plan)
     if (FAILED(result)) throw trashError(result);
     QList<Microsoft::WRL::ComPtr<TrashProgress>> sinks;
     for (const auto &item : plan.items) {
-        auto sink = Microsoft::WRL::Make<TrashProgress>(item);
+        auto sink = Microsoft::WRL::Make<TrashProgress>(item, onCompleted);
         sinks.append(sink);
         try {
             checkCanceled();
@@ -381,13 +384,15 @@ QString PartsCore::ghostscriptExecutable()
 
 PartsCore::ToolPlan PartsCore::planTool(const ToolRequest &request)
 {
-    if (!QStringList{"ps2pdf", "ptc-clean", "step-edit"}.contains(request.tool)) throw QString("Unknown tool");
+    if (!QStringList{"ps2pdf", "ptc-clean", "zima-clean", "step-edit"}.contains(request.tool)) throw QString("Unknown tool");
     for (auto it = request.fields.begin(); it != request.fields.end(); ++it)
         if (!fieldNames.contains(it.key()) || !it.value().isString()) throw QString("Unknown or invalid STEP field: ") + it.key();
     ToolPlan plan; plan.request = request;
     const auto files = collectFiles(request);
     QMap<QString, QPair<qulonglong, QString>> latest;
     const QRegularExpression version("^(.+)\\.([0-9]+)$");
+    const QRegularExpression zimaArchive("^.+\\.(?:prtz|asmz|drwz|frmz|tblz)\\.[0-9]+$",
+        QRegularExpression::CaseInsensitiveOption);
     for (const auto &file : files) {
         const auto m = version.match(file);
         bool ok;
@@ -420,11 +425,17 @@ PartsCore::ToolPlan PartsCore::planTool(const ToolRequest &request)
                 const auto re = QRegularExpression::fromWildcard(pattern, Qt::CaseSensitive, QRegularExpression::NonPathWildcardConversion);
                 if (re.match(file.fileName()).hasMatch()) wanted = true;
             }
+        } else if (request.tool == "zima-clean") {
+            // Current ZIMA-CAD documents have no number. Every numeric suffix
+            // is an archive, even without a current file or above uint64 range.
+            wanted = zimaArchive.match(file.fileName()).hasMatch();
         } else if (request.tool == "ps2pdf") wanted = QStringList{"ps", "eps", "plt"}.contains(ext);
         else wanted = ext == "stp" || ext == "step";
         if (!wanted) continue;
         try {
-            if (request.tool == "ptc-clean" && locked(path)) throw QString("Directory is locked");
+            if ((request.tool == "ptc-clean" || request.tool == "zima-clean"
+                || (request.tool == "ps2pdf" && request.deleteSourcesAfterConversion)) && locked(path))
+                throw QString("Directory is locked");
             item.hash = previewHash(path);
             if (!item.keeper.isEmpty()) item.keeperHash = previewHash(item.keeper);
             if (request.tool == "ps2pdf") {
@@ -478,10 +489,11 @@ QJsonObject PartsCore::describePlan(const ToolPlan &plan)
         {"changes", plan.request.fields}, {"skipped", plan.skipped}};
 }
 
-QJsonObject PartsCore::applyTool(const ToolPlan &plan)
+QJsonObject PartsCore::applyTool(const ToolPlan &plan, const ToolCompleted &onCompleted)
 {
 #ifdef Q_OS_WIN
-    if (plan.request.tool == "ptc-clean" && !plan.items.isEmpty()) return recycleWindows(plan);
+    if ((plan.request.tool == "ptc-clean" || plan.request.tool == "zima-clean") && !plan.items.isEmpty())
+        return recycleWindows(plan, onCompleted);
 #endif
     QJsonArray completed, failed;
     if (plan.request.tool == "step-edit" && plan.request.fields.isEmpty()) throw QString("No STEP fields specified");
@@ -490,19 +502,22 @@ QJsonObject PartsCore::applyTool(const ToolPlan &plan)
             checkCanceled();
             if (fingerprint(item.path) != item.hash) throw QString("File changed since preview");
             QJsonObject result{{"path", item.path}};
-            if (plan.request.tool == "ptc-clean") {
+            if (plan.request.tool == "ptc-clean" || plan.request.tool == "zima-clean") {
                 if (locked(item.path)) throw QString("Directory is locked");
                 if (!item.keeper.isEmpty() && fingerprint(item.keeper) != item.keeperHash) throw QString("Retained version changed since preview");
                 QString trash;
                 if (!QFile::moveToTrash(item.path, &trash)) throw QString("Cannot move file to trash");
                 result["trash"] = trash;
             } else if (plan.request.tool == "ps2pdf") {
+                if (plan.request.deleteSourcesAfterConversion && locked(item.path)) throw QString("Directory is locked");
                 checkPath(item.output);
                 const auto outputDirectory = QFileInfo(item.output).absolutePath();
                 if (!QDir().mkpath(outputDirectory)) throw QString("Cannot create PDF output directory: ") + outputDirectory;
                 convertPdf(item);
                 result["output"] = item.output;
                 if (plan.request.deleteSourcesAfterConversion) {
+                    if (locked(item.path)) throw QString("Directory is locked");
+                    if (fingerprint(item.path) != item.hash) throw QString("File changed during conversion");
                     if (!QFile::remove(item.path)) throw QString("PDF was created, but the source file could not be deleted");
                     result["sourceDeleted"] = true;
                 }
@@ -518,6 +533,7 @@ QJsonObject PartsCore::applyTool(const ToolPlan &plan)
                 result["backup"] = backup;
             }
             completed.append(result);
+            if (onCompleted) onCompleted(item.path);
         } catch (const QString &error) {
             failed.append(QJsonObject{{"path", item.path}, {"reason", error}});
             if (QThread::currentThread()->isInterruptionRequested()) break;

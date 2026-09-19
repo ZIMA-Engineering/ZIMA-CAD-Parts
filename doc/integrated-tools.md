@@ -1,6 +1,6 @@
 # Built-in tools and CLI
 
-PS2PDF, PTC-Cleaner and STEP-Edit are Parts functions available from a
+PS2PDF, PTC-Cleaner, ZIMA-CAD Cleaner and STEP-Edit are Parts functions available from a
 directory's context menu in the tree, the CLI and the bottom command panel.
 They have no separate toolbar icons, About dialogs or external ZIMA tool
 executables. Default recursion and Cleaner rules are in Parts Settings,
@@ -9,19 +9,27 @@ The original projects, installations and their saved settings are preserved.
 
 ## Common workflow
 
-1. Select a file or directory, options and whether to include subdirectories.
-2. Review the affected files and skipped items, with reasons. PTC-Cleaner and
-   PS2PDF load their lists automatically; STEP-Edit uses **Preview**.
+1. Open a tool from the source directory and choose its options. Cleaners can
+   include subdirectories; the ordinary PS2PDF window uses only that directory.
+2. Review the candidate list. Both Cleaners and PS2PDF load their single-column
+   checkbox lists automatically, without column headings. Skipped files are
+   summarized below the list; details are available in the status tooltip.
+   STEP-Edit retains its two-column **Preview**.
 3. Select items and use **Clean**, **Create PDF**, or **Apply selected**.
    Confirmation shows the item count.
 
-Changing options invalidates the preview. PTC-Cleaner and PS2PDF automatically
+Changing options invalidates the preview. Both Cleaners and PS2PDF automatically
 refresh it after a short typing pause; STEP-Edit requires another **Preview**. Before applying changes, the file
 contents are checked again using SHA-256. The system directory `0000-index`,
 symlinks and junctions are excluded from traversal. Reading and execution
 run outside the UI thread. **Cancel** stops further work and terminates an
 ongoing Ghostscript conversion. Completed changes remain in place. Results
 report completed items, failures, skipped files and cancellation.
+
+Each successful item disappears from the visible list as it completes. At the
+end, unchecked and unsuccessful items remain; completing every candidate leaves
+an empty list. The footer reports counts and the first error, with individual
+errors available as file tooltips. CLI JSON retains full results and reasons.
 
 This is not a transaction protecting against concurrent writes from another
 application. In particular, a STEP file being edited should not also be open
@@ -38,6 +46,8 @@ ZIMA-CAD-Parts-cli ps2pdf "C:/project" --output-dir pdf --delete-source --apply
 ZIMA-CAD-Parts-cli ptc-clean "C:/project"
 ZIMA-CAD-Parts-cli ptc-clean "C:/project" --mask "trail.txt.*" --apply
 ZIMA-CAD-Parts-cli ptc-clean "C:/project" --patterns-only --mask "*.log"
+ZIMA-CAD-Parts-cli zima-clean "C:/project"
+ZIMA-CAD-Parts-cli zima-clean "C:/project" --recursive --apply
 ZIMA-CAD-Parts-cli step-edit "C:/project/model.step"
 ZIMA-CAD-Parts-cli step-edit "C:/project/model.step" --set "author=Vladimír" --apply
 ```
@@ -69,10 +79,19 @@ preview. **Delete PS source files after creating PDF** and CLI
 own PDF has been saved successfully. Ghostscript options are fixed, including
 `-dSAFER`, and no shell is used.
 
+The GUI checks **Delete PS source files after creating PDF** by default;
+uncheck it to keep the sources. CLI deletion still requires `--delete-source`.
+Deletion respects the source directory's local lock, checked both before
+conversion and immediately before removal. Sources changed during conversion
+are preserved. Source deletion is permanent; the Cleaners use the system trash.
+
 The PS2PDF window follows the same automatic workflow as PTC-Cleaner. It uses
 the directory from which it was opened, has no redundant source selector or
 Preview button, keeps its options below the candidate list and runs modelessly
 so the rest of Parts remains usable.
+It has no recursion checkbox and ignores the global recursion default. Explicit
+CLI `--recursive` remains available; a captured AI review shows that scope and
+preserves the requested source-deletion setting.
 
 The Windows runtime includes Ghostscript 10.08.0 in `tools/ghostscript`,
 its AGPL license and the corresponding source archive. Prepare it before
@@ -132,6 +151,24 @@ an error and does not fall back to permanent deletion. The
 `Directory/PreventRemoval` lock applies only to files directly in that
 directory and is checked again when applying changes. Before removing an
 older revision, the retained latest revision is also checked.
+
+## ZIMA-CAD Cleaner
+
+**Clean ZIMA-CAD files** and the `zima-clean` command select every numbered
+archive of `.prtz`, `.asmz`, `.drwz`, `.frmz` and `.tblz` documents, ignoring
+extension case. For example, `part.prtz.1` and `part.prtz.99` are both removable;
+`part.prtz` is current and is always preserved. Archives remain candidates when
+the unnumbered document is absent. Only a final dot followed by ASCII digits is
+accepted, including leading zeros and numbers larger than a 64-bit integer.
+Unrelated types such as `part.prt.1` or `notes.txt.1` are not selected.
+
+The modeless dialog loads candidates automatically and has the same checkbox
+list, **Clean** action, recursion option, progress and system-trash behavior as
+PTC-Cleaner. It has no latest-version retention switch or extra masks. Local
+directory locks and file fingerprints are rechecked before recycling;
+`0000-index`, symlinks and junctions are excluded. Locks do not inherit into
+unlocked children when recursion is selected. The ordinary command panel and
+AI's existing preview/approval tools use this same implementation.
 
 ## STEP-Edit
 

@@ -1,5 +1,32 @@
 # Build verification
 
+## Windows: local build 2026091901, September 19, 2026
+
+The GUI, CLI, updater and integration-test projects passed a clean build with
+Qt 6.10.1, MSVC x64 and Open CASCADE 8.0.0. The final dialog refinements were
+rebuilt and tested in an isolated runtime beside the deployed Qt/Ghostscript
+dependencies. Test data was temporary; recycling tests used the Windows system
+trash under the desktop user's account.
+
+- **56 integration checks passed**, with no failures or skips. Coverage includes
+  direct main-window startup, the Settings/command-panel order, one-column
+  Cleaner/PDF lists, selected/completed/failed rows, ZIMA-CAD archive revalidation,
+  completion notifications, local locks and captured recursive AI reviews.
+- **14 built-in tool CLI tests passed**, including real PDF conversion, source
+  deletion/locks, every ZIMA-CAD document extension, highest/orphan archives,
+  arbitrarily long numeric suffixes, exclusions and native recycling.
+- **4 read-only CLI tests passed**.
+- All four catalogs passed with **562 complete translations** each.
+- Czech PTC, ZIMA-CAD Cleaner and PS2PDF windows were rendered and visually
+  inspected. Existing browsing, metadata, thumbnail and CAD-import checks are
+  included in the integration suite. Native technical-specification browsing
+  and interactive downloads were not manually repeated for this change.
+
+Build/test logs and dialog captures are under `.build-ui-20260919/` locally.
+This is a local Windows development build, not a published or signed release.
+Native Linux/KDE execution has not been repeated for these changes; the earlier
+Debian release acceptance below applies to that earlier release.
+
 ## Windows: PS2PDF release 2026091801, September 18, 2026
 
 The GUI, CLI, updater and integration-test projects were rebuilt with Qt
@@ -133,7 +160,7 @@ still need separate verification. No verified Debian binary is available yet.
 ## Integration coverage
 
 - Language switching, SVG icons and STEP/IGES/STL import.
-- Deferred tab loading, thumbnails, filters and the non-blocking splash screen.
+- Deferred tab loading, thumbnails, filters and direct startup without a splash.
 - Preserving other tree branches when deleting and working with the displayed
   directory.
 - Shared PDF, Pro/E and ZIMA-CAD parameters, table and dialog editing,

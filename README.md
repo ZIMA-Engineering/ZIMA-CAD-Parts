@@ -248,7 +248,7 @@ Use `/exit` to return to ordinary Parts commands.
 The input stays editable while Codex is working. Completion, errors and Stop
 preserve the next draft; it is sent only after your explicit submission.
 
-The built-in [PS2PDF, PTC-Cleaner and STEP-Edit](doc/integrated-tools.md)
+The built-in [PS2PDF, PTC-Cleaner, ZIMA-CAD Cleaner and STEP-Edit](doc/integrated-tools.md)
 functions are available from the GUI and CLI. ZIMA-CAD-Sync is no longer offered.
 
 The [GitHub updates guide](doc/github-updates.md) describes silent startup

@@ -41,7 +41,7 @@ immediately interruptible.
 The output is limited to 1,500 text blocks and each result to 24,000
 characters. A notice appears when output is truncated; use the standalone
 CLI for complete JSON. The panel also supports [built-in
-tools](integrated-tools.md): `ps2pdf`, `ptc-clean` and `step-edit`. Without
+tools](integrated-tools.md): `ps2pdf`, `ptc-clean`, `zima-clean` and `step-edit`. Without
 `--apply`, they return a preview; with `--apply`, they modify files.
 
 Enter `codex` to use the optional [Codex conversation mode](ai-command-panel.md).

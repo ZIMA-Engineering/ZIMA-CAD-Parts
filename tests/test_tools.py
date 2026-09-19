@@ -56,6 +56,54 @@ class ToolTests(unittest.TestCase):
             self.assertEqual(fields['name'],'part,name')
             self.assertEqual(fields['organization'],['ZIMA, s.r.o.'])
 
+    def test_zima_archives_include_highest_orphan_and_large_numbers(self):
+        with tempfile.TemporaryDirectory(prefix='ZIMA archives ') as tmp:
+            p = Path(tmp)
+            archives = {'part.v2.prtz.1', 'part.v2.prtz.99', 'assembly.asmz.2',
+                        'drawing.drwz.0003', 'frame.frmz.0', 'title.TBLZ.4',
+                        'orphan.prtz.999999999999999999999999999999999'}
+            kept = {'part.v2.prtz', 'assembly.asmz', 'drawing.drwz', 'frame.frmz',
+                    'title.TBLZ', 'part.prt.1', 'notes.txt.1', 'part.prtz.bak',
+                    'part.prtz.1.bak', 'part.prtz.-1', 'part.prtz.1.2'}
+            for name in archives | kept:
+                (p/name).write_text(name)
+            before = {f.name: f.read_bytes() for f in p.iterdir()}
+            result = self.invoke('zima-clean', p)
+            self.assertEqual({Path(i['path']).name for i in result['items']}, archives)
+            self.assertTrue(all('keep' not in i for i in result['items']))
+            self.assertEqual({f.name: f.read_bytes() for f in p.iterdir()}, before)
+            for option in ('--patterns-only', '--delete-source'):
+                self.invoke('zima-clean', p, option, code=2)
+            self.invoke('zima-clean', p, '--mask', '*', code=2)
+            result = self.invoke('zima-clean', p, '--apply')
+            self.assertEqual(len(result['completed']), len(archives))
+            self.assertEqual({f.name: f.read_bytes() for f in p.iterdir()},
+                             {name: before[name] for name in kept})
+
+    def test_zima_lock_is_local_and_system_directory_is_excluded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp); (p/'child').mkdir(); (p/'0000-index').mkdir()
+            (p/'0000-index/metadata.ini').write_text('[Directory]\nPreventRemoval=true\n')
+            for d in (p, p/'child', p/'0000-index'):
+                (d/'part.prtz.1').write_text('archive')
+            self.assertEqual(self.invoke('zima-clean', p)['items'], [])
+            result = self.invoke('zima-clean', p, '--recursive')
+            self.assertEqual([Path(i['path']).parent for i in result['items']], [p/'child'])
+            self.assertEqual(len(result['skipped']), 1)
+            self.invoke('zima-clean', p/'0000-index', code=3)
+
+    def test_pdf_source_deletion_respects_local_lock(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp); (p/'0000-index').mkdir()
+            (p/'0000-index/metadata.ini').write_text('[Directory]\nPreventRemoval=true\n')
+            source = p/'drawing.ps'; source.write_bytes(b'%!PS\nshowpage\n')
+            result = self.invoke('ps2pdf', source, '--delete-source', '--apply', code=3)
+            self.assertEqual(result['completed'], [])
+            self.assertIn('locked', result['skipped'][0]['reason'])
+            self.assertTrue(source.exists())
+            self.assertFalse(source.with_suffix('.pdf').exists())
+            self.assertEqual(len(self.invoke('ps2pdf', source)['items']), 1)
+
     def test_multiline_header_comments_and_empty_field(self):
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp)/'model.stp'

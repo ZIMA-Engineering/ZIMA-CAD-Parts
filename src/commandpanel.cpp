@@ -154,7 +154,7 @@ void CommandPanel::dropEvent(QDropEvent *event)
 void CommandPanel::retranslate()
 {
     m_hint->setText(m_aiMode ? tr("Codex conversation. /exit: Parts commands. /new: new conversation. File changes require approval.")
-        : tr("Commands: help, list, params, ps2pdf, ptc-clean, step-edit, codex. Tools preview first; --apply executes. History: Up / Down."));
+        : tr("Commands: help, list, params, ps2pdf, ptc-clean, zima-clean, step-edit, codex. Tools preview first; --apply executes. History: Up / Down."));
     m_input->setPlaceholderText(m_aiMode ? tr("Ask Codex, or drop files and directories here...")
         : tr("Enter a command, e.g. list or params \"part.pdf\""));
     m_run->setText(m_aiPending ? tr("Working...") : m_worker ? tr("Reading...") : m_aiMode ? tr("Send") : tr("Run"));

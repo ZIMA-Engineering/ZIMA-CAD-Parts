@@ -14,12 +14,14 @@
 #include <QJsonDocument>
 #include <QTimer>
 #include <QSet>
+#include <QHash>
 #include <memory>
 
 QString PartsToolsDialog::title(const QString &tool)
 {
     if (tool == "ps2pdf") return tr("PostScript to PDF");
     if (tool == "ptc-clean") return tr("Clean PTC files");
+    if (tool == "zima-clean") return tr("Clean ZIMA-CAD files");
     return tr("Edit STEP header");
 }
 PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWidget *parent)
@@ -31,7 +33,7 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
     auto layout = new QVBoxLayout(this);
     m_options = new QWidget(this);
     auto form = new QFormLayout(m_options);
-    const bool automaticTool = tool == "ptc-clean" || tool == "ps2pdf";
+    const bool automaticTool = tool != "step-edit";
     if (!automaticTool) {
         auto sourceRow = new QHBoxLayout;
         m_path = new QLineEdit(path, this);
@@ -51,10 +53,12 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
             if (!value.isEmpty()) m_path->setText(value);
         });
     }
-    m_recursive = new QCheckBox(tr("Include subdirectories"), this);
-    m_recursive->setObjectName("toolRecursive");
-    m_recursive->setChecked(Settings::get()->ToolsRecursive);
-    form->addRow(m_recursive);
+    if (tool != "ps2pdf") {
+        m_recursive = new QCheckBox(tr("Include subdirectories"), this);
+        m_recursive->setObjectName("toolRecursive");
+        m_recursive->setChecked(Settings::get()->ToolsRecursive);
+        form->addRow(m_recursive);
+    }
     if (tool == "ps2pdf") {
         m_output = new QLineEdit("pdf", this);
         m_output->setObjectName("toolOutputDirectory");
@@ -69,6 +73,7 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
         form->addRow(tr("Output directory"), outputRow);
         m_deleteSources = new QCheckBox(tr("Delete PS source files after creating PDF"), this);
         m_deleteSources->setObjectName("toolDeleteSources");
+        m_deleteSources->setChecked(true);
         form->addRow(m_deleteSources);
         form->addRow(new QLabel(tr("Existing PDFs are replaced. PLT input must contain PostScript."), this));
         if (PartsCore::ghostscriptExecutable().isEmpty())
@@ -82,6 +87,9 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
         m_masks->setObjectName("toolCleanMasks");
         m_masks->setPlaceholderText("*.log;trail.txt.*");
         form->addRow(tr("Additional removal masks (semicolon separated)"), m_masks);
+        form->addRow(new QLabel(tr("Selected files go to the trash. Directory locks are respected."), this));
+    } else if (tool == "zima-clean") {
+        form->addRow(new QLabel(tr("Remove all numbered ZIMA-CAD archives (.1, .2, ...). Current documents are kept."), this));
         form->addRow(new QLabel(tr("Selected files go to the trash. Directory locks are respected."), this));
     } else {
         const QStringList names{"name", "date", "author", "organization", "preprocessor", "system", "authorization"};
@@ -100,16 +108,24 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
     if (!automaticTool) layout->addWidget(m_options);
     m_files = new QTreeWidget(this);
     m_files->setObjectName("toolFiles");
-    m_files->setHeaderLabels({tr("File"), tr("Result / reason")});
+    if (automaticTool) {
+        m_files->setColumnCount(1);
+        m_files->setHeaderHidden(true);
+        m_files->setRootIsDecorated(false);
+    } else {
+        m_files->setHeaderLabels({tr("File"), tr("Result / reason")});
+    }
     m_files->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     m_files->setSelectionMode(QAbstractItemView::ExtendedSelection);
     layout->addWidget(m_files, 1);
     if (automaticTool) layout->addWidget(m_options);
     m_status = new QLabel(automaticTool
-        ? (tool == "ptc-clean" ? tr("Choose files to clean. The list updates automatically.")
+        ? (tool != "ps2pdf" ? tr("Choose files to clean. The list updates automatically.")
             : tr("Choose files to convert. The list updates automatically."))
         : tr("Preview the operation, then choose files to apply."), this);
     m_status->setWordWrap(true);
+    m_status->setTextFormat(Qt::PlainText);
+    m_status->setObjectName("toolStatus");
     layout->addWidget(m_status);
     auto buttons = new QHBoxLayout;
     auto selectAll = new QPushButton(tr("Select all"), this);
@@ -120,7 +136,7 @@ PartsToolsDialog::PartsToolsDialog(const QString &tool, const QString &path, QWi
         m_preview->setObjectName("toolPreview");
         buttons->addWidget(m_preview);
     }
-    m_apply = new QPushButton(tool == "ptc-clean" ? tr("Clean")
+    m_apply = new QPushButton(tool == "ptc-clean" || tool == "zima-clean" ? tr("Clean")
         : tool == "ps2pdf" ? tr("Create PDF") : tr("Apply selected"), this);
     if (automaticTool) m_apply->setAutoDefault(false);
     m_apply->setObjectName("toolApply"); m_apply->setEnabled(false);
@@ -189,7 +205,7 @@ void PartsToolsDialog::setPreparedPlan(const PartsCore::ToolPlan &plan)
     if (m_autoPreview) m_autoPreview->stop();
     m_sourcePath = plan.request.path;
     if (m_path) m_path->setText(plan.request.path);
-    m_recursive->setChecked(plan.request.recursive);
+    if (m_recursive) m_recursive->setChecked(plan.request.recursive);
     if (m_output) m_output->setText(plan.request.outputDirectory);
     if (m_deleteSources) m_deleteSources->setChecked(plan.request.deleteSourcesAfterConversion);
     if (m_old) m_old->setChecked(plan.request.oldVersions);
@@ -203,7 +219,14 @@ void PartsToolsDialog::setPreparedPlan(const PartsCore::ToolPlan &plan)
     // An AI review shows the captured operation, not a second editing form.
     for (auto button : m_options->findChildren<QPushButton *>()) button->hide();
     auto form = qobject_cast<QFormLayout *>(m_options->layout());
-    form->setRowVisible(m_recursive, plan.request.recursive);
+    if (m_recursive) form->setRowVisible(m_recursive, plan.request.recursive);
+    else if (plan.request.recursive) {
+        // CLI/AI plans retain their explicit scope even though the ordinary
+        // PDF dialog operates only in its source directory.
+        auto scope = new QLabel(tr("Include subdirectories"), m_options);
+        scope->setObjectName("toolPreparedRecursive");
+        form->addRow(scope);
+    }
     for (auto it = m_fields.begin(); it != m_fields.end(); ++it)
         form->setRowVisible(it.value().first, plan.request.fields.contains(it.key()));
     if (m_masks) form->setRowVisible(m_masks, !plan.request.patterns.isEmpty());
@@ -225,15 +248,27 @@ void PartsToolsDialog::showPlan()
     for (const auto &item : m_plan.items) {
         QString detail = !item.output.isEmpty() ? item.output : !item.keeper.isEmpty() ? tr("Keep: %1").arg(item.keeper) : QString();
         if (!item.fields.isEmpty()) detail = QString::fromUtf8(QJsonDocument(item.fields).toJson(QJsonDocument::Compact));
-        auto row = new QTreeWidgetItem(m_files, {item.path, detail});
+        auto row = new QTreeWidgetItem(m_files, m_tool == "step-edit"
+            ? QStringList{item.path, detail} : QStringList{item.path});
+        row->setToolTip(0, detail);
         row->setCheckState(0, Qt::Checked);
     }
+    QStringList skippedDetails;
     for (const auto &value : m_plan.skipped) {
         const auto item = value.toObject();
-        auto row = new QTreeWidgetItem(m_files, {item["path"].toString(), item["reason"].toString()});
-        row->setDisabled(true);
+        skippedDetails.append(item["path"].toString() + ": " + item["reason"].toString());
+        if (m_tool == "step-edit") {
+            auto row = new QTreeWidgetItem(m_files, {item["path"].toString(), item["reason"].toString()});
+            row->setDisabled(true);
+        }
     }
     m_status->setText(tr("Ready: %1. Skipped: %2.").arg(m_plan.items.size()).arg(m_plan.skipped.size()));
+    m_status->setToolTip(skippedDetails.join('\n'));
+    if (!m_plan.skipped.isEmpty()) {
+        const auto first = m_plan.skipped.first().toObject();
+        m_status->setText(m_status->text() + '\n' + QFileInfo(first["path"].toString()).fileName()
+            + ": " + first["reason"].toString().simplified().left(240));
+    }
     m_apply->setEnabled(!m_plan.items.isEmpty() && (m_tool != "step-edit" || !m_plan.request.fields.isEmpty())
         && (m_tool != "ps2pdf" || !PartsCore::ghostscriptExecutable().isEmpty()));
 }
@@ -246,7 +281,7 @@ void PartsToolsDialog::start(bool apply)
     PartsCore::ToolRequest request;
     request.tool = m_tool;
     request.path = m_path ? m_path->text() : m_sourcePath;
-    request.recursive = m_recursive->isChecked();
+    request.recursive = m_recursive && m_recursive->isChecked();
     if (m_output) request.outputDirectory = m_output->text();
     if (m_deleteSources) request.deleteSourcesAfterConversion = m_deleteSources->isChecked();
     if (m_old) request.oldVersions = m_old->isChecked();
@@ -262,7 +297,7 @@ void PartsToolsDialog::start(bool apply)
         for (int i = 0; i < m_plan.items.size(); ++i)
             if (m_files->topLevelItem(i)->checkState(0) == Qt::Checked) selected.items.append(m_plan.items[i]);
         if (selected.items.isEmpty()) return;
-        const auto confirmation = m_tool == "ptc-clean"
+        const auto confirmation = m_tool == "ptc-clean" || m_tool == "zima-clean"
             ? tr("Move %1 selected files to the trash?").arg(selected.items.size())
             : m_tool == "ps2pdf"
                 ? (request.deleteSourcesAfterConversion
@@ -272,12 +307,27 @@ void PartsToolsDialog::start(bool apply)
         if (!m_prepared && QMessageBox::question(this, title(m_tool), confirmation,
             QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) return;
     }
-    auto worker = QThread::create([request, selected, apply, result, applied, error] {
-        try { if (apply) *applied = PartsCore::applyTool(selected); else *result = PartsCore::planTool(request); }
+    QHash<QString, int> rows;
+    if (apply && m_tool != "step-edit")
+        for (int i = 0; i < m_plan.items.size(); ++i) rows.insert(m_plan.items[i].path, i);
+    auto worker = QThread::create([this, request, selected, apply, result, applied, error, rows] {
+        try {
+            if (apply) {
+                *applied = PartsCore::applyTool(selected, [this, rows](const QString &path) {
+                    const int row = rows.value(path, -1);
+                    if (row < 0) return;
+                    QMetaObject::invokeMethod(this, [this, row] {
+                        // Keep indices stable for the captured plan until the
+                        // final result removes completed items from it.
+                        if (auto item = m_files->topLevelItem(row)) item->setHidden(true);
+                    }, Qt::QueuedConnection);
+                });
+            } else *result = PartsCore::planTool(request);
+        }
         catch (const QString &e) { *error = e; }
     });
     m_worker = worker;
-    if (apply && (m_tool == "ptc-clean" || m_tool == "ps2pdf")) {
+    if (apply && m_tool != "step-edit") {
         const QFileInfo source(request.path);
         m_fileChangesPath = source.isDir() ? source.absoluteFilePath() : source.absolutePath();
         PartCache::get()->beginFileChanges(m_fileChangesPath);
@@ -301,12 +351,21 @@ void PartsToolsDialog::start(bool apply)
             return;
         }
         if (!error->isEmpty()) {
+            if (apply) {
+                m_plan = originalPlan;
+                showPlan();
+                QSet<QString> checked;
+                for (const auto &item : selected.items) checked.insert(item.path);
+                for (int i = 0; i < m_plan.items.size(); ++i)
+                    m_files->topLevelItem(i)->setCheckState(0, checked.contains(m_plan.items[i].path)
+                        ? Qt::Checked : Qt::Unchecked);
+            }
             m_status->setText(*error);
             if (m_prepared) { m_operationResult = {{"error", *error}}; QDialog::accept(); }
             return;
         }
         if (apply) {
-            if ((m_tool == "ptc-clean" || m_tool == "ps2pdf") && !m_prepared) {
+            if (m_tool != "step-edit") {
                 QSet<QString> completed, checked;
                 QMap<QString, QString> failures;
                 for (const auto &value : (*applied)["completed"].toArray())
@@ -323,7 +382,7 @@ void PartsToolsDialog::start(bool apply)
                     auto row = m_files->topLevelItem(i);
                     const auto &path = m_plan.items[i].path;
                     row->setCheckState(0, checked.contains(path) ? Qt::Checked : Qt::Unchecked);
-                    if (failures.contains(path)) row->setText(1, failures.value(path));
+                    if (failures.contains(path)) row->setToolTip(0, failures.value(path));
                 }
             } else {
                 for (const auto &kind : {"completed", "failed", "skipped"})
@@ -334,6 +393,12 @@ void PartsToolsDialog::start(bool apply)
             }
             m_status->setText(tr("Completed: %1. Failed: %2. Skipped: %3.")
                 .arg((*applied)["completed"].toArray().size()).arg((*applied)["failed"].toArray().size()).arg((*applied)["skipped"].toArray().size()));
+            const auto failures = (*applied)["failed"].toArray();
+            if (!failures.isEmpty()) {
+                const auto first = failures.first().toObject();
+                m_status->setText(m_status->text() + '\n' + QFileInfo(first["path"].toString()).fileName()
+                    + ": " + first["reason"].toString().simplified().left(240));
+            }
             if (!(*applied)["completed"].toArray().isEmpty()) emit filesChanged();
             if (m_prepared) { m_operationResult = *applied; QDialog::accept(); }
         } else {

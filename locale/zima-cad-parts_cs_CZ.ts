@@ -290,11 +290,6 @@
         <translation>Rozhovor s Codexem. /exit: příkazy Parts. /new: nový rozhovor. Změny souborů vyžadují potvrzení.</translation>
     </message>
     <message>
-        <location filename="../src/commandpanel.cpp" line="157"/>
-        <source>Commands: help, list, params, ps2pdf, ptc-clean, step-edit, codex. Tools preview first; --apply executes. History: Up / Down.</source>
-        <translation>Příkazy: help, list, params, ps2pdf, ptc-clean, step-edit, codex. Nástroje nejprve zobrazí náhled; --apply provede změny. Historie: nahoru / dolů.</translation>
-    </message>
-    <message>
         <location filename="../src/commandpanel.cpp" line="158"/>
         <source>Ask Codex, or drop files and directories here...</source>
         <translation>Napište Codexu nebo sem přetáhněte soubory a adresáře...</translation>
@@ -350,6 +345,11 @@
         <location filename="../src/commandpanel.cpp" line="110"/>
         <source>Cannot insert AI paths: %1</source>
         <translation>Nelze vložit cesty do dotazu AI: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/commandpanel.cpp" line="157"/>
+        <source>Commands: help, list, params, ps2pdf, ptc-clean, zima-clean, step-edit, codex. Tools preview first; --apply executes. History: Up / Down.</source>
+        <translation>Příkazy: help, list, params, ps2pdf, ptc-clean, zima-clean, step-edit, codex. Nástroje nejprve zobrazí náhled; --apply provede změny. Historie: nahoru / dolů.</translation>
     </message>
     <message>
         <location filename="../src/commandpanel.cpp" line="383"/>
@@ -438,43 +438,43 @@
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="375"/>
-        <location filename="../src/datasourceview.cpp" line="418"/>
+        <location filename="../src/datasourceview.cpp" line="376"/>
+        <location filename="../src/datasourceview.cpp" line="419"/>
         <source>Directory exists</source>
         <translation>Adresář existuje</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="376"/>
+        <location filename="../src/datasourceview.cpp" line="377"/>
         <source>Directory %1 already exists.</source>
         <translation>Adresář %1 již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="418"/>
+        <location filename="../src/datasourceview.cpp" line="419"/>
         <source>Directory &apos;%1&apos; already exists.</source>
         <translation>Adresář &apos;%1&apos; již existuje.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="425"/>
+        <location filename="../src/datasourceview.cpp" line="426"/>
         <source>Please wait while the directory is being copied...</source>
         <translation>Počkejte prosím na zkopírování adresáře...</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="439"/>
+        <location filename="../src/datasourceview.cpp" line="440"/>
         <source>Directory locked</source>
         <translation>Adresář je zamčený</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="444"/>
+        <location filename="../src/datasourceview.cpp" line="445"/>
         <source>Do you really want to delete selected directory?</source>
         <translation>Opravdu chcete smazat vybraný adresář?</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="445"/>
+        <location filename="../src/datasourceview.cpp" line="446"/>
         <source>Do you really want to delete directory &apos;%1&apos;? This action is irreversible.</source>
         <translation>Opravdu chcete smazat adresář &apos;%1&apos;? Tuto akci nelze vrátit zpět.</translation>
     </message>
     <message>
-        <location filename="../src/datasourceview.cpp" line="452"/>
+        <location filename="../src/datasourceview.cpp" line="453"/>
         <source>Please wait while the directory is being removed...</source>
         <translation>Počkejte prosím na odstranění adresáře...</translation>
     </message>
@@ -1423,8 +1423,8 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="104"/>
-        <location filename="../src/mainwindow.cpp" line="208"/>
+        <location filename="../src/mainwindow.cpp" line="90"/>
+        <location filename="../src/mainwindow.cpp" line="188"/>
         <source>Command panel</source>
         <translation>Příkazový panel</translation>
     </message>
@@ -1700,229 +1700,241 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
     </message>
     <message>
         <location filename="../src/partstoolsdialog.cpp" line="23"/>
+        <source>Clean ZIMA-CAD files</source>
+        <translation>Vyčistit soubory ZIMA-CAD</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="24"/>
         <source>Edit STEP header</source>
         <translation>Upravit hlavičku STEP</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="40"/>
+        <location filename="../src/partstoolsdialog.cpp" line="41"/>
         <source>File...</source>
         <translation>Soubor…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="41"/>
-        <location filename="../src/partstoolsdialog.cpp" line="64"/>
+        <location filename="../src/partstoolsdialog.cpp" line="42"/>
+        <location filename="../src/partstoolsdialog.cpp" line="67"/>
         <source>Directory...</source>
         <translation>Adresář…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="43"/>
+        <location filename="../src/partstoolsdialog.cpp" line="44"/>
         <source>Source</source>
         <translation>Zdroj</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="54"/>
+        <location filename="../src/partstoolsdialog.cpp" line="56"/>
+        <location filename="../src/partstoolsdialog.cpp" line="224"/>
         <source>Include subdirectories</source>
         <translation>Včetně podadresářů</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="66"/>
         <location filename="../src/partstoolsdialog.cpp" line="69"/>
+        <location filename="../src/partstoolsdialog.cpp" line="72"/>
         <source>Output directory</source>
         <translation>Výstupní adresář</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="75"/>
+        <location filename="../src/partstoolsdialog.cpp" line="79"/>
         <source>Ghostscript is missing. Repair the Parts runtime package.</source>
         <translation>Chybí Ghostscript. Opravte instalační balík Parts.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="77"/>
+        <location filename="../src/partstoolsdialog.cpp" line="81"/>
         <source>Remove old numbered versions; keep the highest number</source>
         <translation>Odstranit staré číslované verze; ponechat nejvyšší číslo</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="84"/>
+        <location filename="../src/partstoolsdialog.cpp" line="88"/>
         <source>Additional removal masks (semicolon separated)</source>
         <translation>Další masky pro odstranění (oddělené středníkem)</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="85"/>
+        <location filename="../src/partstoolsdialog.cpp" line="89"/>
+        <location filename="../src/partstoolsdialog.cpp" line="92"/>
         <source>Selected files go to the trash. Directory locks are respected.</source>
         <translation>Vybrané soubory se přesunou do koše. Zámečky adresářů se respektují.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="88"/>
+        <location filename="../src/partstoolsdialog.cpp" line="91"/>
+        <source>Remove all numbered ZIMA-CAD archives (.1, .2, ...). Current documents are kept.</source>
+        <translation>Odstranit všechny číslované archivy ZIMA-CAD (.1, .2, ...). Aktuální dokumenty zůstanou zachovány.</translation>
+    </message>
+    <message>
+        <location filename="../src/partstoolsdialog.cpp" line="95"/>
         <source>File name</source>
         <translation>Název souboru</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="88"/>
+        <location filename="../src/partstoolsdialog.cpp" line="95"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="88"/>
+        <location filename="../src/partstoolsdialog.cpp" line="95"/>
         <source>Author</source>
         <translation>Autor</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="88"/>
+        <location filename="../src/partstoolsdialog.cpp" line="95"/>
         <source>Organization</source>
         <translation>Organizace</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="89"/>
+        <location filename="../src/partstoolsdialog.cpp" line="96"/>
         <source>Preprocessor</source>
         <translation>Preprocesor</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="89"/>
+        <location filename="../src/partstoolsdialog.cpp" line="96"/>
         <source>Originating system</source>
         <translation>Zdrojový systém</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="89"/>
+        <location filename="../src/partstoolsdialog.cpp" line="96"/>
         <source>Authorization</source>
         <translation>Autorizace</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="98"/>
+        <location filename="../src/partstoolsdialog.cpp" line="105"/>
         <source>Check only fields to change. Originals are backed up in 0000-index/tool-backups.</source>
         <translation>Zaškrtněte jen měněná pole. Originály se zálohují do 0000-index/tool-backups.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="103"/>
+        <location filename="../src/partstoolsdialog.cpp" line="115"/>
         <source>File</source>
         <translation>Soubor</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="103"/>
+        <location filename="../src/partstoolsdialog.cpp" line="115"/>
         <source>Result / reason</source>
         <translation>Výsledek / důvod</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="109"/>
+        <location filename="../src/partstoolsdialog.cpp" line="122"/>
         <source>Choose files to clean. The list updates automatically.</source>
         <translation>Vyberte soubory k vyčištění. Seznam se aktualizuje automaticky.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="110"/>
+        <location filename="../src/partstoolsdialog.cpp" line="123"/>
         <source>Choose files to convert. The list updates automatically.</source>
         <translation>Vyberte soubory k převodu. Seznam se aktualizuje automaticky.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="111"/>
+        <location filename="../src/partstoolsdialog.cpp" line="124"/>
         <source>Preview the operation, then choose files to apply.</source>
         <translation>Zobrazte náhled operace a vyberte soubory ke zpracování.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="115"/>
+        <location filename="../src/partstoolsdialog.cpp" line="129"/>
         <source>Select all</source>
         <translation>Vybrat vše</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="116"/>
+        <location filename="../src/partstoolsdialog.cpp" line="130"/>
         <source>Select none</source>
         <translation>Zrušit výběr</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="119"/>
+        <location filename="../src/partstoolsdialog.cpp" line="133"/>
         <source>Preview</source>
         <translation>Náhled</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="124"/>
+        <location filename="../src/partstoolsdialog.cpp" line="138"/>
         <source>Apply selected</source>
         <translation>Použít vybrané</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="123"/>
+        <location filename="../src/partstoolsdialog.cpp" line="137"/>
         <source>Clean</source>
         <translation>Vyčistit</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="61"/>
+        <location filename="../src/partstoolsdialog.cpp" line="64"/>
         <source>Relative to the source directory</source>
         <translation>Relativně ke zdrojovému adresáři</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="70"/>
+        <location filename="../src/partstoolsdialog.cpp" line="73"/>
         <source>Delete PS source files after creating PDF</source>
         <translation>Po vytvoření PDF smazat zdrojové soubory PS</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="73"/>
+        <location filename="../src/partstoolsdialog.cpp" line="77"/>
         <source>Existing PDFs are replaced. PLT input must contain PostScript.</source>
         <translation>Existující PDF budou nahrazena. Vstup PLT musí obsahovat PostScript.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="124"/>
+        <location filename="../src/partstoolsdialog.cpp" line="138"/>
         <source>Create PDF</source>
         <translation>Vytvořit PDF</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="127"/>
-        <location filename="../src/partstoolsdialog.cpp" line="297"/>
+        <location filename="../src/partstoolsdialog.cpp" line="141"/>
+        <location filename="../src/partstoolsdialog.cpp" line="344"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="166"/>
+        <location filename="../src/partstoolsdialog.cpp" line="180"/>
         <source>Cancelling...</source>
         <translation>Ruším…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="213"/>
+        <location filename="../src/partstoolsdialog.cpp" line="234"/>
         <source>Allow selected</source>
         <translation>Povolit vybrané</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="216"/>
+        <location filename="../src/partstoolsdialog.cpp" line="237"/>
         <source>Deny</source>
         <translation>Odmítnout</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="266"/>
+        <location filename="../src/partstoolsdialog.cpp" line="299"/>
         <source>Move %1 selected files to the trash?</source>
         <translation>Přesunout %1 vybraných souborů do koše?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="269"/>
+        <location filename="../src/partstoolsdialog.cpp" line="302"/>
         <source>Create or replace %1 selected PDFs and delete their PS source files?</source>
         <translation>Vytvořit nebo nahradit %1 vybraných PDF a smazat jejich zdrojové soubory PS?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="270"/>
+        <location filename="../src/partstoolsdialog.cpp" line="303"/>
         <source>Create or replace %1 selected PDFs?</source>
         <translation>Vytvořit nebo nahradit %1 vybraných PDF?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="271"/>
+        <location filename="../src/partstoolsdialog.cpp" line="304"/>
         <source>Apply this operation to %1 selected files?</source>
         <translation>Provést tuto operaci pro %1 vybraných souborů?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="288"/>
+        <location filename="../src/partstoolsdialog.cpp" line="335"/>
         <source>Cancel</source>
         <translation>Zrušit</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="288"/>
+        <location filename="../src/partstoolsdialog.cpp" line="335"/>
         <source>Working...</source>
         <translation>Pracuji…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="335"/>
+        <location filename="../src/partstoolsdialog.cpp" line="383"/>
         <source>Completed: %1. Failed: %2. Skipped: %3.</source>
         <translation>Dokončeno: %1. Chyby: %2. Přeskočeno: %3.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="226"/>
+        <location filename="../src/partstoolsdialog.cpp" line="247"/>
         <source>Keep: %1</source>
         <translation>Ponechat: %1</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="236"/>
+        <location filename="../src/partstoolsdialog.cpp" line="263"/>
         <source>Ready: %1. Skipped: %2.</source>
         <translation>Připraveno: %1. Přeskočeno: %2.</translation>
     </message>
@@ -2596,114 +2608,99 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
         <translation>Nastavení ZIMA-CAD-Parts</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="124"/>
-        <source>Splash screen</source>
-        <translation>Úvodní obrazovka</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="136"/>
-        <source>Duration</source>
-        <translation>Doba zobrazení</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="143"/>
-        <source> ms</source>
-        <translation> ms</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="176"/>
+        <location filename="../src/settingsdialog.ui" line="138"/>
         <source>&amp;Browser</source>
         <translation>&amp;Prohlížeč</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="182"/>
+        <location filename="../src/settingsdialog.ui" line="144"/>
         <source>Browser</source>
         <translation>Prohlížeč</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="188"/>
+        <location filename="../src/settingsdialog.ui" line="150"/>
         <source>Save passwords for web forms</source>
         <translation>Ukládat hesla webových formulářů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="198"/>
+        <location filename="../src/settingsdialog.ui" line="160"/>
         <source>Automatically fill saved passwords</source>
         <translation>Automaticky vyplňovat uložená hesla</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="208"/>
+        <location filename="../src/settingsdialog.ui" line="170"/>
         <source>Remember HTTP authentication credentials</source>
         <translation>Pamatovat přihlašovací údaje ověření HTTP</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="218"/>
+        <location filename="../src/settingsdialog.ui" line="180"/>
         <source>Passwords are stored in the system credential store.</source>
         <translation>Hesla jsou uložena v systémovém úložišti přihlašovacích údajů.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="228"/>
+        <location filename="../src/settingsdialog.ui" line="190"/>
         <source>Saved passwords...</source>
         <translation>Uložená hesla...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="252"/>
+        <location filename="../src/settingsdialog.ui" line="214"/>
         <source>&amp;Data sources</source>
         <translation>&amp;Zdroje dat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="282"/>
+        <location filename="../src/settingsdialog.ui" line="244"/>
         <source>&amp;Add</source>
         <translation>&amp;Přidat</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="289"/>
+        <location filename="../src/settingsdialog.ui" line="251"/>
         <source>&amp;Edit</source>
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="296"/>
+        <location filename="../src/settingsdialog.ui" line="258"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="316"/>
+        <location filename="../src/settingsdialog.ui" line="278"/>
         <source>Move &amp;Up</source>
         <translation>Posunout &amp;nahoru</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="323"/>
+        <location filename="../src/settingsdialog.ui" line="285"/>
         <source>Move &amp;Down</source>
         <translation>Posunout &amp;dolů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="368"/>
+        <location filename="../src/settingsdialog.ui" line="330"/>
         <source>ProE executable:</source>
         <translation>Spustitelný soubor Pro/E:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="355"/>
-        <location filename="../src/settingsdialog.ui" line="390"/>
-        <location filename="../src/settingsdialog.ui" line="410"/>
+        <location filename="../src/settingsdialog.ui" line="317"/>
+        <location filename="../src/settingsdialog.ui" line="352"/>
+        <location filename="../src/settingsdialog.ui" line="372"/>
         <source>Find...</source>
         <translation>Najít...</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="346"/>
+        <location filename="../src/settingsdialog.ui" line="308"/>
         <source>Tools and programs</source>
         <translation>Nástroje a programy</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="375"/>
+        <location filename="../src/settingsdialog.ui" line="337"/>
         <source>Built-in tools</source>
         <translation>Vestavěné nástroje</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="383"/>
+        <location filename="../src/settingsdialog.ui" line="345"/>
         <source>Text editor:</source>
         <translation>Textový editor:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="417"/>
+        <location filename="../src/settingsdialog.ui" line="379"/>
         <source>Terminal:</source>
         <translation>Terminál:</translation>
     </message>
@@ -2714,53 +2711,53 @@ Tato nastavení platí pouze pro tuto složku; podsložky je nedědí.</translat
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="69"/>
-        <location filename="../src/settingsdialog.cpp" line="134"/>
+        <location filename="../src/settingsdialog.cpp" line="132"/>
         <source>Updates</source>
         <translation>Aktualizace</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="71"/>
-        <location filename="../src/settingsdialog.cpp" line="135"/>
+        <location filename="../src/settingsdialog.cpp" line="133"/>
         <source>AI</source>
         <translation>AI</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="105"/>
+        <location filename="../src/settingsdialog.cpp" line="103"/>
         <source>Include subdirectories by default</source>
         <translation>Výchozí procházení včetně podadresářů</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="107"/>
+        <location filename="../src/settingsdialog.cpp" line="105"/>
         <source>Cleaner: remove old numbered versions</source>
         <translation>Cleaner: odstranit staré číslované verze</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="112"/>
+        <location filename="../src/settingsdialog.cpp" line="110"/>
         <source>Cleaner: additional masks (semicolon separated)</source>
         <translation>Cleaner: další masky (oddělené středníkem)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="116"/>
+        <location filename="../src/settingsdialog.cpp" line="114"/>
         <source>Ghostscript runtime is missing</source>
         <translation>Chybí převodní program Ghostscript</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="334"/>
+        <location filename="../src/settingsdialog.cpp" line="330"/>
         <source>Locate ProE launcher</source>
         <translation>Najít spouštěč Pro/E</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="336"/>
+        <location filename="../src/settingsdialog.cpp" line="332"/>
         <source>ProE executable (proe.exe);;All files (*)</source>
         <translation>Spustitelný soubor Pro/E (proe.exe);;Všechny soubory (*)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="344"/>
+        <location filename="../src/settingsdialog.cpp" line="340"/>
         <source>ZIMA-CAD-Parts - select text editor</source>
         <translation>ZIMA-CAD-Parts – vybrat textový editor</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="352"/>
+        <location filename="../src/settingsdialog.cpp" line="348"/>
         <source>ZIMA-CAD-Parts - select terminal</source>
         <translation>ZIMA-CAD-Parts – vybrat terminál</translation>
     </message>

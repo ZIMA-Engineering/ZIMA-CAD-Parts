@@ -37,12 +37,12 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
         return executeUpdateCommand(arguments.mid(1));
     }
     QCommandLineParser parser;
-    parser.setApplicationDescription("Parts commands: list, params, ps2pdf, ptc-clean, step-edit, update. Tools preview by default; --apply executes. UTF-8 JSON output.");
+    parser.setApplicationDescription("Parts commands: list, params, ps2pdf, ptc-clean, zima-clean, step-edit, update. Tools preview by default; --apply executes. UTF-8 JSON output.");
     parser.addHelpOption();
     parser.addOption({"apply", "Execute a tool operation (otherwise preview only)."});
     parser.addOption({"recursive", "Include subdirectories, excluding 0000-index and links."});
-    parser.addOption({"patterns-only", "Cleaner: use masks only, without old-version cleanup."});
-    parser.addOption({"mask", "Cleaner: additional filename wildcard; repeat to add more.", "pattern"});
+    parser.addOption({"patterns-only", "PTC Cleaner: use masks only, without old-version cleanup."});
+    parser.addOption({"mask", "PTC Cleaner: additional filename wildcard; repeat to add more.", "pattern"});
     parser.addOption({"output-dir", "PDF destination directory; default beside each input.", "directory"});
     parser.addOption({"delete-source", "PDF conversion: delete each source only after its PDF is saved."});
     parser.addOption({"set", "STEP field assignment, e.g. author=Name; repeat for more fields.", "field=value"});
@@ -51,7 +51,7 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
     parser.addOption({"language", "Metadata language, e.g. cs or en.", "language"});
     parser.addOption({"name", "Case-insensitive filename substring for list.", "text"});
     parser.addOption({"default-proe-versions", "Fallback if filters.ini omits ShowVersions: all or latest.", "mode"});
-    parser.addPositionalArgument("command", "help, list, params, ps2pdf, ptc-clean, step-edit or update");
+    parser.addPositionalArgument("command", "help, list, params, ps2pdf, ptc-clean, zima-clean, step-edit or update");
     parser.addPositionalArgument("path", "Directory or part path. The panel supplies the active directory.");
     if (!parser.parse(QStringList{"ZIMA-CAD-Parts-cli"} + arguments))
         return fail(parser.errorText(), 2);
@@ -61,7 +61,7 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
         return {{}, QStringLiteral(VERSION) + '\n', {}, 0};
     if (previewPlan && parser.isSet("apply")) return fail("Use the preview plan and request user approval to apply", 2);
     auto positional = parser.positionalArguments();
-    const bool tool = !positional.isEmpty() && QStringList{"ps2pdf", "ptc-clean", "step-edit"}.contains(positional[0]);
+    const bool tool = !positional.isEmpty() && QStringList{"ps2pdf", "ptc-clean", "zima-clean", "step-edit"}.contains(positional[0]);
     if (tool) {
         if (positional.size() == 1 && !context.directory.isEmpty()) positional.append(context.directory);
         if (positional.size() != 2 || positional[1].isEmpty()) return fail("Expected TOOL PATH", 2);

@@ -4,9 +4,10 @@
 opens no windows and does not start WebEngine or the thumbnail manager. On
 Windows, the executable has the `.exe` extension. The [bottom command
 panel](command-panel.md) uses the same command processor.
-The `list` and `params` commands are read-only. The `ps2pdf`, `ptc-clean`
+The `list` and `params` commands are read-only. The `ps2pdf`, `ptc-clean`, `zima-clean`
 and `step-edit` functions can apply changes with `--apply`; see
-[built-in tools](integrated-tools.md). AI is not implemented yet.
+[built-in tools](integrated-tools.md). The GUI command panel also supports
+[Codex conversations](ai-command-panel.md).
 
 ## Usage
 
@@ -101,7 +102,7 @@ for the latest recorded results.
 
 ## Built-in tools
 
-`ps2pdf`, `ptc-clean` and `step-edit` share their implementation with the GUI.
+`ps2pdf`, `ptc-clean`, `zima-clean` and `step-edit` share their implementation with the GUI.
 Their previews, `--apply` execution and file modification rules are described
 in the [tools documentation](integrated-tools.md). The read-only guarantees
 above apply to `list` and `params`, not to tool execution.

@@ -322,12 +322,13 @@ void DataSourceView::showContextMenu(const QPoint &point)
 
     addScriptsToContextMenu(menu);
 
-    for (const auto &tool : {QString("ptc-clean"), QString("ps2pdf"), QString("step-edit")}) {
+    for (const auto &tool : {QString("ptc-clean"), QString("zima-clean"), QString("ps2pdf"), QString("step-edit")}) {
         const QString icon = tool == "ptc-clean" ? "ZIMA-PTC-Cleaner" : tool == "ps2pdf" ? "ZIMA-PS2PDF" : "ZIMA-STEP-Edit";
-        auto action = menu->addAction(QIcon(":/gfx/external_programs/" + icon + ".png"), PartsToolsDialog::title(tool));
+        auto action = menu->addAction(tool == "zima-clean" ? QIcon(":/gfx/icons/zima-cad/part.svg")
+            : QIcon(":/gfx/external_programs/" + icon + ".png"), PartsToolsDialog::title(tool));
         const auto directory = currentFileInfo().absoluteFilePath();
         connect(action, &QAction::triggered, this, [this, tool, directory] {
-            if (tool == "ptc-clean" || tool == "ps2pdf") {
+            if (tool != "step-edit") {
                 auto dialog = new PartsToolsDialog(tool, directory, this);
                 dialog->setAttribute(Qt::WA_DeleteOnClose);
                 connect(dialog, &PartsToolsDialog::filesChanged, this, [this, directory] { emit directoryChanged(directory); });

@@ -4,6 +4,7 @@
 #include <QJsonArray>
 #include <QStringList>
 #include <QList>
+#include <functional>
 
 namespace PartsCore {
 struct ToolRequest {
@@ -29,6 +30,8 @@ struct ToolPlan {
 QString ghostscriptExecutable();
 ToolPlan planTool(const ToolRequest &request);
 QJsonObject describePlan(const ToolPlan &plan);
-QJsonObject applyTool(const ToolPlan &plan);
+// Called on the worker thread after each successfully completed file.
+using ToolCompleted = std::function<void(const QString &path)>;
+QJsonObject applyTool(const ToolPlan &plan, const ToolCompleted &completed = {});
 }
 #endif

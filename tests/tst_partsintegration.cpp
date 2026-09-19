@@ -632,6 +632,8 @@ private slots:
         QVERIFY(!apply->isEnabled());
         QTRY_VERIFY(apply->isEnabled());
         QCOMPARE(files->topLevelItemCount(), 1);
+        QCOMPARE(files->columnCount(), 1);
+        QVERIFY(files->isHeaderHidden());
         QCOMPARE(files->topLevelItem(0)->text(0), dir.filePath("part.prt.1"));
         old->setChecked(false);
         QVERIFY(!apply->isEnabled());
@@ -736,7 +738,8 @@ private slots:
         apply->click();
         QTRY_VERIFY(apply->isEnabled());
         QCOMPARE(files->topLevelItemCount(), 1);
-        QVERIFY(files->topLevelItem(0)->text(1).contains("File changed since preview"));
+        QVERIFY(files->topLevelItem(0)->toolTip(0).contains("File changed since preview"));
+        QVERIFY(dialog.findChild<QLabel *>("toolStatus")->text().contains("File changed since preview"));
         QVERIFY(QFileInfo::exists(dir.filePath("part.prt.1")));
     }
 
@@ -771,6 +774,9 @@ private slots:
     {
         QTemporaryDir dir;
         touch(dir.path(), "hydraulic_block.prt.1"); touch(dir.path(), "hydraulic_block.prt.12");
+        touch(dir.path(), "hydraulic_block.prtz"); touch(dir.path(), "hydraulic_block.prtz.1");
+        QFile drawing(dir.filePath("drawing.ps"));
+        QVERIFY(drawing.open(QIODevice::WriteOnly)); drawing.write("%!PS\nshowpage\n"); drawing.close();
         applyApplicationLanguage("cs_CZ");
         {
             PartsToolsDialog dialog("ptc-clean", dir.path());
@@ -780,6 +786,12 @@ private slots:
             QCOMPARE(apply->text(), QString::fromUtf8("Vyčistit"));
             if (qEnvironmentVariableIsSet("PARTS_CLEANER_SCREENSHOT"))
                 QVERIFY(dialog.grab().save(qEnvironmentVariable("PARTS_CLEANER_SCREENSHOT")));
+        }
+        for (const auto &tool : {"zima-clean", "ps2pdf"}) {
+            PartsToolsDialog dialog(tool, dir.path()); dialog.show();
+            QTRY_VERIFY(dialog.findChild<QPushButton *>("toolApply")->isEnabled());
+            if (qEnvironmentVariableIsSet("PARTS_TOOLS_SCREENSHOTS"))
+                QVERIFY(dialog.grab().save(QDir(qEnvironmentVariable("PARTS_TOOLS_SCREENSHOTS")).filePath(QString(tool) + ".png")));
         }
         applyApplicationLanguage("en_US");
     }
@@ -823,6 +835,9 @@ private slots:
         QVERIFY(source.open(QIODevice::WriteOnly));
         source.write("%!PS-Adobe-3.0\nshowpage\n");
         source.close();
+        QVERIFY(QDir(dir.path()).mkdir("child"));
+        QVERIFY(QFile::copy(source.fileName(), dir.filePath("child/other.ps")));
+        QScopedValueRollback<bool> recursiveDefault(Settings::get()->ToolsRecursive, true);
         PartsToolsDialog dialog("ps2pdf", dir.path());
         dialog.show();
         QVERIFY(!dialog.findChild<QLineEdit *>("toolPath"));
@@ -832,11 +847,126 @@ private slots:
         auto files = dialog.findChild<QTreeWidget *>("toolFiles");
         QVERIFY(output); QVERIFY(remove); QVERIFY(files);
         QCOMPARE(output->text(), QString("pdf"));
-        QVERIFY(!remove->isChecked());
+        QVERIFY(remove->isChecked());
+        QVERIFY(!dialog.findChild<QCheckBox *>("toolRecursive"));
+        QCOMPARE(files->columnCount(), 1);
+        QVERIFY(files->isHeaderHidden());
         QCOMPARE(dialog.findChild<QPushButton *>("toolApply")->text(), QString("Create PDF"));
         QVERIFY(output->mapTo(&dialog, QPoint()).y() > files->geometry().bottom());
         QTRY_COMPARE(files->topLevelItemCount(), 1);
-        QCOMPARE(files->topLevelItem(0)->text(1), dir.filePath("pdf/drawing.pdf"));
+        QCOMPARE(files->topLevelItem(0)->toolTip(0), dir.filePath("pdf/drawing.pdf"));
+    }
+
+    void zimaCleanerRevalidatesAndReportsEachCompletedArchive()
+    {
+        QTemporaryDir dir;
+        touch(dir.path(), "part.prtz"); touch(dir.path(), "part.prtz.1");
+        PartsCore::ToolRequest request; request.tool = "zima-clean"; request.path = dir.path();
+        auto plan = PartsCore::planTool(request);
+        QCOMPARE(plan.items.size(), 1);
+        QFile changed(dir.filePath("part.prtz.1"));
+        QVERIFY(changed.open(QIODevice::Append)); changed.write("changed"); changed.close();
+        QCOMPARE(PartsCore::applyTool(plan)["failed"].toArray().size(), 1);
+        QVERIFY(QFileInfo::exists(changed.fileName()));
+        plan = PartsCore::planTool(request);
+        QVERIFY(QDir().mkpath(dir.filePath("0000-index")));
+        QSettings lock(dir.filePath("0000-index/metadata.ini"), QSettings::IniFormat);
+        lock.setValue("Directory/PreventRemoval", true); lock.sync();
+        QCOMPARE(PartsCore::applyTool(plan)["failed"].toArray().size(), 1);
+        QVERIFY(QFileInfo::exists(changed.fileName()));
+        lock.setValue("Directory/PreventRemoval", false); lock.sync();
+        touch(dir.path(), "part.prtz.99");
+        plan = PartsCore::planTool(request);
+        QStringList completed;
+        const auto result = PartsCore::applyTool(plan, [&completed](const QString &path) {
+            QVERIFY(!QFileInfo::exists(path));
+            completed.append(path);
+        });
+        QCOMPARE(completed.size(), 2);
+        QCOMPARE(result["completed"].toArray().size(), 2);
+        QVERIFY(QFileInfo::exists(dir.filePath("part.prtz")));
+    }
+
+    void zimaCleanerUsesSingleListAndKeepsUncheckedRows()
+    {
+        QTemporaryDir dir;
+        touch(dir.path(), "part.prtz"); touch(dir.path(), "part.prtz.1"); touch(dir.path(), "part.prtz.99");
+        PartsToolsDialog dialog("zima-clean", dir.path());
+        dialog.show();
+        auto files = dialog.findChild<QTreeWidget *>("toolFiles");
+        auto apply = dialog.findChild<QPushButton *>("toolApply");
+        QVERIFY(!dialog.findChild<QPushButton *>("toolPreview"));
+        QVERIFY(!dialog.findChild<QLineEdit *>("toolCleanMasks"));
+        QVERIFY(!dialog.findChild<QCheckBox *>("toolCleanOld"));
+        QCOMPARE(files->columnCount(), 1);
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 2);
+        files->topLevelItem(0)->setCheckState(0, Qt::Unchecked);
+        QSignalSpy changed(&dialog, &PartsToolsDialog::filesChanged);
+        QTimer::singleShot(0, &dialog, [&dialog] {
+            auto box = dialog.findChild<QMessageBox *>();
+            QVERIFY(box);
+            QTest::mouseClick(box->button(QMessageBox::Yes), Qt::LeftButton);
+        });
+        apply->click();
+        QTRY_COMPARE(changed.count(), 1);
+        QCOMPARE(files->topLevelItemCount(), 1);
+        QCOMPARE(files->topLevelItem(0)->checkState(0), Qt::Unchecked);
+        QCOMPARE(files->topLevelItem(0)->text(0), dir.filePath("part.prtz.1"));
+        QVERIFY(QFileInfo::exists(dir.filePath("part.prtz")));
+        QVERIFY(!QFileInfo::exists(dir.filePath("part.prtz.99")));
+    }
+
+    void pdfPreparedReviewPreservesExplicitRecursiveScope()
+    {
+        QTemporaryDir dir;
+        QVERIFY(QDir(dir.path()).mkdir("child"));
+        QFile source(dir.filePath("child/drawing.ps"));
+        QVERIFY(source.open(QIODevice::WriteOnly)); source.write("%!PS\nshowpage\n"); source.close();
+        PartsCore::ToolRequest request; request.tool = "ps2pdf"; request.path = dir.path(); request.recursive = true;
+        PartsToolsDialog dialog("ps2pdf", dir.path());
+        dialog.setPreparedPlan(PartsCore::planTool(request));
+        dialog.show();
+        QTest::qWait(300);
+        QVERIFY(dialog.findChild<QLabel *>("toolPreparedRecursive")->isVisible());
+        QVERIFY(!dialog.findChild<QCheckBox *>("toolDeleteSources")->isChecked());
+        auto files = dialog.findChild<QTreeWidget *>("toolFiles");
+        QCOMPARE(files->topLevelItemCount(), 1);
+        QCOMPARE(files->topLevelItem(0)->text(0), source.fileName());
+    }
+
+    void pdfDialogRemovesSuccessesAndKeepsFailuresAndUncheckedFiles()
+    {
+        QTemporaryDir dir;
+        for (const auto &name : {"good.ps", "bad.ps", "unchecked.ps"}) {
+            QFile source(dir.filePath(name));
+            QVERIFY(source.open(QIODevice::WriteOnly));
+            source.write(QString(name) == "bad.ps" ? "%!PS\nInvalidOperator\n" : "%!PS\nshowpage\n");
+        }
+        PartsToolsDialog dialog("ps2pdf", dir.path());
+        dialog.show();
+        auto apply = dialog.findChild<QPushButton *>("toolApply");
+        auto files = dialog.findChild<QTreeWidget *>("toolFiles");
+        QTRY_VERIFY(apply->isEnabled());
+        QCOMPARE(files->topLevelItemCount(), 3);
+        files->topLevelItem(2)->setCheckState(0, Qt::Unchecked);
+        QSignalSpy changed(&dialog, &PartsToolsDialog::filesChanged);
+        QTimer::singleShot(0, &dialog, [&dialog] {
+            auto box = dialog.findChild<QMessageBox *>();
+            QVERIFY(box);
+            QTest::mouseClick(box->button(QMessageBox::Yes), Qt::LeftButton);
+        });
+        apply->click();
+        QTRY_COMPARE_WITH_TIMEOUT(changed.count(), 1, 15000);
+        QCOMPARE(files->topLevelItemCount(), 2);
+        QCOMPARE(files->topLevelItem(0)->text(0), dir.filePath("bad.ps"));
+        QVERIFY(!files->topLevelItem(0)->toolTip(0).isEmpty());
+        QCOMPARE(files->topLevelItem(1)->checkState(0), Qt::Unchecked);
+        QVERIFY(!QFileInfo::exists(dir.filePath("good.ps")));
+        QVERIFY(QFileInfo::exists(dir.filePath("pdf/good.pdf")));
+        QVERIFY(QFileInfo::exists(dir.filePath("bad.ps")));
+        QVERIFY(QFileInfo::exists(dir.filePath("unchecked.ps")));
+        QVERIFY(!QFileInfo::exists(dir.filePath("pdf/unchecked.pdf")));
     }
 
     void commandPanelUsesCapturedContextAndHistory()
