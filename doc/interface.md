@@ -5,6 +5,11 @@ text. **Directory** and **Parts** tabs use the same highlight. Inactive tabs
 follow the system palette and use a light green hover highlight. Main tabs
 show scroll buttons when space is limited.
 
+Parts opens directly in its main window. The startup splash screen and its
+General settings section have been removed; old splash preferences are ignored
+and removed when settings are saved. The command-panel button is immediately
+to the left of Settings, which is the last button on the top toolbar.
+
 **Directory** and **Parts** tabs are wider and have a folder or part icon
 before the label. **Filters**, **Refresh**, **Delete**, **Move** and **Copy**
 buttons use a shared set of SVG icons. Icons and styling are embedded in

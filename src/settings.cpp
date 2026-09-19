@@ -58,8 +58,6 @@ void Settings::load()
 
     GUIThumbWidth = s.value("GUIThumbWidth", 32).toInt();
     GUIPreviewWidth = s.value("GUIPreviewWidth", 256).toInt();
-    GUISplashEnabled = s.value("GUISplashEnabled", true).toBool();
-    GUISplashDuration = s.value("GUISplashDuration", 1500).toInt();
     // Keep the stored toolbar preference independently of the removed mode.
     TechSpecToolBarEnabled = s.value("DeveloperTechSpecToolBar", true).toBool();
     BrowserSaveFormPasswords = s.value("Browser/SaveFormPasswords", true).toBool();
@@ -106,8 +104,8 @@ void Settings::save()
 
     s.setValue("GUIThumbWidth", GUIThumbWidth);
     s.setValue("GUIPreviewWidth", GUIPreviewWidth);
-    s.setValue("GUISplashEnabled", GUISplashEnabled);
-    s.setValue("GUISplashDuration", GUISplashDuration);
+    s.remove("GUISplashEnabled");
+    s.remove("GUISplashDuration");
     s.remove("DeveloperEnabled");
     s.setValue("DeveloperTechSpecToolBar", TechSpecToolBarEnabled);
     s.setValue("Browser/SaveFormPasswords", BrowserSaveFormPasswords);

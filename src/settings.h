@@ -109,10 +109,6 @@ public:
     int GUIThumbWidth;
     //! Size of the preview in FileModel
     int GUIPreviewWidth;
-    //! Flag if the splash creen should be shown
-    bool GUISplashEnabled;
-    //! How long it should stop on splash screen
-    int GUISplashDuration;
     //! Flag: show technical specification and parts index toolbars
     bool TechSpecToolBarEnabled;
     //! Flag: save HTML form passwords

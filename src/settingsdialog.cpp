@@ -90,8 +90,6 @@ SettingsDialog::SettingsDialog(QTranslator **translator, QWidget *parent) :
     m_ui->spinPicture->setValue(Settings::get()->GUIThumbWidth);
     m_ui->previewWidthSpinBox->setValue(Settings::get()->GUIPreviewWidth);
     m_ui->languageComboBox->setCurrentIndex(Settings::get()->langIndex(Settings::get()->languagePreference()));
-    m_ui->splashGroupBox->setChecked(Settings::get()->GUISplashEnabled);
-    m_ui->splashDurationSpinBox->setValue(Settings::get()->GUISplashDuration);
     m_ui->techSpecToolBarCheckBox->setChecked(Settings::get()->TechSpecToolBarEnabled);
     m_ui->browserSavePasswordsCheckBox->setChecked(Settings::get()->BrowserSaveFormPasswords);
     m_ui->browserAutofillCheckBox->setChecked(Settings::get()->BrowserAutoFillPasswords);
@@ -179,8 +177,6 @@ void SettingsDialog::accept()
     m_aiPage->save();
     Settings::get()->GUIThumbWidth = m_ui->spinPicture->value();
     Settings::get()->GUIPreviewWidth = m_ui->previewWidthSpinBox->value();
-    Settings::get()->GUISplashEnabled = m_ui->splashGroupBox->isChecked();
-    Settings::get()->GUISplashDuration = m_ui->splashDurationSpinBox->value();
     Settings::get()->TechSpecToolBarEnabled = m_ui->techSpecToolBarCheckBox->isChecked();
     Settings::get()->BrowserSaveFormPasswords = m_ui->browserSavePasswordsCheckBox->isChecked();
     Settings::get()->BrowserAutoFillPasswords = m_ui->browserAutofillCheckBox->isChecked();

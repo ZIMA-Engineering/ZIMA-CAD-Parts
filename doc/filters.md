@@ -109,9 +109,8 @@ root. It needs the adjacent DLLs and Qt directories. Close old instances
 before testing a new build to avoid confusing versions or concurrent writes
 to shared preferences.
 
-Inactive tabs load their contents on first display. The splash screen retains
-its checkbox and configured duration, but uses a timer without blocking the
-main thread. After a directory is deleted, the tree selects its parent;
+Inactive tabs load their contents on first display. Parts opens directly in
+the main window, without a splash screen. After a directory is deleted, the tree selects its parent;
 QFileSystemModel updates only the changed branch. Other expanded branches
 are not reset.
 

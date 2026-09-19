@@ -27,9 +27,6 @@
 #include <QApplication>
 #include <QLocale>
 #include <QMessageBox>
-#include <QSplashScreen>
-#include <QPixmap>
-#include <QBitmap>
 #include <QFile>
 #include <QDebug>
 #include <QShortcut>
@@ -52,17 +49,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
       translator(translator),
       m_downloader(0)
 {
-    QSplashScreen *splash = 0;
-
-    if (Settings::get()->GUISplashEnabled)
-    {
-        QPixmap pixmap(":/gfx/splash.png");
-
-        splash = new QSplashScreen(pixmap);
-        splash->setMask(pixmap.mask());
-        splash->show();
-    }
-
     ui->setupUi(this);
     connect(UpdateService::get(), &UpdateService::showSettingsRequested, this, [this] { showSettings(SettingsDialog::Updates); });
     UpdateService::get()->scheduleStartupCheck();
@@ -129,7 +115,7 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
     commandAction->setObjectName("toggleCommandPanel");
     commandAction->setIcon(QIcon(":/gfx/navigation/terminal.svg"));
     commandAction->setShortcut(QKeySequence("Ctrl+Shift+P"));
-    ui->toolBar->addAction(commandAction);
+    ui->toolBar->insertAction(ui->toolBar->findChild<QAction *>("actionSettings"), commandAction);
     connect(commandAction, &QAction::triggered, this, [this](bool visible) {
         if (visible) m_commandPanel->focusInput();
     });
@@ -150,12 +136,6 @@ MainWindow::MainWindow(QTranslator *translator, QWidget *parent)
 
     settingsChanged();
 
-    if (Settings::get()->GUISplashEnabled)
-    {
-        splash->setAttribute(Qt::WA_DeleteOnClose);
-        QTimer::singleShot(qMax(0, Settings::get()->GUISplashDuration),
-                          splash, &QWidget::close);
-    }
 }
 
 MainWindow::~MainWindow()

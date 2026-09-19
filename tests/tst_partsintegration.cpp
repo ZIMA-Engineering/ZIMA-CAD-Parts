@@ -47,7 +47,6 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QElapsedTimer>
-#include <QSplashScreen>
 #include <QTranslator>
 #include <QStandardPaths>
 #include "browserprofilemanager.h"
@@ -1617,33 +1616,29 @@ private slots:
         QCOMPARE(firstFiles->currentPath(), source);
         QCOMPARE(secondFiles->currentPath(), source);
     }
-    void splashDoesNotSleepInWindowConstructor()
+    void mainWindowStartsDirectlyWithSettingsLast()
     {
         QTemporaryDir directory;
         auto settings = Settings::get();
         const auto oldTabs = settings->MainTabs;
-        const auto oldDuration = settings->GUISplashDuration;
-        const bool oldEnabled = settings->GUISplashEnabled;
         settings->MainTabs = {directory.path()};
         settings->ActiveMainTab = 0;
-        settings->GUISplashEnabled = true;
-        settings->GUISplashDuration = 5000;
         QTranslator translator;
         QElapsedTimer timer;
         timer.start();
         {
             MainWindow window(&translator);
-            QVERIFY2(timer.elapsed() < 4000, "Splash duration blocked main-window construction");
+            QVERIFY2(timer.elapsed() < 4000, "Main-window construction blocked startup");
+            for (auto widget : QApplication::topLevelWidgets())
+                QVERIFY(!widget->inherits("QSplashScreen"));
+            const auto actions = window.findChild<MainToolBar *>()->actions();
+            QCOMPARE(actions.last()->objectName(), QString("actionSettings"));
+            QCOMPARE(actions.at(actions.size() - 2)->objectName(), QString("toggleCommandPanel"));
             bool eventDelivered = false;
             QTimer::singleShot(0, &window, [&] { eventDelivered = true; });
             QTRY_VERIFY(eventDelivered);
         }
-        for (QWidget *widget : QApplication::topLevelWidgets())
-            if (auto splash = qobject_cast<QSplashScreen *>(widget))
-                splash->close();
         settings->MainTabs = oldTabs;
-        settings->GUISplashDuration = oldDuration;
-        settings->GUISplashEnabled = oldEnabled;
     }
 
     void modelFilteringAndProgressiveUpdates()
