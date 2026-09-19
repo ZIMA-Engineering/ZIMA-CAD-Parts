@@ -270,6 +270,7 @@ GitHub release. HTTP/key/settings overrides are compiled only with
 `CONFIG+=update_tests` and are absent from production builds.
 
 Before a public release, verify its actual signed bootstrap package on a clean
-Windows installation. Debian still needs a full build plus KDE/Wayland launch,
-installation and rollback on Debian 13. A private/draft repository or one without
+Windows installation. Native Debian 13 KDE/Wayland acceptance and its exact scope are recorded in
+[verification](verification.md); repeat the applicable checks for each new
+platform build. A private/draft repository or one without
 signed published release assets cannot offer a public update yet.

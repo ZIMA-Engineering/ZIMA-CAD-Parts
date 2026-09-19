@@ -1,5 +1,35 @@
 # Build verification
 
+## Signed Windows release 2026091901, September 19, 2026
+
+[Published immutable release](https://github.com/ZIMA-Engineering/ZIMA-CAD-Parts/releases/tag/ZIMA-CAD-Parts-2026091901) was built from clean commit
+`6e2cce0455febd583e24d971cbcd9b39aad6dc44`. Its Windows x64 ZIP is
+**316,981,328 bytes** and contains the matching committed sources.
+SHA-256: `d4d3b3de10950a53e3179dc9ac3d9b52c35f4fa2e694fa3996e2dbbaed5401c5`.
+
+- Clean GUI, CLI, updater and integration builds passed with Qt 6.10.1,
+  MSVC x64 and Open CASCADE 8.0.0.
+- The packaged runtime passed **56 integration checks**, **14 tool CLI tests**,
+  **4 read-only CLI tests**, **5 distribution checks** and all four translation
+  catalogs (**562 messages** each), with no failures or skips.
+- Ed25519, ZIP CRC, all **1,484 file checksums**, all
+  **566 committed-source comparisons**, matching binary hashes
+  and startup probes with development paths removed passed.
+- The production updater reports the signed bootstrap as trusted and idle at
+  version 2026091901. Public GitHub asset sizes and SHA-256 digests match the
+  local verified artifacts; anonymous manifest/signature downloads and the ZIP
+  download endpoint were checked after publication.
+- The production updater from the previous signed Windows 2026091601 package
+  detects 2026091901 with `status: available` and `installable: true`. This was
+  an availability check; it did not install an update.
+
+The final package is `.dist-output/ZIMA-CAD-Parts-2026091901.zip`, with the
+extracted directory and signed manifest/signature beside it. Release logs and
+verification receipts are in `.build-release-2026091901/`. This release contains
+Windows only. Tests ran on the development workstation with an isolated portable
+installation, not a fresh Windows OS. The earlier Debian acceptance below does
+not validate these new GUI/tool changes on Linux.
+
 ## Windows: local build 2026091901, September 19, 2026
 
 The GUI, CLI, updater and integration-test projects passed a clean build with

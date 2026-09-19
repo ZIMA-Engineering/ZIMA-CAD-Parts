@@ -3,8 +3,8 @@
 This implements the structure and launchers from the
 [binding policy](distribution-policy.md), including the separate update helper.
 See [GitHub updates](github-updates.md) for signing, installation and retention.
-A development candidate is unsigned until publisher finalization; Debian
-runtime verification remains pending.
+A development candidate is unsigned until publisher finalization. Native
+Debian acceptance is recorded in the [verification log](verification.md).
 
 ## Version and build
 
@@ -81,10 +81,10 @@ signature. For the new process, it removes development Qt paths and limits
 PATH to the application directory and Windows system directories.
 
 The Linux root launcher selects a standard or custom build and checks
-`build.ini`. It fails if no Debian bundle is installed. Linux execution has
-not been verified here; see the [Debian guide](debian-distribution.md).
-Current and previous builds can be placed in the folders manually. This
-stage does not download or remove versions.
+`build.ini`. It fails if no Debian bundle is installed. See the [Debian guide](debian-distribution.md) for Linux runtime requirements
+and recorded native verification. Current and previous builds can be placed in
+the folders manually. Downloads, activation and retention are handled by the
+[update helper](github-updates.md), not by the launcher alone.
 
 `checksums.json` contains SHA-256 hashes of packaged files for integrity
 checking, not proof of origin. `version.json` records the version, commit,
