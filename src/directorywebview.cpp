@@ -255,7 +255,9 @@ body {
     text-decoration: none;
 }
 .tile:hover {
-    border-color: #999;
+    background: #4DD811;
+    color: #000;
+    border-color: #4DD811;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
 }
 .name {

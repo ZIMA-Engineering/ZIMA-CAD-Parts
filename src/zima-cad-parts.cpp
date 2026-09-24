@@ -36,6 +36,7 @@
 #include "update/installationclient.h"
 #include <QMessageBox>
 #include "applicationlanguage.h"
+#include "interactionstyle.h"
 
 /**
 \mainpage ZIMA-CAD-Parts Developer Documentation
@@ -94,6 +95,7 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication a(argc, argv);
+    PartsInteraction::install(a);
     QString instanceError;
     if (!registerPartsInstance(&instanceError)) { QMessageBox::warning(nullptr, "ZIMA-CAD-Parts", instanceError); return 1; }
     QGuiApplication::setDesktopFileName("cz.zima_engineering.ZimaCadParts");

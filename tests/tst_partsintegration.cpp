@@ -1,4 +1,7 @@
 #include "commandpanel.h"
+#include "interactionstyle.h"
+#include <QStyleFactory>
+#include <QVBoxLayout>
 #include "ai/aitools.h"
 #include "ai/codexprovider.h"
 #include "ai/systemcommanddialog.h"
@@ -84,6 +87,63 @@ private:
         file.write("fixture");
     }
 private slots:
+    void interactionColoursKeepNativeTreeMetrics()
+    {
+        for (const auto &name : QStyleFactory::keys())
+        {
+            PartsInteraction::Style style(QStyleFactory::create(name));
+            const auto nativeIndent = style.baseStyle()->pixelMetric(QStyle::PM_TreeViewIndentation);
+            QCOMPARE(style.pixelMetric(QStyle::PM_TreeViewIndentation), nativeIndent);
+            for (const auto background : {QColor("#ffffff"), QColor("#202020")})
+            {
+                for (int state = 0; state < 3; ++state)
+                {
+                    QImage image(160, 30, QImage::Format_RGB32);image.fill(background);
+                    QPainter painter(&image);
+                    QStyleOptionViewItem option;option.rect = image.rect();
+                    option.state = QStyle::State_Enabled;
+                    if (state != 0) option.state |= QStyle::State_Selected;
+                    if (state != 1) option.state |= QStyle::State_MouseOver;
+                    style.drawControl(QStyle::CE_ItemViewItem, &option, &painter);
+                    painter.end();
+                    QCOMPARE(image.pixelColor(80, 15), state == 0
+                        ? PartsInteraction::hover() : PartsInteraction::selection());
+                }
+            }
+        }
+        QWidget window;QVBoxLayout layout(&window);
+        QTreeWidget tree;tree.setHeaderLabel("Parts");layout.addWidget(&tree);
+        auto *root = new QTreeWidgetItem(&tree, {"Source"});
+        auto *selected = new QTreeWidgetItem(root, {"Selected part"});
+        auto *offered = new QTreeWidgetItem(root, {"Another part"});root->setExpanded(true);
+        tree.setCurrentItem(selected);
+        QTabWidget tabs;tabs.addTab(new QWidget, "Parts");tabs.addTab(new QWidget, "Preview");
+        QFile css(":/gfx/navigation/tabs.css");QVERIFY(css.open(QIODevice::ReadOnly));
+        tabs.tabBar()->setStyleSheet(QString::fromUtf8(css.readAll()));layout.addWidget(&tabs);
+        QToolButton button;button.setText("Active command");button.setCheckable(true);button.setChecked(true);
+        layout.addWidget(&button);window.resize(500, 400);window.show();QCoreApplication::processEvents();
+        QVERIFY(tree.hasMouseTracking());QVERIFY(tree.viewport()->hasMouseTracking());
+        QVERIFY(tree.styleSheet().isEmpty());QCOMPARE(tree.font(), QApplication::font(&tree));
+        QCOMPARE(tree.palette().color(QPalette::Inactive,QPalette::Highlight),PartsInteraction::selection());
+        // Native focus decoration may tint its own pixels; test the selection
+        // fill independently while keeping platform focus painting intact.
+        button.setFocus();QCoreApplication::processEvents();
+        const auto offeredRect = tree.visualItemRect(offered);
+        const auto selectedRect = tree.visualItemRect(selected);
+        QTest::mouseMove(tree.viewport(), offeredRect.center());QCoreApplication::processEvents();
+        const auto sample = [&](const QRect &rect) {
+            const auto image = tree.viewport()->grab().toImage();
+            return image.pixelColor(QPointF(rect.right()-4, rect.center().y()).toPoint() * image.devicePixelRatio());
+        };
+        QTRY_COMPARE(sample(offeredRect), PartsInteraction::hover());
+        QCOMPARE(sample(selectedRect), PartsInteraction::selection());
+        if (qEnvironmentVariableIsSet("PARTS_INTERACTION_SCREENSHOT"))
+            QVERIFY(window.grab().save(qEnvironmentVariable("PARTS_INTERACTION_SCREENSHOT")));
+        QTest::mouseMove(&button, button.rect().center());QCoreApplication::processEvents();
+        QTRY_VERIFY(sample(offeredRect) != PartsInteraction::hover());
+        QCOMPARE(tree.currentItem(), selected);
+    }
+
     void initTestCase()
     {
         QCoreApplication::setOrganizationName("ZimaPartsTests");
@@ -1927,6 +1987,7 @@ int main(int argc, char **argv)
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     QStandardPaths::setTestModeEnabled(true);
     QApplication app(argc, argv);
+    PartsInteraction::install(app);
     PartsIntegrationTest test;
     const int result = QTest::qExec(&test, argc, argv);
     BrowserProfileManager::shutdown();

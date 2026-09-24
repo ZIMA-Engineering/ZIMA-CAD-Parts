@@ -38,7 +38,7 @@ DataSourceView::DataSourceView(const QString &rootPath, QWidget *parent) :
     m_hasModelState(false)
 {
     // boss requirement - icons shoudl have be at least 32px sized
-    setStyleSheet("icon-size: 32px;");
+    setIconSize(QSize(32, 32));
 
     setupModel();
     setDragEnabled(true);

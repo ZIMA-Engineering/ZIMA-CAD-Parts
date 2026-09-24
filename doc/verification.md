@@ -1,5 +1,17 @@
 # Build verification
 
+## Interaction colours, September 24, 2026
+
+Full Windows GUI, CLI, updater and integration builds passed. All 60 integration
+checks passed with no failures or skips, and all translation catalogs validated.
+New coverage checks the shared azure/green selection contract and retained
+native tree metrics, including real hover leave without changing selection.
+Evidence: `.build-ui-20260919/interaction-build.log` and
+`interaction-full-tests.txt`. The initial incomplete test environment lacked
+WebEngine, translations and CLI resources; verification used the complete
+runtime and matching Qt resources. Native Linux visual checks remain pending.
+See [the release record](releases/2026092401.md) for portable acceptance.
+
 ## Signed Windows release 2026091902, September 19, 2026
 
 The clean release build and packaged runtime passed 59 integration checks,

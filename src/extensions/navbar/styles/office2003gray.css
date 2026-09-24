@@ -1,141 +1,41 @@
-NavBar {
-    border: 1px solid #454b52;
-    background-color: #15181b;
-}
+/* Navigation inherits the desktop palette and font. */
+NavBar { border: 1px solid palette(mid); background: palette(window); }
 NavBarHeader {
-    background-color: #111315;
-    color: #f2f2f2;
-    font-size: 14px;
-    font-weight: bold;
-    padding-left: 3px;
-    border: 0;
+    background: palette(button); color: palette(button-text);
+    font-weight: bold; padding-left: 3px; border: 0;
 }
-NavBarHeader QToolButton {
-    border: none;
-    background: none;
-    color: #fff;
-    font-family: "Arial";
-    font-size: 14px;
-}
-NavBarHeader QToolButton:checked {
-    border: none;
-    background: none;
-    color: #fff;
-}
-NavBarHeader QToolButton:hover {
-    background-color: #343a40;
-    color: #fff;
-}
-NavBarHeader QToolButton:pressed {
-    background-color: #1f536b;
-    color: #fff;
-}
+NavBarHeader QToolButton { border: none; background: none; color: palette(button-text); }
 NavBarSplitter:handle {
-    background-color: #252a2f;
+    background: palette(mid);
     background-image: url(:/styles/splitter2003gray.png);
-    background-position: center;
-    background-repeat: no-repeat;
+    background-position: center; background-repeat: no-repeat;
 }
-NavBarSplitter:handle:vertical {
-    height: 6px;
-}
+NavBarSplitter:handle:vertical { height: 6px; }
 NavBarButton {
-    border-top: 1px solid #454b52;
-    background-color: #202428;
-    color: #e6e6e6;
-    font-weight: bold;
-    text-align: left;
-    padding-left: 8px;
+    border-top: 1px solid palette(mid);
+    background: palette(button); color: palette(button-text);
+    font-weight: bold; text-align: left; padding-left: 8px;
 }
-NavBarButton:hover {
-    background-color: #343a40;
-}
-NavBarButton:hover:checked {
-    background-color: #27627d;
-    color: #fff;
-}
-NavBarButton:checked {
-    background-color: #1f536b;
-    color: #fff;
-}
-NavBarButton:pressed {
-    background-color: #27627d;
-    color: #fff;
-}
-NavBarToolBar {
-    border-top: 1px solid #454b52;
-    background-color: #202428;
-}
-NavBarToolBar QToolButton {
-    background-color: none;
-    border: 0;
-}
-NavBarToolBar QToolButton:hover {
-    background-color: #343a40;
-}
-NavBarToolBar QToolButton:hover:checked {
-    background-color: #27627d;
-}
-NavBarToolBar QToolButton:checked {
-    background-color: #1f536b;
-}
-NavBarToolBar QToolButton:pressed {
-    background-color: #27627d;
-}
-NavBarToolBar QToolButton::menu-indicator {
-    image: url(:/styles/downarrowblue.png);
-    subcontrol-origin: content;
-    subcontrol-position: center;
-}
+NavBarToolBar { border-top: 1px solid palette(mid); background: palette(button); }
+NavBarToolBar QToolButton { background: none; border: 0; }
 NavBarTitleButton {
-    border-left  : 1px solid #454b52;
-    border-top   : 1px solid #454b52;
-    border-right : none;
-    border-bottom: none;
-    background-color: #202428;
-    color: #e6e6e6;
-    font-size: 14px;
-    font-weight: bold;
+    border-left: 1px solid palette(mid); border-top: 1px solid palette(mid);
+    border-right: none; border-bottom: none;
+    background: palette(button); color: palette(button-text); font-weight: bold;
 }
-NavBarTitleButton:hover {
-    border: none;
-    background-color: #343a40;
+NavBarButton:checked:enabled, NavBarToolBar QToolButton:checked:enabled,
+NavBarHeader QToolButton:checked:enabled {
+    background: #00D1FF; color: black;
 }
-NavBarTitleButton:pressed {
-    border: none;
-    background-color: #27627d;
+NavBarButton:hover:enabled, NavBarButton:hover:checked:enabled,
+NavBarToolBar QToolButton:hover:enabled, NavBarToolBar QToolButton:hover:checked:enabled,
+NavBarHeader QToolButton:hover:enabled, NavBarHeader QToolButton:hover:checked:enabled,
+NavBarTitleButton:hover:enabled {
+    background: #4DD811; color: black;
 }
-QFrame#navBarPopup {
-    border: 1px solid #454b52;
-    background-color: #202428;
-}
+QFrame#navBarPopup { border: 1px solid palette(mid); background: palette(window); }
 QFrame#navBarPopup QSizeGrip {
     background-image: url(:/styles/sizegrip2003gray.png);
-    background-position: center;
-    background-repeat: no-repeat;
+    background-position: center; background-repeat: no-repeat;
 }
-NavBar QStackedWidget {
-    background-color: #15181b;
-}
-NavBar QScrollBar:vertical {
-    background-color: #15181b;
-    width: 14px;
-    margin: 0;
-}
-NavBar QScrollBar::handle:vertical {
-    background-color: #59626b;
-    border-radius: 6px;
-    min-height: 28px;
-    margin: 2px;
-}
-NavBar QScrollBar::handle:vertical:hover {
-    background-color: #727d87;
-}
-NavBar QScrollBar::add-line:vertical,
-NavBar QScrollBar::sub-line:vertical {
-    height: 0;
-}
-NavBar QScrollBar::add-page:vertical,
-NavBar QScrollBar::sub-page:vertical {
-    background: none;
-}
+NavBar QStackedWidget { background: palette(window); }

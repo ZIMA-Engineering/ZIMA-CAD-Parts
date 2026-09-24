@@ -13,6 +13,9 @@ and the license files shipped with the bundled dependencies.
 Documentation is maintained in English. UI translations and examples of
 localized metadata retain their respective languages; see [AGENTS.md](AGENTS.md).
 
+Selection and hover colours follow the shared ZIMA interaction convention while
+retaining desktop tree styling; see [interaction colours](doc/interaction-colours.md).
+
 Requirements
 ------------
 Qt 6.8 LTS or newer - modules `core`, `gui`, `network`, `widgets`,

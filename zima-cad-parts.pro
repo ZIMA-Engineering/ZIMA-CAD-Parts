@@ -16,6 +16,7 @@ win32:INCLUDEPATH += ../
 VPATH += ./src
 
 INCLUDEPATH += src
+HEADERS += src/interactionstyle.h
 INCLUDEPATH += src/filefilters
 INCLUDEPATH += src/extensions/productview
 INCLUDEPATH += libqdxf/src
