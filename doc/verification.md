@@ -372,3 +372,16 @@ completion, errors and Stop, and only a later explicit submission sends it.
 
 Debian execution remains pending; these Windows results do not establish
 Linux support.
+
+## System appearance, 2026092601 (Windows)
+
+The clean committed-source GUI, CLI, updater and integration builds passed.
+All 60 integration checks, 14 tool CLI tests, four read-only CLI tests, five
+distribution tests and four translation catalogs passed. A native Windows
+style probe verified live palette changes without changing selected items or
+checked-button state. No UI strings were introduced.
+
+The signed portable package passed Ed25519, CRC, all file checksums and exact
+committed-source comparisons. Clean-PATH launcher and executable probes passed;
+the production updater reported a trusted installation. See the complete
+[release receipt](releases/2026092601.md) for hashes and environment limits.
