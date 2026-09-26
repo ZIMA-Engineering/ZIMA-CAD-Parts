@@ -13,8 +13,7 @@ and the license files shipped with the bundled dependencies.
 Documentation is maintained in English. UI translations and examples of
 localized metadata retain their respective languages; see [AGENTS.md](AGENTS.md).
 
-Selection and hover colours follow the shared ZIMA interaction convention while
-retaining desktop tree styling; see [interaction colours](doc/interaction-colours.md).
+Selection, hover and other controls follow the native desktop style and palette; see [interaction colours](doc/interaction-colours.md).
 
 Requirements
 ------------

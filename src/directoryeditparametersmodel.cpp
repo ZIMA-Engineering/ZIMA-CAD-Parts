@@ -1,7 +1,6 @@
 #include "directoryeditparametersmodel.h"
 #include <QGuiApplication>
 #include <QFont>
-#include <QBrush>
 #include <QRegularExpression>
 #include <QDebug>
 
@@ -65,10 +64,6 @@ QVariant DirectoryEditParametersModel::data(const QModelIndex &index, int role) 
         font.setItalic(true);
         return font;
     }
-
-    case Qt::ForegroundRole:
-        // TODO: use some system color
-        return QBrush(Qt::gray);
 
     default:
         return QVariant();

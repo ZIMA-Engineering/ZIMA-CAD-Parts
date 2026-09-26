@@ -22,7 +22,6 @@ DataSourceWidget::DataSourceWidget(const QString &dir, QWidget *parent)
     setupUi(this);
     connect(dirWidget, &DirectoryWidget::aiReferencesRequested, this, &DataSourceWidget::aiReferencesRequested);
 
-    dsList->setStyleSheet(NavBar::loadStyle(":/styles/office2003gray.css"));
 
     splitter->setSizes(Settings::get()->ServersSplitterSizes);
 

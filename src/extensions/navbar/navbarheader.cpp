@@ -85,6 +85,7 @@ void NavBarTitleButton::paintEvent(QPaintEvent *e)
 
     p.drawControl(QStyle::CE_PushButtonBevel, opt);
 
+    p.setPen(palette().color(isEnabled() ? QPalette::Active : QPalette::Disabled, QPalette::ButtonText));
     p.setFont(font());
     QFontMetrics fm(font());
     p.translate(width()/2 + fm.ascent()/2, height()/2 + fm.horizontalAdvance(text())/2);

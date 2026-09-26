@@ -211,15 +211,16 @@ QString DirectoryWebView::autoIndexHtml(const QString &path) const
 <meta charset="utf-8">
 <title>%1</title>
 <style>
+:root { color-scheme: light dark; }
 body {
-    color: #222;
-    font-family: Verdana, Arial, sans-serif;
+    color: CanvasText;
+    font-family: system-ui, sans-serif;
     margin: 22px;
-    background: #fff;
+    background: Canvas;
 }
 .header {
     align-items: center;
-    border-bottom: 1px solid #d8d8d8;
+    border-bottom: 1px solid ButtonBorder;
     display: flex;
     gap: 18px;
     justify-content: space-between;
@@ -232,7 +233,7 @@ body {
     margin: 0 0 4px;
 }
 .subtitle {
-    color: #666;
+    color: GrayText;
     font-size: 13px;
 }
 .logo {
@@ -245,9 +246,9 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 .tile {
-    background: #fafafa;
-    border: 1px solid #d0d0d0;
-    color: #111;
+    background: ButtonFace;
+    border: 1px solid ButtonBorder;
+    color: ButtonText;
     display: block;
     min-height: 210px;
     padding: 14px;
@@ -255,10 +256,9 @@ body {
     text-decoration: none;
 }
 .tile:hover {
-    background: #4DD811;
-    color: #000;
-    border-color: #4DD811;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
 }
 .name {
     font-size: 15px;
@@ -274,8 +274,8 @@ body {
 .placeholder,
 .empty {
     align-items: center;
-    border: 1px dashed #aaa;
-    color: #666;
+    border: 1px dashed GrayText;
+    color: GrayText;
     display: flex;
     justify-content: center;
 }

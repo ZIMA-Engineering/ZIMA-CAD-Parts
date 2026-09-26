@@ -1,31 +1,16 @@
-# Interaction colours and desktop integration
+# Native interaction appearance
 
-ZIMA-CAD-Parts uses the same interaction colours as ZIMA-CAD:
+ZIMA-CAD-Parts uses the platform Qt style and palette for tree/table selection,
+hover, tabs, menus, buttons, focus, disabled controls and navigation. It does not
+install an interaction proxy style or overwrite the application highlight palette.
+The old azure/green widget overrides and loaded tab/navigation styles are removed.
+Changing the desktop theme or accent updates existing widgets through Qt.
 
-- Confirmed item selection and active tabs/commands: azure `#00D1FF`.
-- Pointer hover on an available target: green `#4DD811`.
-- Text on either highlight: black for contrast.
+The rotated navigation title uses the palette button-text role. Generated local
+directory tiles use browser system colors and support light/dark color schemes.
+External pages, metadata thumbnails, brand artwork and CAD preview geometry
+retain their own content. Selection, navigation and file operations are unchanged.
 
-A selected tree/table row remains azure under the pointer. Hover does not
-change selection. Active tabs and checkable buttons temporarily become green
-under the pointer and return to azure on leave. Menus use green for their
-temporary offered action. Disabled controls retain the platform's disabled
-appearance. Generated directory tiles use the same green hover; external web
-pages and CAD model colours are not restyled.
-
-The shared `PartsInteraction::Style` wraps the platform-selected Qt style.
-It changes item highlight painting without replacing tree branches, focus
-indicators, indentation, scrolling, font metrics or selection behavior. Trees
-enable mouse tracking and retain ordinary Qt delegates and selection models.
-The datasource icon size remains 32 pixels through `setIconSize`, rather than
-a tree stylesheet.
-
-The navigation panel uses the desktop palette and inherited font. It no longer
-forces a dark background, Arial, or a custom scrollbar. On Linux the installed
-Qt platform-theme/style integration supplies the desktop appearance; this
-application does not force Fusion or a Windows style. KDE/GNOME integration
-still depends on the host's Qt plugins. Native Linux visual verification must
-be performed on the Linux host; Windows verification cannot prove it.
-
-These changes introduce no UI strings. All existing translation catalogs remain
-applicable and are validated with the build.
+No UI strings change. Existing application catalogs remain applicable. Native
+Linux desktop appearance must be verified on the Linux host; Windows checks do
+not establish KDE/GNOME acceptance.

@@ -34,9 +34,6 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->partsTreeView, &FileView::aiReferencesRequested, this, &DirectoryWidget::aiReferencesRequested);
     ui->tabWidget->tabBar()->setProperty("wideTabs", true);
-    QFile tabStyle(":/gfx/navigation/tabs.css");
-    if (tabStyle.open(QIODevice::ReadOnly))
-        ui->tabWidget->tabBar()->setStyleSheet(QString::fromUtf8(tabStyle.readAll()));
     m_updateIndicator = new QToolButton(ui->tabWidget);
     m_updateIndicator->setObjectName("updateAvailableIndicator");
     m_updateIndicator->setAutoRaise(true);
