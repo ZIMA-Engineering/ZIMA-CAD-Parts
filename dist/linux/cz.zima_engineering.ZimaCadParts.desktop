@@ -2,9 +2,9 @@
 Type=Application
 Name=ZIMA-Parts
 Comment=Manage CAD part libraries and project files
-Exec=ZIMA-CAD-Parts
+Exec=ZIMA-Parts
 Icon=cz.zima_engineering.ZimaCadParts
 Terminal=false
 Categories=Graphics;Engineering;Qt;
 StartupNotify=true
-StartupWMClass=ZIMA-CAD-Parts
+StartupWMClass=ZIMA-Parts

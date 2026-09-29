@@ -8,7 +8,7 @@ let
         qttranslations qtwebengine qtwebchannel qtpositioning
       ]);
     in stdenv.mkDerivation {
-      name = "ZIMA-CAD-Parts";
+      name = "ZIMA-Parts";
       src = ./.;
       nativeBuildInputs = [ zcpQt qtcreator pkg-config qmake gdb ];
       buildInputs = [ openssl ];

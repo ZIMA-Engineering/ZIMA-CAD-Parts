@@ -4,10 +4,10 @@
 QT += core gui network opengl openglwidgets widgets webchannel webenginewidgets
 
 !versionAtLeast(QT_VERSION, 6.8.0) {
-    error(ZIMA-CAD-Parts requires Qt 6.8 or newer.)
+    error(ZIMA-Parts requires Qt 6.8 or newer.)
 }
 
-TARGET = ZIMA-CAD-Parts
+TARGET = ZIMA-Parts
 QMAKE_TARGET_PRODUCT = ZIMA-Parts
 QMAKE_TARGET_DESCRIPTION = ZIMA-Parts
 APP_ID = cz.zima_engineering.ZimaCadParts
@@ -357,7 +357,7 @@ unix:!macx {
     load(lrelease)
     translations.files = $$QM_FILES
     translations.CONFIG += no_check_exist
-    translations.path = $${install_prefix}/share/ZIMA-CAD-Parts/locale
+    translations.path = $${install_prefix}/share/ZIMA-Parts/locale
 
     icon16.files = dist/icons/hicolor/16x16/apps/$${APP_ID}.png
     icon16.path = $${install_prefix}/share/icons/hicolor/16x16/apps

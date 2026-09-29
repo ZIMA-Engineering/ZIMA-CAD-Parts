@@ -237,7 +237,7 @@ PasswordManager::PasswordManager(QWebEngineProfile *profile, QObject *parent)
         m_secretStore = new MemorySecretStore(this);
         m_usingMemorySecretStore = true;
     } else {
-        m_secretStore = new QtKeychainSecretStore(QStringLiteral("ZIMA-CAD-Parts"), this);
+        m_secretStore = new QtKeychainSecretStore(QStringLiteral("ZIMA-Parts"), this);
     }
 
     installFormScript();

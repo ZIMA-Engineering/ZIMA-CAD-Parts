@@ -33,7 +33,7 @@ docker build --pull --build-arg BASE_IMAGE=debian:13 --build-arg DISTRO=debian -
 docker run --rm --user "$(id -u):$(id -g)" --volume "$PWD:/workspace" --workdir /workspace --env HOME=/tmp parts-debian-build bash .github/ci/build-debian.sh
 ```
 
-Output goes to `.dist-output/debian/ZIMA-CAD-Parts/` and the corresponding
+Output goes to `.dist-output/debian/ZIMA-Parts/` and the corresponding
 `.tar.gz`. `package-debian.py` checks Debian 13, architecture and executable
 version, exports tracked sources including submodules, and bundles Qt,
 WebEngine, Wayland/X11 plugins, OCCT and recursively resolved libraries.
@@ -58,10 +58,10 @@ licenses and notices.
 ## Run
 
 ```sh
-./ZIMA-CAD-Parts.sh
-./ZIMA-CAD-Parts.sh -Version 2026091501
-./ZIMA-CAD-Parts.sh -Custom -Version my-build
-./ZIMA-CAD-Parts.sh -Check
+./ZIMA-Parts.sh
+./ZIMA-Parts.sh -Version 2026091501
+./ZIMA-Parts.sh -Custom -Version my-build
+./ZIMA-Parts.sh -Check
 ```
 
 `launcher.ini` uses the `linux` and `linux_custom` keys. Each build in the

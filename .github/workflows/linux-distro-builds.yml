@@ -23,6 +23,6 @@ jobs:
       - name: Upload experimental Debian package
         uses: actions/upload-artifact@v6
         with:
-          name: ZIMA-CAD-Parts-debian-13-x86_64
+          name: ZIMA-Parts-debian-13-x86_64
           path: .dist-output/*.tar.gz
           if-no-files-found: error

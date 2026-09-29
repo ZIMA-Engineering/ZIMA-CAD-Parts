@@ -5,7 +5,7 @@ on:
     branches:
       - "**"
     tags:
-      - "ZIMA-CAD-Parts-*"
+      - "ZIMA-Parts-*"
 
 permissions:
   contents: write
@@ -118,7 +118,7 @@ jobs:
           nmake release
           if ($LASTEXITCODE -ne 0) { throw "CLI build failed" }
           Pop-Location
-          $env:PARTS_CLI_EXE = "$env:GITHUB_WORKSPACE/.build-cli/release/ZIMA-CAD-Parts-cli.exe"
+          $env:PARTS_CLI_EXE = "$env:GITHUB_WORKSPACE/.build-cli/release/ZIMA-Parts-cli.exe"
           windeployqt --release --compiler-runtime $env:PARTS_CLI_EXE
           if ($LASTEXITCODE -ne 0) { throw "CLI deployment failed" }
           python tests/test_cli.py
@@ -151,9 +151,9 @@ jobs:
           $env:PATH = "$qtRoot/bin;$env:OCCT_ROOT/bin;$env:PATH"
           $packageArgs = @(
             "tools/distribution/package-windows.py",
-            "--exe", ".build-ci/release/ZIMA-CAD-Parts.exe",
-            "--cli", ".build-cli/release/ZIMA-CAD-Parts-cli.exe",
-            "--updater", ".build-updater/release/ZIMA-CAD-Parts-update.exe",
+            "--exe", ".build-ci/release/ZIMA-Parts.exe",
+            "--cli", ".build-cli/release/ZIMA-Parts-cli.exe",
+            "--updater", ".build-updater/release/ZIMA-Parts-update.exe",
             "--qt", $qtRoot,
             "--occt", $env:OCCT_ROOT,
             "--output", ".dist-output/package"
@@ -161,16 +161,16 @@ jobs:
           if ("${{ github.ref_type }}" -eq "tag") { $packageArgs += "--release" }
           python @packageArgs
           if ($LASTEXITCODE -ne 0) { throw "Packaging failed" }
-          $manifest = Get-ChildItem .dist-output/package/ZIMA-CAD-Parts/windows/*/version.json |
+          $manifest = Get-ChildItem .dist-output/package/ZIMA-Parts/windows/*/version.json |
             Select-Object -First 1 | Get-Content -Raw | ConvertFrom-Json
-          $name = "ZIMA-CAD-Parts-$($manifest.version)-windows-x64"
-          "release_name=ZIMA-CAD-Parts-$($manifest.version)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          $name = "ZIMA-Parts-$($manifest.version)-windows-x64"
+          "release_name=ZIMA-Parts-$($manifest.version)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           "name=$name" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Test native launcher
         shell: pwsh
         run: |
-          $env:PARTS_LAUNCHER = "$env:GITHUB_WORKSPACE/.dist-output/package/ZIMA-CAD-Parts/ZIMA-CAD-Parts.exe"
+          $env:PARTS_LAUNCHER = "$env:GITHUB_WORKSPACE/.dist-output/package/ZIMA-Parts/ZIMA-Parts.exe"
           python tests/test_distribution.py
 
       - name: Test signed update lifecycle with isolated keys
@@ -194,9 +194,9 @@ jobs:
           nmake release
           if ($LASTEXITCODE -ne 0) { throw "Fixture build failed" }
           Pop-Location
-          $env:PARTS_UPDATER_TEST_EXE = "$env:GITHUB_WORKSPACE/.build-updater-tests/release/ZIMA-CAD-Parts-update.exe"
+          $env:PARTS_UPDATER_TEST_EXE = "$env:GITHUB_WORKSPACE/.build-updater-tests/release/ZIMA-Parts-update.exe"
           $env:PARTS_UPDATE_FIXTURE_EXE = "$env:GITHUB_WORKSPACE/.build-update-fixture/release/update-fixture.exe"
-          $env:PARTS_UPDATE_TEST_RUNTIME = (Get-ChildItem .dist-output/package/ZIMA-CAD-Parts/windows -Directory | Select-Object -First 1).FullName
+          $env:PARTS_UPDATE_TEST_RUNTIME = (Get-ChildItem .dist-output/package/ZIMA-Parts/windows -Directory | Select-Object -First 1).FullName
           python tests/test_updates.py
           if ($LASTEXITCODE -ne 0) { throw "Updater tests failed" }
 
@@ -204,12 +204,12 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: ${{ steps.package.outputs.name }}
-          path: .dist-output/package/ZIMA-CAD-Parts/
+          path: .dist-output/package/ZIMA-Parts/
 
       - name: Create release archive
         if: github.ref_type == 'tag'
         shell: pwsh
-        run: Compress-Archive -Path .dist-output/package/ZIMA-CAD-Parts -DestinationPath "${{ steps.package.outputs.release_name }}.zip"
+        run: Compress-Archive -Path .dist-output/package/ZIMA-Parts -DestinationPath "${{ steps.package.outputs.release_name }}.zip"
 
       - name: Upload release candidate
         if: github.ref_type == 'tag'

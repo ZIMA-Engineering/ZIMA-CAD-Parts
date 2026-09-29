@@ -17,7 +17,7 @@
 // if presented - display logo and text
 #define LOGO_TEXT_FILE "logo-text.png"
 #define METADATA_FILE "metadata.ini"
-#define DEFAULT_WDIR QDir::homePath() + "/ZIMA-CAD-Parts"
+#define DEFAULT_WDIR QDir::homePath() + "/ZIMA-Parts"
 
 
 //! \brief Small wrapper for filesystem directory - the root directory of one data source.

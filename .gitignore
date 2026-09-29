@@ -2,7 +2,7 @@
 Makefile
 nix-build
 zima-cad-parts.pro.user
-ZIMA-CAD-Parts
+ZIMA-Parts
 locale/*.qm
 *.o
 moc_*.cpp

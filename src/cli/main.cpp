@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     QCoreApplication app(argc, argv);
     QCoreApplication::setOrganizationName("ZIMA-Construction");
     QCoreApplication::setOrganizationDomain("zima-contruction.cz");
-    QCoreApplication::setApplicationName("ZIMA-CAD-Parts");
+    QCoreApplication::setApplicationName("ZIMA-Parts");
     QCoreApplication::setApplicationVersion(VERSION);
     QString registrationError;
     if (!registerPartsInstance(&registrationError)) {

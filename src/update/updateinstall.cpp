@@ -105,7 +105,7 @@ QJsonObject installed(const QString &root, const QString &version)
     if (record.contains("attestation")) {
         const auto attestation = verifySignedObject(canonical(record["attestation"].toObject()), canonical(record["signature"].toObject()));
         if (attestation["kind"] != "installed-build" || attestation["schemaVersion"].toInt() != 1
-            || attestation["product"] != "ZIMA-CAD-Parts" || attestation["version"] != version
+            || attestation["product"] != "ZIMA-Parts" || attestation["version"] != version
             || attestation["platform"] != platform() || !attestation["runtimeFiles"].isObject() || !attestation["sourceFiles"].isObject())
             throw QString("Invalid bootstrap attestation");
         record["runtimeFiles"] = attestation["runtimeFiles"];
@@ -180,9 +180,9 @@ QString executable(const QString &root, const QString &version)
 {
     return child(root, platformDirectory() + '/' + version +
 #ifdef Q_OS_WIN
-        "/ZIMA-CAD-Parts.exe"
+        "/ZIMA-Parts.exe"
 #else
-        "/ZIMA-CAD-Parts"
+        "/ZIMA-Parts"
 #endif
     );
 }
@@ -323,15 +323,15 @@ QJsonObject prepare(const QString &root, const QString &archivePath, const QByte
     for (const auto &entry : entries) {
         auto name = entry.filePath;
         if (entry.isDir && name.endsWith('/')) name.chop(1);
-        if (entry.isDir && name == "ZIMA-CAD-Parts") continue;
-        if (!safeRelativePath(name) || !name.startsWith("ZIMA-CAD-Parts/") || entry.isSymLink || (!entry.isDir && !entry.isFile)
+        if (entry.isDir && name == "ZIMA-Parts") continue;
+        if (!safeRelativePath(name) || !name.startsWith("ZIMA-Parts/") || entry.isSymLink || (!entry.isDir && !entry.isFile)
             || entry.size < 0 || entry.size > 512 * 1024 * 1024 || seen.contains(name.toCaseFolded())) throw QString("Unsafe or unsupported ZIP entry");
         seen.insert(name.toCaseFolded());
         if (entry.isFile) { unpacked += entry.size; ++count; }
         if (unpacked > archive["unpackedSize"].toInteger() || count > archive["fileCount"].toInteger()) throw QString("ZIP exceeds signed extraction limits");
     }
     if (count != archive["fileCount"].toInteger() || unpacked != archive["unpackedSize"].toInteger()) throw QString("ZIP inventory count/size mismatch");
-    const auto checksumsBytes = reader.fileData("ZIMA-CAD-Parts/checksums.json");
+    const auto checksumsBytes = reader.fileData("ZIMA-Parts/checksums.json");
     if (QString::fromLatin1(QCryptographicHash::hash(checksumsBytes, QCryptographicHash::Sha256).toHex()) != manifest["checksumsSha256"].toString()) throw QString("Invalid signed file inventory");
     const auto checksums = QJsonDocument::fromJson(checksumsBytes).object();
     if (canonical(checksums) != checksumsBytes || checksums.size() != count - 1) throw QString("Invalid canonical file inventory");
@@ -342,7 +342,7 @@ QJsonObject prepare(const QString &root, const QString &archivePath, const QByte
     if (progress) progress({{"phase", "verifying"}});
     for (const auto &entry : entries) {
         if (entry.isDir) continue;
-        const auto name = entry.filePath.mid(15);
+        const auto name = entry.filePath.mid(QStringLiteral("ZIMA-Parts/").size());
         const auto data = reader.fileData(entry.filePath);
         if (data.size() != entry.size || reader.status() != QZipReader::NoError) throw QString("ZIP file read failed");
         if (name == "checksums.json") continue;

@@ -1,6 +1,6 @@
 # CLI: reading parts and using built-in tools
 
-`ZIMA-CAD-Parts-cli` is a separate console application built on Qt Core. It
+`ZIMA-Parts-cli` is a separate console application built on Qt Core. It
 opens no windows and does not start WebEngine or the thumbnail manager. On
 Windows, the executable has the `.exe` extension. The [bottom command
 panel](command-panel.md) uses the same command processor.
@@ -12,10 +12,10 @@ and `step-edit` functions can apply changes with `--apply`; see
 ## Usage
 
 ```powershell
-./ZIMA-CAD-Parts-cli.exe list "C:/CAD/Project" --language en
-./ZIMA-CAD-Parts-cli.exe list "C:/CAD/Project" --name screw --json
-./ZIMA-CAD-Parts-cli.exe params "C:/CAD/Project/xxx.prt.10" --language en
-./ZIMA-CAD-Parts-cli.exe --help
+./ZIMA-Parts-cli.exe list "C:/CAD/Project" --language en
+./ZIMA-Parts-cli.exe list "C:/CAD/Project" --name screw --json
+./ZIMA-Parts-cli.exe params "C:/CAD/Project/xxx.prt.10" --language en
+./ZIMA-Parts-cli.exe --help
 ```
 
 On Debian, use the same arguments without `.exe`. Command results are UTF-8

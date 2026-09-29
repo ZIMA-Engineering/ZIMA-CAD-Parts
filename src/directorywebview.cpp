@@ -146,7 +146,7 @@ void DirectoryWebView::loadAutoIndexPage(const QString &path)
 void DirectoryWebView::urlChange(const QUrl &url)
 {
     if ((url.scheme() == "about" && url != QUrl("about:blank"))
-            || url.scheme() == "ZIMA-CAD-Parts")
+            || url.scheme() == "ZIMA-Parts")
         loadAboutPage();
 }
 

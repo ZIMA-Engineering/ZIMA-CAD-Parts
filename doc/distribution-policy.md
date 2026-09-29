@@ -8,14 +8,14 @@ later. This document does not modify their repositories.
 ## Release identity
 
 - Releases, distribution archives and Git tags use names such as
-  `ZIMA-CAD-Parts-2026091501`.
+  `ZIMA-Parts-2026091501`.
 - The internal number follows `YYYYMMDDNN`: the build/release date and a
   two-digit sequence within that day. The same number identifies the source
   and corresponding official builds for each platform.
 - **ZIMA-Parts 9** is only the marketing name on the About page. The nine
   is not used for technical versions, archive names, tags or update decisions.
   About also shows the actual build number.
-- The approved September 29 branding change retains `ZIMA-CAD-Parts` as the
+- The approved September 29 standalone-product change uses `ZIMA-Parts` as the
   technical executable, package, tag, settings and signed-update identity.
   Visible branding is independent of those contracts; see the
   [transition record](RENAME_REVIEW.md).
@@ -24,8 +24,8 @@ later. This document does not modify their repositories.
 
 ## Distribution structure
 
-The final artifact is one shared `ZIMA-CAD-Parts-YYYYMMDDNN.zip` archive,
-without a platform in its name. It contains the `ZIMA-CAD-Parts` directory
+The final artifact is one shared `ZIMA-Parts-YYYYMMDDNN.zip` archive,
+without a platform in its name. It contains the `ZIMA-Parts` directory
 with matching sources and the available official platform builds: Windows,
 Debian, or both. A release must not wait for the other platform to be ready.
 Each client offers the newest verified release available for its own platform.
@@ -38,7 +38,7 @@ commit; checksums and signatures must be regenerated after adding files.
 Published assets are immutable. Adding a platform after publication requires
 a new release number; it does not replace the published ZIP or manifest.
 
-Local `.dist-output/` directly contains `ZIMA-CAD-Parts/` and the final ZIP,
+Local `.dist-output/` directly contains `ZIMA-Parts/` and the final ZIP,
 without a permanent intermediate `windows-native-final` directory. Platform
 CI outputs are intermediate artifacts for assembling the shared release,
 not separate public editions.
@@ -48,9 +48,9 @@ platform subdirectories, not in the name of this stable installation folder.
 The full project license is also present beside the launchers.
 
 ```text
-ZIMA-CAD-Parts/
-    ZIMA-CAD-Parts.exe
-    ZIMA-CAD-Parts.sh
+ZIMA-Parts/
+    ZIMA-Parts.exe
+    ZIMA-Parts.sh
     LICENSE
     windows/
         2026091501/

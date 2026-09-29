@@ -1,8 +1,9 @@
 ZIMA-Parts
 ==========
 
-The application is now named **ZIMA-Parts**. Existing executable, archive,
-settings and update identities remain `ZIMA-CAD-Parts` for continuity.
+The independent product is named **ZIMA-Parts**. Executables, archives,
+settings and update identities use `ZIMA-Parts`. Older product installations
+are not migrated.
 See [the naming transition](doc/RENAME_REVIEW.md).
 
 License
@@ -167,7 +168,7 @@ See `doc/password-manager.md` for the full manual verification checklist.
 Run
 ---
 ```
-./ZIMA-CAD-Parts
+./ZIMA-Parts
 ```
 
 ## Local filters, previews and languages
@@ -178,7 +179,7 @@ Application translations are compiled and embedded automatically by qmake.
 
 ## Local Windows release and generated files
 
-Run ZIMA-CAD-Parts.exe from the repository root. Keep its DLL files,
+Run ZIMA-Parts.exe from the repository root. Keep its DLL files,
 QtWebEngineProcess.exe and deployed Qt folders beside it; these are runtime
 dependencies. The app includes English, Czech, German, French and Russian.
 The application catalogs are embedded, so loose app QM files are not needed.

@@ -11,7 +11,7 @@ Debian acceptance is recorded in the [verification log](verification.md).
 The single version source is `VERSION` in `src/zima-cad-parts.h`
 (`YYYYMMDDNN`). The application reports it in About and through
 `QCoreApplication::applicationVersion()`. Running
-`ZIMA-CAD-Parts.exe --build-info` returns JSON without starting the GUI.
+`ZIMA-Parts.exe --build-info` returns JSON without starting the GUI.
 The marketing name with the number nine appears only on the About page.
 
 Build the complete project using qmake and nmake from an MSVC developer
@@ -29,7 +29,7 @@ After building the GUI, CLI and `zima-cad-parts-update.pro` helper
 (the helper requires `OPENSSL_ROOT`, for example `C:/zb/i/x64-windows`):
 
 ```powershell
-python tools/distribution/package-windows.py --exe .build-release/release/ZIMA-CAD-Parts.exe --cli .build-cli/release/ZIMA-CAD-Parts-cli.exe --updater .build-updater/release/ZIMA-CAD-Parts-update.exe --qt C:/Qt/6.10.1/msvc2022_64 --occt C:/zb/i/x64-windows --output .dist-output/2026091501
+python tools/distribution/package-windows.py --exe .build-release/release/ZIMA-Parts.exe --cli .build-cli/release/ZIMA-Parts-cli.exe --updater .build-updater/release/ZIMA-Parts-update.exe --qt C:/Qt/6.10.1/msvc2022_64 --occt C:/zb/i/x64-windows --output .dist-output/2026091501
 ```
 
 The executable must come from this checkout. If it cannot locate DLLs in
@@ -45,7 +45,7 @@ included individually with `--include path`. Other untracked files are not
 automatically bundled. Before release, verify export completeness by
 building directly from the exported sources.
 
-`--release` requires a clean checkout and a `ZIMA-CAD-Parts-<VERSION>` tag
+`--release` requires a clean checkout and a `ZIMA-Parts-<VERSION>` tag
 at HEAD. It creates a release candidate, not a signature or an officially
 verified distribution. The GitHub workflow uses this script; a date-based
 tag creates a draft release with an archive. Until the publisher finalizes signatures,
@@ -58,7 +58,7 @@ tests; an import list alone cannot prove their completeness.
 
 ## Launching and switching versions
 
-Run `ZIMA-CAD-Parts.exe` in the generated `ZIMA-CAD-Parts` root directory.
+Run `ZIMA-Parts.exe` in the generated `ZIMA-Parts` root directory.
 This is a small native Win32 launcher with a statically linked MSVC runtime;
 it requires neither Qt nor permission to run PowerShell scripts. The actual
 application is in `windows/<version>/`.
@@ -68,9 +68,9 @@ the official directory branch. A development bundle using that structure
 is still marked as development in its manifest, not as a verified release.
 
 ```powershell
-./ZIMA-CAD-Parts.exe -Version 2026091501
-./ZIMA-CAD-Parts.exe -Custom -Version my-build
-./ZIMA-CAD-Parts.exe -Check
+./ZIMA-Parts.exe -Version 2026091501
+./ZIMA-Parts.exe -Custom -Version my-build
+./ZIMA-Parts.exe -Check
 ```
 
 Custom builds live in `custom/windows/my-build/`, including their executable
@@ -124,8 +124,8 @@ be run separately. See [verification](verification.md) for recorded results.
 
 ## Final archive
 
-The agreed final name is `ZIMA-CAD-Parts-YYYYMMDDNN.zip`, without a platform.
-The local assembled bundle lives directly in `.dist-output/ZIMA-CAD-Parts/`.
+The agreed final name is `ZIMA-Parts-YYYYMMDDNN.zip`, without a platform.
+The local assembled bundle lives directly in `.dist-output/ZIMA-Parts/`.
 The version-specific output in the packaging example is a staging directory,
 not an extra level in the final distribution.
 

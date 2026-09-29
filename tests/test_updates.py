@@ -32,7 +32,7 @@ UPDATER = Path(os.environ['PARTS_UPDATER_TEST_EXE']).resolve()
 FIXTURE = Path(os.environ['PARTS_UPDATE_FIXTURE_EXE']).resolve()
 PLATFORM = 'windows-x64' if os.name == 'nt' else 'debian-13-x86_64'
 FOLDER = 'windows' if os.name == 'nt' else 'linux'
-EXE = 'ZIMA-CAD-Parts.exe' if os.name == 'nt' else 'bin/ZIMA-CAD-Parts'
+EXE = 'ZIMA-Parts.exe' if os.name == 'nt' else 'bin/ZIMA-Parts'
 V1, V2, V3 = '2026091501', '2026091502', '2026091503'
 COMMIT = 'a' * 40
 
@@ -56,14 +56,14 @@ class Updates(unittest.TestCase):
             for name in ['Qt6Core.dll', 'Qt6Network.dll', 'msvcp140.dll', 'vcruntime140.dll', 'vcruntime140_1.dll']:
                 cls.runtime[name] = (runtime / name).read_bytes()
         else:
-            cls.runtime['ZIMA-CAD-Parts'] = b'#!/bin/sh\nexec "$(dirname "$0")/bin/ZIMA-CAD-Parts" "$@"\n'
+            cls.runtime['ZIMA-Parts'] = b'#!/bin/sh\nexec "$(dirname "$0")/bin/ZIMA-Parts" "$@"\n'
         if '--archive' not in subprocess.check_output([str(UPDATER), '--help'], text=True):
             raise RuntimeError('This suite requires the isolated test helper, never the production helper')
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(prefix='zcp-update-test-')
         self.base = Path(self.tmp.name)
-        self.root = self.base / 'ZIMA-CAD-Parts'
+        self.root = self.base / 'ZIMA-Parts'
         self.root.mkdir()
         self.key = Ed25519PrivateKey.generate()
         self.key_id = 'test-' + uuid.uuid4().hex
@@ -71,7 +71,7 @@ class Updates(unittest.TestCase):
         keys.write_bytes(canonical({self.key_id: self.key.public_key().public_bytes_raw().hex()}))
         self.env = dict(os.environ, ZCP_UPDATE_TEST_KEYS=str(keys),
                         ZCP_UPDATE_TEST_STATE=str(self.base / 'settings'), ZCP_UPDATE_TEST_WAIT='1200')
-        (self.root / 'installation.json').write_bytes(canonical({'product': 'ZIMA-CAD-Parts', 'protocol': 1, 'id': str(uuid.uuid4())}))
+        (self.root / 'installation.json').write_bytes(canonical({'product': 'ZIMA-Parts', 'protocol': 1, 'id': str(uuid.uuid4())}))
         (self.root / 'launcher.ini').write_text(f'[launcher]\nwindows={V1}\nwindows_custom=false\nlinux={V1}\nlinux_custom=false\n')
         self.install_initial(V1)
         custom = self.root / 'custom' / FOLDER / 'my-build'
@@ -120,7 +120,7 @@ class Updates(unittest.TestCase):
             if os.name != 'nt' and inventory({name: data})[name]['executable']: path.chmod(0o755)
         source = self.root / 'source' / version; source.mkdir(parents=True)
         (source / 'README.md').write_bytes(b'initial source')
-        att = {'schemaVersion': 1, 'kind': 'installed-build', 'product': 'ZIMA-CAD-Parts',
+        att = {'schemaVersion': 1, 'kind': 'installed-build', 'product': 'ZIMA-Parts',
                'version': version, 'commit': COMMIT, 'platform': PLATFORM,
                'runtimeFiles': inventory(files), 'sourceFiles': inventory({'README.md': b'initial source'})}
         info = self.root / 'release-info'; info.mkdir(exist_ok=True)
@@ -136,18 +136,18 @@ class Updates(unittest.TestCase):
             files[f'{other}/{version}/untouched'] = b'other platform'
         if extra: files.update(extra)
         sums = canonical(inventory(files)); files['checksums.json'] = sums
-        archive = self.base / f'ZIMA-CAD-Parts-{version}.zip'
+        archive = self.base / f'ZIMA-Parts-{version}.zip'
         with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=1) as zipped:
             for name, data in files.items():
-                zipped.writestr('ZIMA-CAD-Parts/' + name, data)
-        manifest = {'schemaVersion': 1, 'product': 'ZIMA-CAD-Parts', 'version': version,
-                    'tag': 'ZIMA-CAD-Parts-' + version, 'commit': COMMIT, 'channel': 'development',
+                zipped.writestr('ZIMA-Parts/' + name, data)
+        manifest = {'schemaVersion': 1, 'product': 'ZIMA-Parts', 'version': version,
+                    'tag': 'ZIMA-Parts-' + version, 'commit': COMMIT, 'channel': 'development',
                     'archive': {'name': archive.name, 'size': archive.stat().st_size,
                                 'sha256': digest(archive.read_bytes()), 'fileCount': len(files),
                                 'unpackedSize': sum(map(len, files.values()))},
                     'checksumsSha256': digest(sums), 'minimumUpdaterVersion': 1, 'launcherProtocol': 1,
                     'source': {'path': f'source/{version}', 'treeSha256': digest(canonical(inventory({'README.md': files[f'source/{version}/README.md']})))},
-                    'platforms': {PLATFORM: {'runtime': f'{FOLDER}/{version}', 'entry': 'ZIMA-CAD-Parts.exe' if os.name == 'nt' else 'ZIMA-CAD-Parts'}}}
+                    'platforms': {PLATFORM: {'runtime': f'{FOLDER}/{version}', 'entry': 'ZIMA-Parts.exe' if os.name == 'nt' else 'ZIMA-Parts'}}}
         return archive, manifest
 
     def run_update(self, *args, ok=True):
@@ -206,7 +206,7 @@ class Updates(unittest.TestCase):
         package = self.package(include_other=False)
         other = 'linux' if FOLDER == 'windows' else 'windows'
         with zipfile.ZipFile(package[0]) as archive:
-            self.assertFalse(any(name.startswith(f'ZIMA-CAD-Parts/{other}/') for name in archive.namelist()))
+            self.assertFalse(any(name.startswith(f'ZIMA-Parts/{other}/') for name in archive.namelist()))
         self.catalog([self.release(package)])
         offer = self.run_update('check')
         self.assertEqual(offer['availableVersion'], V2)
@@ -220,7 +220,7 @@ class Updates(unittest.TestCase):
     def test_other_platform_release_does_not_hide_available_host_update(self):
         # Discovery uses signed platform metadata; this foreign runtime is never executed.
         foreign = self.package(V3)
-        other, target, entry = ('linux', 'debian-13-x86_64', 'ZIMA-CAD-Parts') if FOLDER == 'windows' else ('windows', 'windows-x64', 'ZIMA-CAD-Parts.exe')
+        other, target, entry = ('linux', 'debian-13-x86_64', 'ZIMA-Parts') if FOLDER == 'windows' else ('windows', 'windows-x64', 'ZIMA-Parts.exe')
         foreign[1]['platforms'] = {target: {'runtime': f'{other}/{V3}', 'entry': entry}}
         foreign_release = self.release(foreign)
         self.catalog([foreign_release])
@@ -238,8 +238,8 @@ class Updates(unittest.TestCase):
         private.write_bytes(self.key.private_bytes(serialization.Encoding.PEM,
             serialization.PrivateFormat.PKCS8, serialization.BestAvailableEncryption(password.encode())))
         for target, folder, entry, helper in [
-            ('windows-x64', 'windows', 'ZIMA-CAD-Parts.exe', 'ZIMA-CAD-Parts-update.exe'),
-            ('debian-13-x86_64', 'linux', 'ZIMA-CAD-Parts', 'bin/ZIMA-CAD-Parts-update')]:
+            ('windows-x64', 'windows', 'ZIMA-Parts.exe', 'ZIMA-Parts-update.exe'),
+            ('debian-13-x86_64', 'linux', 'ZIMA-Parts', 'bin/ZIMA-Parts-update')]:
             with self.subTest(platform=target):
                 package = self.base / ('publisher-' + folder)
                 runtime = package / folder / V2
@@ -252,9 +252,9 @@ class Updates(unittest.TestCase):
                 source = package / 'source' / V2; source.mkdir(parents=True)
                 (source / 'README.md').write_text('matching fixture source')
                 (package / 'LICENSE').write_text('fixture license')
-                (package / 'installation.json').write_bytes(canonical({'product': 'ZIMA-CAD-Parts', 'protocol': 1}))
-                (package / 'ZIMA-CAD-Parts.sh').write_text('#!/bin/sh\n')
-                if folder == 'windows': (package / 'ZIMA-CAD-Parts.exe').write_bytes(b'fixture launcher')
+                (package / 'installation.json').write_bytes(canonical({'product': 'ZIMA-Parts', 'protocol': 1}))
+                (package / 'ZIMA-Parts.sh').write_text('#!/bin/sh\n')
+                if folder == 'windows': (package / 'ZIMA-Parts.exe').write_bytes(b'fixture launcher')
                 output = self.base / ('published-' + folder)
                 args = SimpleNamespace(version=V2, package=package, output=output, private=private, development=False)
                 with patch('getpass.getpass', return_value=password): PUBLISH['finalize'](args)
@@ -267,7 +267,7 @@ class Updates(unittest.TestCase):
                 with zipfile.ZipFile(output / manifest['archive']['name']) as archive:
                     self.assertIsNone(archive.testzip())
                     other = 'linux' if folder == 'windows' else 'windows'
-                    self.assertFalse(any(name.startswith(f'ZIMA-CAD-Parts/{other}/') for name in archive.namelist()))
+                    self.assertFalse(any(name.startswith(f'ZIMA-Parts/{other}/') for name in archive.namelist()))
 
     def test_case_colliding_zip_names_are_rejected(self):
         package = self.package(extra={f'{FOLDER}/{V2}/VERSION.JSON': b'collision'})

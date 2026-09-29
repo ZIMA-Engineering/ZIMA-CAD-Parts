@@ -147,7 +147,7 @@ def main():
     if args.release:
         if dirty or args.include:
             raise RuntimeError('Release packaging requires a clean checkout without additional files')
-        tag = f'ZIMA-CAD-Parts-{build}'
+        tag = f'ZIMA-Parts-{build}'
         if run('git', 'rev-parse', f'{tag}^{{commit}}').strip() != commit:
             raise RuntimeError('Release tag does not match HEAD')
     updater = args.updater.resolve()
@@ -157,13 +157,13 @@ def main():
     if output.exists():
         raise RuntimeError(f'Refusing to overwrite output: {output}')
     exe = args.exe.resolve()
-    if exe.name != 'ZIMA-CAD-Parts.exe' or not exe.is_file():
-        raise RuntimeError('Missing ZIMA-CAD-Parts.exe')
+    if exe.name != 'ZIMA-Parts.exe' or not exe.is_file():
+        raise RuntimeError('Missing ZIMA-Parts.exe')
     binary_info = json.loads(run(str(exe), '--build-info'))
     if binary_info.get('version') != build:
         raise RuntimeError('Executable version differs from source VERSION; rebuild first')
     cli = args.cli.resolve()
-    if cli.name != 'ZIMA-CAD-Parts-cli.exe' or run(str(cli), '--version').strip() != build:
+    if cli.name != 'ZIMA-Parts-cli.exe' or run(str(cli), '--version').strip() != build:
         raise RuntimeError('Missing CLI or CLI version differs from source')
     files = dict((relative, source) for source, relative in source_files())
     for name in args.include:
@@ -172,7 +172,7 @@ def main():
         if not source.is_file() or any(x in ('.git', '.local-backups') for x in relative.parts):
             raise ValueError(f'Invalid extra source file: {name}')
         files[relative] = source
-    package = output / 'ZIMA-CAD-Parts'
+    package = output / 'ZIMA-Parts'
     runtime = package / 'windows' / build
     sources = package / 'source' / build
     runtime.mkdir(parents=True)
@@ -209,22 +209,22 @@ def main():
                     str(launcher_resource)], cwd=launcher_build, check=True)
     subprocess.run(['cl', '/nologo', '/std:c++17', '/EHsc', '/O2', '/MT',
                     str(ROOT / 'tools/distribution/launcher-windows.cpp'), str(launcher_build / 'launcher.res'),
-                    '/Fe:' + str(package / 'ZIMA-CAD-Parts.exe'),
+                    '/Fe:' + str(package / 'ZIMA-Parts.exe'),
                     '/link', '/SUBSYSTEM:WINDOWS', 'shell32.lib', 'user32.lib'],
                    cwd=launcher_build, check=True)
     (runtime / 'build.ini').write_text(f'[build]\nversion={build}\nplatform=windows-x64\n', encoding='utf-8')
-    for name in ('ZIMA-CAD-Parts.sh',):
+    for name in ('ZIMA-Parts.sh',):
         shutil.copy2(ROOT / 'tools/distribution' / name, package / name)
     for name in ('linux', 'custom/windows', 'custom/linux'):
         (package / name).mkdir(parents=True, exist_ok=True)
-    (package / 'installation.json').write_text(json.dumps({'product': 'ZIMA-CAD-Parts', 'protocol': 1, 'id': str(uuid.uuid4())}) + '\n', encoding='utf-8')
+    (package / 'installation.json').write_text(json.dumps({'product': 'ZIMA-Parts', 'protocol': 1, 'id': str(uuid.uuid4())}) + '\n', encoding='utf-8')
     (package / 'launcher.ini').write_text(f'[launcher]\nwindows={build}\nwindows_custom=false\nlinux=\nlinux_custom=false\n', encoding='utf-8')
-    metadata = dict(version=build, name=f'ZIMA-CAD-Parts-{build}', platform='windows-x64',
+    metadata = dict(version=build, name=f'ZIMA-Parts-{build}', platform='windows-x64',
                     commit=commit, source_modified=dirty, origin='release-candidate' if args.release else 'development',
                     signed=False, qt=run(str(args.qt.resolve() / 'bin/qmake.exe'), '-query', 'QT_VERSION').strip())
     (runtime / 'version.json').write_text(json.dumps(metadata, indent=2) + '\n', encoding='utf-8')
     (package / 'README.txt').write_text(
-        f'ZIMA-CAD-Parts-{build}\nRun ZIMA-CAD-Parts.exe on Windows.\n'
+        f'ZIMA-Parts-{build}\nRun ZIMA-Parts.exe on Windows.\n'
         'Debian binary is not included in this first Windows package.\n'
         'Select a retained build in launcher.ini or pass -Version YYYYMMDDNN.\n'
         'Custom builds: custom/windows/NAME; launch with -Custom -Version NAME.\n'

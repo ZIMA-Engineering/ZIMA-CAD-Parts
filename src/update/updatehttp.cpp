@@ -46,7 +46,7 @@ QByteArray get(QUrl url, qint64 limit, QFile *output = nullptr, const Progress &
     for (int redirects = 0; redirects <= 5; ++redirects) {
         if (!allowed(url)) throw QString("Unapproved update download URL");
         QNetworkRequest request(url);
-        request.setRawHeader("User-Agent", "ZIMA-CAD-Parts/" VERSION);
+        request.setRawHeader("User-Agent", "ZIMA-Parts/" VERSION);
         request.setRawHeader("Accept", output ? "application/octet-stream" : "application/vnd.github+json");
         request.setRawHeader("X-GitHub-Api-Version", "2026-03-10");
         if (cache && !cached["etag"].toString().isEmpty()) request.setRawHeader("If-None-Match", cached["etag"].toString().toUtf8());
@@ -111,7 +111,7 @@ QUrl apiBase()
     const auto test = qEnvironmentVariable("ZCP_UPDATE_TEST_API");
     if (!test.isEmpty()) return QUrl(test);
 #endif
-    return QUrl("https://api.github.com/repos/ZIMA-Engineering/ZIMA-CAD-Parts/releases");
+    return QUrl("https://api.github.com/repos/ZIMA-Engineering/ZIMA-Parts/releases");
 }
 QString asset(const QJsonObject &release, const QString &name)
 {
@@ -153,8 +153,8 @@ QJsonObject check(const QString &root, const Progress &progress)
         for (const auto &entry : entries) {
             const auto release = entry.toObject();
             const auto tag = release["tag_name"].toString();
-            if (release["draft"].toBool(true) || release["prerelease"].toBool(true) || !tag.startsWith("ZIMA-CAD-Parts-")) continue;
-            const auto version = tag.mid(15);
+            if (release["draft"].toBool(true) || release["prerelease"].toBool(true) || !tag.startsWith("ZIMA-Parts-")) continue;
+            const auto version = tag.mid(QStringLiteral("ZIMA-Parts-").size());
             if (validVersion(version) && version > installed) releases.append(release);
         }
         if (entries.size() < 100) break;

@@ -9,7 +9,7 @@
 ## Build, Test, and Development Commands
 - Prereqs: Qt 6.8+ with `core`, `gui`, `widgets`, `network`, `webenginewidgets`, `webchannel` plus `qmake`, `g++`.
 - Debian/Ubuntu builds also need `qt6-webchannel-dev` and `libsecret-1-dev` alongside the usual Qt WebEngine toolchain packages.
-- Standard build: `qmake && make -j$(nproc)` from the repo root; run the app with `./ZIMA-CAD-Parts`.
+- Standard build: `qmake && make -j$(nproc)` from the repo root; run the app with `./ZIMA-Parts`.
 - Always verify changes with a full build before submission, using the standard command above.
 - Clean artifacts: `make clean`. Use `shell.nix` or `nix-build` for a pinned toolchain if you have Nix.
 

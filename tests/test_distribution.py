@@ -66,16 +66,16 @@ class PackagingTests(unittest.TestCase):
             shutil.copy2(ROOT / 'tools/distribution/launch-windows.ps1', script)
             native = os.environ.get('PARTS_LAUNCHER')
             if native:
-                shutil.copy2(native, root / 'ZIMA-CAD-Parts.exe')
+                shutil.copy2(native, root / 'ZIMA-Parts.exe')
             for build in ('2026091501', '2026091601'):
                 folder = root / 'windows' / build
                 folder.mkdir(parents=True)
-                (folder / 'ZIMA-CAD-Parts.exe').touch()
+                (folder / 'ZIMA-Parts.exe').touch()
                 (folder / 'build.ini').write_text(f'[build]\nversion={build}\nplatform=windows-x64\n')
                 (folder / 'version.json').write_text(json.dumps(dict(version=build, platform='windows-x64')))
             (root / 'launcher.ini').write_text('[launcher]\nwindows=2026091601\nwindows_custom=false\n')
             def check(*args):
-                command = [str(root / 'ZIMA-CAD-Parts.exe')] if native else ['powershell.exe', '-NoProfile', '-File', str(script)]
+                command = [str(root / 'ZIMA-Parts.exe')] if native else ['powershell.exe', '-NoProfile', '-File', str(script)]
                 return subprocess.run([*command, '-Check', *args], capture_output=True, text=True)
             result = check()
             self.assertEqual(result.returncode, 0, result.stderr)
@@ -86,7 +86,7 @@ class PackagingTests(unittest.TestCase):
             self.assertNotEqual(check('-Version', '2026091701').returncode, 0)
             custom = root / 'custom/windows/my-build'
             custom.mkdir(parents=True)
-            (custom / 'ZIMA-CAD-Parts.exe').touch()
+            (custom / 'ZIMA-Parts.exe').touch()
             self.assertEqual(check('-Custom', '-Version', 'my-build').returncode, 0)
             (root / 'windows/2026091601/version.json').write_text('{"version":"wrong","platform":"windows-x64"}')
             (root / 'windows/2026091601/build.ini').write_text('[build]\nversion=wrong\nplatform=windows-x64\n')

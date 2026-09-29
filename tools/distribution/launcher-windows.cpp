@@ -48,7 +48,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
             if (args[i] == L"-Check") continue;
             if (args[i] == L"-Custom") custom = true;
             else if (args[i] == L"-Version" && i + 1 < args.size()) { version = args[++i]; explicitVersion = true; }
-            else throw std::wstring(L"Usage: ZIMA-CAD-Parts.exe [-Version NAME] [-Custom] [-Check]");
+            else throw std::wstring(L"Usage: ZIMA-Parts.exe [-Version NAME] [-Custom] [-Check]");
         }
         wchar_t module[32768];
         DWORD count = GetModuleFileNameW(nullptr, module, 32768);
@@ -73,7 +73,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
         }
         if (!valid) throw std::wstring(L"Invalid build name in launcher.ini or command line.");
         const std::wstring directory = root + (custom ? L"\\custom\\windows\\" : L"\\windows\\") + version;
-        std::wstring exe = directory + L"\\ZIMA-CAD-Parts.exe";
+        std::wstring exe = directory + L"\\ZIMA-Parts.exe";
         const bool recoverable = !custom && !explicitVersion && !check && exists(root + L"\\.updates\\engine.ini");
         if (!recoverable && !exists(exe)) throw std::wstring(L"Build not found: ") + exe;
         if (!custom && !recoverable) {
@@ -111,7 +111,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
             bool validEngine = engine.size() == 10;
             for (wchar_t c : engine) validEngine = validEngine && c >= L'0' && c <= L'9';
             if (!validEngine) throw std::wstring(L"Invalid updater engine version.");
-            exe = root + L"\\windows\\" + engine + L"\\ZIMA-CAD-Parts-update.exe";
+            exe = root + L"\\windows\\" + engine + L"\\ZIMA-Parts-update.exe";
             if (!exists(exe)) throw std::wstring(L"Update component is missing: ") + exe;
             command = L"\"" + exe + L"\" launch --root \"" + root + L"\"";
             managed = true;

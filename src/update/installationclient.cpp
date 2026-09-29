@@ -13,7 +13,7 @@
 
 QString partsUpdateExecutable()
 {
-    return QCoreApplication::applicationDirPath() + "/ZIMA-CAD-Parts-update"
+    return QCoreApplication::applicationDirPath() + "/ZIMA-Parts-update"
 #ifdef Q_OS_WIN
         ".exe"
 #endif
@@ -36,7 +36,7 @@ QString partsInstallationRoot()
     QFile file(path.filePath("installation.json"));
     if (!file.open(QIODevice::ReadOnly) || file.size() > 16384) return {};
     const auto marker = QJsonDocument::fromJson(file.readAll()).object();
-    if (marker["product"] != "ZIMA-CAD-Parts" || marker["protocol"].toInt() != 1 || QFileInfo::exists(path.filePath(".git"))) return {};
+    if (marker["product"] != "ZIMA-Parts" || marker["protocol"].toInt() != 1 || QFileInfo::exists(path.filePath(".git"))) return {};
     return path.canonicalPath();
 }
 bool registerPartsInstance(QString *error)

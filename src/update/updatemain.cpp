@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
     app.setOrganizationName("ZIMA-Construction"); app.setOrganizationDomain("zima-contruction.cz");
-    app.setApplicationName("ZIMA-CAD-Parts"); app.setApplicationVersion(VERSION);
+    app.setApplicationName("ZIMA-Parts"); app.setApplicationVersion(VERSION);
 #ifdef PARTS_UPDATE_TESTING
     const auto testState = qEnvironmentVariable("ZCP_UPDATE_TEST_STATE");
     if (!testState.isEmpty()) {

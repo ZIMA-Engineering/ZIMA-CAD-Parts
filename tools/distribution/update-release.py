@@ -162,8 +162,8 @@ def finalize(args):
         raise ValueError('Missing matching sources or root LICENSE')
     platforms = {}
     commits = set()
-    for platform, directory, entry in [('windows-x64', 'windows', 'ZIMA-CAD-Parts.exe'),
-                                        ('debian-13-x86_64', 'linux', 'ZIMA-CAD-Parts')]:
+    for platform, directory, entry in [('windows-x64', 'windows', 'ZIMA-Parts.exe'),
+                                        ('debian-13-x86_64', 'linux', 'ZIMA-Parts')]:
         runtime = package / directory / version
         if not runtime.exists():
             continue
@@ -175,21 +175,21 @@ def finalize(args):
         if not re.fullmatch('[0-9a-f]{40}', metadata.get('commit', '')):
             raise ValueError('Missing source commit')
         commits.add(metadata['commit'])
-        helper = runtime / ('ZIMA-CAD-Parts-update.exe' if directory == 'windows' else 'bin/ZIMA-CAD-Parts-update')
+        helper = runtime / ('ZIMA-Parts-update.exe' if directory == 'windows' else 'bin/ZIMA-Parts-update')
         if not (runtime / entry).is_file() or not helper.is_file():
             raise ValueError('Missing GUI or updater binary')
         platforms[platform] = {'runtime': f'{directory}/{version}', 'entry': entry,
                                'systemPackages': metadata.get('system_packages', [])}
     if not platforms or len(commits) != 1:
         raise ValueError('Build platforms must share one source commit')
-    if 'windows-x64' in platforms and not (package / 'ZIMA-CAD-Parts.exe').is_file():
+    if 'windows-x64' in platforms and not (package / 'ZIMA-Parts.exe').is_file():
         raise ValueError('Missing Windows root launcher')
-    if not (package / 'ZIMA-CAD-Parts.sh').is_file():
+    if not (package / 'ZIMA-Parts.sh').is_file():
         raise ValueError('Missing Linux root launcher')
     # Validate links before copytree, which would otherwise dereference them.
     inventory(package)
     marker = json.loads((package / 'installation.json').read_text(encoding='utf-8'))
-    if marker.get('product') != 'ZIMA-CAD-Parts' or marker.get('protocol') != 1:
+    if marker.get('product') != 'ZIMA-Parts' or marker.get('protocol') != 1:
         raise ValueError('Missing protocol-1 installation marker')
     key = load_key(args.private)
     public = key.public_key().public_bytes_raw()
@@ -197,15 +197,15 @@ def finalize(args):
     output.mkdir(parents=True)
     try:
         with tempfile.TemporaryDirectory(prefix='zcp-release-') as tmp:
-            assembled = Path(tmp) / 'ZIMA-CAD-Parts'
+            assembled = Path(tmp) / 'ZIMA-Parts'
             shutil.copytree(package, assembled)
             # Never package local installation transaction state or private keys.
             for path in assembled.rglob('*'):
                 if any(part in ('.git', '.local-backups', '.updates', 'instances') for part in path.relative_to(assembled).parts):
                     raise ValueError('Working state must not be present in a release package')
             (assembled / 'README.txt').write_text(
-                f'ZIMA-CAD-Parts-{version}\n'
-                'Run ZIMA-CAD-Parts.exe on Windows, or ZIMA-CAD-Parts.sh on Debian.\n'
+                f'ZIMA-Parts-{version}\n'
+                'Run ZIMA-Parts.exe on Windows, or ZIMA-Parts.sh on Debian.\n'
                 + 'Included targets: ' + ', '.join(sorted(platforms)) + '\n'
                 + ('Development package; not accepted as a stable automatic update.\n' if args.development else 'Stable publisher release.\n')
                 + 'Signed publisher inventories are in release-info/.\n'
@@ -218,7 +218,7 @@ def finalize(args):
                 metadata['signed'] = True
                 metadata['origin'] = 'development' if args.development else 'official'
                 metadata_path.write_bytes(canonical(metadata))
-                attestation = {'schemaVersion': 1, 'kind': 'installed-build', 'product': 'ZIMA-CAD-Parts',
+                attestation = {'schemaVersion': 1, 'kind': 'installed-build', 'product': 'ZIMA-Parts',
                                'version': version, 'commit': next(iter(commits)), 'platform': target,
                                'runtimeFiles': inventory(assembled / configuration['runtime']),
                                'sourceFiles': inventory(assembled / 'source' / version)}
@@ -233,10 +233,10 @@ def finalize(args):
                 raise ValueError('Release exceeds updater extraction limits')
             if sum(f['size'] for f in files.values()) > 8 * 1024**3:
                 raise ValueError('Release exceeds unpacked size limit')
-            archive = output / f'ZIMA-CAD-Parts-{version}.zip'
+            archive = output / f'ZIMA-Parts-{version}.zip'
             with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6, allowZip64=False) as zipped:
                 for path in sorted(assembled.rglob('*')):
-                    info = zipfile.ZipInfo('ZIMA-CAD-Parts/' + path.relative_to(assembled).as_posix() + ('/' if path.is_dir() else ''))
+                    info = zipfile.ZipInfo('ZIMA-Parts/' + path.relative_to(assembled).as_posix() + ('/' if path.is_dir() else ''))
                     info.date_time = (1980, 1, 1, 0, 0, 0)
                     info.create_system = 3
                     permissions = 0o755 if path.is_dir() or files[path.relative_to(assembled).as_posix()]['executable'] else 0o644
@@ -246,8 +246,8 @@ def finalize(args):
             if archive.stat().st_size >= 2 * 1024**3:
                 raise ValueError('Protocol 1 archives must be smaller than 2 GiB')
             source_files = inventory(assembled / 'source' / version)
-            manifest = {'schemaVersion': 1, 'product': 'ZIMA-CAD-Parts', 'version': version,
-                        'tag': 'ZIMA-CAD-Parts-' + version, 'commit': commits.pop(),
+            manifest = {'schemaVersion': 1, 'product': 'ZIMA-Parts', 'version': version,
+                        'tag': 'ZIMA-Parts-' + version, 'commit': commits.pop(),
                         'archive': {'name': archive.name, 'size': archive.stat().st_size, 'sha256': sha(archive),
                                     'unpackedSize': sum(f['size'] for f in files.values()), 'fileCount': len(files)},
                         'checksumsSha256': files['checksums.json']['sha256'],

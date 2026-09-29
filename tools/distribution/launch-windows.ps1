@@ -24,7 +24,7 @@ try {
         $base = Join-Path $root 'windows'
     }
     $directory = Join-Path $base $Version
-    $exe = Join-Path $directory 'ZIMA-CAD-Parts.exe'
+    $exe = Join-Path $directory 'ZIMA-Parts.exe'
     if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) { throw "Build not found: $exe" }
     if (-not $Custom) {
         $manifest = Get-Content -Raw -LiteralPath (Join-Path $directory 'version.json') | ConvertFrom-Json

@@ -100,7 +100,7 @@ void assertManaged(const QString &root)
 {
     if (root.isEmpty() || !QDir(root).isAbsolute() || QFileInfo(root).isSymLink() || QFileInfo(root).isJunction()) throw QString("Not a managed installation");
     const auto marker = readJson(root + "/installation.json");
-    if (marker["product"] != "ZIMA-CAD-Parts" || marker["protocol"].toInt() != Protocol
+    if (marker["product"] != "ZIMA-Parts" || marker["protocol"].toInt() != Protocol
         || marker["id"].toString().isEmpty() || QFileInfo::exists(root + "/.git"))
         throw QString("Not a managed distribution; use the packaged launcher");
     for (const auto &name : {QString(".updates"), QString("windows"), QString("linux"), QString("source")}) {
@@ -147,11 +147,11 @@ QJsonObject verifyManifest(const QByteArray &payload, const QByteArray &signatur
     static const QRegularExpression keyPattern("^[0-9a-f]{64}$");
     const auto version = object["version"].toString();
     const auto archive = object["archive"].toObject();
-    if (object["schemaVersion"].toInt() != 1 || object["product"] != "ZIMA-CAD-Parts"
-        || !validVersion(version) || object["tag"] != "ZIMA-CAD-Parts-" + version
+    if (object["schemaVersion"].toInt() != 1 || object["product"] != "ZIMA-Parts"
+        || !validVersion(version) || object["tag"] != "ZIMA-Parts-" + version
         || !QRegularExpression("^[0-9a-f]{40}$").match(object["commit"].toString()).hasMatch()
         || object["minimumUpdaterVersion"].toInt() < 1 || object["launcherProtocol"].toInt() < 1
-        || archive["name"] != "ZIMA-CAD-Parts-" + version + ".zip"
+        || archive["name"] != "ZIMA-Parts-" + version + ".zip"
         || !keyPattern.match(archive["sha256"].toString()).hasMatch()
         || !keyPattern.match(object["checksumsSha256"].toString()).hasMatch()
         || object["source"].toObject()["path"] != "source/" + version
@@ -170,7 +170,7 @@ QJsonObject verifyManifest(const QByteArray &payload, const QByteArray &signatur
         if ((!windows && it.key() != "debian-13-x86_64") || !it.value().isObject()) throw QString("Unknown update platform");
         const auto target = it.value().toObject();
         if (target["runtime"] != (windows ? "windows/" : "linux/") + version
-            || target["entry"] != (windows ? "ZIMA-CAD-Parts.exe" : "ZIMA-CAD-Parts"))
+            || target["entry"] != (windows ? "ZIMA-Parts.exe" : "ZIMA-Parts"))
             throw QString("Invalid runtime paths");
     }
     if (object["channel"] != "stable") {

@@ -53,7 +53,7 @@ PartsCore::CommandResult PartsCore::executeCommand(const QStringList &arguments,
     parser.addOption({"default-proe-versions", "Fallback if filters.ini omits ShowVersions: all or latest.", "mode"});
     parser.addPositionalArgument("command", "help, list, params, ps2pdf, ptc-clean, zima-clean, step-edit or update");
     parser.addPositionalArgument("path", "Directory or part path. The panel supplies the active directory.");
-    if (!parser.parse(QStringList{"ZIMA-CAD-Parts-cli"} + arguments))
+    if (!parser.parse(QStringList{"ZIMA-Parts-cli"} + arguments))
         return fail(parser.errorText(), 2);
     if (parser.isSet("help") || arguments == QStringList{"help"})
         return {{}, parser.helpText(), {}, 0};

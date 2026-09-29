@@ -1,3 +1,11 @@
+# Independent ZIMA-Parts product
+
+On September 29, 2026 the user explicitly replaced the continuity plan below
+with a standalone product. From build 2026092903, executable, package, tag,
+update, settings and credential-service identities use ZIMA-Parts. Old data
+is neither deleted nor migrated. The following records the earlier decision
+and its verified historical implementation.
+
 # ZIMA-Parts naming review
 
 Status: visible branding implementation approved September 29, 2026.

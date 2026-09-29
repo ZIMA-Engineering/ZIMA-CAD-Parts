@@ -10,7 +10,7 @@ while [ "$#" -gt 0 ]; do
         -Version) [ "$#" -ge 2 ] || exit 1; version=$2; explicit=true; shift 2;;
         -Custom) custom=true; shift;;
         -Check) check=true; shift;;
-        *) echo 'Usage: ZIMA-CAD-Parts.sh [-Version NAME] [-Custom] [-Check]' >&2; exit 1;;
+        *) echo 'Usage: ZIMA-Parts.sh [-Version NAME] [-Custom] [-Check]' >&2; exit 1;;
     esac
 done
 if [ -z "$version" ]; then
@@ -40,14 +40,14 @@ else
             [ "${#engine}" -eq 10 ] || exit 1
             unset QT_PLUGIN_PATH QT_QPA_PLATFORM_PLUGIN_PATH QML_IMPORT_PATH QML2_IMPORT_PATH
             export LD_LIBRARY_PATH="$root/linux/$engine/lib"
-            exec "$root/linux/$engine/bin/ZIMA-CAD-Parts-update" launch --root "$root"
+            exec "$root/linux/$engine/bin/ZIMA-Parts-update" launch --root "$root"
         fi
     fi
     actual=$(sed -n 's/^version=//p' "$directory/build.ini" | tr -d '\r')
     target=$(sed -n 's/^platform=//p' "$directory/build.ini" | tr -d '\r')
     [ "$actual" = "$version" ] && [ "$target" = debian-13-x86_64 ] || { echo 'Build manifest mismatch.' >&2; exit 1; }
 fi
-launcher="$directory/ZIMA-CAD-Parts"
+launcher="$directory/ZIMA-Parts"
 [ -x "$launcher" ] || { echo "Debian build not installed: $version" >&2; exit 1; }
 if [ "$check" = true ]; then printf '%s\n' "$launcher"; exit 0; fi
 

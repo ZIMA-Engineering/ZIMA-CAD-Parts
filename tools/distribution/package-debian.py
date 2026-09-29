@@ -53,7 +53,7 @@ def main():
     commit = run('git', 'rev-parse', 'HEAD').strip()
     dirty = bool(run('git', 'status', '--porcelain', '--untracked-files=normal').strip())
     if args.release:
-        if dirty or run('git', 'rev-parse', f'ZIMA-CAD-Parts-{build}^{{commit}}').strip() != commit:
+        if dirty or run('git', 'rev-parse', f'ZIMA-Parts-{build}^{{commit}}').strip() != commit:
             raise RuntimeError('Release requires a clean checkout at the matching tag')
     exe = args.exe.resolve()
     if json.loads(run(str(exe), '--build-info')).get('version') != build:
@@ -67,16 +67,16 @@ def main():
     output = args.output.resolve()
     if output.exists():
         raise RuntimeError('Output must not exist')
-    package = output / 'ZIMA-CAD-Parts'
+    package = output / 'ZIMA-Parts'
     runtime = package / 'linux' / build
     binary = runtime / 'bin'
     libraries = runtime / 'lib'
     binary.mkdir(parents=True)
     libraries.mkdir()
     query = lambda key: Path(run(args.qmake, '-query', key).strip())
-    shutil.copy2(exe, binary / 'ZIMA-CAD-Parts')
-    shutil.copy2(cli, binary / 'ZIMA-CAD-Parts-cli')
-    shutil.copy2(updater, binary / 'ZIMA-CAD-Parts-update')
+    shutil.copy2(exe, binary / 'ZIMA-Parts')
+    shutil.copy2(cli, binary / 'ZIMA-Parts-cli')
+    shutil.copy2(updater, binary / 'ZIMA-Parts-update')
     process = query('QT_INSTALL_LIBEXECS') / 'QtWebEngineProcess'
     shutil.copy2(process, binary / 'QtWebEngineProcess')
     plugin_root = query('QT_INSTALL_PLUGINS')
@@ -113,13 +113,13 @@ def main():
         relative = os.path.relpath(libraries, path.parent)
         subprocess.run(['patchelf', '--set-rpath', '$ORIGIN/' + relative, str(path)], check=True)
     (binary / 'qt.conf').write_text('[Paths]\nPrefix=..\nPlugins=plugins\nLibraries=lib\nLibraryExecutables=bin\nData=.\nTranslations=translations\n')
-    shutil.copy2(ROOT / 'tools/distribution/run-debian.sh', runtime / 'ZIMA-CAD-Parts')
-    (runtime / 'ZIMA-CAD-Parts').chmod(0o755)
-    shutil.copy2(ROOT / 'tools/distribution/ZIMA-CAD-Parts.sh', package / 'ZIMA-CAD-Parts.sh')
-    (package / 'ZIMA-CAD-Parts.sh').chmod(0o755)
+    shutil.copy2(ROOT / 'tools/distribution/run-debian.sh', runtime / 'ZIMA-Parts')
+    (runtime / 'ZIMA-Parts').chmod(0o755)
+    shutil.copy2(ROOT / 'tools/distribution/ZIMA-Parts.sh', package / 'ZIMA-Parts.sh')
+    (package / 'ZIMA-Parts.sh').chmod(0o755)
     for folder in ('windows', 'custom/windows', 'custom/linux'):
         (package / folder).mkdir(parents=True, exist_ok=True)
-    (package / 'installation.json').write_text(json.dumps({'product': 'ZIMA-CAD-Parts', 'protocol': 1, 'id': str(uuid.uuid4())}) + '\n', encoding='utf-8')
+    (package / 'installation.json').write_text(json.dumps({'product': 'ZIMA-Parts', 'protocol': 1, 'id': str(uuid.uuid4())}) + '\n', encoding='utf-8')
     (package / 'launcher.ini').write_text(f'[launcher]\nwindows=\nwindows_custom=false\nlinux={build}\nlinux_custom=false\n')
     for source, relative in source_files():
         target = package / 'source' / build / relative

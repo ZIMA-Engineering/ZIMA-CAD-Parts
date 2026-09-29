@@ -9,7 +9,7 @@ See [release acceptance and exact test scope](releases/2026091701.md).
 Earlier unsigned/pending statements below describe historical checks.
 
 
-ZIMA-CAD-Parts checks for published updates in the background after startup.
+ZIMA-Parts checks for published updates in the background after startup.
 The owner starts installation from **Settings > Updates** and confirms it.
 The download, verification, normal shutdown, activation and restart then run
 automatically. There is no startup popup or automatic installation.
@@ -43,22 +43,22 @@ usable during checking, downloading and archive verification.
 ## Files and activation
 
 ```text
-ZIMA-CAD-Parts/
-  ZIMA-CAD-Parts.exe
-  ZIMA-CAD-Parts.sh
+ZIMA-Parts/
+  ZIMA-Parts.exe
+  ZIMA-Parts.sh
   launcher.ini
   installation.json
   LICENSE
   windows/YYYYMMDDNN/
-    ZIMA-CAD-Parts.exe
-    ZIMA-CAD-Parts-cli.exe
-    ZIMA-CAD-Parts-update.exe
+    ZIMA-Parts.exe
+    ZIMA-Parts-cli.exe
+    ZIMA-Parts-update.exe
     ...runtime dependencies...
   linux/YYYYMMDDNN/
-    ZIMA-CAD-Parts
-    bin/ZIMA-CAD-Parts
-    bin/ZIMA-CAD-Parts-cli
-    bin/ZIMA-CAD-Parts-update
+    ZIMA-Parts
+    bin/ZIMA-Parts
+    bin/ZIMA-Parts-cli
+    bin/ZIMA-Parts-update
     ...runtime dependencies...
   source/YYYYMMDDNN/
   release-info/<platform>-YYYYMMDDNN.json
@@ -115,7 +115,7 @@ and a complete new distribution must be installed separately.
 
 The fixed endpoint is the public
 [GitHub Releases API](https://docs.github.com/en/rest/releases/releases) for
-`ZIMA-Engineering/ZIMA-CAD-Parts`. No user token is required. A Git commit or tag
+`ZIMA-Engineering/ZIMA-Parts`. No user token is required. A Git commit or tag
 alone is not an update. The client scans pages of 100 (up to 20 pages), filters
 out drafts/prereleases/foreign tags, and orders valid `YYYYMMDDNN` numbers.
 Only a newer signed stable release containing the current platform is installable.
@@ -133,12 +133,12 @@ in-memory offer; installation always rechecks the server before downloading.
 A final release contains these three assets:
 
 ```text
-ZIMA-CAD-Parts-YYYYMMDDNN.zip
+ZIMA-Parts-YYYYMMDDNN.zip
 update-manifest.json
 update-manifest.sig
 ```
 
-The ZIP contains the single `ZIMA-CAD-Parts/` directory, including matching source
+The ZIP contains the single `ZIMA-Parts/` directory, including matching source
 and one or both available platform binaries. Finalize as soon as the desired
 platform build is ready; waiting for the other platform is not required.
 Once published, bytes are immutable; adding another platform
@@ -159,7 +159,7 @@ hex. The key ID selects an already trusted key; a manifest cannot introduce a ke
 
 | Signed field | Contract |
 | --- | --- |
-| `schemaVersion`, `product`, `channel` | `1`, `ZIMA-CAD-Parts`, `stable` |
+| `schemaVersion`, `product`, `channel` | `1`, `ZIMA-Parts`, `stable` |
 | `version`, `tag`, `commit` | Valid date/sequence, matching tag, full 40-character commit |
 | `archive` | Name, SHA-256, byte size, unpacked size, file count |
 | `checksumsSha256` | Hash of canonical `checksums.json` in the ZIP |
@@ -233,7 +233,7 @@ package, then finalize. The Windows launcher is required when Windows is
 included; the portable Linux launcher is present in every bundle:
 
 ```text
-python tools/distribution/update-release.py finalize --private PATH_TO_PRIVATE_KEY --package PATH_TO_PACKAGE/ZIMA-CAD-Parts --output NEW_ASSET_DIRECTORY --version YYYYMMDDNN
+python tools/distribution/update-release.py finalize --private PATH_TO_PRIVATE_KEY --package PATH_TO_PACKAGE/ZIMA-Parts --output NEW_ASSET_DIRECTORY --version YYYYMMDDNN
 ```
 
 The output directory must not exist. The tool writes the ZIP, manifest, signature

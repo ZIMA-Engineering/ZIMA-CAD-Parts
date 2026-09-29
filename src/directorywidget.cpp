@@ -530,7 +530,7 @@ void DirectoryWidget::dirWebViewGoButton_clicked()
 {
     QString str = ui->dirWebViewUrlLineEdit->text();
 
-    if (str == "ZIMA-CAD-Parts:about")
+    if (str == "ZIMA-Parts:about")
     {
         ui->dirWebView->loadAboutPage();
     }

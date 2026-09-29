@@ -38,9 +38,9 @@
 #include "applicationlanguage.h"
 
 /**
-\mainpage ZIMA-CAD-Parts Developer Documentation
+\mainpage ZIMA-Parts Developer Documentation
 
-ZIMA-CAD-Parts is a tool, develop by ZIMA-Engineering (www.zima-engineering.cz),
+ZIMA-Parts is a tool, develop by ZIMA-Engineering (www.zima-engineering.cz),
 used by design engineers for management of CAD files.
 
 It can manage local CAD projects with the possibility of connection with PDM system.
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setOrganizationName("ZIMA-Construction");
     QCoreApplication::setOrganizationDomain("zima-contruction.cz");
-    QCoreApplication::setApplicationName("ZIMA-CAD-Parts");
+    QCoreApplication::setApplicationName("ZIMA-Parts");
     QCoreApplication::setApplicationVersion(QStringLiteral(VERSION));
 
 #ifdef HAVE_OCCT
