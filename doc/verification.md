@@ -414,3 +414,24 @@ The signed portable package passed Ed25519, CRC, all file checksums and exact
 committed-source comparisons. Clean-PATH launcher and executable probes passed;
 the production updater reported a trusted installation. See the complete
 [release receipt](releases/2026092601.md) for hashes and environment limits.
+
+
+## Standalone ZIMA-Parts Windows 2026092903
+
+The owner explicitly approved the independent product identity, replacing the
+previous continuity plan. A clean committed-source build passed for GUI, CLI,
+updater and integration targets. The packaged runtime passed 62 integration
+checks, 18 CLI checks, five distribution checks and all four non-English
+catalog validators. Eighteen isolated signed-update tests passed, including
+discovery, download, install, restart, rollback and invalid-archive rejection.
+
+The rename exposed two hard-coded old-prefix lengths. Release discovery and
+ZIP extraction now derive lengths from the new prefix strings; the complete
+update suite passed after this correction. Existing ZIMA-CAD-Parts user data
+was not deleted or migrated. New settings/profile/credential identities are
+intentional, not a claim of backward compatibility.
+
+Ed25519 signatures, CRCs, 1,561 file checksums and 643 committed source files
+passed verification. Clean-PATH probes confirmed the new executable names,
+root launcher and trusted updater status. GUI and native launcher both embed
+all seven ZP icon sizes. Native Linux/macOS execution was not repeated.
