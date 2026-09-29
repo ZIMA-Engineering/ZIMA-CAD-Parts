@@ -316,10 +316,10 @@ void FileView::showContextMenu(const QPoint &point)
     connect(ai, &QAction::triggered, this, [this, paths] { emit aiReferencesRequested(paths); });
     menu->addSeparator();
 
-    menu->addAction(QIcon(":/gfx/edit-rename.png"), tr("Rename"),
+    menu->addAction(QIcon(":/gfx/navigation/rename.svg"), tr("Rename"),
                     this, SLOT(renameFile()));
 
-    menu->addAction(QIcon(":/gfx/document-edit.png"), tr("Edit"),
+    menu->addAction(QIcon(":/gfx/navigation/edit.svg"), tr("Edit"),
                     this, SLOT(editFile()));
     menu->exec(mapToGlobal(point));
     menu->deleteLater();

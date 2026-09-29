@@ -65,7 +65,7 @@
          </property>
          <property name="icon">
           <iconset resource="../zima-cad-parts.qrc">
-           <normaloff>:/gfx/list-add.png</normaloff>:/gfx/list-add.png</iconset>
+           <normaloff>:/gfx/navigation/add.svg</normaloff>:/gfx/navigation/add.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -85,7 +85,7 @@
          </property>
          <property name="icon">
           <iconset resource="../zima-cad-parts.qrc">
-           <normaloff>:/gfx/list-remove.png</normaloff>:/gfx/list-remove.png</iconset>
+           <normaloff>:/gfx/navigation/remove.svg</normaloff>:/gfx/navigation/remove.svg</iconset>
          </property>
          <property name="iconSize">
           <size>

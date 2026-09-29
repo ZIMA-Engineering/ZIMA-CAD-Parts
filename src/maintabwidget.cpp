@@ -18,7 +18,7 @@ MainTabWidget::MainTabWidget(QWidget *parent) :
     tabBar()->setUsesScrollButtons(true);
 
     auto addTabBtn = new QToolButton(this);
-    addTabBtn->setIcon(QIcon(":/gfx/list-add.png"));
+    addTabBtn->setIcon(QIcon(":/gfx/navigation/add.svg"));
     addTabBtn->setToolTip(tr("Open a new tab"));
     connect(addTabBtn, SIGNAL(clicked()), this, SLOT(addNewTab()));
 

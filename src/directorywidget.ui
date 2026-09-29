@@ -91,7 +91,7 @@
             </property>
             <property name="icon">
              <iconset resource="../zima-cad-parts.qrc">
-              <normaloff>:/gfx/pin.png</normaloff>:/gfx/pin.png</iconset>
+              <normaloff>:/gfx/navigation/pin.svg</normaloff>:/gfx/navigation/pin.svg</iconset>
             </property>
            </widget>
           </item>
@@ -105,7 +105,7 @@
             </property>
             <property name="icon">
              <iconset resource="../zima-cad-parts.qrc">
-              <normaloff>:/gfx/document-edit.png</normaloff>:/gfx/document-edit.png</iconset>
+              <normaloff>:/gfx/navigation/edit.svg</normaloff>:/gfx/navigation/edit.svg</iconset>
             </property>
            </widget>
           </item>
@@ -157,7 +157,7 @@
            <widget class="QToolButton" name="partsIndexPinButton">
             <property name="icon">
              <iconset resource="../zima-cad-parts.qrc">
-              <normaloff>:/gfx/pin.png</normaloff>:/gfx/pin.png</iconset>
+              <normaloff>:/gfx/navigation/pin.svg</normaloff>:/gfx/navigation/pin.svg</iconset>
             </property>
            </widget>
           </item>
@@ -183,7 +183,7 @@
             </property>
             <property name="icon">
              <iconset resource="../zima-cad-parts.qrc">
-              <normaloff>:/gfx/document-edit.png</normaloff>:/gfx/document-edit.png</iconset>
+              <normaloff>:/gfx/navigation/edit.svg</normaloff>:/gfx/navigation/edit.svg</iconset>
             </property>
            </widget>
           </item>

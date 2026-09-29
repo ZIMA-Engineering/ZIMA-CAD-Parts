@@ -18,7 +18,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../zima-cad-parts.qrc">
-    <normaloff>:/gfx/edit-rename.png</normaloff>:/gfx/edit-rename.png</iconset>
+    <normaloff>:/gfx/navigation/rename.svg</normaloff>:/gfx/navigation/rename.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

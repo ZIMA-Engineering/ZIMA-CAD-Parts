@@ -17,12 +17,12 @@ MainToolBar::MainToolBar(QWidget *parent) :
 
     ui->actionRefresh->setShortcut(QKeySequence::Refresh);
     ui->actionRefresh->setShortcutContext(Qt::ApplicationShortcut);
-    ui->actionRefresh->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
+    ui->actionRefresh->setIcon(QIcon(":/gfx/navigation/refresh.svg"));
     connect(ui->actionRefresh, SIGNAL(triggered()),
             this, SIGNAL(refreshRequested()));
 
-    ui->actionHistoryBack->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
-    ui->actionHistoryForward->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
+    ui->actionHistoryBack->setIcon(QIcon(":/gfx/navigation/arrow-left.svg"));
+    ui->actionHistoryForward->setIcon(QIcon(":/gfx/navigation/arrow-right.svg"));
 
     m_wdirWidget = new WorkingDirWidget(this);
     addWidget(m_wdirWidget);

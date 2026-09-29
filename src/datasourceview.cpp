@@ -269,7 +269,7 @@ void DataSourceView::addScriptsToContextMenu(QMenu *menu)
     if (globalScripts.empty() && localScripts.empty())
         return;
 
-    auto submenu = menu->addMenu(QIcon(":/gfx/arrow-right.png"), tr("Scripts..."));
+    auto submenu = menu->addMenu(QIcon(":/gfx/navigation/arrow-right.svg"), tr("Scripts..."));
 
     foreach (auto script, globalScripts) {
         submenu->addAction(script.fileName(), [=]() {
@@ -297,20 +297,20 @@ void DataSourceView::showContextMenu(const QPoint &point)
 
     QMenu *menu = new QMenu(this);
 
-    menu->addAction(style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open"), this, SLOT(indexOpenPath()));
-    menu->addAction(QIcon(":/gfx/tab-new.png"), tr("Open in a new tab"), this, SLOT(openInANewTab()));
+    menu->addAction(QIcon(":/gfx/navigation/folder-open.svg"), tr("Open"), this, SLOT(indexOpenPath()));
+    menu->addAction(QIcon(":/gfx/navigation/tab-new.svg"), tr("Open in a new tab"), this, SLOT(openInANewTab()));
     auto ai = menu->addAction(QIcon(":/gfx/navigation/terminal.svg"), tr("Add to AI question"));
     ai->setObjectName("addToAiQuestion");
     const auto reference = currentFileInfo().absoluteFilePath();
     connect(ai, &QAction::triggered, this, [this, reference] { emit aiReferencesRequested({reference}); });
-    menu->addAction(QIcon(":/gfx/gohome.png"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
-    menu->addAction(style()->standardIcon(QStyle::SP_FileDialogNewFolder), tr("Create directory"), this, SLOT(createDirectory()));
+    menu->addAction(QIcon(":/gfx/navigation/home.svg"), tr("Set as working directory"), this, SLOT(setWorkingDirectory()));
+    menu->addAction(QIcon(":/gfx/navigation/folder-add.svg"), tr("Create directory"), this, SLOT(createDirectory()));
 
     menu->addSeparator();
 
-    menu->addAction(QIcon(":/gfx/document-edit.png"), tr("Directory properties"), this, SLOT(editDirectory()));
-    menu->addAction(QIcon(":/gfx/edit-copy.png"), tr("Copy as..."), this, SLOT(copyDirectoryAs()));
-    auto deleteAction = menu->addAction(QIcon(":/gfx/list-remove.png"), tr("Delete"), this, SLOT(deleteDirectory()));
+    menu->addAction(QIcon(":/gfx/navigation/edit.svg"), tr("Directory properties"), this, SLOT(editDirectory()));
+    menu->addAction(QIcon(":/gfx/navigation/copy.svg"), tr("Copy as..."), this, SLOT(copyDirectoryAs()));
+    auto deleteAction = menu->addAction(QIcon(":/gfx/navigation/remove.svg"), tr("Delete"), this, SLOT(deleteDirectory()));
     const auto locked = DirectoryProtection::removalLock(currentFileInfo());
     deleteAction->setEnabled(locked.isEmpty());
     if (!locked.isEmpty()) {
@@ -325,7 +325,7 @@ void DataSourceView::showContextMenu(const QPoint &point)
     for (const auto &tool : {QString("ptc-clean"), QString("zima-clean"), QString("ps2pdf"), QString("step-edit")}) {
         const QString icon = tool == "ptc-clean" ? "ZIMA-PTC-Cleaner" : tool == "ps2pdf" ? "ZIMA-PS2PDF" : "ZIMA-STEP-Edit";
         auto action = menu->addAction(tool == "zima-clean" ? QIcon(":/gfx/icons/zima-cad/part.svg")
-            : QIcon(":/gfx/external_programs/" + icon + ".png"), PartsToolsDialog::title(tool));
+            : QIcon(":/gfx/external_programs/" + icon + ".svg"), PartsToolsDialog::title(tool));
         const auto directory = currentFileInfo().absoluteFilePath();
         connect(action, &QAction::triggered, this, [this, tool, directory] {
             if (tool != "step-edit") {

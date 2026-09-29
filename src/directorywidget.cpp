@@ -65,10 +65,10 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     connect(ui->refreshButton, SIGNAL(clicked()),
             this, SLOT(refreshButton_clicked()));
 
-    ui->dirWebViewBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
-    ui->dirWebViewForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
-    ui->dirWebViewReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
-    ui->dirWebViewGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+    ui->dirWebViewBackButton->setIcon(QIcon(":/gfx/navigation/arrow-left.svg"));
+    ui->dirWebViewForwardButton->setIcon(QIcon(":/gfx/navigation/arrow-right.svg"));
+    ui->dirWebViewReloadButton->setIcon(QIcon(":/gfx/navigation/refresh.svg"));
+    ui->dirWebViewGoButton->setIcon(QIcon(":/gfx/navigation/arrow-right.svg"));
     const auto resizePinButton = [this](QToolButton *button, QWidget *firstReference,
                                         QWidget *secondReference) {
         const QSize iconSize(22, 22);
@@ -109,10 +109,10 @@ DirectoryWidget::DirectoryWidget(QWidget *parent) :
     connect(PartCache::get(), &PartCache::directoryOperationFinished,
             this, &DirectoryWidget::directoryOperationFinished);
 
-    ui->partsIndexBackButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
-    ui->partsIndexForwardButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
-    ui->partsIndexReloadButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
-    ui->partsIndexGoButton->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+    ui->partsIndexBackButton->setIcon(QIcon(":/gfx/navigation/arrow-left.svg"));
+    ui->partsIndexForwardButton->setIcon(QIcon(":/gfx/navigation/arrow-right.svg"));
+    ui->partsIndexReloadButton->setIcon(QIcon(":/gfx/navigation/refresh.svg"));
+    ui->partsIndexGoButton->setIcon(QIcon(":/gfx/navigation/arrow-right.svg"));
     resizePinButton(ui->partsIndexPinButton,
                     ui->partsIndexGoButton, ui->partsIndexEditButton);
 
@@ -339,7 +339,7 @@ void DirectoryWidget::updateIndexMenu(QToolButton *button, QMenu *menu, const QS
         return;
 
     QAction *deleteAction = menu->addAction(
-        QIcon(":/gfx/list-remove.png"),
+        QIcon(":/gfx/navigation/remove.svg"),
         tr("Delete index")
     );
     connect(deleteAction, &QAction::triggered, this, [this, filterBase]() {
@@ -349,7 +349,7 @@ void DirectoryWidget::updateIndexMenu(QToolButton *button, QMenu *menu, const QS
     if (files.count() > 1)
     {
         QAction *deleteAllAction = menu->addAction(
-            QIcon(":/gfx/list-remove.png"),
+            QIcon(":/gfx/navigation/remove.svg"),
             tr("Delete all indexes")
         );
         connect(deleteAllAction, &QAction::triggered, this, [this, filterBase]() {

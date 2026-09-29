@@ -133,7 +133,7 @@ void ThumbnailWorker::run()
 }
 ThumbnailManager::ThumbnailManager(QObject *parent)
     : QObject(parent), m_worker(new ThumbnailWorker(this)),
-      m_loading(":/gfx/image-loading.png"), m_cache(32 * 1024 * 1024)
+      m_loading(":/gfx/navigation/loading.svg"), m_cache(32 * 1024 * 1024)
 {
     qRegisterMetaType<ThumbnailPaths>("ThumbnailPaths");
     connect(m_worker, &ThumbnailWorker::sourcesReady, this,

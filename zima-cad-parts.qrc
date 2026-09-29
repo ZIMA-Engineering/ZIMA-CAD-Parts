@@ -18,7 +18,7 @@
 
         <file>gfx/logo.png</file>
         <file>gfx/icon.png</file>
-        <file>gfx/configure.png</file>
+        <file>gfx/navigation/settings.svg</file>
         <file>data/zima-cad-parts.html</file>
         <file>data/zima-cad-parts_de_DE.html</file>
         <file>data/zima-cad-parts_fr_FR.html</file>
@@ -30,55 +30,70 @@
         <file>gfx/flags/de.png</file>
         <file>gfx/flags/fr.svg</file>
         <file>gfx/flags/ru.png</file>
-        <file>gfx/pin.png</file>
-        <file>gfx/icons/asm.png</file>
-        <file>gfx/icons/blend.png</file>
-        <file>gfx/icons/catdrawing.png</file>
-        <file>gfx/icons/catpart.png</file>
-        <file>gfx/icons/catproduct.png</file>
-        <file>gfx/icons/dft.png</file>
-        <file>gfx/icons/drw.png</file>
-        <file>gfx/icons/dwg.png</file>
-        <file>gfx/icons/dxf.png</file>
-        <file>gfx/icons/frm.png</file>
-        <file>gfx/icons/iam.png</file>
-        <file>gfx/icons/idw.png</file>
-        <file>gfx/icons/ipt.png</file>
-        <file>gfx/icons/par.png</file>
-        <file>gfx/icons/pdf.png</file>
-        <file>gfx/icons/psm.png</file>
-        <file>gfx/icons/sldasm.png</file>
-        <file>gfx/icons/step.png</file>
-        <file>gfx/icons/stl.png</file>
-        <file>gfx/icons/prt_proe.png</file>
-        <file>gfx/icons/prt_nx.png</file>
-        <file>gfx/icons/neu_proe.png</file>
-        <file>gfx/icons/office-database.png</file>
-        <file>gfx/icons/office-document.png</file>
-        <file>gfx/icons/office-presentation.png</file>
-        <file>gfx/icons/office-project.png</file>
-        <file>gfx/icons/office-spreadsheet.png</file>
-        <file>gfx/icons/office-drawing.png</file>
-        <file>gfx/external_programs/ZIMA-CAD-Sync.png</file>
-        <file>gfx/external_programs/ZIMA-PS2PDF.png</file>
-        <file>gfx/external_programs/ZIMA-PTC-Cleaner.png</file>
-        <file>gfx/external_programs/ZIMA-STEP-Edit.png</file>
-        <file>gfx/gohome.png</file>
-        <file>gfx/icons/iges.png</file>
-        <file>gfx/icons/sldprt.png</file>
-        <file>gfx/icons/slddrw.png</file>
-        <file>gfx/list-remove.png</file>
-        <file>gfx/icons/internet-mail.png</file>
-        <file>gfx/icons/image-x-generic.png</file>
-        <file>gfx/image-loading.png</file>
-        <file>gfx/document-edit.png</file>
-        <file>gfx/list-add.png</file>
-        <file>gfx/tab-new.png</file>
-        <file>gfx/icons/mail-mbox.png</file>
-        <file>gfx/edit-rename.png</file>
-        <file>gfx/arrow-right.png</file>
-        <file>gfx/icons/audio-x-generic.png</file>
+        <file>gfx/navigation/pin.svg</file>
+        <file>gfx/icons/asm.svg</file>
+        <file>gfx/icons/blend.svg</file>
+        <file>gfx/icons/catdrawing.svg</file>
+        <file>gfx/icons/catpart.svg</file>
+        <file>gfx/icons/catproduct.svg</file>
+        <file>gfx/icons/dft.svg</file>
+        <file>gfx/icons/drw.svg</file>
+        <file>gfx/icons/dwg.svg</file>
+        <file>gfx/icons/dxf.svg</file>
+        <file>gfx/icons/frm.svg</file>
+        <file>gfx/icons/iam.svg</file>
+        <file>gfx/icons/idw.svg</file>
+        <file>gfx/icons/ipt.svg</file>
+        <file>gfx/icons/par.svg</file>
+        <file>gfx/icons/pdf.svg</file>
+        <file>gfx/icons/psm.svg</file>
+        <file>gfx/icons/sldasm.svg</file>
+        <file>gfx/icons/step.svg</file>
+        <file>gfx/icons/stl.svg</file>
+        <file>gfx/icons/prt_proe.svg</file>
+        <file>gfx/icons/prt_nx.svg</file>
+        <file>gfx/icons/neu_proe.svg</file>
+        <file>gfx/icons/office-database.svg</file>
+        <file>gfx/icons/office-document.svg</file>
+        <file>gfx/icons/office-presentation.svg</file>
+        <file>gfx/icons/office-project.svg</file>
+        <file>gfx/icons/office-spreadsheet.svg</file>
+        <file>gfx/icons/office-drawing.svg</file>
+        <file>gfx/navigation/sync.svg</file>
+        <file>gfx/navigation/edit.svg</file>
+        <file>gfx/navigation/clean.svg</file>
+        <file>gfx/navigation/home.svg</file>
+        <file>gfx/icons/iges.svg</file>
+        <file>gfx/icons/sldprt.svg</file>
+        <file>gfx/icons/slddrw.svg</file>
+        <file>gfx/navigation/remove.svg</file>
+        <file>gfx/icons/internet-mail.svg</file>
+        <file>gfx/icons/image-x-generic.svg</file>
+        <file>gfx/navigation/loading.svg</file>
+        <file>gfx/navigation/add.svg</file>
+        <file>gfx/navigation/tab-new.svg</file>
+        <file>gfx/icons/mail-mbox.svg</file>
+        <file>gfx/navigation/rename.svg</file>
+        <file>gfx/navigation/arrow-right.svg</file>
+        <file>gfx/icons/audio-x-generic.svg</file>
         <file>gfx/zima-engineering-logo.svg</file>
-        <file>gfx/edit-copy.png</file>
+        <file>gfx/icons/7z.svg</file>
+        <file>gfx/icons/asm_nx.svg</file>
+        <file>gfx/icons/drw_nx.svg</file>
+        <file>gfx/icons/dwb.svg</file>
+        <file>gfx/icons/fcstd.svg</file>
+        <file>gfx/icons/rar.svg</file>
+        <file>gfx/icons/tar.svg</file>
+        <file>gfx/icons/undefined.svg</file>
+        <file>gfx/icons/zip.svg</file>
+        <file>gfx/navigation/arrow-down.svg</file>
+        <file>gfx/navigation/arrow-left.svg</file>
+        <file>gfx/navigation/arrow-up.svg</file>
+        <file>gfx/navigation/folder-add.svg</file>
+        <file>gfx/navigation/folder-open.svg</file>
+        <file alias="gfx/external_programs/ZIMA-CAD-Sync.svg">gfx/navigation/sync.svg</file>
+        <file alias="gfx/external_programs/ZIMA-PS2PDF.svg">gfx/navigation/edit.svg</file>
+        <file alias="gfx/external_programs/ZIMA-PTC-Cleaner.svg">gfx/navigation/clean.svg</file>
+        <file alias="gfx/external_programs/ZIMA-STEP-Edit.svg">gfx/navigation/edit.svg</file>
     </qresource>
 </RCC>

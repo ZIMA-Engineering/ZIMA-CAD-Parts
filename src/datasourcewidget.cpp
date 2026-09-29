@@ -215,11 +215,11 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
 
     QMenu menu(this);
     QAction *openAction = menu.addAction(
-        style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open")
+        QIcon(":/gfx/navigation/folder-open.svg"), tr("Open")
     );
     openAction->setEnabled(hasDirectory);
     QAction *openInNewTabAction = menu.addAction(
-        QIcon(":/gfx/tab-new.png"),
+        QIcon(":/gfx/navigation/tab-new.svg"),
         tr("Open in a new tab")
     );
     openInNewTabAction->setEnabled(hasDirectory);
@@ -227,19 +227,19 @@ void DataSourceWidget::showDataSourceContextMenu(int index, const QPoint &global
     aiAction->setObjectName("addToAiQuestion");
     aiAction->setEnabled(hasDirectory);
     QAction *workingDirectoryAction = menu.addAction(
-        QIcon(":/gfx/gohome.png"), tr("Set as working directory")
+        QIcon(":/gfx/navigation/home.svg"), tr("Set as working directory")
     );
     workingDirectoryAction->setEnabled(hasDirectory);
     menu.addSeparator();
 
     QAction *editAction = menu.addAction(
-        QIcon(":/gfx/document-edit.png"),
+        QIcon(":/gfx/navigation/edit.svg"),
         tr("Data source properties")
     );
     editAction->setEnabled(hasDirectory);
 
     QAction *settingsAction = menu.addAction(
-        QIcon(":/gfx/configure.png"),
+        QIcon(":/gfx/navigation/settings.svg"),
         tr("Edit in settings")
     );
 

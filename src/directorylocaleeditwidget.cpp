@@ -23,8 +23,8 @@ DirectoryLocaleEditWidget::DirectoryLocaleEditWidget(Metadata *meta, const QStri
     ui->parameterTreeView->setModel(m_model);
     ui->parameterTreeView->setItemDelegate(new LineEditValueDelegate(this));
 
-    ui->moveParameterUpButton->setIcon(style()->standardIcon(QStyle::SP_ArrowUp));
-    ui->moveParameterDownButton->setIcon(style()->standardIcon(QStyle::SP_ArrowDown));
+    ui->moveParameterUpButton->setIcon(QIcon(":/gfx/navigation/arrow-up.svg"));
+    ui->moveParameterDownButton->setIcon(QIcon(":/gfx/navigation/arrow-down.svg"));
 
     toggleParameterMoveButtons();
 

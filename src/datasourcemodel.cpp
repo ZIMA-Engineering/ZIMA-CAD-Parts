@@ -92,7 +92,7 @@ DataSourceIconProvider::DataSourceIconProvider()
 
 QIcon DataSourceIconProvider::icon ( IconType type ) const
 {
-    return QFileIconProvider::icon(type);
+    return QIcon(type == QFileIconProvider::Folder ? ":/gfx/navigation/folder.svg" : ":/gfx/icons/undefined.svg");
 }
 
 QIcon DataSourceIconProvider::icon ( const QFileInfo & info ) const
@@ -101,7 +101,7 @@ QIcon DataSourceIconProvider::icon ( const QFileInfo & info ) const
 
     if (!info.isDir())
     {
-        return QFileIconProvider::icon(info);
+        return icon(info.isDir() ? QFileIconProvider::Folder : QFileIconProvider::File);
     }
     else if (QFile::exists(logoPath + LOGO_FILE))
     {
@@ -112,7 +112,7 @@ QIcon DataSourceIconProvider::icon ( const QFileInfo & info ) const
         return QIcon(logoPath + LOGO_TEXT_FILE);
     }
     else
-        return QFileIconProvider::icon(info);
+        return icon(info.isDir() ? QFileIconProvider::Folder : QFileIconProvider::File);
 }
 
 QPixmap DataSourceIconProvider::pixmap(const QFileInfo &info) const
@@ -128,7 +128,7 @@ QPixmap DataSourceIconProvider::pixmap(const QFileInfo &info) const
     }
     else
     {
-        return QFileIconProvider::icon(info).pixmap(32, 32);
+        return icon(info).pixmap(32, 32);
     }
 }
 

@@ -612,24 +612,23 @@ FileIconProvider::FileIconProvider()
 
 QIcon FileIconProvider::icon ( IconType type ) const
 {
-    return QFileIconProvider::icon(type);
+    return QIcon(type == QFileIconProvider::Folder ? ":/gfx/navigation/folder.svg" : ":/gfx/icons/undefined.svg");
 }
 
 QIcon FileIconProvider::icon ( const QFileInfo & info ) const
 {
+    if (info.isDir())
+        return icon(QFileIconProvider::Folder);
     FileMetadata fi(info);
-    const bool zima = (fi.type >= FileType::ZIMA_PRT && fi.type <= FileType::ZIMA_DRW)
-            || fi.type == FileType::ZIMA_FORMAT || fi.type == FileType::ZIMA_TITLE_BLOCK;
-    QString s = QString(":/gfx/icons/%1.%2").arg(File::getInternalNameForFileType(fi.type),
-                                               zima ? "svg" : "png");
+    const QString s = QString(":/gfx/icons/%1.svg").arg(File::getInternalNameForFileType(fi.type));
 
-    if ((zima || File::versionedTypes().contains(fi.type)) && QFile::exists(s)) {
+    if (QFile::exists(s)) {
         auto found = m_cadIcons.constFind(s);
         if (found == m_cadIcons.cend())
             found = m_cadIcons.insert(s, QIcon(s));
         return found.value();
     }
-    return QFileIconProvider::icon(info);
+    return icon(QFileIconProvider::File);
 }
 
 QString FileIconProvider::type ( const QFileInfo & info ) const

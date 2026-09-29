@@ -27,7 +27,7 @@ QTreeWidgetItem* ExtensionFilter::widget()
     item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
     item->setText(0, File::getLabelForFileType(type));
     item->setCheckState(0, enabled ? Qt::Checked : Qt::Unchecked);
-    item->setIcon(0, QIcon(QString(":/gfx/icons/%1.png").arg(File::getInternalNameForFileType(type))));
+    item->setIcon(0, QIcon(QString(":/gfx/icons/%1.svg").arg(File::getInternalNameForFileType(type))));
 
     return item;
 }

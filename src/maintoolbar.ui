@@ -22,7 +22,7 @@
   <action name="actionHome">
    <property name="icon">
     <iconset resource="../zima-cad-parts.qrc">
-     <normaloff>:/gfx/gohome.png</normaloff>:/gfx/gohome.png</iconset>
+     <normaloff>:/gfx/navigation/home.svg</normaloff>:/gfx/navigation/home.svg</iconset>
    </property>
    <property name="text">
     <string>Home</string>
@@ -46,7 +46,7 @@
   <action name="actionSettings">
    <property name="icon">
     <iconset resource="../zima-cad-parts.qrc">
-     <normaloff>:/gfx/configure.png</normaloff>:/gfx/configure.png</iconset>
+     <normaloff>:/gfx/navigation/settings.svg</normaloff>:/gfx/navigation/settings.svg</iconset>
    </property>
    <property name="text">
     <string>Settings</string>

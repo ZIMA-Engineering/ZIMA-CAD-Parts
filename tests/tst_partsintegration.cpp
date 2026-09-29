@@ -1,5 +1,8 @@
 #include "commandpanel.h"
 #include <QStyleFactory>
+#include <QDirIterator>
+#include <QGridLayout>
+#include <QPainter>
 #include <QVBoxLayout>
 #include "ai/aitools.h"
 #include "ai/codexprovider.h"
@@ -86,6 +89,55 @@ private:
         file.write("fixture");
     }
 private slots:
+    void vectorIconsRenderAndPreserveCustomLogos()
+    {
+        QWidget gallery;
+        QGridLayout layout(&gallery);
+        int count = 0;
+        for (const QString &root : {":/gfx/navigation", ":/gfx/icons"}) {
+            QDirIterator entries(root, {"*.svg"}, QDir::Files, QDirIterator::Subdirectories);
+            while (entries.hasNext()) {
+                const QString path = entries.next();
+                QIcon icon(path);
+                for (int size : {16, 24, 48}) {
+                    for (QIcon::Mode mode : {QIcon::Normal, QIcon::Disabled}) {
+                        auto pixmap = icon.pixmap(QSize(size, size), mode);
+                        QVERIFY2(!pixmap.isNull(), qPrintable(path));
+                        auto image = pixmap.toImage();
+                        int visible = 0;
+                        for (int y = 0; y < image.height(); ++y)
+                            for (int x = 0; x < image.width(); ++x)
+                                visible += qAlpha(image.pixel(x, y)) > 32;
+                        QVERIFY2(visible > size, qPrintable(path));
+                    }
+                }
+                auto *cell = new QWidget;
+                auto *column = new QVBoxLayout(cell);
+                auto *picture = new QLabel;
+                picture->setPixmap(icon.pixmap(32, 32));
+                picture->setAlignment(Qt::AlignCenter);
+                column->addWidget(picture);
+                auto *label = new QLabel(QFileInfo(path).baseName());
+                label->setAlignment(Qt::AlignCenter);
+                column->addWidget(label);
+                layout.addWidget(cell, count / 8, count % 8);
+                ++count;
+            }
+        }
+        QVERIFY(count >= 70);
+        QTemporaryDir source;
+        QVERIFY(QDir(source.path()).mkpath(METADATA_DIR));
+        QImage logo(32, 32, QImage::Format_ARGB32);
+        logo.fill(QColor("#b03070"));
+        QVERIFY(logo.save(source.path() + "/" + METADATA_DIR + "/" + LOGO_FILE));
+        DataSourceIconProvider provider;
+        QCOMPARE(provider.icon(QFileInfo(source.path())).pixmap(32,32).toImage().pixelColor(16,16), QColor("#b03070"));
+        gallery.show();
+        QCoreApplication::processEvents();
+        if (qEnvironmentVariableIsSet("PARTS_ICONS_SCREENSHOT"))
+            QVERIFY(gallery.grab().save(qEnvironmentVariable("PARTS_ICONS_SCREENSHOT")));
+    }
+
     void interactionUsesSystemStyle()
     {
         QVERIFY(qApp->styleSheet().isEmpty());
