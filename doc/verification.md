@@ -1,5 +1,19 @@
 # Build verification
 
+## Black and azure icons, September 29, 2026
+
+Full Windows GUI, CLI, updater and integration builds passed, including a fresh
+build from the committed release checkout. Both local and packaged runs passed
+61 integration checks, 14 tool CLI tests, four read-only CLI tests and all
+translation catalogs. The package additionally passed five distribution tests.
+Vector resources render at 16/24/48 pixels in normal and disabled states; custom
+datasource logo precedence remains covered. The icon gallery was inspected.
+
+The signed archive passed Ed25519, CRC, 1,554 file checksums, 636 exact source
+comparisons and clean-PATH probes. Production bootstrap trust passed. These
+checks ran on the Windows development workstation; they are not fresh-OS or
+Linux acceptance. See [the release record](releases/2026092901.md).
+
 ## Interaction colours, September 24, 2026
 
 Full Windows GUI, CLI, updater and integration builds passed. All 60 integration
