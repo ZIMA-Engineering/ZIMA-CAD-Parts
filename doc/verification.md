@@ -1,5 +1,20 @@
 # Build verification
 
+## ZIMA-Parts branding, September 29, 2026
+
+The local and clean committed-source Windows GUI, CLI, updater and integration
+builds passed. The packaged runtime passed 62 integration checks, 14 tool CLI
+checks, four read-only CLI checks, five distribution checks and every translation
+catalog. New coverage verifies all five visible-name translations and unchanged
+Qt settings/data paths. Existing browser/password-manager tests also passed.
+
+The application and root Windows launcher each embed all seven PNG icon sizes
+from the ZP vector master, verified directly through their PE resources. The
+icon and main-window screenshot were inspected. The signed package passed
+Ed25519, CRC, 1,560 checksums, 642 exact source comparisons and clean-PATH probes.
+See [the release record](releases/2026092902.md). Linux/macOS runtime acceptance
+and repository renaming are separate from this Windows branding verification.
+
 ## Black and azure icons, September 29, 2026
 
 Full Windows GUI, CLI, updater and integration builds passed, including a fresh

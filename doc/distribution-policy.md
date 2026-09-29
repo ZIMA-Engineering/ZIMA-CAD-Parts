@@ -12,9 +12,13 @@ later. This document does not modify their repositories.
 - The internal number follows `YYYYMMDDNN`: the build/release date and a
   two-digit sequence within that day. The same number identifies the source
   and corresponding official builds for each platform.
-- **ZIMA-CAD-Parts 9** is only the marketing name on the About page. The nine
+- **ZIMA-Parts 9** is only the marketing name on the About page. The nine
   is not used for technical versions, archive names, tags or update decisions.
   About also shows the actual build number.
+- The approved September 29 branding change retains `ZIMA-CAD-Parts` as the
+  technical executable, package, tag, settings and signed-update identity.
+  Visible branding is independent of those contracts; see the
+  [transition record](RENAME_REVIEW.md).
 - The official launch is planned for the owner's birthday; this specification
   does not establish a date.
 

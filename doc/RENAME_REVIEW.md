@@ -2,7 +2,7 @@
 
 Status: visible branding implementation approved September 29, 2026.
 Build 2026092902 displays **ZIMA-Parts** and the black/azure **ZP** mark.
-The repository rename remains a separate pending action. Executable names,
+The repository rename was explicitly approved and completed. Executable names,
 application identity, settings locations and release protocol remain unchanged.
 
 ## Visible branding implementation
@@ -20,9 +20,9 @@ PNG, multi-size ICO, ICNS and Linux hicolor assets directly from the vector.
 Native Linux/macOS runtime acceptance is separate from generating those assets.
 
 The production updater still queries the existing ZIMA-CAD-Parts repository.
-Automatic approval review rejected switching to an uncreated repository as part
-of the branding edit. That endpoint change was excluded. Renaming the repository
-requires a separate explicit confirmation, followed by old-client verification.
+GitHub redirects that endpoint to ZIMA-Engineering/ZIMA-Parts. The repository
+retains numeric identity 56504127, its history and immutable releases.
+The local Git origin now uses the canonical ZIMA-Parts repository URL.
 
 ## GitHub repository
 
@@ -35,7 +35,7 @@ See [GitHub's repository renaming documentation](https://docs.github.com/en/repo
 
 ## Application and update contracts
 
-The visible name and a future black/azure **ZP** mark can change independently
+The visible name and black/azure **ZP** mark change independently
 of technical identity. The current updater explicitly validates all of:
 
 - Product identity `ZIMA-CAD-Parts` in installation markers and signed records.
@@ -70,3 +70,34 @@ Changing only visible branding avoids that unintended reset.
 Simply changing every occurrence of the product name would cause older clients
 to ignore new tags or reject packages. The repository rename is the small part;
 the signed update and persisted user-data contracts determine the safe rollout.
+
+## Completed repository and directory transition
+
+On September 29, 2026 the user explicitly approved both repository and local
+project-directory renaming. The repository is now
+[ZIMA-Engineering/ZIMA-Parts](https://github.com/ZIMA-Engineering/ZIMA-Parts).
+The old API URL resolves to the same repository ID, 56504127. Release
+`ZIMA-CAD-Parts-2026092902` remains immutable and points to the original source
+commit. Pages were disabled and no repository-hosted Action definitions existed.
+
+The unmodified 2026092901 updater, still querying the old repository address,
+found 2026092902 as installable and completed a real archive download and
+preparation (`status:prepared`). Executable, signed product/tag/archive and
+settings identities stay unchanged. Do not reuse the old repository name.
+
+The development directory is now `../ZIMA-Parts` beside `../ZIMA-CAD`.
+The source tree, ignored runtime dependencies, signing keys, custom data and
+untracked user files moved together. The Git remote uses the new canonical URL.
+Qmake regenerated all four development build projects at their new absolute
+paths; GUI, CLI, updater and integration builds succeeded. No matching desktop
+or Start Menu shortcuts required rewriting. Codex's saved project entry still
+references the old directory; its available project tools do not expose a path
+update. Reopen the new directory in Codex to replace that saved entry.
+
+Post-move verification passed all 62 integration checks, 18 CLI checks and
+four translation catalogs. The initial incremental test retained an embedded
+old fixture path; a clean rebuild of the test project resolved it without
+application source changes. The development executable reports 2026092902,
+the portable launcher resolves its new absolute path, and updater status is
+`trusted:true`, `installedVersion:2026092902`, `status:idle`. The directory and
+repository transition adds no user-visible application strings.

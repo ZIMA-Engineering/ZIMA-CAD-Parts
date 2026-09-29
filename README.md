@@ -78,8 +78,8 @@ Get the sources
 Clone the repository, initialize submodules, and enter the project directory:
 
 ```
-git clone https://github.com/ZIMA-Engineering/ZIMA-CAD-Parts.git
-cd ZIMA-CAD-Parts
+git clone https://github.com/ZIMA-Engineering/ZIMA-Parts.git
+cd ZIMA-Parts
 git submodule update --init --recursive
 ```
 
