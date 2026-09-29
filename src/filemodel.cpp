@@ -612,23 +612,12 @@ FileIconProvider::FileIconProvider()
 
 QIcon FileIconProvider::icon ( IconType type ) const
 {
-    return QIcon(type == QFileIconProvider::Folder ? ":/gfx/navigation/folder.svg" : ":/gfx/icons/undefined.svg");
+    return QFileIconProvider::icon(type);
 }
 
 QIcon FileIconProvider::icon ( const QFileInfo & info ) const
 {
-    if (info.isDir())
-        return icon(QFileIconProvider::Folder);
-    FileMetadata fi(info);
-    const QString s = QString(":/gfx/icons/%1.svg").arg(File::getInternalNameForFileType(fi.type));
-
-    if (QFile::exists(s)) {
-        auto found = m_cadIcons.constFind(s);
-        if (found == m_cadIcons.cend())
-            found = m_cadIcons.insert(s, QIcon(s));
-        return found.value();
-    }
-    return icon(QFileIconProvider::File);
+    return QFileIconProvider::icon(info);
 }
 
 QString FileIconProvider::type ( const QFileInfo & info ) const

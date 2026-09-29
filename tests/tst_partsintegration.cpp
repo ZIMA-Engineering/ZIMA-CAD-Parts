@@ -1299,15 +1299,28 @@ private slots:
     }
 #endif
 
-    void zimaIconsRender()
+    void fileAndDirectoryIconsFollowSystem()
     {
-        FileIconProvider icons;
-        for (const QString &ext : {"prtz", "asmz", "drwz", "frmz", "tblz"}) {
-            const auto current = icons.icon(QFileInfo("part." + ext)).pixmap(32, 32);
-            const auto archive = icons.icon(QFileInfo("part." + ext + ".10")).pixmap(32, 32);
-            QVERIFY(!current.isNull());
-            QVERIFY(!archive.isNull());
-            QCOMPARE(current.toImage(), archive.toImage());
+        QTemporaryDir directory;
+        QVERIFY(directory.isValid());
+        QFileIconProvider system;
+        FileIconProvider files;
+        DataSourceIconProvider folders;
+        const QFileInfo folder(directory.path());
+        const auto folderImage = system.icon(folder).pixmap(32, 32).toImage();
+        QVERIFY(!folderImage.isNull());
+        QCOMPARE(folders.icon(folder).pixmap(32, 32).toImage(), folderImage);
+        QCOMPARE(folders.pixmap(folder).toImage(), folderImage);
+        QCOMPARE(files.icon(folder).pixmap(32, 32).toImage(), folderImage);
+        for (const QString &name : {"part.prtz", "part.asmz", "part.drwz",
+                "part.frmz", "part.tblz", "part.prtz.10", "note.txt", "unknown.zimaunknown"}) {
+            QFile file(directory.filePath(name));
+            QVERIFY(file.open(QIODevice::WriteOnly));
+            file.close();
+            const QFileInfo info(file.fileName());
+            const auto expected = system.icon(info).pixmap(32, 32).toImage();
+            QVERIFY(!expected.isNull());
+            QCOMPARE(files.icon(info).pixmap(32, 32).toImage(), expected);
         }
     }
 

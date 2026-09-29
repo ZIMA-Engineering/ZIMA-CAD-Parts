@@ -109,9 +109,7 @@ private slots:
     void updateThumbnails();
 };
 
-/*! An icon provider for FileModel. It contains additional
- * handling of CAD file icons from builtin resources
- */
+/*! Native platform file icons for the Parts list. */
 class FileIconProvider : public QFileIconProvider
 {
 public:
@@ -120,8 +118,6 @@ public:
     virtual QIcon   icon ( IconType type ) const;
     virtual QIcon   icon ( const QFileInfo & info ) const;
     virtual QString type ( const QFileInfo & info ) const;
-private:
-    mutable QHash<QString, QIcon> m_cadIcons;
 };
 
 #endif // FILEMODEL_H
