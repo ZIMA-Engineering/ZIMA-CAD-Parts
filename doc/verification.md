@@ -157,7 +157,7 @@ Earlier unsigned/pending statements below describe historical checks.
 
 Built GUI, CLI, production updater and test helpers with GCC 14.2 and Qt 6.8.2
 on Debian 13 amd64, with system OCCT and libsecret enabled. The root GUI build
-used `qmake6 zima-cad-parts.pro && make -j$(nproc)`.
+used `qmake6 zima-parts.pro && make -j$(nproc)`.
 
 - 51 GUI integration checks passed using the offscreen Qt platform.
 - 4 CLI checks, 9 built-in tool checks and 18 isolated updater checks passed.
@@ -324,7 +324,7 @@ WebEngine; see the [filter documentation](filters.md) for its build steps.
 The updater suite uses temporary installations, an ephemeral test signing key,
 a localhost HTTP server and a short-lived fake GUI. It never reads the publisher
 key, contacts GitHub or touches real projects. Python requires `cryptography`.
-Build `zima-cad-parts-update.pro` with `CONFIG+=update_tests` into a separate
+Build `zima-parts-update.pro` with `CONFIG+=update_tests` into a separate
 build directory and build `tests/update-fixture.pro` separately. Never distribute
 the test helper. Set these variables to the resulting executable paths:
 
@@ -435,3 +435,28 @@ Ed25519 signatures, CRCs, 1,561 file checksums and 643 committed source files
 passed verification. Clean-PATH probes confirmed the new executable names,
 root launcher and trusted updater status. GUI and native launcher both embed
 all seven ZP icon sizes. Native Linux/macOS execution was not repeated.
+
+
+## Source filename cleanup after build 2026092903
+
+Project files now use `zima-parts.pro`, `zima-parts-cli.pro`,
+`zima-parts-update.pro` and `zima-parts.qrc`. Matching application source,
+resource, welcome-page and translation filenames also use `zima-parts`.
+Includes, Qt UI resource references, translation loading, the explicit Qt
+resource registration, tests, CI and packaging paths follow these names.
+This changes no localized text or runtime product identity.
+
+Removed 2.666 GiB of clean source-checkout duplicates and byte-identical
+release ZIP duplicates after verifying their commits and retained archives.
+Moved 29 inactive build/log directories beneath `.local-backups/build-history/`.
+Historical verification paths in earlier entries now refer to that archive.
+One active `.build-ui-20260919` tree and `.dist-output` remain in the root.
+User files, settings, signing keys, current binaries and release archives are
+preserved. Published release archives remain immutable; this source-only
+cleanup does not replace build 2026092903 on GitHub.
+
+Validation passed: a clean GUI build plus CLI, updater and integration builds;
+62 integration checks (including all five UI languages), 18 CLI checks, five
+distribution/source-export checks and all four translation catalog validators.
+No translation content changed. No lowercase old filename references remain
+in tracked active files.

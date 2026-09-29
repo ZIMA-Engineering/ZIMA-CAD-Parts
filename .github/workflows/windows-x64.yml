@@ -91,14 +91,14 @@ jobs:
           "OCCT_ROOT=$vcpkgRoot\installed\$env:VCPKG_TRIPLET" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
       - name: Create localization
-        run: lrelease zima-cad-parts.pro
+        run: lrelease zima-parts.pro
 
       - name: Configure build
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force .build-ci | Out-Null
           Set-Location .build-ci
-          qmake "OCCT_ROOT=$env:OCCT_ROOT" "OCCT_REQUIRED=1" ../zima-cad-parts.pro
+          qmake "OCCT_ROOT=$env:OCCT_ROOT" "OCCT_REQUIRED=1" ../zima-parts.pro
 
       - name: Build project
         working-directory: .build-ci
@@ -113,7 +113,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force .build-cli | Out-Null
           Push-Location .build-cli
-          qmake ../zima-cad-parts-cli.pro
+          qmake ../zima-parts-cli.pro
           if ($LASTEXITCODE -ne 0) { throw "CLI configure failed" }
           nmake release
           if ($LASTEXITCODE -ne 0) { throw "CLI build failed" }
@@ -133,7 +133,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force .build-updater | Out-Null
           Push-Location .build-updater
-          qmake ../zima-cad-parts-update.pro "OPENSSL_ROOT=$env:OCCT_ROOT"
+          qmake ../zima-parts-update.pro "OPENSSL_ROOT=$env:OCCT_ROOT"
           if ($LASTEXITCODE -ne 0) { throw "Updater configure failed" }
           nmake release
           if ($LASTEXITCODE -ne 0) { throw "Updater build failed" }
@@ -183,7 +183,7 @@ jobs:
           $env:PATH = "$qtRoot/bin;$env:OCCT_ROOT/bin;$env:PATH"
           New-Item -ItemType Directory -Force .build-updater-tests, .build-update-fixture | Out-Null
           Push-Location .build-updater-tests
-          qmake ../zima-cad-parts-update.pro "OPENSSL_ROOT=$env:OCCT_ROOT" "CONFIG+=update_tests"
+          qmake ../zima-parts-update.pro "OPENSSL_ROOT=$env:OCCT_ROOT" "CONFIG+=update_tests"
           if ($LASTEXITCODE -ne 0) { throw "Test updater configure failed" }
           nmake release
           if ($LASTEXITCODE -ne 0) { throw "Test updater build failed" }

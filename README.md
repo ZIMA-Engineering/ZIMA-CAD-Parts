@@ -87,9 +87,9 @@ git submodule update --init --recursive
 Build
 -----
 ```
-qmake zima-cad-parts.pro
+qmake zima-parts.pro
 make -j$(nproc)
-lrelease-qt6 locale/zima-cad-parts_cs_CZ.ts
+lrelease-qt6 locale/zima-parts_cs_CZ.ts
 ```
 
 On some distributions, the Qt 6 qmake and lrelease binaries are named `qmake6`
@@ -99,7 +99,7 @@ Build with a custom OCCT install, such as vcpkg, by passing `OCCT_ROOT`:
 
 ```
 /path/to/vcpkg/vcpkg install opencascade:x64-linux
-qmake "OCCT_ROOT=/path/to/vcpkg/installed/x64-linux" zima-cad-parts.pro
+qmake "OCCT_ROOT=/path/to/vcpkg/installed/x64-linux" zima-parts.pro
 make -j$(nproc)
 ```
 
@@ -116,7 +116,7 @@ Use another `PREFIX` if desired, for example `PREFIX=/opt/zima`.
 For staged packaging installs, combine it with `INSTALL_ROOT`:
 
 ```
-make install PREFIX=/usr/local INSTALL_ROOT=/tmp/zima-cad-parts-root
+make install PREFIX=/usr/local INSTALL_ROOT=/tmp/zima-parts-root
 ```
 
 Desktop environments can cache application metadata. If the launcher or
@@ -130,12 +130,12 @@ Build with OCCT preview through vcpkg:
 ```
 # Intel
 /path/to/vcpkg/vcpkg install opencascade:x64-osx
-qmake "OCCT_ROOT=/path/to/vcpkg/installed/x64-osx" zima-cad-parts.pro
+qmake "OCCT_ROOT=/path/to/vcpkg/installed/x64-osx" zima-parts.pro
 make -j$(sysctl -n hw.ncpu)
 
 # Apple Silicon
 /path/to/vcpkg/vcpkg install opencascade:arm64-osx
-qmake "OCCT_ROOT=/path/to/vcpkg/installed/arm64-osx" zima-cad-parts.pro
+qmake "OCCT_ROOT=/path/to/vcpkg/installed/arm64-osx" zima-parts.pro
 make -j$(sysctl -n hw.ncpu)
 ```
 
@@ -143,7 +143,7 @@ Homebrew can also be used as a local macOS convenience path:
 
 ```
 brew install opencascade
-qmake "OCCT_ROOT=$(brew --prefix opencascade)" zima-cad-parts.pro
+qmake "OCCT_ROOT=$(brew --prefix opencascade)" zima-parts.pro
 make
 ```
 
@@ -260,4 +260,4 @@ functions are available from the GUI and CLI. ZIMA-CAD-Sync is no longer offered
 
 The [GitHub updates guide](doc/github-updates.md) describes silent startup
 checks, installation from Settings, signing and rollback. Packagers now require
-the separately built `zima-cad-parts-update.pro` helper (`--updater`).
+the separately built `zima-parts-update.pro` helper (`--updater`).

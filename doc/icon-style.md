@@ -7,7 +7,7 @@ built-in tools, metadata editing and supported file types share this style.
 File icons retain category geometry and abbreviated type labels.
 
 Run `python tools/generate-icons.py` to regenerate the vector assets. Resources
-are explicitly registered in `zima-cad-parts.qrc`. Application-owned actions
+are explicitly registered in `zima-parts.qrc`. Application-owned actions
 use these resources instead of platform-specific standard icons. The file
 provider caches supported file icons; unrecognized files use a generic document.
 Directory providers preserve custom datasource logos before choosing the

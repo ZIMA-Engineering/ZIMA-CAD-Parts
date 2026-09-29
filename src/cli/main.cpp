@@ -3,7 +3,7 @@
 #include <QSettings>
 #include <cstdio>
 #include "../core/partscommand.h"
-#include "../zima-cad-parts.h"
+#include "../zima-parts.h"
 #include "../update/installationclient.h"
 
 int main(int argc, char **argv)

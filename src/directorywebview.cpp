@@ -31,7 +31,7 @@
 
 #include "metadata.h"
 #include "settings.h"
-#include "zima-cad-parts.h"
+#include "zima-parts.h"
 
 namespace {
 
@@ -124,7 +124,7 @@ void DirectoryWebView::loadAboutPage()
 {
     m_autoIndexUrl.clear();
 
-    QString url = ":/data/zima-cad-parts%1.html";
+    QString url = ":/data/zima-parts%1.html";
     QString localized = url.arg("_" + Settings::get()->getCurrentLanguageCode());
     QString filename = (QFile::exists(localized) ? localized : url.arg("") );
 

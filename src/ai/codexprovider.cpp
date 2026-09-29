@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "codexprovider.h"
 #include "aitools.h"
-#include "zima-cad-parts.h"
+#include "zima-parts.h"
 #include <QCoreApplication>
 #include <QStandardPaths>
 #include <QDir>

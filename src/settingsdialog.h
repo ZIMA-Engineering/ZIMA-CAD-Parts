@@ -25,7 +25,7 @@
 #include <QTranslator>
 #include <QSignalMapper>
 
-#include "zima-cad-parts.h"
+#include "zima-parts.h"
 #include "settings.h"
 
 

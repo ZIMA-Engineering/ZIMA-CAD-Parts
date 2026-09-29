@@ -14,7 +14,7 @@
    <string>Add new data source</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../zima-cad-parts.qrc">
+   <iconset resource="../zima-parts.qrc">
     <normaloff>:/gfx/icon.png</normaloff>:/gfx/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -112,7 +112,7 @@
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../zima-cad-parts.qrc"/>
+  <include location="../zima-parts.qrc"/>
  </resources>
  <connections>
   <connection>

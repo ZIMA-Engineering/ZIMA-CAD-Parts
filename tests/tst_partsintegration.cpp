@@ -4,7 +4,7 @@
 #include <QGridLayout>
 #include <QPainter>
 #include <QScopeGuard>
-#include "zima-cad-parts.h"
+#include "zima-parts.h"
 #include <QVBoxLayout>
 #include "ai/aitools.h"
 #include "ai/codexprovider.h"
@@ -122,7 +122,7 @@ private slots:
             QVERIFY(dialog.windowTitle().contains("ZIMA-Parts"));
             QVERIFY(!dialog.windowTitle().contains("ZIMA-CAD-Parts"));
             const auto suffix = language == "en_US" ? QString() : "_" + language;
-            QFile about(":/data/zima-cad-parts" + suffix + ".html");
+            QFile about(":/data/zima-parts" + suffix + ".html");
             QVERIFY(about.open(QIODevice::ReadOnly));
             const auto html = about.readAll();
             QVERIFY(html.contains("ZIMA-Parts 9"));

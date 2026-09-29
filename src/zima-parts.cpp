@@ -21,7 +21,7 @@
 #include <cstdio>
 #include <cstring>
 #include <QApplication>
-#include "zima-cad-parts.h"
+#include "zima-parts.h"
 #include <QGuiApplication>
 #include <QIcon>
 #include <QLocale>
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    Q_INIT_RESOURCE(zima_cad_parts);
+    Q_INIT_RESOURCE(zima_parts);
 
     QCoreApplication::setOrganizationName("ZIMA-Construction");
     QCoreApplication::setOrganizationDomain("zima-contruction.cz");

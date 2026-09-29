@@ -4,7 +4,7 @@
 - Core Qt/C++ sources and UI forms live in `src/` (widgets, dialogs, models, product view extensions under `src/extensions/`).
 - DXF/PROE parsers are vendored in `libqdxf/` and `libproe/`.
 - UI assets are under `gfx/`; translation catalogs under `locale/`; sample landing pages in `data/`.
-- Additional docs for datasource rules sit in `doc/`; build metadata is defined by `zima-cad-parts.pro` and the generated `Makefile`.
+- Additional docs for datasource rules sit in `doc/`; build metadata is defined by `zima-parts.pro` and the generated `Makefile`.
 
 ## Build, Test, and Development Commands
 - Prereqs: Qt 6.8+ with `core`, `gui`, `widgets`, `network`, `webenginewidgets`, `webchannel` plus `qmake`, `g++`.
@@ -18,7 +18,7 @@
 - Class and method names are PascalCase/camelCase (`MainWindow`, `showSettings`); member pointers typically prefixed with `m_`.
 - Prefer Qt types (`QString`, `QVector`) and Qt logging (`qDebug`) over STL/stdio in UI code.
 - Keep UI text in translation-aware strings; when touching `*.ui`, ensure identifiers stay descriptive.
-- Keep the Czech translation (`locale/zima-cad-parts_cs_CZ.ts`) in sync with code/UI text changes; run `lupdate` and translate new entries when strings change.
+- Keep the Czech translation (`locale/zima-parts_cs_CZ.ts`) in sync with code/UI text changes; run `lupdate` and translate new entries when strings change.
 
 ## Documentation Language
 - Write and maintain all project documentation in English, including README

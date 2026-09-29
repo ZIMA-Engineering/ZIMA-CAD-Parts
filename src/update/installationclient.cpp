@@ -1,5 +1,5 @@
 #include "installationclient.h"
-#include "../zima-cad-parts.h"
+#include "../zima-parts.h"
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>

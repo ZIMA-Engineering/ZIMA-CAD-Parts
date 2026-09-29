@@ -14,7 +14,7 @@
    <string>Edit part</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../zima-cad-parts.qrc">
+   <iconset resource="../zima-parts.qrc">
     <normaloff>:/gfx/icon.png</normaloff>:/gfx/icon.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -33,7 +33,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../zima-cad-parts.qrc">
+        <iconset resource="../zima-parts.qrc">
          <normaloff>:/gfx/navigation/remove.svg</normaloff>:/gfx/navigation/remove.svg</iconset>
        </property>
       </widget>
@@ -127,7 +127,7 @@
   <tabstop>cancelButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../zima-cad-parts.qrc"/>
+  <include location="../zima-parts.qrc"/>
  </resources>
  <connections>
   <connection>

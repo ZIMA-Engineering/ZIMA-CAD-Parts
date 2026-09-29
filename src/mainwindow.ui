@@ -14,7 +14,7 @@
    <string>ZIMA-Parts</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../zima-cad-parts.qrc">
+   <iconset resource="../zima-parts.qrc">
     <normaloff>:/gfx/icon.png</normaloff>:/gfx/icon.png</iconset>
   </property>
   <property name="styleSheet">
@@ -89,7 +89,7 @@
   </widget>
   <action name="actionHome">
    <property name="icon">
-    <iconset resource="../zima-cad-parts.qrc">
+    <iconset resource="../zima-parts.qrc">
      <normaloff>:/gfx/navigation/home.svg</normaloff>:/gfx/navigation/home.svg</iconset>
    </property>
    <property name="text">
@@ -106,7 +106,7 @@
   </action>
   <action name="action_Preferences">
    <property name="icon">
-    <iconset resource="../zima-cad-parts.qrc">
+    <iconset resource="../zima-parts.qrc">
      <normaloff>:/gfx/navigation/settings.svg</normaloff>:/gfx/navigation/settings.svg</iconset>
    </property>
    <property name="text">
@@ -137,7 +137,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../zima-cad-parts.qrc"/>
+  <include location="../zima-parts.qrc"/>
  </resources>
  <connections>
   <connection>

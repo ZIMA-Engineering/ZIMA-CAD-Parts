@@ -20,11 +20,11 @@
         <file>gfx/icon.png</file>
         <file>gfx/app-icon.svg</file>
         <file>gfx/navigation/settings.svg</file>
-        <file>data/zima-cad-parts.html</file>
-        <file>data/zima-cad-parts_de_DE.html</file>
-        <file>data/zima-cad-parts_fr_FR.html</file>
-        <file>data/zima-cad-parts_ru_RU.html</file>
-        <file>data/zima-cad-parts_cs_CZ.html</file>
+        <file>data/zima-parts.html</file>
+        <file>data/zima-parts_de_DE.html</file>
+        <file>data/zima-parts_fr_FR.html</file>
+        <file>data/zima-parts_ru_RU.html</file>
+        <file>data/zima-parts_cs_CZ.html</file>
         <file>data/password_manager.js</file>
         <file>gfx/flags/cs.png</file>
         <file>gfx/flags/en.png</file>

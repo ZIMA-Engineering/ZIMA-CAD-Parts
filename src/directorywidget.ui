@@ -90,7 +90,7 @@
              <string>Pin this URL to current directory in tree (write permission required)</string>
             </property>
             <property name="icon">
-             <iconset resource="../zima-cad-parts.qrc">
+             <iconset resource="../zima-parts.qrc">
               <normaloff>:/gfx/navigation/pin.svg</normaloff>:/gfx/navigation/pin.svg</iconset>
             </property>
            </widget>
@@ -104,7 +104,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../zima-cad-parts.qrc">
+             <iconset resource="../zima-parts.qrc">
               <normaloff>:/gfx/navigation/edit.svg</normaloff>:/gfx/navigation/edit.svg</iconset>
             </property>
            </widget>
@@ -156,7 +156,7 @@
           <item row="0" column="5">
            <widget class="QToolButton" name="partsIndexPinButton">
             <property name="icon">
-             <iconset resource="../zima-cad-parts.qrc">
+             <iconset resource="../zima-parts.qrc">
               <normaloff>:/gfx/navigation/pin.svg</normaloff>:/gfx/navigation/pin.svg</iconset>
             </property>
            </widget>
@@ -182,7 +182,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../zima-cad-parts.qrc">
+             <iconset resource="../zima-parts.qrc">
               <normaloff>:/gfx/navigation/edit.svg</normaloff>:/gfx/navigation/edit.svg</iconset>
             </property>
            </widget>
@@ -346,7 +346,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../zima-cad-parts.qrc"/>
+  <include location="../zima-parts.qrc"/>
  </resources>
  <connections/>
 </ui>

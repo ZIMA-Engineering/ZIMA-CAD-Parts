@@ -25,9 +25,9 @@ def run(*args, cwd=ROOT):
 
 
 def version(root=ROOT):
-    match = re.search(r'^#define VERSION "(\d{10})"$', (root / 'src/zima-cad-parts.h').read_text(encoding='utf-8'), re.M)
+    match = re.search(r'^#define VERSION "(\d{10})"$', (root / 'src/zima-parts.h').read_text(encoding='utf-8'), re.M)
     if not match:
-        raise ValueError('Expected VERSION YYYYMMDDNN in src/zima-cad-parts.h')
+        raise ValueError('Expected VERSION YYYYMMDDNN in src/zima-parts.h')
     value = match[1]
     datetime.datetime.strptime(value[:8], '%Y%m%d')
     if value[8:] == '00':

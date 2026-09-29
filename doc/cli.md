@@ -76,7 +76,7 @@ been rewritten.
 ```sh
 mkdir .build-cli
 cd .build-cli
-qmake ../zima-cad-parts-cli.pro
+qmake ../zima-parts-cli.pro
 make
 ```
 

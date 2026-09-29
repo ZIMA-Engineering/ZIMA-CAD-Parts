@@ -2,7 +2,7 @@
 #include "updateservice.h"
 #include "update/installationclient.h"
 #include "settings.h"
-#include "zima-cad-parts.h"
+#include "zima-parts.h"
 #include <QCheckBox>
 #include <QFile>
 #include <QJsonDocument>

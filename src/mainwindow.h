@@ -37,7 +37,7 @@
 
 #include "settingsdialog.h"
 #include "filemodel.h"
-#include "zima-cad-parts.h"
+#include "zima-parts.h"
 #include "filefiltermodel.h"
 #include "webdownloaderdialog.h"
 

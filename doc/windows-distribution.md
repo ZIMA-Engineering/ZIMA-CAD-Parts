@@ -8,7 +8,7 @@ Debian acceptance is recorded in the [verification log](verification.md).
 
 ## Version and build
 
-The single version source is `VERSION` in `src/zima-cad-parts.h`
+The single version source is `VERSION` in `src/zima-parts.h`
 (`YYYYMMDDNN`). The application reports it in About and through
 `QCoreApplication::applicationVersion()`. Running
 `ZIMA-Parts.exe --build-info` returns JSON without starting the GUI.
@@ -25,7 +25,7 @@ python tools/distribution/prepare-ghostscript.py --sevenzip "C:/Program Files/7-
 ```
 
 See [built-in tools](integrated-tools.md) for details and conversion commands.
-After building the GUI, CLI and `zima-cad-parts-update.pro` helper
+After building the GUI, CLI and `zima-parts-update.pro` helper
 (the helper requires `OPENSSL_ROOT`, for example `C:/zb/i/x64-windows`):
 
 ```powershell

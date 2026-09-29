@@ -1,5 +1,5 @@
 #include "updatecore.h"
-#include "../zima-cad-parts.h"
+#include "../zima-parts.h"
 #include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QDate>

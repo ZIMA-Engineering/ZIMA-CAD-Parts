@@ -21,7 +21,7 @@
 #ifndef PRODUCTVIEW_H
 #define PRODUCTVIEW_H
 
-#include "../../zima-cad-parts.h"
+#include "../../zima-parts.h"
 
 #include <QObject>
 #include "abstractproductview.h"

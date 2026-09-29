@@ -2,7 +2,7 @@
 #include "applicationlanguage.h"
 #include "filefilters/extensionfilter.h"
 #include "filefilters/versionfilter.h"
-#include "zima-cad-parts.h"
+#include "zima-parts.h"
 
 #include <QSettings>
 #include <QDir>

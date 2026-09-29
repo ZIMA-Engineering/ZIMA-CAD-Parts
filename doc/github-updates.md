@@ -193,7 +193,7 @@ dependencies. Build the helper separately:
 ```sh
 mkdir .build-updater
 cd .build-updater
-qmake6 ../zima-cad-parts-update.pro
+qmake6 ../zima-parts-update.pro
 make -j$(nproc)
 ```
 

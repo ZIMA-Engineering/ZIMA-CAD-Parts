@@ -24,16 +24,16 @@ language-specific values stored in project files.
 
 English is the source language. Complete translation catalogs are in `locale/`:
 
-- `zima-cad-parts_cs_CZ.ts`
-- `zima-cad-parts_de_DE.ts`
-- `zima-cad-parts_fr_FR.ts`
-- `zima-cad-parts_ru_RU.ts`
+- `zima-parts_cs_CZ.ts`
+- `zima-parts_de_DE.ts`
+- `zima-parts_fr_FR.ts`
+- `zima-parts_ru_RU.ts`
 
 After changing UI strings, update the catalogs, complete the translations
 and run the check:
 
 ```sh
-lupdate zima-cad-parts.pro -no-obsolete
+lupdate zima-parts.pro -no-obsolete
 python tests/check_translations.py
 ```
 

@@ -2,7 +2,7 @@
 #include "partsquery.h"
 #include "partstools.h"
 #include "partsupdatecommand.h"
-#include "../zima-cad-parts.h"
+#include "../zima-parts.h"
 #include <QCommandLineParser>
 #include <QDir>
 

@@ -20,7 +20,7 @@ inline void applyApplicationLanguage(const QString &language)
         qt->load("qt_" + language.left(2), base + "/translations") ||
         qt->load(qtName, QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
         qApp->installTranslator(qt);
-    const QString name = "zima-cad-parts_" + language;
+    const QString name = "zima-parts_" + language;
     if (app->load(":/i18n/" + name) || app->load(name, base) ||
         app->load(name, base + "/locale"))
         qApp->installTranslator(app);

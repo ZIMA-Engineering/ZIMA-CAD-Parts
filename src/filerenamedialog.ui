@@ -17,7 +17,7 @@
    <string>Dialog</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../zima-cad-parts.qrc">
+   <iconset resource="../zima-parts.qrc">
     <normaloff>:/gfx/navigation/rename.svg</normaloff>:/gfx/navigation/rename.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -99,7 +99,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../zima-cad-parts.qrc"/>
+  <include location="../zima-parts.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 root = Path(__file__).resolve().parents[1]
 reference = None
 for locale in ("cs_CZ", "de_DE", "fr_FR", "ru_RU"):
-    tree = ET.parse(root / "locale" / ("zima-cad-parts_" + locale + ".ts"))
+    tree = ET.parse(root / "locale" / ("zima-parts_" + locale + ".ts"))
     assert tree.getroot().get("language") == locale
     keys = set()
     for context in tree.findall("context"):

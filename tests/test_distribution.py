@@ -38,10 +38,10 @@ class PackagingTests(unittest.TestCase):
             root = Path(tmp)
             (root / 'src').mkdir()
             for value in ('2026023001', '2026091500', '9.0'):
-                (root / 'src/zima-cad-parts.h').write_text(f'#define VERSION "{value}"\n')
+                (root / 'src/zima-parts.h').write_text(f'#define VERSION "{value}"\n')
                 with self.assertRaises(ValueError):
                     package.version(root)
-            (root / 'src/zima-cad-parts.h').write_text('#define VERSION "2026091501"\n')
+            (root / 'src/zima-parts.h').write_text('#define VERSION "2026091501"\n')
             self.assertEqual(package.version(root), '2026091501')
 
     def test_export_includes_submodule_contents(self):

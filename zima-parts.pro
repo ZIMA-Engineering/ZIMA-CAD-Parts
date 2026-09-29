@@ -44,7 +44,7 @@ win32:contains(DEFINES, USE_CREDENTIAL_STORE):LIBS += -lcrypt32
 #    }
 
 SOURCES += src/directoryprotection.cpp \
-    src/zima-cad-parts.cpp \
+    src/zima-parts.cpp \
     src/browserpage.cpp \
     src/browserprofilemanager.cpp \
     src/directorycopyasdialog.cpp \
@@ -175,7 +175,7 @@ HEADERS += src/directoryprotection.h \
     src/extensions/productview/productview.h \
     src/filtersdialog.h \
     src/metadata.h \
-    src/zima-cad-parts.h \
+    src/zima-parts.h \
     src/errordialog.h \
     src/filefiltermodel.h \
     src/filefilters/filefilter.h \
@@ -279,15 +279,15 @@ equals(OCCT_AVAILABLE, 1) {
     FORMS += src/extensions/productview/occtproductview.ui
 }
 
-RESOURCES += zima-cad-parts.qrc \
+RESOURCES += zima-parts.qrc \
     src/extensions/navbar/navbar.qrc
 
 OTHER_FILES += \
-    src/zima-cad-parts.rc \
+    src/zima-parts.rc \
     LICENSE \
     AUTHORS \
-    data/zima-cad-parts.html \
-    data/zima-cad-parts_cs_CZ.html \
+    data/zima-parts.html \
+    data/zima-parts_cs_CZ.html \
     tools/manual-tests/password_manager_fixture.py \
     licenses/OCCT-NOTICE.txt \
     licenses/occt-samples-qt-MIT.txt \
@@ -316,7 +316,7 @@ OTHER_FILES += \
     src/extensions/navbar/styles/office2007silver.css \
     src/extensions/navbar/COPYING
 
-TRANSLATIONS = locale/zima-cad-parts_cs_CZ.ts locale/zima-cad-parts_de_DE.ts locale/zima-cad-parts_fr_FR.ts locale/zima-cad-parts_ru_RU.ts
+TRANSLATIONS = locale/zima-parts_cs_CZ.ts locale/zima-parts_de_DE.ts locale/zima-parts_fr_FR.ts locale/zima-parts_ru_RU.ts
 CONFIG += lrelease embed_translations
 QM_FILES_RESOURCE_PREFIX = /i18n
 
@@ -327,7 +327,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     win32:RC_ICONS = gfx/icon.ico
 }
 else {
-    win32:RC_FILE = src/zima-cad-parts.rc
+    win32:RC_FILE = src/zima-parts.rc
 }
 
 ICON = gfx/icon.icns

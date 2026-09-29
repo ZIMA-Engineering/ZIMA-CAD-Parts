@@ -1,7 +1,7 @@
 .qmake.stash
 Makefile
 nix-build
-zima-cad-parts.pro.user
+zima-parts.pro.user
 ZIMA-Parts
 locale/*.qm
 *.o
@@ -19,7 +19,7 @@ ui_*.h
 # Local Windows release and Qt deployment (generated)
 /*.exe
 /*.dll
-/zima-cad-parts_*.qm
+/zima-parts_*.qm
 /generic/
 /iconengines/
 /imageformats/

@@ -504,7 +504,7 @@ void DirectoryWidget::changeEvent(QEvent *e)
         updateReleaseIndicator();
         updateProtectionControls();
         updateIndexMenus();
-        if (ui->dirWebView->url().path().startsWith("/data/zima-cad-parts") )
+        if (ui->dirWebView->url().path().startsWith("/data/zima-parts") )
             ui->dirWebView->loadAboutPage();
         break;
     default:
