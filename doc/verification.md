@@ -1,5 +1,16 @@
 # Build verification
 
+## Native folder and file icons, September 29, 2026
+
+Clean Windows GUI, CLI, updater and integration builds passed. Development and
+packaged runs passed 62 integration checks, 18 CLI checks and all translation
+catalogs; the package also passed five distribution checks. Native Windows
+platform tests confirm equality with system icons while the existing custom-logo
+precedence check remains green. Signed archive/source/checksum acceptance, public
+asset checks and update discovery from 2026092903 passed. See the
+[release record](releases/2026092904.md). Linux runtime appearance remains to be
+verified on Linux. No user-visible strings changed.
+
 ## ZIMA-Parts branding, September 29, 2026
 
 The local and clean committed-source Windows GUI, CLI, updater and integration
