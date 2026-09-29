@@ -1,7 +1,28 @@
 # ZIMA-Parts naming review
 
-Status: discussion only, September 29, 2026. No repository, executable,
-application identity, settings location or release protocol has been renamed.
+Status: visible branding implementation approved September 29, 2026.
+Build 2026092902 displays **ZIMA-Parts** and the black/azure **ZP** mark.
+The repository rename remains a separate pending action. Executable names,
+application identity, settings locations and release protocol remain unchanged.
+
+## Visible branding implementation
+
+Main-window and dialog captions and all five localized welcome pages use
+ZIMA-Parts. Qt's application display name changes independently of its technical
+application name. Desktop labels and platform icon assets use the new brand.
+The Windows portable launcher embeds the same icon as the GUI executable.
+The AI client's displayed title changes; its technical client name is retained.
+
+`gfx/app-icon.svg` is the vector master. Build `tools/render-brand-icon.pro`
+with Qt GUI/SVG, run the resulting tool with the SVG and an output directory,
+then run `python tools/package-brand-icons.py <output-directory>`. This produces
+PNG, multi-size ICO, ICNS and Linux hicolor assets directly from the vector.
+Native Linux/macOS runtime acceptance is separate from generating those assets.
+
+The production updater still queries the existing ZIMA-CAD-Parts repository.
+Automatic approval review rejected switching to an uncreated repository as part
+of the branding edit. That endpoint change was excluded. Renaming the repository
+requires a separate explicit confirmation, followed by old-client verification.
 
 ## GitHub repository
 

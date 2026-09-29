@@ -18,6 +18,7 @@
 
         <file>gfx/logo.png</file>
         <file>gfx/icon.png</file>
+        <file>gfx/app-icon.svg</file>
         <file>gfx/navigation/settings.svg</file>
         <file>data/zima-cad-parts.html</file>
         <file>data/zima-cad-parts_de_DE.html</file>

@@ -203,8 +203,12 @@ def main():
     shutil.copy2(ROOT / 'LICENSE', package / 'LICENSE')
     launcher_build = output / 'launcher-build'
     launcher_build.mkdir()
+    launcher_resource = launcher_build / 'launcher.rc'
+    launcher_resource.write_text('1 ICON "' + (ROOT / 'gfx/icon.ico').as_posix() + '"\n', encoding='utf-8')
+    subprocess.run(['rc', '/nologo', '/fo', str(launcher_build / 'launcher.res'),
+                    str(launcher_resource)], cwd=launcher_build, check=True)
     subprocess.run(['cl', '/nologo', '/std:c++17', '/EHsc', '/O2', '/MT',
-                    str(ROOT / 'tools/distribution/launcher-windows.cpp'),
+                    str(ROOT / 'tools/distribution/launcher-windows.cpp'), str(launcher_build / 'launcher.res'),
                     '/Fe:' + str(package / 'ZIMA-CAD-Parts.exe'),
                     '/link', '/SUBSYSTEM:WINDOWS', 'shell32.lib', 'user32.lib'],
                    cwd=launcher_build, check=True)

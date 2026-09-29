@@ -3,6 +3,8 @@
 #include <QDirIterator>
 #include <QGridLayout>
 #include <QPainter>
+#include <QScopeGuard>
+#include "zima-cad-parts.h"
 #include <QVBoxLayout>
 #include "ai/aitools.h"
 #include "ai/codexprovider.h"
@@ -89,6 +91,51 @@ private:
         file.write("fixture");
     }
 private slots:
+    void displayBrandKeepsSettingsAndDataIdentity()
+    {
+        const auto originalDisplay = QGuiApplication::applicationDisplayName();
+        const auto restoreDisplay = qScopeGuard([&] {
+            QGuiApplication::setApplicationDisplayName(originalDisplay);
+            applyApplicationLanguage("en_US");
+        });
+        const auto identity = QCoreApplication::applicationName();
+        const auto settingsPath = QSettings().fileName();
+        const auto dataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        QGuiApplication::setApplicationDisplayName(QStringLiteral(PARTS_DISPLAY_NAME));
+        QCOMPARE(QGuiApplication::applicationDisplayName(), QString("ZIMA-Parts"));
+        QCOMPARE(QCoreApplication::applicationName(), identity);
+        QCOMPARE(QSettings().fileName(), settingsPath);
+        QCOMPARE(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation), dataPath);
+        QTemporaryDir directory;
+        auto settings = Settings::get();
+        const auto oldTabs = settings->MainTabs;
+        const auto oldActive = settings->ActiveMainTab;
+        const auto restoreTabs = qScopeGuard([&] { settings->MainTabs = oldTabs; settings->ActiveMainTab = oldActive; });
+        settings->MainTabs = {directory.path()};
+        settings->ActiveMainTab = 0;
+        MainWindow window(nullptr);
+        SettingsDialog dialog(nullptr);
+        for (const QString &language : {"en_US", "cs_CZ", "de_DE", "fr_FR", "ru_RU"}) {
+            applyApplicationLanguage(language);
+            QCoreApplication::processEvents();
+            QCOMPARE(window.windowTitle(), QString("ZIMA-Parts"));
+            QVERIFY(dialog.windowTitle().contains("ZIMA-Parts"));
+            QVERIFY(!dialog.windowTitle().contains("ZIMA-CAD-Parts"));
+            const auto suffix = language == "en_US" ? QString() : "_" + language;
+            QFile about(":/data/zima-cad-parts" + suffix + ".html");
+            QVERIFY(about.open(QIODevice::ReadOnly));
+            const auto html = about.readAll();
+            QVERIFY(html.contains("ZIMA-Parts 9"));
+            QVERIFY(!html.contains("ZIMA-CAD-Parts"));
+            if (language == "cs_CZ" && qEnvironmentVariableIsSet("PARTS_BRAND_SCREENSHOT")) {
+                window.resize(1100, 750); window.show();
+                QCoreApplication::processEvents();
+                QVERIFY(window.grab().save(qEnvironmentVariable("PARTS_BRAND_SCREENSHOT")));
+            }
+        }
+        QVERIFY(!QIcon(":/gfx/icon.png").pixmap(16,16).isNull());
+    }
+
     void vectorIconsRenderAndPreserveCustomLogos()
     {
         QWidget gallery;

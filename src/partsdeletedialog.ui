@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Delete parts - ZIMA-CAD-Parts</string>
+   <string>Delete parts - ZIMA-Parts</string>
   </property>
   <property name="modal">
    <bool>true</bool>

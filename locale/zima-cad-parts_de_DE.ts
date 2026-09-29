@@ -482,32 +482,32 @@
 <context>
     <name>DataSourceWidget</name>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="219"/>
+        <location filename="../src/datasourcewidget.cpp" line="218"/>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="224"/>
+        <location filename="../src/datasourcewidget.cpp" line="223"/>
         <source>Open in a new tab</source>
         <translation>In neuem Tab öffnen</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="227"/>
+        <location filename="../src/datasourcewidget.cpp" line="226"/>
         <source>Add to AI question</source>
         <translation>Zur KI-Frage hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="231"/>
+        <location filename="../src/datasourcewidget.cpp" line="230"/>
         <source>Set as working directory</source>
         <translation>Als Arbeitsverzeichnis festlegen</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="238"/>
+        <location filename="../src/datasourcewidget.cpp" line="237"/>
         <source>Data source properties</source>
         <translation>Eigenschaften der Datenquelle</translation>
     </message>
     <message>
-        <location filename="../src/datasourcewidget.cpp" line="244"/>
+        <location filename="../src/datasourcewidget.cpp" line="243"/>
         <source>Edit in settings</source>
         <translation>In den Einstellungen bearbeiten</translation>
     </message>
@@ -516,8 +516,8 @@
     <name>DirectoryCopyAsDialog</name>
     <message>
         <location filename="../src/directorycopyasdialog.ui" line="14"/>
-        <source>Copy as... - ZIMA-CAD-Parts</source>
-        <translation>Kopieren als... - ZIMA-CAD-Parts</translation>
+        <source>Copy as... - ZIMA-Parts</source>
+        <translation>Kopieren als... - ZIMA-Parts</translation>
     </message>
     <message>
         <location filename="../src/directorycopyasdialog.ui" line="22"/>
@@ -541,17 +541,17 @@
 <context>
     <name>DirectoryEditParametersModel</name>
     <message>
-        <location filename="../src/directoryeditparametersmodel.cpp" line="86"/>
+        <location filename="../src/directoryeditparametersmodel.cpp" line="81"/>
         <source>Label</source>
         <translation>Bezeichnung</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditparametersmodel.cpp" line="88"/>
+        <location filename="../src/directoryeditparametersmodel.cpp" line="83"/>
         <source>Handle</source>
         <translation>Kennung</translation>
     </message>
     <message>
-        <location filename="../src/directoryeditparametersmodel.cpp" line="132"/>
+        <location filename="../src/directoryeditparametersmodel.cpp" line="127"/>
         <source>New column</source>
         <translation>Neue Spalte</translation>
     </message>
@@ -788,7 +788,7 @@ Fehlgeschlagene Ordner: %2</translation>
         <translation>Automatisch erzeugter Verzeichnisindex</translation>
     </message>
     <message>
-        <location filename="../src/directorywebview.cpp" line="331"/>
+        <location filename="../src/directorywebview.cpp" line="333"/>
         <source>Open directory</source>
         <translation>Verzeichnis öffnen</translation>
     </message>
@@ -862,17 +862,17 @@ Fehlgeschlagene Ordner: %2</translation>
         <translation>Kopieren</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="346"/>
+        <location filename="../src/directorywidget.cpp" line="343"/>
         <source>Delete index</source>
         <translation>Index löschen</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="356"/>
+        <location filename="../src/directorywidget.cpp" line="353"/>
         <source>Delete all indexes</source>
         <translation>Alle Indizes löschen</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="411"/>
+        <location filename="../src/directorywidget.cpp" line="408"/>
         <source>The following index file will be deleted:
 
 %1
@@ -885,7 +885,7 @@ Continue?</source>
 Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="412"/>
+        <location filename="../src/directorywidget.cpp" line="409"/>
         <source>The following index files will be deleted:
 
 %1
@@ -898,22 +898,22 @@ Continue?</source>
 Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="413"/>
+        <location filename="../src/directorywidget.cpp" line="410"/>
         <source>Delete all indexes?</source>
         <translation>Alle Indizes löschen?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="413"/>
+        <location filename="../src/directorywidget.cpp" line="410"/>
         <source>Delete index?</source>
         <translation>Index löschen?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="438"/>
+        <location filename="../src/directorywidget.cpp" line="435"/>
         <source>Index deletion failed</source>
         <translation>Löschen des Index fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="439"/>
+        <location filename="../src/directorywidget.cpp" line="436"/>
         <source>The following index files could not be deleted:
 
 %1</source>
@@ -922,18 +922,18 @@ Fortfahren?</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="727"/>
-        <location filename="../src/directorywidget.cpp" line="728"/>
+        <location filename="../src/directorywidget.cpp" line="724"/>
+        <location filename="../src/directorywidget.cpp" line="725"/>
         <source>Do you really want to move selected parts?</source>
         <translation>Möchten Sie die ausgewählten Teile wirklich verschieben?</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="751"/>
+        <location filename="../src/directorywidget.cpp" line="748"/>
         <source>Update available</source>
         <translation>Update verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/directorywidget.cpp" line="752"/>
+        <location filename="../src/directorywidget.cpp" line="749"/>
         <source>New version %1. Open Settings to install it.</source>
         <translation>Neue Version %1. Öffnen Sie zum Installieren die Einstellungen.</translation>
     </message>
@@ -1369,14 +1369,14 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
         <translation>Tabs</translation>
     </message>
     <message>
-        <location filename="../src/maintabwidget.cpp" line="25"/>
-        <location filename="../src/maintabwidget.cpp" line="223"/>
+        <location filename="../src/maintabwidget.cpp" line="22"/>
+        <location filename="../src/maintabwidget.cpp" line="220"/>
         <source>Open a new tab</source>
         <translation>Neuen Tab öffnen</translation>
     </message>
     <message>
-        <location filename="../src/maintabwidget.cpp" line="28"/>
-        <location filename="../src/maintabwidget.cpp" line="221"/>
+        <location filename="../src/maintabwidget.cpp" line="25"/>
+        <location filename="../src/maintabwidget.cpp" line="218"/>
         <source>Add tabs by pressing &quot;+&quot;</source>
         <translation>Tabs mit „+“ hinzufügen</translation>
     </message>
@@ -1433,8 +1433,8 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
     <name>MainWindowClass</name>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
-        <source>ZIMA-CAD-Parts</source>
-        <translation>ZIMA-CAD-Parts</translation>
+        <source>ZIMA-Parts</source>
+        <translation>ZIMA-Parts</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="65"/>
@@ -1672,8 +1672,8 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
     <name>PartsDeleteDialog</name>
     <message>
         <location filename="../src/partsdeletedialog.ui" line="14"/>
-        <source>Delete parts - ZIMA-CAD-Parts</source>
-        <translation>Teile löschen – ZIMA-CAD-Parts</translation>
+        <source>Delete parts - ZIMA-Parts</source>
+        <translation>Teile löschen – ZIMA-Parts</translation>
     </message>
     <message>
         <location filename="../src/partsdeletedialog.ui" line="23"/>
@@ -1689,252 +1689,252 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
 <context>
     <name>PartsToolsDialog</name>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="21"/>
+        <location filename="../src/partstoolsdialog.cpp" line="22"/>
         <source>PostScript to PDF</source>
         <translation>PostScript nach PDF</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="22"/>
+        <location filename="../src/partstoolsdialog.cpp" line="23"/>
         <source>Clean PTC files</source>
         <translation>PTC-Dateien bereinigen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="23"/>
+        <location filename="../src/partstoolsdialog.cpp" line="24"/>
         <source>Clean ZIMA-CAD files</source>
         <translation>ZIMA-CAD-Dateien bereinigen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="24"/>
+        <location filename="../src/partstoolsdialog.cpp" line="25"/>
         <source>Edit STEP header</source>
         <translation>STEP-Kopf bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="41"/>
+        <location filename="../src/partstoolsdialog.cpp" line="42"/>
         <source>File...</source>
         <translation>Datei…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="42"/>
-        <location filename="../src/partstoolsdialog.cpp" line="67"/>
+        <location filename="../src/partstoolsdialog.cpp" line="43"/>
+        <location filename="../src/partstoolsdialog.cpp" line="68"/>
         <source>Directory...</source>
         <translation>Verzeichnis…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="44"/>
+        <location filename="../src/partstoolsdialog.cpp" line="45"/>
         <source>Source</source>
         <translation>Quelle</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="56"/>
-        <location filename="../src/partstoolsdialog.cpp" line="224"/>
+        <location filename="../src/partstoolsdialog.cpp" line="57"/>
+        <location filename="../src/partstoolsdialog.cpp" line="226"/>
         <source>Include subdirectories</source>
         <translation>Unterverzeichnisse einbeziehen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="69"/>
-        <location filename="../src/partstoolsdialog.cpp" line="72"/>
+        <location filename="../src/partstoolsdialog.cpp" line="70"/>
+        <location filename="../src/partstoolsdialog.cpp" line="73"/>
         <source>Output directory</source>
         <translation>Ausgabeverzeichnis</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="79"/>
+        <location filename="../src/partstoolsdialog.cpp" line="80"/>
         <source>Ghostscript is missing. Repair the Parts runtime package.</source>
         <translation>Ghostscript fehlt. Reparieren Sie das Parts-Laufzeitpaket.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="81"/>
+        <location filename="../src/partstoolsdialog.cpp" line="82"/>
         <source>Remove old numbered versions; keep the highest number</source>
         <translation>Alte nummerierte Versionen entfernen; höchste Nummer behalten</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="88"/>
+        <location filename="../src/partstoolsdialog.cpp" line="89"/>
         <source>Additional removal masks (semicolon separated)</source>
         <translation>Weitere Löschmuster (durch Semikolon getrennt)</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="89"/>
-        <location filename="../src/partstoolsdialog.cpp" line="92"/>
+        <location filename="../src/partstoolsdialog.cpp" line="90"/>
+        <location filename="../src/partstoolsdialog.cpp" line="93"/>
         <source>Selected files go to the trash. Directory locks are respected.</source>
         <translation>Ausgewählte Dateien werden in den Papierkorb verschoben. Verzeichnissperren werden beachtet.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="91"/>
+        <location filename="../src/partstoolsdialog.cpp" line="92"/>
         <source>Remove all numbered ZIMA-CAD archives (.1, .2, ...). Current documents are kept.</source>
         <translation>Alle nummerierten ZIMA-CAD-Archivkopien (.1, .2, ...) entfernen. Aktuelle Dokumente bleiben erhalten.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="95"/>
+        <location filename="../src/partstoolsdialog.cpp" line="96"/>
         <source>File name</source>
         <translation>Dateiname</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="95"/>
+        <location filename="../src/partstoolsdialog.cpp" line="96"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="95"/>
+        <location filename="../src/partstoolsdialog.cpp" line="96"/>
         <source>Author</source>
         <translation>Autor</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="95"/>
+        <location filename="../src/partstoolsdialog.cpp" line="96"/>
         <source>Organization</source>
         <translation>Organisation</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="96"/>
+        <location filename="../src/partstoolsdialog.cpp" line="97"/>
         <source>Preprocessor</source>
         <translation>Präprozessor</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="96"/>
+        <location filename="../src/partstoolsdialog.cpp" line="97"/>
         <source>Originating system</source>
         <translation>Ursprungssystem</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="96"/>
+        <location filename="../src/partstoolsdialog.cpp" line="97"/>
         <source>Authorization</source>
         <translation>Autorisierung</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="105"/>
+        <location filename="../src/partstoolsdialog.cpp" line="106"/>
         <source>Check only fields to change. Originals are backed up in 0000-index/tool-backups.</source>
         <translation>Nur zu ändernde Felder markieren. Originale werden in 0000-index/tool-backups gesichert.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="115"/>
+        <location filename="../src/partstoolsdialog.cpp" line="116"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="115"/>
+        <location filename="../src/partstoolsdialog.cpp" line="116"/>
         <source>Result / reason</source>
         <translation>Ergebnis / Grund</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="122"/>
+        <location filename="../src/partstoolsdialog.cpp" line="123"/>
         <source>Choose files to clean. The list updates automatically.</source>
         <translation>Wählen Sie die zu bereinigenden Dateien. Die Liste wird automatisch aktualisiert.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="123"/>
+        <location filename="../src/partstoolsdialog.cpp" line="124"/>
         <source>Choose files to convert. The list updates automatically.</source>
         <translation>Wählen Sie die zu konvertierenden Dateien aus. Die Liste wird automatisch aktualisiert.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="124"/>
+        <location filename="../src/partstoolsdialog.cpp" line="125"/>
         <source>Preview the operation, then choose files to apply.</source>
         <translation>Vorschau anzeigen und die zu verarbeitenden Dateien auswählen.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="129"/>
+        <location filename="../src/partstoolsdialog.cpp" line="131"/>
         <source>Select all</source>
         <translation>Alle auswählen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="130"/>
+        <location filename="../src/partstoolsdialog.cpp" line="132"/>
         <source>Select none</source>
         <translation>Auswahl aufheben</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="133"/>
+        <location filename="../src/partstoolsdialog.cpp" line="135"/>
         <source>Preview</source>
         <translation>Vorschau</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="138"/>
+        <location filename="../src/partstoolsdialog.cpp" line="140"/>
         <source>Apply selected</source>
         <translation>Auswahl anwenden</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="137"/>
+        <location filename="../src/partstoolsdialog.cpp" line="139"/>
         <source>Clean</source>
         <translation>Bereinigen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="64"/>
+        <location filename="../src/partstoolsdialog.cpp" line="65"/>
         <source>Relative to the source directory</source>
         <translation>Relativ zum Quellverzeichnis</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="73"/>
+        <location filename="../src/partstoolsdialog.cpp" line="74"/>
         <source>Delete PS source files after creating PDF</source>
         <translation>PS-Quelldateien nach dem Erstellen der PDF-Datei löschen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="77"/>
+        <location filename="../src/partstoolsdialog.cpp" line="78"/>
         <source>Existing PDFs are replaced. PLT input must contain PostScript.</source>
         <translation>Vorhandene PDF-Dateien werden ersetzt. Die PLT-Eingabe muss PostScript enthalten.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="138"/>
+        <location filename="../src/partstoolsdialog.cpp" line="140"/>
         <source>Create PDF</source>
         <translation>PDF erstellen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="141"/>
-        <location filename="../src/partstoolsdialog.cpp" line="344"/>
+        <location filename="../src/partstoolsdialog.cpp" line="143"/>
+        <location filename="../src/partstoolsdialog.cpp" line="347"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="180"/>
+        <location filename="../src/partstoolsdialog.cpp" line="182"/>
         <source>Cancelling...</source>
         <translation>Abbruch…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="234"/>
+        <location filename="../src/partstoolsdialog.cpp" line="236"/>
         <source>Allow selected</source>
         <translation>Ausgewählte erlauben</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="237"/>
+        <location filename="../src/partstoolsdialog.cpp" line="239"/>
         <source>Deny</source>
         <translation>Ablehnen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="299"/>
+        <location filename="../src/partstoolsdialog.cpp" line="301"/>
         <source>Move %1 selected files to the trash?</source>
         <translation>%1 ausgewählte Dateien in den Papierkorb verschieben?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="302"/>
+        <location filename="../src/partstoolsdialog.cpp" line="304"/>
         <source>Create or replace %1 selected PDFs and delete their PS source files?</source>
         <translation>%1 ausgewählte PDF-Dateien erstellen oder ersetzen und ihre PS-Quelldateien löschen?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="303"/>
+        <location filename="../src/partstoolsdialog.cpp" line="305"/>
         <source>Create or replace %1 selected PDFs?</source>
         <translation>%1 ausgewählte PDF-Dateien erstellen oder ersetzen?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="304"/>
+        <location filename="../src/partstoolsdialog.cpp" line="306"/>
         <source>Apply this operation to %1 selected files?</source>
         <translation>Diese Operation auf %1 ausgewählte Dateien anwenden?</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="335"/>
+        <location filename="../src/partstoolsdialog.cpp" line="338"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="335"/>
+        <location filename="../src/partstoolsdialog.cpp" line="338"/>
         <source>Working...</source>
         <translation>Verarbeitung…</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="383"/>
+        <location filename="../src/partstoolsdialog.cpp" line="394"/>
         <source>Completed: %1. Failed: %2. Skipped: %3.</source>
         <translation>Abgeschlossen: %1. Fehler: %2. Übersprungen: %3.</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="247"/>
+        <location filename="../src/partstoolsdialog.cpp" line="249"/>
         <source>Keep: %1</source>
         <translation>Behalten: %1</translation>
     </message>
     <message>
-        <location filename="../src/partstoolsdialog.cpp" line="263"/>
+        <location filename="../src/partstoolsdialog.cpp" line="265"/>
         <source>Ready: %1. Skipped: %2.</source>
         <translation>Bereit: %1. Übersprungen: %2.</translation>
     </message>
@@ -2568,8 +2568,8 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
     <name>SettingsDialog</name>
     <message>
         <location filename="../src/settingsdialog.ui" line="14"/>
-        <source>ZIMA-CAD-Parts Settings</source>
-        <translation>ZIMA-CAD-Parts-Einstellungen</translation>
+        <source>ZIMA-Parts Settings</source>
+        <translation>ZIMA-Parts-Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="24"/>
@@ -2753,13 +2753,13 @@ Diese Einstellungen gelten nur für diesen Ordner; Unterordner erben sie nicht.<
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="340"/>
-        <source>ZIMA-CAD-Parts - select text editor</source>
-        <translation>ZIMA-CAD-Parts – Texteditor auswählen</translation>
+        <source>ZIMA-Parts - select text editor</source>
+        <translation>ZIMA-Parts – Texteditor auswählen</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="348"/>
-        <source>ZIMA-CAD-Parts - select terminal</source>
-        <translation>ZIMA-CAD-Parts – Terminal auswählen</translation>
+        <source>ZIMA-Parts - select terminal</source>
+        <translation>ZIMA-Parts – Terminal auswählen</translation>
     </message>
 </context>
 <context>

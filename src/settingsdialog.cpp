@@ -337,7 +337,7 @@ void SettingsDialog::proeButton_clicked()
 
 void SettingsDialog::textEditorButton_clicked()
 {
-    QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - select text editor"),
+    QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-Parts - select text editor"),
                   QDir::currentPath());
     if (!str.isEmpty())
         m_ui->textEditorLineEdit->setText(str);
@@ -345,7 +345,7 @@ void SettingsDialog::textEditorButton_clicked()
 
 void SettingsDialog::terminalButton_clicked()
 {
-    QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-CAD-Parts - select terminal"),
+    QString str = QFileDialog::getOpenFileName(this, tr("ZIMA-Parts - select terminal"),
                   QDir::currentPath());
     if (!str.isEmpty())
         m_ui->terminalLineEdit->setText(str);

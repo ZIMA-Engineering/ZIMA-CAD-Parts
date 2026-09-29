@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=ZIMA-CAD-Parts
+Name=ZIMA-Parts
 Comment=Manage CAD part libraries and project files
 Exec=ZIMA-CAD-Parts
 Icon=cz.zima_engineering.ZimaCadParts

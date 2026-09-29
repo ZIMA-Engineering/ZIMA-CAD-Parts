@@ -1,9 +1,13 @@
-ZIMA-CAD-Parts
-==============
+ZIMA-Parts
+==========
+
+The application is now named **ZIMA-Parts**. Existing executable, archive,
+settings and update identities remain `ZIMA-CAD-Parts` for continuity.
+See [the naming transition](doc/RENAME_REVIEW.md).
 
 License
 -------
-ZIMA-CAD-Parts is licensed under the GNU General Public License, version 3
+ZIMA-Parts is licensed under the GNU General Public License, version 3
 or (at your option) any later version (`GPL-3.0-or-later`), as stated in the
 source headers. The full license text is in [LICENSE](LICENSE).
 Distribution bundles also include this file beside the root launchers.

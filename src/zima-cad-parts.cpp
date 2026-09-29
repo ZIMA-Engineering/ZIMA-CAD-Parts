@@ -94,8 +94,9 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication a(argc, argv);
+    QGuiApplication::setApplicationDisplayName(QStringLiteral(PARTS_DISPLAY_NAME));
     QString instanceError;
-    if (!registerPartsInstance(&instanceError)) { QMessageBox::warning(nullptr, "ZIMA-CAD-Parts", instanceError); return 1; }
+    if (!registerPartsInstance(&instanceError)) { QMessageBox::warning(nullptr, QStringLiteral(PARTS_DISPLAY_NAME), instanceError); return 1; }
     QGuiApplication::setDesktopFileName("cz.zima_engineering.ZimaCadParts");
     const QIcon applicationIcon = QIcon::fromTheme(
                 "cz.zima_engineering.ZimaCadParts",

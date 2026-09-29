@@ -133,7 +133,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
         return 0;
     } catch (const std::wstring &error) {
         output(error + L"\n", STD_ERROR_HANDLE);
-        if (!check) MessageBoxW(nullptr, error.c_str(), L"ZIMA-CAD-Parts", MB_OK | MB_ICONERROR);
+        if (!check) MessageBoxW(nullptr, error.c_str(), L"ZIMA-Parts", MB_OK | MB_ICONERROR);
         return 1;
     }
 }

@@ -68,7 +68,7 @@ QJsonArray PartsAi::toolDefinitions()
 QString PartsAi::hostInstructions()
 {
     return QStringLiteral(
-        "ZIMA-CAD-Parts host capability and approval contract: The provider-native sandbox is read-only and native "
+        "ZIMA-Parts host capability and approval contract: The provider-native sandbox is read-only and native "
         "approval requests are disabled. That restriction concerns Codex's own tools. The supplied dynamic host tools "
         "are separate capabilities: parts_apply and system_command CAN request file changes. Calling them submits "
         "a proposal to Parts; it does not authorize or execute a write. Parts displays the exact operation inline in "
@@ -84,7 +84,7 @@ QString PartsAi::hostInstructions()
 QString PartsAi::instructions()
 {
     return QStringLiteral(
-        "You are the general text assistant inside ZIMA-CAD-Parts, a CAD file browser. "
+        "You are the general text assistant inside ZIMA-Parts, a CAD file browser. "
         "Converse in the user's language and use the available host tools to work with directories and Parts commands. "
         "Do not assume a task or automatically enumerate files: inspect only what the user asks about. "
         "Call parts_command with [\"help\"] to discover supported commands rather than invent syntax. "

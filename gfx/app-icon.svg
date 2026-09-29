@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- ZIMA-Parts monogram, matching the ZIMA-CAD application mark. -->
+  <path d="M8 22H62V38L29 90H62V106H8V90L41 38H8Z"
+        fill="#26313B" stroke="#F3F6F8" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M68 22H108L124 38V62L108 78H86V106H68Z M86 40V60H100L106 54V46L100 40Z"
+        fill="#00D1FF" fill-rule="evenodd"/>
+</svg>

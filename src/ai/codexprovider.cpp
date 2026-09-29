@@ -107,7 +107,7 @@ void CodexProvider::connectAccount(const QString &executable)
     connect(process, &QProcess::readyReadStandardError, this, [process] { process->readAllStandardError(); });
     connect(process, &QProcess::started, this, [this] {
         send("initialize", {{"clientInfo", QJsonObject{{"name", "zima_cad_parts"},
-            {"title", "ZIMA-CAD-Parts"}, {"version", VERSION}}},
+            {"title", "ZIMA-Parts"}, {"version", VERSION}}},
             {"capabilities", QJsonObject{{"experimentalApi", true}}}});
     });
     connect(process, &QProcess::errorOccurred, this, [this](QProcess::ProcessError error) {

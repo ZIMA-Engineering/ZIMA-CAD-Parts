@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ZIMA-CAD-Parts</string>
+   <string>ZIMA-Parts</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../zima-cad-parts.qrc">

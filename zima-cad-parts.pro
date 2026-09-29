@@ -8,6 +8,8 @@ QT += core gui network opengl openglwidgets widgets webchannel webenginewidgets
 }
 
 TARGET = ZIMA-CAD-Parts
+QMAKE_TARGET_PRODUCT = ZIMA-Parts
+QMAKE_TARGET_DESCRIPTION = ZIMA-Parts
 APP_ID = cz.zima_engineering.ZimaCadParts
 TEMPLATE = app
 macx: QMAKE_MACOSX_DEPLOYMENT_TARGET = 26.0
