@@ -1,3 +1,5 @@
+#include "directorywebview.h"
+#include <QWebEnginePage>
 #include "commandpanel.h"
 #include <QStyleFactory>
 #include <QDirIterator>
@@ -183,6 +185,73 @@ private slots:
         QCoreApplication::processEvents();
         if (qEnvironmentVariableIsSet("PARTS_ICONS_SCREENSHOT"))
             QVERIFY(gallery.grab().save(qEnvironmentVariable("PARTS_ICONS_SCREENSHOT")));
+    }
+
+    void iconsContrastWithLightAndDarkBackgrounds()
+    {
+        const QIcon home(":/gfx/navigation/home.svg");
+        const QImage pixels = home.pixmap(48, 48).toImage().scaled(48, 48);
+        int dark = 0, light = 0, azure = 0;
+        for (int y = 0; y < pixels.height(); ++y)
+            for (int x = 0; x < pixels.width(); ++x) {
+                const QColor c = pixels.pixelColor(x, y);
+                if (c.alpha() < 200) continue;
+                if (c.red() < 40 && c.green() < 40 && c.blue() < 40) ++dark;
+                if (c.red() > 225 && c.green() > 225 && c.blue() > 225) ++light;
+                if (c.red() < 20 && c.green() > 190 && c.blue() > 240) ++azure;
+            }
+        QVERIFY(dark > 50);
+        QVERIFY(light > 30);
+        QVERIFY(azure > 300);
+        QCOMPARE(pixels.pixelColor(24, 14), QColor("#00D1FF")); // roof interior
+        QCOMPARE(pixels.pixelColor(24, 34), QColor("#00D1FF")); // door interior
+        QImage gallery(1000, 360, QImage::Format_ARGB32);
+        QPainter painter(&gallery);
+        const QStringList names{"home", "folder", "copy", "delete", "filter",
+            "lock", "refresh", "settings", "arrow-left", "add", "edit", "pin"};
+        for (int theme = 0; theme < 2; ++theme) {
+            painter.fillRect(0, theme * 180, 1000, 180,
+                             theme ? QColor("#202124") : QColor("#ffffff"));
+            for (int i = 0; i < names.size(); ++i) {
+                const QIcon icon(":/gfx/navigation/" + names[i] + ".svg");
+                painter.drawPixmap(16 + i * 80, theme * 180 + 15, icon.pixmap(48, 48));
+                painter.drawPixmap(16 + i * 80, theme * 180 + 85, icon.pixmap(24, 24));
+                painter.drawPixmap(16 + i * 80, theme * 180 + 125, icon.pixmap(24, 24, QIcon::Disabled));
+            }
+        }
+        painter.end();
+        if (qEnvironmentVariableIsSet("PARTS_THEME_SCREENSHOTS"))
+            QVERIFY(gallery.save(qEnvironmentVariable("PARTS_THEME_SCREENSHOTS") + "/icons-light-dark.png"));
+    }
+
+    void directoryIndexLogoHasReadableBackground()
+    {
+        QTemporaryDir directory;
+        QVERIFY(QDir(directory.path()).mkdir("Project A"));
+        DirectoryWebView view;
+        view.resize(900, 500);
+        view.show();
+        QSignalSpy loaded(&view, &QWebEngineView::loadFinished);
+        view.loadAutoIndexPage(directory.path());
+        QTRY_VERIFY_WITH_TIMEOUT(!loaded.isEmpty(), 15000);
+        QVERIFY(loaded.last().first().toBool());
+        for (const auto &theme : {QString("light"), QString("dark")}) {
+            bool done = false;
+            bool valid = false;
+            view.page()->runJavaScript(QString(R"(
+                document.documentElement.style.colorScheme = '%1';
+                (() => { const logo=document.querySelector('.logo');
+                  return logo.complete && logo.naturalWidth>0 &&
+                    getComputedStyle(logo).backgroundColor==='rgb(255, 255, 255)' &&
+                    parseInt(getComputedStyle(logo).paddingLeft)>=8;
+                })();
+            )").arg(theme), [&](const QVariant &value) { valid = value.toBool(); done = true; });
+            QTRY_VERIFY_WITH_TIMEOUT(done, 5000);
+            QVERIFY(valid);
+            QTest::qWait(200);
+            if (qEnvironmentVariableIsSet("PARTS_THEME_SCREENSHOTS"))
+                QVERIFY(view.grab().save(qEnvironmentVariable("PARTS_THEME_SCREENSHOTS") + "/index-" + theme + ".png"));
+        }
     }
 
     void interactionUsesSystemStyle()
@@ -2076,6 +2145,9 @@ int main(int argc, char **argv)
     if (argc > 1 && QString::fromLocal8Bit(argv[1]) == "app-server") return runAiServerFixture();
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     QStandardPaths::setTestModeEnabled(true);
+    // Headless WebEngine checks must not depend on a Windows GPU surface.
+    if (qEnvironmentVariable("QT_QPA_PLATFORM") == "offscreen")
+        qputenv("QTWEBENGINE_CHROMIUM_FLAGS", qgetenv("QTWEBENGINE_CHROMIUM_FLAGS") + " --disable-gpu");
     QApplication app(argc, argv);
     PartsIntegrationTest test;
     const int result = QTest::qExec(&test, argc, argv);

@@ -237,6 +237,11 @@ body {
     font-size: 13px;
 }
 .logo {
+    background: #ffffff;
+    border: 1px solid #c6cbd0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    box-sizing: content-box;
     max-height: 46px;
     max-width: 240px;
 }

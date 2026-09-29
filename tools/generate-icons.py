@@ -1,5 +1,6 @@
 """Rebuild the native SVG action/file icons (no raster or theme dependencies)."""
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 AZURE = '#00D1FF'
@@ -7,7 +8,15 @@ AZURE = '#00D1FF'
 def write(name, body):
     path = ROOT / 'gfx' / (name + '.svg')
     path.parent.mkdir(parents=True, exist_ok=True)
+    # A narrow light keyline keeps black artwork visible on dark palettes.
+    # Keep this in the assets so UI forms and menus share the same appearance.
+    halo = re.sub(r'stroke-width="([0-9.]+)"',
+                  lambda m: f'stroke-width="{float(m.group(1)) + 1.4:g}"', body)
+    halo = re.sub(r'(fill|stroke)="(?!none")[^"]+"',
+                  lambda m: m.group(1) + '="#F4F6F8"', halo)
     path.write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">\n'
+        '<g fill="none" stroke="#F4F6F8" stroke-width="3.1" stroke-linecap="round" '
+        'stroke-linejoin="round">' + halo + '</g>\n'
         '<g fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" '
         'stroke-linejoin="round">' + body.replace('@', AZURE) + '</g>\n</svg>\n', encoding='utf-8')
 
@@ -23,7 +32,7 @@ actions = {
     'parts': '<path d="m12 3 9 5v9l-9 5-9-5V8Z" fill="@"/><path d="m3 8 9 5 9-5M12 13v9M7.5 5.5l9 5"/>',
     'refresh': '<path d="M20 10a8 8 0 0 0-14-4L3 9m0-5v5h5"/><path d="M4 14a8 8 0 0 0 14 4l3-3m0 5v-5h-5" stroke="@" stroke-width="2.5"/>',
     'terminal': '<rect x="2" y="4" width="20" height="16" rx="2" fill="@"/><path d="m6 9 3 3-3 3m6 0h5"/>',
-    'home': '<path d="M5 11v10h5v-7h4v7h5V11" fill="@"/><path d="m2 12 10-9 10 9"/>',
+    'home': '<path d="m3 11 9-8 9 8h-2v10H5V11Z" fill="@"/><path d="M10 21v-7h4v7"/>',
     'settings': '<path d="m10 2 4 0 1 4 4-1 2 4-3 3 3 3-2 4-4-1-1 4h-4l-1-4-4 1-2-4 3-3-3-3 2-4 4 1Z" fill="@"/><circle cx="12" cy="12" r="3"/>',
     'pin': '<path d="m8 3 8 0-1 7 4 4H5l4-4Z" fill="@"/><path d="M12 14v8"/>',
     'edit': '<path d="M4 3h10v4M4 3v18h16v-9"/><path d="m9 14 10-10 3 3-10 10-5 2Z" fill="@"/>',

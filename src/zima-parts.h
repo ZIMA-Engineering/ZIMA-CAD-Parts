@@ -21,7 +21,7 @@
 #ifndef ZIMAPARTS_H
 #define ZIMAPARTS_H
 
-#define VERSION "2026092904"
+#define VERSION "2026092905"
 #define PARTS_DISPLAY_NAME "ZIMA-Parts"
 
 // Extensions
