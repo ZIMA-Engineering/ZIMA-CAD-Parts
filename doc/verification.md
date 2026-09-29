@@ -1,5 +1,15 @@
 # Build verification
 
+## Light/dark icon and logo contrast, September 29, 2026
+
+Development and clean packaged builds passed 64 integration checks, 18 CLI
+checks, translation validation and five packaged distribution checks. Native
+Windows high-DPI icon and directory-page checks passed in both color schemes;
+the rendered gallery and pages were inspected. Headless WebEngine tests use
+software rendering, without changing the application renderer. Signed archive,
+source/checksum acceptance, public assets and update discovery passed. See the
+[release record](releases/2026092905.md). Native Linux appearance was not tested.
+
 ## Native folder and file icons, September 29, 2026
 
 Clean Windows GUI, CLI, updater and integration builds passed. Development and
