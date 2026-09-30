@@ -1,5 +1,17 @@
 # Debian distribution: Linux candidate
 
+## Signed standalone Linux 2026093001 (2026-09-30)
+
+The independently named ZIMA-Parts Linux release is signed, public and verified
+on Debian 13.6 x86_64 and KDE/Wayland. Clean builds, 64 integration checks,
+18 CLI checks, 18 updater fixtures, translations, signed inventories and
+production trust passed. Native web/PDF, cross-process system credentials,
+CAD/OpenGL, light/dark appearance and shipped GUI startup passed. Public assets
+match acceptance and production discovery reports `current`.
+See [the release record](releases/2026093001.md) for exact hashes and scope.
+Former ZIMA-CAD-Parts installations are not migrated automatically. The older
+acceptance/pending statements below are historical.
+
 ## Signed Linux acceptance completed (2026-09-17)
 
 Version 2026091701 passed signing, packaged bootstrap trust and native Debian
